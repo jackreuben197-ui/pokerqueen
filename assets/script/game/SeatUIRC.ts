@@ -1,17 +1,18 @@
-
 import { UIDefine } from "../define/UIDefine";
 import { ClubCache } from "../frame/data/club/ClubCache";
 import GC from "../frame/GameControl";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { UIMineModel } from "../lobby/UIMineModel";
-import { WebUserRoomBringin, WebWww } from "../net/https/WebRequest";
+import { WebUserRoomBringin, WWW } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
 import { ClientMessageKeepSeatActive } from "../protobuf/holdem/req_keep_seat_active_pb";
 import { ClientMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
-import UIDialogComponent, { UIDialogParam } from "../ui/dialog/UIDialogComponent";
+import UIDialogComponent, {
+    UIDialogParam,
+} from "../ui/dialog/UIDialogComponent";
 import UIBase from "../ui/UIBase";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
@@ -19,23 +20,31 @@ import { AddClipsData } from "./new_ui/UIBringIn";
 import Seat, { VoiceprintState } from "./seat/Seat";
 import GameUtil from "./util/GameUtil";
 
-
 export class CardUIInfo {
     public imageSelect: cc.Sprite = null;
     public imageBack: cc.Sprite = null;
     public imageEye: cc.Sprite = null;
     public cardId: number;
     constructor(public imageCard: cc.Node) {
-        this.imageSelect = imageCard.getChildByName("Image_SelectCard")?.getComponent(cc.Sprite);
-        this.imageBack = imageCard.getChildByName("Image_CardBack")?.getComponent(cc.Sprite);
-        this.imageEye = imageCard.getChildByName("Image_EyeCard")?.getComponent(cc.Sprite);
+        this.imageSelect = imageCard
+            .getChildByName("Image_SelectCard")
+            ?.getComponent(cc.Sprite);
+        this.imageBack = imageCard
+            .getChildByName("Image_CardBack")
+            ?.getComponent(cc.Sprite);
+        this.imageEye = imageCard
+            .getChildByName("Image_EyeCard")
+            ?.getComponent(cc.Sprite);
     }
     SetSpriteFrame(cardId: number) {
         this.cardId = cardId;
         this.UpdateSpriteFrame();
     }
     UpdateSpriteFrame() {
-        this.imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(this.cardId));
+        this.imageCard.getComponent(cc.Sprite).spriteFrame =
+            GameCache.Instance.CurGame.GetBigPokerSP(
+                GameUtil.GetCardNameByNum(this.cardId),
+            );
     }
 }
 
@@ -43,7 +52,6 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class SeatUIRC extends UIBase {
-
     ///////////////////////////////////
     /**
      * 节点|组件 定义
@@ -63,15 +71,11 @@ export default class SeatUIRC extends UIBase {
     Nick_Coin: cc.Node = null;
     Text_NickName: cc.Label = null;
 
-
     Coin_Con: cc.Node = null; //手上筹码容器 位置自己和Other -109 -187
     Text_Coin: cc.Label = null;
-    TextRequesting: cc.Label = null;//带入申请提示中
-
-
+    TextRequesting: cc.Label = null; //带入申请提示中
 
     WaitforthenextmoveTips: cc.Label = null;
-
 
     transCurRoundHaveBet: cc.Node = null;
     imageIconChip: cc.Sprite = null;
@@ -80,23 +84,19 @@ export default class SeatUIRC extends UIBase {
     transSmallCardBacks: cc.Node = null;
     imageBanker: cc.Node = null;
 
-
     Head_CD: cc.Node = null;
     Head_CD_Label: cc.Label = null;
     Head_CD_Mask: cc.Sprite = null;
-
 
     imageCardType: cc.Sprite = null;
     textCardType: cc.Label = null;
     imageSmallCardType: cc.Sprite = null;
     textSmallCardType: cc.Label = null;
 
-
     imageRecyclingWinChip: cc.Sprite = null;
 
     buttonCancelReserveSeat: cc.Node = null;
     textCancelReserveSeat: cc.Label = null;
-
 
     imageOffline: cc.Node = null;
 
@@ -107,9 +107,6 @@ export default class SeatUIRC extends UIBase {
     Image_BubbleInsuranceNum: cc.Node = null;
 
     Image_BubbleInsuranceToubao: cc.Node = null;
-
-
-
 
     //返回座位
     imageReserveSeat: cc.Node = null;
@@ -141,7 +138,6 @@ export default class SeatUIRC extends UIBase {
     //winner动画
     Spine_Winner: sp.Skeleton = null;
 
-
     //保险状态
     Image_BubbleInsuranceCountDown: cc.Node = null;
     Text_BubbleInsuranceCountDown: cc.Label = null;
@@ -151,7 +147,10 @@ export default class SeatUIRC extends UIBase {
         super.lateLoad();
         this.Head = this.getChildNodeOrComponent("Head");
 
-        this.imageEmpty = this.getChildNodeOrComponent("Image_Empty", cc.Sprite);
+        this.imageEmpty = this.getChildNodeOrComponent(
+            "Image_Empty",
+            cc.Sprite,
+        );
 
         this.Frame_Head = this.getChildNodeOrComponent("Frame_Head");
         this.Raw_Head = this.getChildNodeOrComponent("Raw_Head", cc.Sprite);
@@ -159,19 +158,39 @@ export default class SeatUIRC extends UIBase {
 
         this.Coin_Con = this.getChildNodeOrComponent("Coin_Con");
         this.Text_Coin = this.getChildNodeOrComponent("Text_Coin", cc.Label);
-        this.Text_NickName = this.getChildNodeOrComponent("Text_NickName", cc.Label);
-        this.TextRequesting = this.getChildNodeOrComponent("TextRequesting", cc.Label);
+        this.Text_NickName = this.getChildNodeOrComponent(
+            "Text_NickName",
+            cc.Label,
+        );
+        this.TextRequesting = this.getChildNodeOrComponent(
+            "TextRequesting",
+            cc.Label,
+        );
 
-        this.WaitforthenextmoveTips = this.getChildNodeOrComponent("WaitforthenextmoveTips", cc.Label);
+        this.WaitforthenextmoveTips = this.getChildNodeOrComponent(
+            "WaitforthenextmoveTips",
+            cc.Label,
+        );
 
-        this.transCurRoundHaveBet = this.getChildNodeOrComponent("CurRoundHaveBet");
-        this.imageIconChip = this.getChildNodeOrComponent("Image_IconChip", cc.Sprite);
-        this.textCurRoundHaveBet = this.getChildNodeOrComponent("Text_CurRoundHaveBet", cc.Label);
+        this.transCurRoundHaveBet =
+            this.getChildNodeOrComponent("CurRoundHaveBet");
+        this.imageIconChip = this.getChildNodeOrComponent(
+            "Image_IconChip",
+            cc.Sprite,
+        );
+        this.textCurRoundHaveBet = this.getChildNodeOrComponent(
+            "Text_CurRoundHaveBet",
+            cc.Label,
+        );
 
-        this.transSmallCardBacks = this.getChildNodeOrComponent("SmallCardBacks");
+        this.transSmallCardBacks =
+            this.getChildNodeOrComponent("SmallCardBacks");
         this.imageBanker = this.getChildNodeOrComponent("Image_Banker");
 
-        this.Spine_Winner = this.getChildNodeOrComponent("Spine_Winner", sp.Skeleton);
+        this.Spine_Winner = this.getChildNodeOrComponent(
+            "Spine_Winner",
+            sp.Skeleton,
+        );
 
         //当前最大6张
         this.imageCards = [];
@@ -179,53 +198,95 @@ export default class SeatUIRC extends UIBase {
         this.imageSmallCardBacks = [];
         for (let i = 0; i < 6; i++) {
             //自己手牌
-            this.imageCards.push(new CardUIInfo(this.getChildNodeOrComponent(`Image_Card${i}`)));
+            this.imageCards.push(
+                new CardUIInfo(this.getChildNodeOrComponent(`Image_Card${i}`)),
+            );
             //最后胜利展示牌
-            this.imageSmallCards.push(new CardUIInfo(this.getChildNodeOrComponent(`Image_SmallCard${i}`)));
+            this.imageSmallCards.push(
+                new CardUIInfo(
+                    this.getChildNodeOrComponent(`Image_SmallCard${i}`),
+                ),
+            );
             //其他玩家手牌
-            this.imageSmallCardBacks.push(this.getChildNodeOrComponent(`Image_SmallCardBack${i}`, cc.Sprite));
+            this.imageSmallCardBacks.push(
+                this.getChildNodeOrComponent(
+                    `Image_SmallCardBack${i}`,
+                    cc.Sprite,
+                ),
+            );
         }
 
         this.Head_CD = this.getChildNodeOrComponent("Head_CD");
-        this.Head_CD_Label = this.getChildNodeOrComponent("Head_CD_Label", cc.Label);
-        this.Head_CD_Mask = this.getChildNodeOrComponent("Head_CD_Mask", cc.Sprite);
+        this.Head_CD_Label = this.getChildNodeOrComponent(
+            "Head_CD_Label",
+            cc.Label,
+        );
+        this.Head_CD_Mask = this.getChildNodeOrComponent(
+            "Head_CD_Mask",
+            cc.Sprite,
+        );
 
+        this.imageCardType = this.getChildNodeOrComponent(
+            "Image_CardType",
+            cc.Sprite,
+        );
+        this.textCardType = this.getChildNodeOrComponent(
+            "Text_CardType",
+            cc.Label,
+        );
 
-        this.imageCardType = this.getChildNodeOrComponent("Image_CardType", cc.Sprite);
-        this.textCardType = this.getChildNodeOrComponent("Text_CardType", cc.Label);
+        this.imageSmallCardType = this.getChildNodeOrComponent(
+            "Image_SmallCardType",
+            cc.Sprite,
+        );
+        this.textSmallCardType = this.getChildNodeOrComponent(
+            "Text_SmallCardType",
+            cc.Label,
+        );
 
-        this.imageSmallCardType = this.getChildNodeOrComponent("Image_SmallCardType", cc.Sprite);
-        this.textSmallCardType = this.getChildNodeOrComponent("Text_SmallCardType", cc.Label);
+        this.imageRecyclingWinChip = this.getChildNodeOrComponent(
+            "Image_RecyclingWinChip",
+            cc.Sprite,
+        );
 
-
-        this.imageRecyclingWinChip = this.getChildNodeOrComponent("Image_RecyclingWinChip", cc.Sprite);
-
-
-        this.buttonCancelReserveSeat = this.getChildNodeOrComponent("Button_CancelReserveSeat");
-        this.textCancelReserveSeat = this.getChildNodeOrComponent("Text_CancelReserveSeat", cc.Label);
-        this.imageReserveSeat = this.getChildNodeOrComponent("Image_ReserveSeat");
+        this.buttonCancelReserveSeat = this.getChildNodeOrComponent(
+            "Button_CancelReserveSeat",
+        );
+        this.textCancelReserveSeat = this.getChildNodeOrComponent(
+            "Text_CancelReserveSeat",
+            cc.Label,
+        );
+        this.imageReserveSeat =
+            this.getChildNodeOrComponent("Image_ReserveSeat");
         this.m_ReserveTime = this.getChildNodeOrComponent("time", cc.Label);
 
         this.Image_Trust = this.getChildNodeOrComponent("Image_Trust");
 
-
         this.imageOffline = this.getChildNodeOrComponent("imageOffline");
-
 
         this.Image_Bubble = this.getChildNodeOrComponent("Image_Bubble");
         this.textBubble = this.getChildNodeOrComponent("Text_Bubble", cc.Label);
 
-        this.Image_BubbleInsuranceNum = this.getChildNodeOrComponent("Image_BubbleInsuranceNum");
-        this.Image_BubbleInsuranceToubao = this.getChildNodeOrComponent("Image_BubbleInsuranceToubao");
+        this.Image_BubbleInsuranceNum = this.getChildNodeOrComponent(
+            "Image_BubbleInsuranceNum",
+        );
+        this.Image_BubbleInsuranceToubao = this.getChildNodeOrComponent(
+            "Image_BubbleInsuranceToubao",
+        );
 
+        this.Image_CoinShadow =
+            this.getChildNodeOrComponent("Image_CoinShadow");
 
-        this.Image_CoinShadow = this.getChildNodeOrComponent("Image_CoinShadow");
+        this.Operation_Pos_Mark =
+            this.getChildNodeOrComponent("Operation_Pos_Mark");
 
-        this.Operation_Pos_Mark = this.getChildNodeOrComponent("Operation_Pos_Mark");
-
-
-        this.Image_BubbleInsuranceCountDown = this.getChildNodeOrComponent("Image_BubbleInsuranceCountDown");
-        this.Text_BubbleInsuranceCountDown = this.getChildNodeOrComponent("Text_BubbleInsuranceCountDown", cc.Label);
+        this.Image_BubbleInsuranceCountDown = this.getChildNodeOrComponent(
+            "Image_BubbleInsuranceCountDown",
+        );
+        this.Text_BubbleInsuranceCountDown = this.getChildNodeOrComponent(
+            "Text_BubbleInsuranceCountDown",
+            cc.Label,
+        );
 
         //声纹
         this.voiceprintList = [];
@@ -235,13 +296,11 @@ export default class SeatUIRC extends UIBase {
         // this.voiceprintList.Add(VoiceprintRobot);
         // this.voiceprintList.Add(VoiceprintReal);
         // this.voiceprintList.Add(VoiceprintVoting);
-
     }
     protected update(dt: number): void {
         //刷新带入申请中倒计时
 
         if (this.seat?.Player && this.seat.Player.KeepSeatLeftTime > 0) {
-
             this.seat.Player.KeepSeatLeftTime -= dt;
 
             let int_left_time = Math.ceil(this.seat.Player.KeepSeatLeftTime);
@@ -253,9 +312,7 @@ export default class SeatUIRC extends UIBase {
                 //this.seat.UpdateRequesting();
                 this.TextRequesting.string = "";
             }
-
         }
-
     }
 
     protected regiterTouchEvents(): void {
@@ -264,89 +321,87 @@ export default class SeatUIRC extends UIBase {
         }
         this.setButtonClick(this.imageEmpty.node, this.onClickEmpty);
         this.setButtonClick(this.Frame_Head, this.onClickHead);
-        this.setButtonClick(this.buttonCancelReserveSeat, this.onClickCancelReserveSeat);
+        this.setButtonClick(
+            this.buttonCancelReserveSeat,
+            this.onClickCancelReserveSeat,
+        );
     }
 
     private onClickCancelReserveSeat(): void {
-        UIMineModel.mInstance.ObtainUserInfo(pDto => {
-            UIMineModel.mInstance.UIRefreshGoldEvent();//更新完金币ui
+        UIMineModel.mInstance.ObtainUserInfo((pDto) => {
+            UIMineModel.mInstance.UIRefreshGoldEvent(); //更新完金币ui
             this.ClickCancelReserveSeat();
-        });//更新用户金币数量
+        }); //更新用户金币数量
     }
 
     private ClickCancelReserveSeat(): void {
         if (this.seat.IsMySeat && this.seat.Player.chips <= 0) {
-
             if (GameUtil.GetFriendsOrClubTable() == 3) {
-
-                WebWww.Instance.CommonAPI(
-                    {
-                        web_class: WebUserRoomBringin,
-                        api_id: GameCache.Instance.room_id,
-                    }
-                ).then(
+                WWW.Instance.CommonAPI({
+                    web_class: WebUserRoomBringin,
+                    api_id: GameCache.Instance.room_id,
+                }).then(
                     (res: any) => {
-
                         UIComponent.Instance.ShowUI<AddClipsData>(
                             PrefabUI.UIBringIn,
                             {
                                 bigBlind: GameCache.Instance.CurGame.bigBlind,
-                                smallBlind: GameCache.Instance.CurGame.smallBlind,
-                                currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-                                currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                                smallBlind:
+                                    GameCache.Instance.CurGame.smallBlind,
+                                currentMinRate:
+                                    GameCache.Instance.CurGame.currentMinRate,
+                                currentMaxRate:
+                                    GameCache.Instance.CurGame.currentMaxRate,
                                 totalCoin: GC.data.user.info.gold,
                                 tableChips: this.seat.Player.chips,
                                 wallets: [res.data],
-                            }
-                        )
+                            },
+                        );
                     },
-                    (res: any) => {
-
-                    }
-                )
+                    (res: any) => {},
+                );
             } else {
-
-                UIComponent.Instance.ShowUI<AddClipsData>(
-                    PrefabUI.UIBringIn,
-                    {
-                        bigBlind: GameCache.Instance.CurGame.bigBlind,
-                        smallBlind: GameCache.Instance.CurGame.smallBlind,
-                        currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-                        currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-                        totalCoin: GC.data.user.info.gold,
-                        tableChips: this.seat.Player.chips,
-                    }
-                )
+                UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIBringIn, {
+                    bigBlind: GameCache.Instance.CurGame.bigBlind,
+                    smallBlind: GameCache.Instance.CurGame.smallBlind,
+                    currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+                    currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                    totalCoin: GC.data.user.info.gold,
+                    tableChips: this.seat.Player.chips,
+                });
             }
-        }
-        else {
+        } else {
             ProtocolAgency.Send<ClientMessageKeepSeatActive.AsObject>({
                 Code: ProtocolCode.Protocol_Holdem_KeepSeatActive,
                 RoomID: GameCache.Instance.room_id,
                 MatchID: GameCache.Instance.match_id,
                 Body: {
-                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                    room: {
+                        roomId: GameCache.Instance.room_id,
+                        matchId: GameCache.Instance.match_id,
+                    },
                     keep: false,
-                    duration: 0
+                    duration: 0,
                 },
             });
             GameCache.Instance.CurGame.cacheCancelKeepSeat = true;
         }
     }
     onClickEmpty() {
-
-        UIMineModel.mInstance.ObtainUserInfo(pDto => {
+        UIMineModel.mInstance.ObtainUserInfo((pDto) => {
             if (pDto.user.forbid_bring_in == 1) {
                 UIComponent.open<UIDialogParam>(UIDefine.UIDialogComponent, {
                     title: "",
                     type: UIDialogComponent.DialogType.Commit,
                     content: i18nMgr.Get("UIForbidBringInTips"),
                     contentCommit: CPErrorCode.LanguageDescription(10012),
-                })
+                });
                 return;
-            }
-            else {
-                GameCache.Instance.CurGame.Sitdown(this.seat.ClientSeatId, true);
+            } else {
+                GameCache.Instance.CurGame.Sitdown(
+                    this.seat.ClientSeatId,
+                    true,
+                );
             }
         });
     }
@@ -375,14 +430,24 @@ export default class SeatUIRC extends UIBase {
             case VoiceprintState.Robot:
             case VoiceprintState.Real:
                 // 查看个人信息
-                GameCache.Instance.CurGame.CheckPlayerInfo(this.seat.Player.userID, this.seat.Player);
+                GameCache.Instance.CurGame.CheckPlayerInfo(
+                    this.seat.Player.userID,
+                    this.seat.Player,
+                );
                 break;
             case VoiceprintState.Voting:
-                if (this.seat.Player.userID == GameCache.Instance.CurGame.mainPlayer.userID) {
-                    GameCache.Instance.CurGame.CheckPlayerInfo(this.seat.Player.userID, this.seat.Player);
-                }
-                else {
-                    let seat: Seat = GameCache.Instance.CurGame.GetSeatByUserId(GameCache.Instance.CurGame.mainPlayer.userID);
+                if (
+                    this.seat.Player.userID ==
+                    GameCache.Instance.CurGame.mainPlayer.userID
+                ) {
+                    GameCache.Instance.CurGame.CheckPlayerInfo(
+                        this.seat.Player.userID,
+                        this.seat.Player,
+                    );
+                } else {
+                    let seat: Seat = GameCache.Instance.CurGame.GetSeatByUserId(
+                        GameCache.Instance.CurGame.mainPlayer.userID,
+                    );
                     if (seat != null) {
                         if (seat.Player.seatID >= 0) {
                             // UIComponent.Instance.ShowUI(UIType.UITexasHumanVote, new UITexasHumanVoteComponent.VoteDataInfo()
@@ -392,8 +457,7 @@ export default class SeatUIRC extends UIBase {
                             //         updateTime = this.Player.UpdateStateTime,
                             //         userId = this.Player.userID
                             //     });
-                        }
-                        else {
+                        } else {
                             //         UIComponent.Instance.ShowUI(UIType.UIDialog, new UIDialogComponent.DialogData()
                             // 			{
                             //                 type = UIDialogComponent.DialogData.DialogType.CommitCancel,
@@ -407,8 +471,7 @@ export default class SeatUIRC extends UIBase {
                             //     }
                             // });
                         }
-                    }
-                    else {
+                    } else {
                         //         UIComponent.Instance.ShowUI(UIType.UIDialog, new UIDialogComponent.DialogData()
                         // 			{
                         //                 type = UIDialogComponent.DialogData.DialogType.CommitCancel,
@@ -422,22 +485,29 @@ export default class SeatUIRC extends UIBase {
                         //     }
                         // });
                     }
-
                 }
                 break;
             default:
                 break;
         }
-
     }
     protected onClickCard(button: cc.Button): void {
-        let mTmpSequencePlayDealAnimation = GameCache.Instance.CurGame.GetSequencePlayDealAnimation();
-        if (null != mTmpSequencePlayDealAnimation && mTmpSequencePlayDealAnimation.IsPlaying) {
+        let mTmpSequencePlayDealAnimation =
+            GameCache.Instance.CurGame.GetSequencePlayDealAnimation();
+        if (
+            null != mTmpSequencePlayDealAnimation &&
+            mTmpSequencePlayDealAnimation.IsPlaying
+        ) {
             return;
         }
         // 亮牌   弃牌 , 未动作（没有开赛）
-        if (null == this.seat.Player || this.seat.Player.userID != GameCache.Instance.CurGame.mainPlayer.userID ||
-            this.seat.seatID != GameCache.Instance.CurGame.mainPlayer.seatID || !this.seat.Player.isParticipateInTheGame) {
+        if (
+            null == this.seat.Player ||
+            this.seat.Player.userID !=
+                GameCache.Instance.CurGame.mainPlayer.userID ||
+            this.seat.seatID != GameCache.Instance.CurGame.mainPlayer.seatID ||
+            !this.seat.Player.isParticipateInTheGame
+        ) {
             return;
         }
 
@@ -446,19 +516,22 @@ export default class SeatUIRC extends UIBase {
         let mTmp: string = go.name.substring(go.name.length - 1);
         let mCardIndex: number = +mTmp;
 
-
-        let mActive: boolean = this.seat.listCardUIInfos[mCardIndex].imageEye.node.activeInHierarchy;
+        let mActive: boolean =
+            this.seat.listCardUIInfos[mCardIndex].imageEye.node
+                .activeInHierarchy;
         this.seat.listCardUIInfos[mCardIndex].imageEye.node.active = !mActive;
-        this.seat.showCardsId[mCardIndex] = (!mActive) ? 1 : 0;
+        this.seat.showCardsId[mCardIndex] = !mActive ? 1 : 0;
         ProtocolAgency.Send<ClientMessageShowdown.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_Showdown,
             RoomID: GameCache.Instance.room_id,
             MatchID: GameCache.Instance.match_id,
-            Body:
-            {
-                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                showCardsList: this.seat.showCardsId
+            Body: {
+                room: {
+                    roomId: GameCache.Instance.room_id,
+                    matchId: GameCache.Instance.match_id,
+                },
+                showCardsList: this.seat.showCardsId,
             },
-        })
+        });
     }
 }

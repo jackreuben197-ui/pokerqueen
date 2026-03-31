@@ -1,4 +1,3 @@
-
 import List from "../../../common/List";
 import ListEx from "../../../common/ListEx";
 import TabsGroup from "../../../common/TabsGroup";
@@ -7,19 +6,17 @@ import { UIDefine } from "../../../define/UIDefine";
 import GC from "../../../frame/GameControl";
 import { StringHelper } from "../../../helper/StringHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { WebWww } from "../../../net/https/WebRequest";
+import { WWW } from "../../../net/https/WebRequest";
 import { WebOrgMemberList } from "../../../net/https/WebRequest";
 import UIComponent from "../../../ui/UIComponent";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import FunMemberItem from "./FunMemberItem";
-
 
 //跳转充值界面
 const { ccclass } = cc._decorator;
 
 @ccclass
 export default class UIFunManage extends BaseFormPlus {
-
     $top_tabs: cc.Node = null;
 
     $rank_tabs: cc.Node = null;
@@ -35,10 +32,8 @@ export default class UIFunManage extends BaseFormPlus {
     $sort_box: cc.Node = null;
     $sort_arrow: cc.Node = null;
 
-
     $btn_recycle: cc.Node = null;
     $btn_give: cc.Node = null;
-
 
     cc_EditBox$searcher: cc.EditBox = null;
 
@@ -54,21 +49,20 @@ export default class UIFunManage extends BaseFormPlus {
 
     sort_index: number;
 
-
     user_type_of_index = {
         0: 0,
         1: 3,
         2: 4,
-        3: 1
+        3: 1,
     };
 
-    user_type: number = 0;//0-所有;1-普通;3-管理员;4-代理;
+    user_type: number = 0; //0-所有;1-普通;3-管理员;4-代理;
 
-    sort_type: number = 5;//1-输赢数;2-手数;3-服务费;4-最后登陆时间;5-按金币
+    sort_type: number = 5; //1-输赢数;2-手数;3-服务费;4-最后登陆时间;5-按金币
 
-    order_type: number = 2;//1-顺序;2-倒叙
+    order_type: number = 2; //1-顺序;2-倒叙
 
-    data: { club_id: number, random_id: number, club_members: number } = null;
+    data: { club_id: number; random_id: number; club_members: number } = null;
 
     templateInfos: any[] = null;
 
@@ -78,8 +72,16 @@ export default class UIFunManage extends BaseFormPlus {
         this.name = "UIFunManage";
         super.lateLoad();
         this.activeBack = false;
-        this.top_tabs_group = new TabsGroup(this.$top_tabs.children, this.top_tabs_click, this);
-        this.user_type_tabs_group = new TabsGroup(this.$rank_tabs.children, this.user_type_tabs_click, this);
+        this.top_tabs_group = new TabsGroup(
+            this.$top_tabs.children,
+            this.top_tabs_click,
+            this,
+        );
+        this.user_type_tabs_group = new TabsGroup(
+            this.$rank_tabs.children,
+            this.user_type_tabs_click,
+            this,
+        );
         this.initEX();
     }
 
@@ -93,7 +95,6 @@ export default class UIFunManage extends BaseFormPlus {
     }
 
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node): void {
-
         super.onShow(param, fromUI, sceneUI);
         this.data = param;
         this._onShow();
@@ -124,59 +125,62 @@ export default class UIFunManage extends BaseFormPlus {
         this.listEx.dropRequest();
     }
 
-
-
     private refreshGiveRecycleBtn() {
-
-        this.setButtonInteractable(this.$btn_recycle, this.templateInfos.length > 0);
-        this.setButtonInteractable(this.$btn_give, this.templateInfos.length > 0);
-        this.setChildColor(this.$btn_recycle, "label", this.templateInfos.length > 0 ? TextColor.Color1 : TextColor.Color3);
-        this.setChildColor(this.$btn_give, "label", this.templateInfos.length > 0 ? TextColor.Color1 : TextColor.Color3);
-
+        this.setButtonInteractable(
+            this.$btn_recycle,
+            this.templateInfos.length > 0,
+        );
+        this.setButtonInteractable(
+            this.$btn_give,
+            this.templateInfos.length > 0,
+        );
+        this.setChildColor(
+            this.$btn_recycle,
+            "label",
+            this.templateInfos.length > 0 ? TextColor.Color1 : TextColor.Color3,
+        );
+        this.setChildColor(
+            this.$btn_give,
+            "label",
+            this.templateInfos.length > 0 ? TextColor.Color1 : TextColor.Color3,
+        );
     }
 
     //刷新排序文本
     private refreshSortBox(gold_type: number, order_type: number) {
-
         this.order_type = order_type;
 
-        this.cc_Label$sort_label.string = i18nMgr.Get(this.sort_texts[gold_type]);
+        this.cc_Label$sort_label.string = i18nMgr.Get(
+            this.sort_texts[gold_type],
+        );
 
         this.$sort_arrow.scaleY = this.sort_arrow_scale[order_type];
-
     }
 
     private reqMemberList(offset: number = 0) {
-
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebOrgMemberList,
-                body: {
-                    club_random_id: this.data.random_id,
-                    club_id: this.data.club_id,
-                    search: this.cc_EditBox$searcher.string,
-                    user_type: this.user_type_of_index[this.user_type_tabs_group.select],
-                    sort_type: this.sort_type,
-                    order_type: this.order_type,
-                    gold_type: this.top_tabs_group.select + 1,
-                    limit: 10,
-                    offset: offset,
-                }
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebOrgMemberList,
+            body: {
+                club_random_id: this.data.random_id,
+                club_id: this.data.club_id,
+                search: this.cc_EditBox$searcher.string,
+                user_type:
+                    this.user_type_of_index[this.user_type_tabs_group.select],
+                sort_type: this.sort_type,
+                order_type: this.order_type,
+                gold_type: this.top_tabs_group.select + 1,
+                limit: 10,
+                offset: offset,
+            },
+        }).then(
             (res: any) => {
-
                 if (offset == 0) {
                     this.clearList();
                 }
                 this.listEx.refresh(res.data.data, res.data.total);
-
             },
-            (res: any) => {
-
-            }
-        )
-
+            (res: any) => {},
+        );
     }
 
     private showNull(boo: boolean) {
@@ -184,13 +188,12 @@ export default class UIFunManage extends BaseFormPlus {
     }
     //顶部标题点击
     private top_tabs_click(items: cc.Node[], index: number) {
-
         let status = Tabs_Status[index];
         items.forEach((item, index) => {
             let opacity = status[index] ? 255 : 102;
             item.children[0].opacity = opacity;
             item.children[0].children[0].active = !!status[index];
-        })
+        });
         // this.$Pages.children.forEach((item, index) => {
         //     item.active = !!status[index];
         // })
@@ -208,7 +211,6 @@ export default class UIFunManage extends BaseFormPlus {
         this.cc_EditBox$searcher.string = "";
 
         if (this.top_block.active) {
-
         } else {
             this.resetRequest();
         }
@@ -216,16 +218,14 @@ export default class UIFunManage extends BaseFormPlus {
 
     //身份级别点击
     private user_type_tabs_click(items: cc.Node[], index: number) {
-
         let status = Tabs_Status[index];
         items.forEach((item, index) => {
             let opacity = status[index] ? 255 : 102;
             item.children[0].opacity = opacity;
             item.getComponent(cc.Sprite).enabled = !!status[index];
-        })
+        });
 
         if (this.top_block.active) {
-
         } else {
             this.resetRequest();
         }
@@ -235,13 +235,17 @@ export default class UIFunManage extends BaseFormPlus {
     private refreshBalance(gold_type: number) {
         this.setChildVisible(this.$balance, "icon/uc", gold_type == 1);
         this.setChildVisible(this.$balance, "icon/gc", gold_type == 2);
-        this.cc_Label$balance.string = StringHelper.GetLongString(gold_type == 1 ? GC.wallet.Gold : GC.wallet.USDT);
+        this.cc_Label$balance.string = StringHelper.GetLongString(
+            gold_type == 1 ? GC.wallet.Gold : GC.wallet.USDT,
+        );
     }
-
 
     //排序盒点击
     onClickSortBox() {
-        this.refreshSortBox(this.top_tabs_group.select + 1, +!(this.order_type - 1) + 1);
+        this.refreshSortBox(
+            this.top_tabs_group.select + 1,
+            +!(this.order_type - 1) + 1,
+        );
         this.resetRequest();
     }
     //搜索点击
@@ -256,23 +260,31 @@ export default class UIFunManage extends BaseFormPlus {
         this.refreshGiveRecycleBtn();
     }
 
-
     getTempList() {
         let temp = [];
-        this.templateInfos.forEach(item => {
+        this.templateInfos.forEach((item) => {
             temp.push(this.listEx.data[item]);
-        })
+        });
         return temp;
     }
 
-
     //回收点击
     onClickRecycle() {
-        UIComponent.open(UIDefine.UIFunRecycleGive, { balance: +this.cc_Label$balance.string, op_type: 2, gold_type: this.top_tabs_group.select + 1, list: this.getTempList() });
+        UIComponent.open(UIDefine.UIFunRecycleGive, {
+            balance: +this.cc_Label$balance.string,
+            op_type: 2,
+            gold_type: this.top_tabs_group.select + 1,
+            list: this.getTempList(),
+        });
     }
     //发放点击
     onClickGive() {
-        UIComponent.open(UIDefine.UIFunRecycleGive, { balance: +this.cc_Label$balance.string, op_type: 1, gold_type: this.top_tabs_group.select + 1, list: this.getTempList() });
+        UIComponent.open(UIDefine.UIFunRecycleGive, {
+            balance: +this.cc_Label$balance.string,
+            op_type: 1,
+            gold_type: this.top_tabs_group.select + 1,
+            list: this.getTempList(),
+        });
     }
 
     //////////////////////////////////
@@ -281,9 +293,7 @@ export default class UIFunManage extends BaseFormPlus {
 
     private listEx: ListEx = null;
 
-
     private clearList() {
-
         this.List$member.content.removeAllChildren();
 
         this.showNull(false);
@@ -295,27 +305,29 @@ export default class UIFunManage extends BaseFormPlus {
             list: this.List$member,
             nullNode: this.$null,
             this: this,
-            request: this.reqMemberList
+            request: this.reqMemberList,
         });
     }
     //////////////////////////////////滚动节点渲染///////////////////////
     render_item(node: cc.Node, index: number) {
-
         let item_data = this.listEx.data[index];
 
         let check = this.isCheckByIndex(index);
 
-        node.getComponent(FunMemberItem).onShow({ data: item_data, index: index, gold_type: this.top_tabs_group.select + 1, check: check, handler: this });
-
+        node.getComponent(FunMemberItem).onShow({
+            data: item_data,
+            index: index,
+            gold_type: this.top_tabs_group.select + 1,
+            check: check,
+            handler: this,
+        });
     }
 
     isCheckByIndex(index: number) {
         return this.templateInfos.indexOf(index) > -1;
     }
 
-
     item_click(index: number, check: boolean) {
-
         //console.log(index, check);
 
         if (check) {
@@ -328,5 +340,4 @@ export default class UIFunManage extends BaseFormPlus {
 
         this.refreshGiveRecycleBtn();
     }
-
 }

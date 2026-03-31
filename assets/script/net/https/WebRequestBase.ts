@@ -40,9 +40,9 @@ export class WebCommon {
     };
 }
 
-export class WebWww {
-    public static get Instance(): WebWww {
-        return ((this as any).__Instance ??= new WebWww());
+export class WWW {
+    public static get Instance(): WWW {
+        return ((this as any).__Instance ??= new WWW());
     }
     /**
      * @param param 
@@ -51,7 +51,7 @@ export class WebWww {
      * api_id 替换接口中{id}
      * club_id 公会club_id
      * 范例
-     * WebWww.Instance.CommonAPI(
+     * WWW.Instance.CommonAPI(
             {
                 web_class: WebClubApplyAudit,
                 body: {

@@ -9,7 +9,15 @@ import GC from "../../../frame/GameControl";
 import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { WebWww, WebClubFundApplyList, WebClubFundOrderList, WebClubPlayerOrderRecord, WebClubFundAudit, WebClubUserWallet, WebMessageRednum } from "../../../net/https/WebRequest";
+import {
+    WWW,
+    WebClubFundApplyList,
+    WebClubFundOrderList,
+    WebClubPlayerOrderRecord,
+    WebClubFundAudit,
+    WebClubUserWallet,
+    WebMessageRednum,
+} from "../../../net/https/WebRequest";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
@@ -19,15 +27,14 @@ import WalletModel from "./WalletModel";
 
 //钱包类型
 export enum WalletType {
-    Personal = 0,//个人钱包
-    Club = 1,//公会钱包
-    Fund = 2,//公会基金
+    Personal = 0, //个人钱包
+    Club = 1, //公会钱包
+    Fund = 2, //公会基金
 }
 const { ccclass } = cc._decorator;
 
 @ccclass
 export default class UIWallet extends BaseFormPlus {
-
     protected _param: { wallet_type: number } = null;
 
     ///////////////////////////////////////
@@ -35,7 +42,6 @@ export default class UIWallet extends BaseFormPlus {
     $Page0: cc.Node = null;
     $Page1: cc.Node = null;
     $Page2: cc.Node = null;
-
 
     //联盟币和USDT显示
     cc_Label$gc: cc.Label = null;
@@ -46,10 +52,9 @@ export default class UIWallet extends BaseFormPlus {
     $changelog_content: cc.Node = null;
     $apply_content: cc.Node = null;
 
-
     $record_item: cc.Node = null;
     $changelog_item: cc.Node = null;
-    $apply_item: cc.Node = null;//UIWalletApplyItem
+    $apply_item: cc.Node = null; //UIWalletApplyItem
 
     //0:充值记录 1:提现记录 2:转换记录
     record_type: number = 0;
@@ -57,7 +62,6 @@ export default class UIWallet extends BaseFormPlus {
     record_item_pool: SimpleNodePool = null;
     changelog_item_pool: SimpleNodePool = null;
     apply_item_pool: SimpleNodePool = null;
-
 
     $TopTabs: cc.Node = null;
     $OpTabs: cc.Node = null;
@@ -73,7 +77,6 @@ export default class UIWallet extends BaseFormPlus {
     recharge_tags = null;
     exchange_tags = null;
 
-
     $red: cc.Node = null;
 
     //WebMessageRednum
@@ -83,51 +86,55 @@ export default class UIWallet extends BaseFormPlus {
         [WalletType.Personal]: [],
         [WalletType.Club]: [this.reqClubUserWallet, this.reqGoldChangeLog],
         [WalletType.Fund]: [this.reqClubFund, this.reqClubFundChangeLog],
-    }
+    };
     //请求记录配置
     ReqRecordBean = {
         [WalletType.Personal]: null,
         [WalletType.Club]: this.reqClubRecord,
         [WalletType.Fund]: this.reqFundRecord,
-    }
-
+    };
 
     top_tabs_group: TabsGroup = null;
     //op_tabs_group: TabsGroup = null;
     record_tabs_group: TabsGroup = null;
 
-
     protected lateLoad(): void {
         super.lateLoad();
 
-        this.top_tabs_group = new TabsGroup(this.$TopTabs.children, this.top_tabs_click, this);
-        this.record_tabs_group = new TabsGroup(this.$RecordTabs.children, this.record_tabs_click, this);
+        this.top_tabs_group = new TabsGroup(
+            this.$TopTabs.children,
+            this.top_tabs_click,
+            this,
+        );
+        this.record_tabs_group = new TabsGroup(
+            this.$RecordTabs.children,
+            this.record_tabs_click,
+            this,
+        );
 
         this.$OpTabs.children.forEach((item, index) => {
             item["index"] = index;
             this.setButtonClick(item, this.op_tabs_click);
-        })
+        });
 
         this.record_item_pool = new SimpleNodePool(this.$record_item);
         this.changelog_item_pool = new SimpleNodePool(this.$changelog_item);
         this.apply_item_pool = new SimpleNodePool(this.$apply_item);
 
         this.initEX();
-
     }
 
     //顶部标题点击
     private top_tabs_click(items: cc.Node[], index: number) {
-
         let status = Tabs_Status[index];
         items.forEach((item, index) => {
             let color = status[index] ? TextColor.Color1 : TextColor.Color3;
             item.children[0].color = cc.Color.BLACK.fromHEX(color);
             item.children[0].children[0].active = !!status[index];
-        })
+        });
         this.$Pages.children.forEach((item, index) => {
             item.active = !!status[index];
-        })
+        });
         switch (index) {
             case 0:
                 //this.Op_Index = -1;
@@ -144,29 +151,27 @@ export default class UIWallet extends BaseFormPlus {
                 this.reqApplyList();
                 break;
         }
-
     }
     //充值和转换点击
     private op_tabs_click(button: cc.Button) {
         switch (button.node["index"]) {
-            case 0://充值
-                UIComponent.open(UIDefine.UIToRecharge,
-                    {
-                        type: 1,
-                        walletType: this._param.wallet_type,
-                        club_id: ClubCache.club_id,
-                        club_name: ClubCache.club_name,
-                        tribe_name: ClubCache.tribe_name,
-                    });
+            case 0: //充值
+                UIComponent.open(UIDefine.UIToRecharge, {
+                    type: 1,
+                    walletType: this._param.wallet_type,
+                    club_id: ClubCache.club_id,
+                    club_name: ClubCache.club_name,
+                    tribe_name: ClubCache.tribe_name,
+                });
                 break;
-            case 1://转换
+            case 1: //转换
                 UIComponent.open(UIDefine.UIExchange, {
                     club_id: ClubCache.club_id,
                     club_name: ClubCache.club_name,
                     tribe_name: ClubCache.tribe_name,
                 });
                 break;
-            case 2://管理
+            case 2: //管理
                 UIComponent.open(UIDefine.UIFunManage, {
                     club_id: ClubCache.club_id,
                     random_id: ClubCache.random_id,
@@ -177,23 +182,26 @@ export default class UIWallet extends BaseFormPlus {
     }
     //各种记录点击
     private record_tabs_click(items: cc.Node[], index: number) {
-
         let status = Tabs_Status[index];
         items.forEach((item, index) => {
             let on = status[index];
             item.getComponent(cc.Sprite).enabled = !!on;
-            item.getChildByName("label").color = cc.Color.BLACK.fromHEX(on ? TextColor.Color7 : TextColor.Color3);
-        })
+            item.getChildByName("label").color = cc.Color.BLACK.fromHEX(
+                on ? TextColor.Color7 : TextColor.Color3,
+            );
+        });
         switch (index) {
             case 0:
                 this.$record_tags.children.forEach((item, index) => {
-                    item.getComponent(cc.Label).string = this.recharge_tags[index];
-                })
+                    item.getComponent(cc.Label).string =
+                        this.recharge_tags[index];
+                });
                 break;
             case 1:
                 this.$record_tags.children.forEach((item, index) => {
-                    item.getComponent(cc.Label).string = this.exchange_tags[index];
-                })
+                    item.getComponent(cc.Label).string =
+                        this.exchange_tags[index];
+                });
                 break;
         }
         this.reqRecord(index);
@@ -205,13 +213,11 @@ export default class UIWallet extends BaseFormPlus {
      * param {type: 0:个人钱包 1:公会钱包 2:公会基金}
      */
     onShow(param?: { wallet_type: WalletType }, fromUI?: cc.Node): void {
-
         super.onShow(param, fromUI);
 
         console.log("当前钱包类型:", param.wallet_type);
 
         GC.wallet.wallet_type = param.wallet_type;
-
 
         //根据类型判断哪种钱包
         switch (param.wallet_type) {
@@ -229,7 +235,6 @@ export default class UIWallet extends BaseFormPlus {
                 this.$TopTabs.children[2].active = false;
                 this.$TopTabs.getComponent(cc.Layout).spacingX = 220;
 
-
                 this.$OpTabs.children[2].active = false;
                 this.$OpTabs.getComponent(cc.Layout).updateLayout();
 
@@ -242,18 +247,15 @@ export default class UIWallet extends BaseFormPlus {
                 //this.root_layout.spacingX = 220;
                 this.$TopTabs.getComponent(cc.Layout).spacingX = 0;
 
-
-
                 this.$OpTabs.children[2].active = true;
                 this.$OpTabs.getComponent(cc.Layout).updateLayout();
 
                 break;
         }
 
-
         this.resetData();
 
-        this.refreshRed()
+        this.refreshRed();
 
         this.clearChangeLogItems();
 
@@ -264,19 +266,20 @@ export default class UIWallet extends BaseFormPlus {
         this.showEX();
 
         //刷红点位置
-        this.scheduleOnce(() => { this.$red.getComponent(cc.Widget).updateAlignment(); }, 0);
-
+        this.scheduleOnce(() => {
+            this.$red.getComponent(cc.Widget).updateAlignment();
+        }, 0);
     }
     //刷新红点
     private refreshRed() {
         let data = WebMessageRednum.Response.data;
         let hasRed: boolean = false;
         if (data) {
-            data.forEach(obj => {
+            data.forEach((obj) => {
                 if (obj.type == 2 && obj.num > 0) {
                     hasRed = true;
                 }
-            })
+            });
         }
         this.$red.active = hasRed;
     }
@@ -286,50 +289,40 @@ export default class UIWallet extends BaseFormPlus {
     }
     //请求公会玩家充值记录 order_type 1,2,4
     reqClubRecord(order_type: number) {
-
-        WebWww.Instance.CommonAPI(
-            {
-                body: {
-                    "order_type": order_type,
-                    "limit": 100,
-                    "offset": 0
-                },
-                web_class: WebClubPlayerOrderRecord,
-                club_id: ClubCache.club_id
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            body: {
+                order_type: order_type,
+                limit: 100,
+                offset: 0,
+            },
+            web_class: WebClubPlayerOrderRecord,
+            club_id: ClubCache.club_id,
+        }).then(
             (res: any) => {
                 this.record_datas[order_type] = res;
                 this.refreshRecord(res);
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
     //请求公会基金充值记录 order_type 1,2,4
     reqFundRecord(order_type: number) {
-        WebWww.Instance.CommonAPI(
-            {
+        WWW.Instance.CommonAPI({
+            web_class: WebClubFundOrderList,
 
-                web_class: WebClubFundOrderList,
-
-                body: {
-                    "order_type": order_type,
-                    "limit": 100,
-                    "offset": 0
-                },
-                club_id: ClubCache.club_id
-            }
-        ).then(
+            body: {
+                order_type: order_type,
+                limit: 100,
+                offset: 0,
+            },
+            club_id: ClubCache.club_id,
+        }).then(
             (res: any) => {
                 this.record_datas[order_type] = res;
                 this.refreshRecord(res);
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
 
     //刷新金币和USDT
@@ -341,7 +334,6 @@ export default class UIWallet extends BaseFormPlus {
     }
     //刷新change列表
     refreshChangeList(res) {
-
         let list = res?.data?.list || [];
 
         let list_len: number = list.length;
@@ -360,7 +352,11 @@ export default class UIWallet extends BaseFormPlus {
             this.setChildLabel(item, "bg/lbl_amount", changeItem.gold_after);
             this.setChildLabel(item, "bg/lbl_time", changeItem.create_time_HM);
             this.setChildLabel(item, "bg/lbl_change", changeItem.changeNum);
-            this.setChildColor(item, "bg/lbl_change", changeItem.changeNumColor);
+            this.setChildColor(
+                item,
+                "bg/lbl_change",
+                changeItem.changeNumColor,
+            );
             this.setChildVisible(item, "bg/gc_icon", changeItem.gold_type == 1);
             this.setChildVisible(item, "bg/us_icon", changeItem.gold_type == 2);
         }
@@ -369,16 +365,14 @@ export default class UIWallet extends BaseFormPlus {
     getOpName(src_type, name, op_code) {
         let str = GC.language.getLocal(`OpCodeString_${op_code}`);
         if (src_type != 0) {
-            str += ` ${name}`
+            str += ` ${name}`;
         }
         return str;
     }
 
-
     //刷新记录列表
     refreshRecord(res) {
-
-        let list = res?.data?.list || []
+        let list = res?.data?.list || [];
 
         let list_len: number = list.length;
 
@@ -388,13 +382,13 @@ export default class UIWallet extends BaseFormPlus {
 
         for (let i = 0; i < list_len; i++) {
             let info = list[i];
-            let gold_type: number = info.gold_type;//金币类型 1-金币 2-USDT
-            let gold_num: number = info.gold_num;//数量
-            let order_type: number = info.order_type;//充提转 订单类型 1，2，3
+            let gold_type: number = info.gold_type; //金币类型 1-金币 2-USDT
+            let gold_num: number = info.gold_num; //数量
+            let order_type: number = info.order_type; //充提转 订单类型 1，2，3
             //let apply_type: number = info.apply_type;//充提 状态
-            let order_no: string = info.order_no;//订单号
-            let create_time: string = info.create_time;//时间
-            let status = info.status;// 1 充值|提现中 2 充值|提现完成 3 充值|提现失败
+            let order_no: string = info.order_no; //订单号
+            let create_time: string = info.create_time; //时间
+            let status = info.status; // 1 充值|提现中 2 充值|提现完成 3 充值|提现失败
             let item = this.record_item_pool.GetNode();
             item.parent = this.$record_content;
             item.active = true;
@@ -404,17 +398,31 @@ export default class UIWallet extends BaseFormPlus {
             let gold_op = order_type < 3 ? "+" : "-";
             switch (order_type) {
                 case 1:
-                    status_des = WalletModel.Instance.getRechargeStatusText(status);
+                    status_des =
+                        WalletModel.Instance.getRechargeStatusText(status);
                     break;
                 case 2:
                     break;
                 case 4:
-                    status_des = WalletModel.Instance.Record_Exchange_Status[status];
+                    status_des =
+                        WalletModel.Instance.Record_Exchange_Status[status];
                     break;
             }
-            this.setChildLabel(item, "lbl_name", StringHelper.LengthNick(order_no, 8));
-            this.setChildLabel(item, "lbl_gold", `${gold_op}${StringHelper.GetLongString(gold_num)}`);
-            this.setChildLabel(item, "lbl_time", TimeHelper.UTCToLocal(create_time));
+            this.setChildLabel(
+                item,
+                "lbl_name",
+                StringHelper.LengthNick(order_no, 8),
+            );
+            this.setChildLabel(
+                item,
+                "lbl_gold",
+                `${gold_op}${StringHelper.GetLongString(gold_num)}`,
+            );
+            this.setChildLabel(
+                item,
+                "lbl_time",
+                TimeHelper.UTCToLocal(create_time),
+            );
             this.setChildLabel(item, "lbl_status", status_des);
             this.setChildVisible(item, "icon_gc", gold_type == 1);
             this.setChildVisible(item, "icon_us", gold_type == 2);
@@ -423,7 +431,6 @@ export default class UIWallet extends BaseFormPlus {
     }
     //刷新申请列表
     refreshApplyList(res) {
-
         let list = res?.data?.list || [];
 
         let list_len: number = list.length;
@@ -437,45 +444,46 @@ export default class UIWallet extends BaseFormPlus {
             let item = this.apply_item_pool.GetNode();
             item.parent = this.$apply_content;
             item.getComponent(UIWalletApplyItem).index = i;
-            item.getComponent(UIWalletApplyItem).onShow({ data: data, own: this });
+            item.getComponent(UIWalletApplyItem).onShow({
+                data: data,
+                own: this,
+            });
         }
     }
 
     ////////////////////////////////////////////////////
     //清理ChangeLog item
     clearChangeLogItems() {
-        this.$changelog_content.children.forEach(item => {
+        this.$changelog_content.children.forEach((item) => {
             this.changelog_item_pool.BackNode(item);
-        })
+        });
         this.$changelog_content.removeAllChildren();
         this.$Page0.getChildByName("Null").active = false;
     }
 
     //清理记录 item
     clearRecordItems() {
-        this.$record_content.children.forEach(item => {
+        this.$record_content.children.forEach((item) => {
             this.record_item_pool.BackNode(item);
-        })
+        });
         this.$record_content.removeAllChildren();
         this.$Page1.getChildByName("Null").active = false;
     }
     //清理Apply item
     clearApplyItems() {
-        this.$apply_content.children.forEach(item => {
+        this.$apply_content.children.forEach((item) => {
             this.apply_item_pool.BackNode(item);
-        })
+        });
         this.$apply_content.removeAllChildren();
         this.$Page2.getChildByName("Null").active = false;
     }
     ////////////////////////////////////////////////////
     //请求公会钱包
     reqClubUserWallet(next) {
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebClubUserWallet,
-                club_id: ClubCache.club_id
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebClubUserWallet,
+            club_id: ClubCache.club_id,
+        }).then(
             (res: any) => {
                 let data = res.data;
                 GC.wallet.Gold = data?.golds || 0;
@@ -488,35 +496,37 @@ export default class UIWallet extends BaseFormPlus {
                 //next?.call(this);
                 this.change_log_list_ex.dropRequest();
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
     //请求公会钱包变动
     reqGoldChangeLog(offset: number = 0) {
         let info = {
             limit: 10,
-            offset: offset
-        }
-        LobbyControl.getInstance().reqGoldChangeLog(ClubCache.club_id, info).then(
-            (res: any) => {
-                //this.refreshChangeList(res);
-                this.change_log_list_ex.refresh(res.data.list, res.data.total);
+            offset: offset,
+        };
+        LobbyControl.getInstance()
+            .reqGoldChangeLog(ClubCache.club_id, info)
+            .then(
+                (res: any) => {
+                    //this.refreshChangeList(res);
+                    this.change_log_list_ex.refresh(
+                        res.data.list,
+                        res.data.total,
+                    );
 
-                //this.List$change_log.numItems = this.change_log_list_ex.offset;
-
-            },
-            (res) => {
-                this.change_log_list_ex.error();
-            }
-        )
+                    //this.List$change_log.numItems = this.change_log_list_ex.offset;
+                },
+                (res) => {
+                    this.change_log_list_ex.error();
+                },
+            );
     }
     //请求公会基金
     reqClubFund(next) {
         let param = {
-            club_random_id: ClubCache.random_id
-        }
+            club_random_id: ClubCache.random_id,
+        };
         UIClubModel.mInstance.reqClubFund(ClubCache.club_id, param).then(
             (res: any) => {
                 let data = res.data;
@@ -527,56 +537,58 @@ export default class UIWallet extends BaseFormPlus {
                 //this.reqClubFundChangeLog(0);
                 this.change_log_list_ex.dropRequest();
             },
-            (res) => {
-            }
-        )
+            (res) => {},
+        );
     }
     //请求公会基金变动
     reqClubFundChangeLog(offset: number = 0) {
         let param = {
             limit: 10,
             offset: offset,
-            club_random_id: ClubCache.random_id
-        }
-        UIClubModel.mInstance.reqClubFundChangeLog(ClubCache.club_id, param).then(
-            (res: any) => {
-                //this.refreshChangeList(res);
-                this.change_log_list_ex.refresh(res.data.list, res.data.total);
+            club_random_id: ClubCache.random_id,
+        };
+        UIClubModel.mInstance
+            .reqClubFundChangeLog(ClubCache.club_id, param)
+            .then(
+                (res: any) => {
+                    //this.refreshChangeList(res);
+                    this.change_log_list_ex.refresh(
+                        res.data.list,
+                        res.data.total,
+                    );
 
-                this.List$change_log.numItems = this.change_log_list_ex.offset;
-            },
-            (res) => {
-                this.change_log_list_ex.error();
-            }
-        )
+                    this.List$change_log.numItems =
+                        this.change_log_list_ex.offset;
+                },
+                (res) => {
+                    this.change_log_list_ex.error();
+                },
+            );
     }
     //请求账户
     reqAccount() {
-        this.main_request_quene = this.ReqAccountBean[this.param.wallet_type].concat();
+        this.main_request_quene =
+            this.ReqAccountBean[this.param.wallet_type].concat();
         this.executeQuene();
     }
     //请求公积金申请列表
     reqApplyList(next: Function = null) {
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebClubFundApplyList,
+        WWW.Instance.CommonAPI({
+            web_class: WebClubFundApplyList,
 
-                body: {
-                    "order_type": 0, //0-全部;1-充豆;2-提豆;4-转换
-                    "limit": 100,
-                    "offset": 0
-                },
-                club_id: ClubCache.club_id
-            }
-        ).then(
+            body: {
+                order_type: 0, //0-全部;1-充豆;2-提豆;4-转换
+                limit: 100,
+                offset: 0,
+            },
+            club_id: ClubCache.club_id,
+        }).then(
             (res: any) => {
                 this.refreshApplyList(res);
                 next?.call(this);
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
 
     //请求充提转换记录
@@ -599,56 +611,48 @@ export default class UIWallet extends BaseFormPlus {
     refuseClick(index: number) {
         console.log("refuseClick", index);
         let obj = {
-            "order_no": WebClubFundApplyList.Response.data.list[index].order_no,//订单号
-            "audit_type": 2,//审计类型(audit_type):1-同意;2-拒绝
-        }
+            order_no: WebClubFundApplyList.Response.data.list[index].order_no, //订单号
+            audit_type: 2, //审计类型(audit_type):1-同意;2-拒绝
+        };
         this.reqAudit(obj);
     }
     agreeClick(index: number) {
         console.log("agreeClick", index);
         let obj = {
-            "order_no": WebClubFundApplyList.Response.data.list[index].order_no,//订单号
-            "audit_type": 1,//审计类型(audit_type):1-同意;2-拒绝
-        }
+            order_no: WebClubFundApplyList.Response.data.list[index].order_no, //订单号
+            audit_type: 1, //审计类型(audit_type):1-同意;2-拒绝
+        };
         this.reqAudit(obj);
     }
     //审核同意和拒绝
     reqAudit(obj) {
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebClubFundAudit,
+        WWW.Instance.CommonAPI({
+            web_class: WebClubFundAudit,
 
-                body: obj,
+            body: obj,
 
-                club_id: ClubCache.club_id
-            }
-        ).then(
+            club_id: ClubCache.club_id,
+        }).then(
             (res: any) => {
                 this.reqApplyList(this.reqApplyReddot);
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
     //请求申请红点
     reqApplyReddot() {
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebMessageRednum,
+        WWW.Instance.CommonAPI({
+            web_class: WebMessageRednum,
 
-                body: { club_id: ClubCache.club_id },
+            body: { club_id: ClubCache.club_id },
 
-                club_id: ClubCache.club_id
-            }
-        ).then(
+            club_id: ClubCache.club_id,
+        }).then(
             (res: any) => {
                 this.refreshRed();
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
 
     // ordet_type转换 1充值 2提取 4转换
@@ -671,20 +675,19 @@ export default class UIWallet extends BaseFormPlus {
 
     //初始化滚动列表的补充数据
     private initEX() {
-        this.change_log_list_ex = new ListEx;
+        this.change_log_list_ex = new ListEx();
     }
     private showEX() {
         this.change_log_list_ex.init({
             list: this.List$change_log,
             nullNode: this.$Page0.getChildByName("Null"),
             this: this,
-            request: this.ReqAccountBean[this.param.wallet_type][1]
+            request: this.ReqAccountBean[this.param.wallet_type][1],
         });
     }
 
     //////////////////////////////////滚动节点渲染///////////////////////
     render_changelog(node: cc.Node, index: number) {
-
         //console.log("index:>>>", index);
         let item_data = this.change_log_list_ex.data[index];
         changeItem.init(item_data);
@@ -697,7 +700,6 @@ export default class UIWallet extends BaseFormPlus {
         this.setChildVisible(node, "bg/gc_icon", changeItem.gold_type == 1);
         this.setChildVisible(node, "bg/us_icon", changeItem.gold_type == 2);
     }
-
 }
 
 let changeItem = {
@@ -706,7 +708,6 @@ let changeItem = {
         changeItem.data = data;
     },
     get opName() {
-
         let str = "";
         //暂时纠错一下
         if (changeItem.data.op_code == "EXCHLOCK") {
@@ -716,10 +717,15 @@ let changeItem = {
             }
             str = r;
         } else {
-            str = GC.language.getLocal(`OpCodeString_${changeItem.data.op_code}`);
+            str = GC.language.getLocal(
+                `OpCodeString_${changeItem.data.op_code}`,
+            );
         }
 
-        let after = changeItem.data.src_room_id > 0 ? ` · ${changeItem.data.src_room_id}` : "";
+        let after =
+            changeItem.data.src_room_id > 0
+                ? ` · ${changeItem.data.src_room_id}`
+                : "";
 
         switch (changeItem.data.src_type) {
             case 0:
@@ -738,25 +744,36 @@ let changeItem = {
         return str;
     },
     get changeNum() {
-        let change = changeItem.data.gold_change || changeItem.data.gold_lock_change;
+        let change =
+            changeItem.data.gold_change || changeItem.data.gold_lock_change;
         let op = change > 0 ? "+" : "";
-        return op + StringHelper.GetLongString(changeItem.data.gold_change || changeItem.data.gold_lock_change);
+        return (
+            op +
+            StringHelper.GetLongString(
+                changeItem.data.gold_change || changeItem.data.gold_lock_change,
+            )
+        );
     },
     get changeNumColor() {
-        let change = changeItem.data.gold_change || changeItem.data.gold_lock_change;
+        let change =
+            changeItem.data.gold_change || changeItem.data.gold_lock_change;
         return change >= 0 ? TextColor.Color5 : TextColor.Color6;
     },
     get gold_after() {
         return StringHelper.GetLongString(changeItem.data.gold_after);
     },
     get create_time_HM() {
-        return TimeHelper.getHM(new Date(changeItem.data.create_time).getTime() / 1000, ":");
+        return TimeHelper.getHM(
+            new Date(changeItem.data.create_time).getTime() / 1000,
+            ":",
+        );
     },
     get create_time_MD() {
-        return TimeHelper.getMD(new Date(changeItem.data.create_time).getTime() / 1000);
+        return TimeHelper.getMD(
+            new Date(changeItem.data.create_time).getTime() / 1000,
+        );
     },
     get gold_type() {
         return changeItem.data.gold_type;
-    }
-
-}
+    },
+};

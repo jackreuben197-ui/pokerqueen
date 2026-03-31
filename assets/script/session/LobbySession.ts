@@ -12,16 +12,24 @@ import { GameCache } from "../game/GameCache";
 import GameUtil from "../game/util/GameUtil";
 import { i18nMgr } from "../i18n/i18nMgr";
 import HttpRequest from "../net/https/HttpRequest";
-import { WebWww, WebConfigGlobalConfig, WebConfigMultiLanguageTemplate, WebGetDiamondConfig, WebMiscBannerList, WebMsgMessageUnread, WebRoomCenterGroups, WebUserInfo, WebUserRoomInsur } from "../net/https/WebRequest";
+import {
+    WWW,
+    WebConfigGlobalConfig,
+    WebConfigMultiLanguageTemplate,
+    WebGetDiamondConfig,
+    WebMiscBannerList,
+    WebMsgMessageUnread,
+    WebRoomCenterGroups,
+    WebUserInfo,
+    WebUserRoomInsur,
+} from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ServerMessageRegister } from "../protobuf/holdem/req_register_pb";
 
 import GlobalSession from "./GlobalSession";
 import LoginSession from "./LoginSession";
 
-
 export default class LobbySession {
-
     //房间名多语言配置
     static RoomLanguageDic_CN = {};
     static RoomLanguageDic_US = {};
@@ -38,8 +46,8 @@ export default class LobbySession {
     static Init() {
         if (!this._initOnce) {
             this._initOnce = true;
-            this.tokenRefreshComponent = new TokenRefreshComponent;
-            this.heartbeatComponent = new HeartbeatComponent;
+            this.tokenRefreshComponent = new TokenRefreshComponent();
+            this.heartbeatComponent = new HeartbeatComponent();
             this.regiterEvents();
         }
         cc.log("注册心跳");
@@ -49,10 +57,16 @@ export default class LobbySession {
     }
 
     static regiterEvents() {
-        GC.notify.register(ProtocolCode.Protocol_Holdem_Register, this.on_Protocol_Holdem_Register, this);
+        GC.notify.register(
+            ProtocolCode.Protocol_Holdem_Register,
+            this.on_Protocol_Holdem_Register,
+            this,
+        );
     }
 
-    private static on_Protocol_Holdem_Register(body: ServerMessageRegister.AsObject) {
+    private static on_Protocol_Holdem_Register(
+        body: ServerMessageRegister.AsObject,
+    ) {
         if (body?.status == 0) {
             this.heartbeatComponent.active = true;
             ReconnectComponent.Instance.ChangeStatus(1);
@@ -79,13 +93,13 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
             });
         });
     }
     /**
-    * 获取房间名多语言配置
-    */
+     * 获取房间名多语言配置
+     */
     static APIConfig_Multi_Language_Template(juhua: boolean = true) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -97,12 +111,12 @@ export default class LobbySession {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
-                juhua: juhua
+                juhua: juhua,
             });
         });
     }
     /**
-     * 
+     *
      * @param type 1-大厅Banner,2-公会Banner
      * @param limit 条目
      * @param offset 开始下标
@@ -111,13 +125,12 @@ export default class LobbySession {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: WebMiscBannerList,
-                body: WebMiscBannerList.Request(
-                    {
-                        lang: "en_US",//当前语言
-                        type: type,
-                        limit: limit,
-                        offset: offset,
-                    }),
+                body: WebMiscBannerList.Request({
+                    lang: "en_US", //当前语言
+                    type: type,
+                    limit: limit,
+                    offset: offset,
+                }),
                 onSuccess: function () {
                     //TODO 广播刷新
                     //WebMiscBannerList.Response.data
@@ -125,14 +138,14 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
             });
         });
     }
 
     /**
-      * 请求大厅房间列表
-      */
+     * 请求大厅房间列表
+     */
     static RequestListSummary() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -144,14 +157,14 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
             });
         });
     }
 
     /**
-    * 请求未读消息列表
-    */
+     * 请求未读消息列表
+     */
     static APIMsgMessageUnread() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -163,13 +176,13 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
             });
         });
     }
     /**
-    * 设置该房间保险赔率表
-    */
+     * 设置该房间保险赔率表
+     */
     static APIWebUserRoominsur(room_id: number) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -179,9 +192,9 @@ export default class LobbySession {
                     //TODO 广播刷新
                     //WebUserRoomInsur.Response.data
                     GameUtil.OutsList.clear();
-                    WebUserRoomInsur.Response.data.forEach(outs => {
+                    WebUserRoomInsur.Response.data.forEach((outs) => {
                         let OddsAndOuts: number[] = [];
-                        outs.detail.forEach(item => {
+                        outs.detail.forEach((item) => {
                             OddsAndOuts.push(item.odds);
                         });
                         GameUtil.OutsList.set(outs.pot_user_count, OddsAndOuts);
@@ -190,7 +203,7 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
             });
         });
     }
@@ -206,14 +219,13 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
             });
         });
     }
 
     //缓存用户信息
     public static CacheUserInfo(info: typeof WebUserInfo.UserInfo) {
-
         GameCache.Instance.nUserId = info.un_id;
         // GameCache.Instance.gold = info.gold;
         GameCache.Instance.userId = info.p_u_id;
@@ -231,17 +243,17 @@ export default class LobbySession {
         //localStorage.setItem(StorageKey.KEY_PHONE, `${info.phone}`);
         //localStorage.setItem(StorageKey.KEY_PHONE_FIRST, info.area.replace("+", ""));
         //localStorage.setItem(StorageKey.KEY_PHONE_FIRST, `${info.area}`);
-
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////
     /**
-    * 解析开关
-    */
+     * 解析开关
+     */
     private static parseGlobalConfig() {
         let data = WebConfigGlobalConfig.Response.data;
         LobbySession.Switch.mtt_switch = data.mtt_switch;
-        LobbySession.Switch.normal_return_profit_switch = data.normal_return_profit_switch;
+        LobbySession.Switch.normal_return_profit_switch =
+            data.normal_return_profit_switch;
         LobbySession.Switch.apple_pay_switch = data.apple_pay_switch;
         LobbySession.Switch.apple_mtt_switch = data.apple_mtt_switch;
         LobbySession.Switch.android_mtt_switch = data.android_mtt_switch;
@@ -270,7 +282,6 @@ export default class LobbySession {
     }
 
     public static getLanguageValueByKey(key: string): string {
-
         key = key.split("-")[0];
 
         let dic = null;
@@ -291,5 +302,3 @@ export default class LobbySession {
     }
 }
 (window as any).LobbySession = LobbySession;
-
-

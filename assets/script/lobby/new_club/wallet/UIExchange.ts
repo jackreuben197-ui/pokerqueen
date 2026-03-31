@@ -1,10 +1,15 @@
-
 import { TextColor } from "../../../config/GameConfig";
 import { UIDefine } from "../../../define/UIDefine";
 import GC from "../../../frame/GameControl";
 import { StringHelper } from "../../../helper/StringHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { WebClubUserWallet, WebClubFundExchange, WebClubPlayerExchange, WebExchangeRate, WebWww } from "../../../net/https/WebRequest";
+import {
+    WebClubUserWallet,
+    WebClubFundExchange,
+    WebClubPlayerExchange,
+    WebExchangeRate,
+    WWW,
+} from "../../../net/https/WebRequest";
 import { UISuperDialogType } from "../../../ui/dialog/UISuperDialog";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
@@ -13,21 +18,17 @@ import { WalletType } from "./UIWallet";
 const { ccclass, property } = cc._decorator;
 
 export type UIExchangeParam = {
-    club_id?: number,
-    club_name?: string,
-    tribe_name?: string
-}
-
-
+    club_id?: number;
+    club_name?: string;
+    tribe_name?: string;
+};
 
 @ccclass
 export default class UIExchange extends BaseFormPlus {
-
     protected _param: UIExchangeParam = null;
 
     cc_Label$gc: cc.Label = null;
     cc_Label$us: cc.Label = null;
-
 
     $gc: cc.Node = null;
     $us: cc.Node = null;
@@ -42,8 +43,6 @@ export default class UIExchange extends BaseFormPlus {
     $btn_reversal: cc.Node = null;
     $btn_full: cc.Node = null;
     $btn_exchange: cc.Node = null;
-
-
 
     cc_Label$one: cc.Label = null;
 
@@ -60,14 +59,12 @@ export default class UIExchange extends BaseFormPlus {
 
     changeReq = [null, WebClubPlayerExchange, WebClubFundExchange];
 
-    //转换模式 0: union -> usdt  1 usdt: -> union 
+    //转换模式 0: union -> usdt  1 usdt: -> union
     _mode: number = 0;
 
     // 0 1 两个页签状态
     config = [
-
         {
-
             show: () => {
                 this.$gc.y = -90;
                 this.$us.y = -275;
@@ -76,10 +73,13 @@ export default class UIExchange extends BaseFormPlus {
                 this.$us_icon.active = true;
             },
 
-            getRateDes: () => { return `1 ${i18nMgr.Get("UIGuild_VipCountGoldType1")}   ≈   ${GC.wallet.gold_to_usdt_rate} ${i18nMgr.Get("UIGuild_VipCountGoldType2")}` },
+            getRateDes: () => {
+                return `1 ${i18nMgr.Get("UIGuild_VipCountGoldType1")}   ≈   ${GC.wallet.gold_to_usdt_rate} ${i18nMgr.Get("UIGuild_VipCountGoldType2")}`;
+            },
 
-
-            getValue: (a) => { return Math.ceil(a * GC.wallet.gold_to_usdt_rate * 100) / 100 },
+            getValue: (a) => {
+                return Math.ceil(a * GC.wallet.gold_to_usdt_rate * 100) / 100;
+            },
             setAll: () => {
                 this.cc_EditBox$input.string = this.gold;
                 this.textChanged(+this.gold);
@@ -100,10 +100,9 @@ export default class UIExchange extends BaseFormPlus {
                     content: this.getDialogContent(),
                     commit_click: this.reqExchange,
                 });
-            }
+            },
         },
         {
-
             show: () => {
                 this.$us.y = -90;
                 this.$gc.y = -275;
@@ -112,9 +111,13 @@ export default class UIExchange extends BaseFormPlus {
             },
 
             //获取比率信息
-            getRateDes: () => { return `1 ${i18nMgr.Get("UIGuild_VipCountGoldType2")}   ≈   ${GC.wallet.usdt_to_gold_rate} ${i18nMgr.Get("UIGuild_VipCountGoldType1")}` },
+            getRateDes: () => {
+                return `1 ${i18nMgr.Get("UIGuild_VipCountGoldType2")}   ≈   ${GC.wallet.usdt_to_gold_rate} ${i18nMgr.Get("UIGuild_VipCountGoldType1")}`;
+            },
             //获取比率计算结果
-            getValue: (a) => { return Math.ceil(a * GC.wallet.usdt_to_gold_rate * 100) / 100 },
+            getValue: (a) => {
+                return Math.ceil(a * GC.wallet.usdt_to_gold_rate * 100) / 100;
+            },
             //全部点击响应
             setAll: () => {
                 this.cc_EditBox$input.string = this.usdt;
@@ -137,13 +140,11 @@ export default class UIExchange extends BaseFormPlus {
                     content: this.getDialogContent(),
                     commit_click: this.reqExchange,
                 });
-            }
+            },
         },
     ];
 
-
     protected lateLoad(): void {
-
         super.lateLoad();
 
         //设置输入文本改变回调
@@ -158,7 +159,6 @@ export default class UIExchange extends BaseFormPlus {
         this.setButtonClick(this.$btn_reversal, this.reversalClick);
         this.setButtonClick(this.$btn_full, this.fullClick);
         this.setButtonClick(this.$btn_exchange, this.exchangeClick);
-
     }
     /**
      * 每次打开面板处理的内容
@@ -179,7 +179,6 @@ export default class UIExchange extends BaseFormPlus {
         this.refreshGold();
 
         this.reqExchangeRate();
-
     }
 
     //刷新金币
@@ -190,31 +189,25 @@ export default class UIExchange extends BaseFormPlus {
     //请求金币USDT互转率
 
     reqExchangeRate() {
-
         //公会基金需要请求转换率
         if (GC.wallet.wallet_type == WalletType.Fund) {
+            WWW.Instance.CommonAPI({
+                web_class: WebExchangeRate,
+                body: {
+                    src_gold_type: 1,
+                    dest_gold_type: 2,
+                    src_amount: 100,
+                },
 
-            WebWww.Instance.CommonAPI(
-                {
-                    web_class: WebExchangeRate,
-                    body: {
-                        "src_gold_type": 1,
-                        "dest_gold_type": 2,
-                        "src_amount": 100
-                    },
-
-                    club_id: this._param.club_id
-                }
-            ).then(
+                club_id: this._param.club_id,
+            }).then(
                 (res: any) => {
                     GC.wallet.gold_to_usdt_rate = res.data.gold_to_usdt_rate;
                     GC.wallet.usdt_to_gold_rate = res.data.usdt_to_gold_rate;
                     this.refreshRateDes();
                 },
-                (res: any) => {
-
-                }
-            )
+                (res: any) => {},
+            );
         }
     }
     set mode(value: number) {
@@ -266,32 +259,33 @@ export default class UIExchange extends BaseFormPlus {
         let content = "";
         let target_name = "";
         if (GC.wallet.wallet_type == WalletType.Club) {
-            content = this.mode == 0 ? i18nMgr.Get("UIGuildFund_EXPlayerTips001") : i18nMgr.Get("UIGuildFund_EXPlayerTips002");
+            content =
+                this.mode == 0
+                    ? i18nMgr.Get("UIGuildFund_EXPlayerTips001")
+                    : i18nMgr.Get("UIGuildFund_EXPlayerTips002");
             target_name = this._param.club_name;
         }
         if (GC.wallet.wallet_type == WalletType.Fund) {
-            content = this.mode == 0 ? i18nMgr.Get("UIGuildFund_EXPlayerTips003") : i18nMgr.Get("UIGuildFund_EXPlayerTips004");
+            content =
+                this.mode == 0
+                    ? i18nMgr.Get("UIGuildFund_EXPlayerTips003")
+                    : i18nMgr.Get("UIGuildFund_EXPlayerTips004");
             target_name = this._param.tribe_name;
         }
-        content = StringHelper.Format(content,
-            [
-                ` ${StringHelper.GetColorText(this._param.club_name, TextColor.Color4)} `,
-                ` ${StringHelper.GetColorText(this.cc_EditBox$input.string, TextColor.Color4)} `,
-                ` ${StringHelper.GetColorText(this.cc_Label$auto_count.string, TextColor.Color4)} `,
-            ]
-        );
+        content = StringHelper.Format(content, [
+            ` ${StringHelper.GetColorText(this._param.club_name, TextColor.Color4)} `,
+            ` ${StringHelper.GetColorText(this.cc_EditBox$input.string, TextColor.Color4)} `,
+            ` ${StringHelper.GetColorText(this.cc_Label$auto_count.string, TextColor.Color4)} `,
+        ]);
         return content;
     }
 
     ///////////////////////////////
     reqWallet() {
-
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebClubUserWallet,
-                club_id: this._param.club_id
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebClubUserWallet,
+            club_id: this._param.club_id,
+        }).then(
             (res: any) => {
                 let gold = res.data?.golds || 0;
                 let usdt = res.data?.usdt || 0;
@@ -299,24 +293,19 @@ export default class UIExchange extends BaseFormPlus {
                 this.usdt = StringHelper.GetLongString(usdt);
                 this.refreshGold();
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
     reqExchange() {
-
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: this.changeReq[GC.wallet.wallet_type],
-                body: {
-                    "src_gold_type": this.mode == 0 ? 1 : 2,
-                    "dest_gold_type": this.mode == 0 ? 2 : 1,
-                    "src_amount": +this.cc_EditBox$input.string * 100
-                },
-                club_id: this._param.club_id
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: this.changeReq[GC.wallet.wallet_type],
+            body: {
+                src_gold_type: this.mode == 0 ? 1 : 2,
+                dest_gold_type: this.mode == 0 ? 2 : 1,
+                src_amount: +this.cc_EditBox$input.string * 100,
+            },
+            club_id: this._param.club_id,
+        }).then(
             (res: any) => {
                 UIComponent.Instance.Toast(i18nMgr.Get("UIData_ApplyJoinTips"));
                 //判断钱包类型
@@ -336,10 +325,8 @@ export default class UIExchange extends BaseFormPlus {
                         break;
                 }
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
 
     /////////////////

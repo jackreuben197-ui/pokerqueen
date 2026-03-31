@@ -2,7 +2,7 @@ import { GameConfig } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { WebUserDelete, WebWww } from "../../net/https/WebRequest";
+import { WebUserDelete, WWW } from "../../net/https/WebRequest";
 import GlobalSession from "../../session/GlobalSession";
 import StorageKey from "../../session/StorageKey";
 import SoundComponent from "../../sound/SoundComponent";
@@ -12,14 +12,10 @@ import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 
-
-
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIMeSettings extends BaseFormPlus {
-
     //$ItemMall:cc.Node = null;
     $content: cc.Node = null;
     $item: cc.Node = null;
@@ -30,15 +26,65 @@ export default class UIMeSettings extends BaseFormPlus {
     GGSwitch$sound: GGSwitch = null;
 
     list = [
-        { node: null, a: "UIMine_SettingLanguage", b: "", switch: false, b_get: this.setLanguageText.bind(this), click: this.click_language },// 多语言
-        { node: null, a: "UITexasSetting_LrI45uIK", b: "", switch: true, click: this.click_sound, switch_show: this.sound_show.bind(this) },// 游戏声音
-        { node: null, a: "UISettingPassword001", b: "", switch: false, click: this.click_reset_password },// 账号管理
-        { node: null, a: "UIMine_SettingReport", b: "", switch: false, click: this.click_report },// 上报
-        { node: null, a: "UIMine_SettingAboutus", b: "", switch: false, click: this.click_about },// 关于我们
-        { node: null, a: "UIMine_Setting101", b: "", switch: false, click: this.click_agreement },// 用户协议
-        { node: null, a: "UIMine_SettingVersion", b: "", switch: false, click: this.click_version },// 版本号
-        { node: null, a: "UIMine_DeleteUser", b: "", switch: false, click: this.click_delete },// 注销账号
-    ]
+        {
+            node: null,
+            a: "UIMine_SettingLanguage",
+            b: "",
+            switch: false,
+            b_get: this.setLanguageText.bind(this),
+            click: this.click_language,
+        }, // 多语言
+        {
+            node: null,
+            a: "UITexasSetting_LrI45uIK",
+            b: "",
+            switch: true,
+            click: this.click_sound,
+            switch_show: this.sound_show.bind(this),
+        }, // 游戏声音
+        {
+            node: null,
+            a: "UISettingPassword001",
+            b: "",
+            switch: false,
+            click: this.click_reset_password,
+        }, // 账号管理
+        {
+            node: null,
+            a: "UIMine_SettingReport",
+            b: "",
+            switch: false,
+            click: this.click_report,
+        }, // 上报
+        {
+            node: null,
+            a: "UIMine_SettingAboutus",
+            b: "",
+            switch: false,
+            click: this.click_about,
+        }, // 关于我们
+        {
+            node: null,
+            a: "UIMine_Setting101",
+            b: "",
+            switch: false,
+            click: this.click_agreement,
+        }, // 用户协议
+        {
+            node: null,
+            a: "UIMine_SettingVersion",
+            b: "",
+            switch: false,
+            click: this.click_version,
+        }, // 版本号
+        {
+            node: null,
+            a: "UIMine_DeleteUser",
+            b: "",
+            switch: false,
+            click: this.click_delete,
+        }, // 注销账号
+    ];
     /////////////////////////////////////////////
 
     lateLoad() {
@@ -75,7 +121,7 @@ export default class UIMeSettings extends BaseFormPlus {
             this.setButtonClick(item_node, item.click);
             this.setChildVisible(item_node, "switch", item.switch);
             item.node = item_node;
-        })
+        });
         this.$layout_node.parent = this.$content;
         this.setButtonClick(this.$btn_layout, this.click_layout);
     }
@@ -83,7 +129,9 @@ export default class UIMeSettings extends BaseFormPlus {
     showView() {
         this.list.forEach((item) => {
             if (item.switch_show) {
-                let ggswitch = item.node.getChildByName("switch").getComponent(GGSwitch);
+                let ggswitch = item.node
+                    .getChildByName("switch")
+                    .getComponent(GGSwitch);
                 item.switch_show(ggswitch);
             }
             if (item.b_get) {
@@ -91,24 +139,32 @@ export default class UIMeSettings extends BaseFormPlus {
                 item.b_get(b);
             }
             this.setChildLabel(item.node, "a", i18nMgr.Get(item.a));
-        })
+        });
     }
     setLanguageText(label: cc.Label) {
         label.string = i18nMgr.getLanguageText();
     }
     // 多语言
     click_language() {
-        UIComponent.open(UIDefine.UILanguage, { lan: i18nMgr.language, onChange: this.showView.bind(this) });
+        UIComponent.open(UIDefine.UILanguage, {
+            lan: i18nMgr.language,
+            onChange: this.showView.bind(this),
+        });
     }
     // 账号管理 重置密码
     click_reset_password() {
-        UIComponent.open(UIDefine.UIAccountManagement)
+        UIComponent.open(UIDefine.UIAccountManagement);
     }
     // 游戏声音
     click_sound(button: cc.Button) {
-        let ggswitch = button.node.getChildByName("switch").getComponent(GGSwitch);
+        let ggswitch = button.node
+            .getChildByName("switch")
+            .getComponent(GGSwitch);
         ggswitch.click();
-        GC.localStore.setItem(StorageKey.soundIsOpen, ggswitch.isOn ? "1" : "0");
+        GC.localStore.setItem(
+            StorageKey.soundIsOpen,
+            ggswitch.isOn ? "1" : "0",
+        );
         SoundComponent.Instance.sound_switch_on = ggswitch.isOn;
     }
     // 上报
@@ -122,7 +178,13 @@ export default class UIMeSettings extends BaseFormPlus {
     }
     // 用户协议
     click_agreement() {
-        UIComponent.open(UIDefine.UIWebCommon, { url: "https://test2-h5-protocol.awanptest.com/#/?lan={id}".replace("{id}", i18nMgr.language), title: i18nMgr.Get("tc_5E0V3qlb") });
+        UIComponent.open(UIDefine.UIWebCommon, {
+            url: "https://test2-h5-protocol.awanptest.com/#/?lan={id}".replace(
+                "{id}",
+                i18nMgr.language,
+            ),
+            title: i18nMgr.Get("tc_5E0V3qlb"),
+        });
     }
     // 版本号
     click_version() {
@@ -130,34 +192,28 @@ export default class UIMeSettings extends BaseFormPlus {
     }
     // 注销账号
     click_delete() {
-
         //UIMine_DeleteUserContent
 
         UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
-
             content: i18nMgr.Get("UIMine_DeleteUserContent"),
             commit: i18nMgr.Get("adaptation10008"),
             cancel: i18nMgr.Get("adaptation10013"),
             commit_click: () => {
-
-                WebWww.Instance.CommonAPI(
-                    {
-                        web_class: WebUserDelete,
-                    }
-                ).then(
+                WWW.Instance.CommonAPI({
+                    web_class: WebUserDelete,
+                }).then(
                     (res: any) => {
-                        UIComponent.Instance.ToastLanguage("Uiclubrechargeconfirmordersuccessfully");
+                        UIComponent.Instance.ToastLanguage(
+                            "Uiclubrechargeconfirmordersuccessfully",
+                        );
                         GlobalSession.Logout();
                         // GameCache.Instance.isFirstShowActivity = true;
                         // UIMineModel.mInstance.Dispose();
                         // UIMatchModel.mInstance.Dispose();
                     },
-                    (res: any) => {
-
-                    }
-                )
-            }
-
+                    (res: any) => {},
+                );
+            },
         });
     }
 
@@ -175,7 +231,5 @@ export default class UIMeSettings extends BaseFormPlus {
         //     noAnimation: true,
         // });
     }
-    sound_change() {
-
-    }
+    sound_change() {}
 }

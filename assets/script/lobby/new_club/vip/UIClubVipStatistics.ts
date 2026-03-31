@@ -6,7 +6,12 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { WebClubAgentFriendData, WebClubAgentFriendInfo, WebGuildDataVipInfo, WebWww } from "../../../net/https/WebRequest";
+import {
+    WebClubAgentFriendData,
+    WebClubAgentFriendInfo,
+    WebGuildDataVipInfo,
+    WWW,
+} from "../../../net/https/WebRequest";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
 //贵宾统计
@@ -14,7 +19,6 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIClubVipStatistics extends BaseFormPlus {
-
     ///////////////////////引用声明////////////////////////
     cc_Label$people: cc.Label = null;
     cc_Label$uc: cc.Label = null;
@@ -33,13 +37,11 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     cc_Label$nick: cc.Label = null;
     cc_Label$id: cc.Label = null;
 
-
     $GameTypeTabs: cc.Node = null;
 
     gameTypeTabs: TabsGroup = null;
 
     gold_index: number = 0;
-
 
     ////////////////////////////////////////////////////
     //0-all,1-NLH，2-PLO，3-6+ 4MTT
@@ -48,7 +50,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         { show: "NLH", index: 1 },
         { show: "PLO", index: 2 },
         { show: "6+", index: 3 },
-        { show: "MTT", index: 4 }
+        { show: "MTT", index: 4 },
     ];
     //filter_type 1 金豆（UC） 2 USDT（GC） 3 记分牌（chip）
     Com_Gold_List = [
@@ -64,7 +66,11 @@ export default class UIClubVipStatistics extends BaseFormPlus {
 
     protected lateLoad() {
         super.lateLoad();
-        this.gameTypeTabs = new TabsGroup(this.$GameTypeTabs.children, this.onGameTypeClick, this);
+        this.gameTypeTabs = new TabsGroup(
+            this.$GameTypeTabs.children,
+            this.onGameTypeClick,
+            this,
+        );
     }
 
     regiterTouchEvents() {
@@ -76,8 +82,15 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         super.onShow(param, fromUI, sceneUI);
         //初始化界面
         ////////////////////////////////////////////////////
-        this.RefreshHeader([param.user.avatar, param.user.nickname, param.user.random_id, param.user_level]);
-        this.title_label.i18NString = i18nMgr.Get("UIGuild_MemberDetails_VipCount").replace(/[：|:]/, "");
+        this.RefreshHeader([
+            param.user.avatar,
+            param.user.nickname,
+            param.user.random_id,
+            param.user_level,
+        ]);
+        this.title_label.i18NString = i18nMgr
+            .Get("UIGuild_MemberDetails_VipCount")
+            .replace(/[：|:]/, "");
         this.reset();
         this.reqAgentFriendInfo();
     }
@@ -92,7 +105,9 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         this.gameTypeTabs.reset(-1);
     }
     refreshDownListLabel() {
-        this.cc_Label$down_list.string = i18nMgr.Get(this.Com_Gold_List[this.gold_index].show);
+        this.cc_Label$down_list.string = i18nMgr.Get(
+            this.Com_Gold_List[this.gold_index].show,
+        );
     }
 
     //////////////////////刷新
@@ -108,12 +123,12 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     }
     //刷新头部
     RefreshHeader(data: any[]) {
-
         WebImageHelper.SetHeadImage(this.cc_Sprite$head, data[0]);
         this.cc_Label$nick.string = `${data[1]}`;
         this.cc_Label$id.string = `ID:  ${data[2]}`;
-        this.cc_Sprite$vip_icon.spriteFrame = ClubCache.getUserLevelIcon(data[3]);
-
+        this.cc_Sprite$vip_icon.spriteFrame = ClubCache.getUserLevelIcon(
+            data[3],
+        );
     }
     //刷新成员金豆usdt数量
     RefreshUICount(data: number[]) {
@@ -124,18 +139,17 @@ export default class UIClubVipStatistics extends BaseFormPlus {
 
     //刷新下面数据
     refreshDownList(index: number) {
-
         let a = [];
         let b = [];
         let c = [];
 
-        this.currData.forEach(obj => {
+        this.currData.forEach((obj) => {
             if (obj.game_type == index) {
                 a.push(obj.hand_num);
                 b.push(obj.fee);
                 c.push(obj.profit);
             }
-        })
+        });
         this.RefreshDetailItem(this.$Detail.getChildByName("Item1"), a);
         this.RefreshDetailItem(this.$Detail.getChildByName("Item2"), b);
         this.RefreshDetailItem(this.$Detail.getChildByName("Item3"), c);
@@ -146,32 +160,31 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     //////////////////////////////////////////////请求
     // -> 请求贵宾统计信息
     reqAgentFriendInfo() {
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebClubAgentFriendInfo,
-                body: {
-                    "user_id": this._param.user.user_id,
-                    "club_id": ClubCache.club_id,
-                    "time_long": TimeHelper.Now
-                },
-                //club_id: ClubCache.club_id
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebClubAgentFriendInfo,
+            body: {
+                user_id: this._param.user.user_id,
+                club_id: ClubCache.club_id,
+                time_long: TimeHelper.Now,
+            },
+            //club_id: ClubCache.club_id
+        }).then(
             (res: any) => {
-
-                this.RefreshUICount([res.data.data.user_num, res.data.data.gold_total / 100, res.data.data.usdt_total / 100]);
+                this.RefreshUICount([
+                    res.data.data.user_num,
+                    res.data.data.gold_total / 100,
+                    res.data.data.usdt_total / 100,
+                ]);
                 //this.gameTypeTabs.reset(0);
                 this.reqAgentStatistics(0);
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
     // -> 请求贵宾统计数据
     reqAgentStatistics(filter_index: number = 0) {
         let filter_type = this.Com_Gold_List[filter_index].filter_type;
-        // WebWww.Instance.CommonAPI(
+        // WWW.Instance.CommonAPI(
         //     {
         //         web_class: WebClubAgentFriendData,
         //         body: {
@@ -195,29 +208,24 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         //     }
         // )
 
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebGuildDataVipInfo,
-                body: {
-                    user_id: this._param.user.user_id,//用户id
-                    filter_type: filter_type,// 1 金豆（UC） 2 USDT（GC） 3 记分牌（chip）
-                    time_long: TimeHelper.Now,//时间戳
-                    start_time: 0,//开始时间戳
-                    end_time: 0,//结束时间戳
-                },
-                club_id: ClubCache.club_id
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebGuildDataVipInfo,
+            body: {
+                user_id: this._param.user.user_id, //用户id
+                filter_type: filter_type, // 1 金豆（UC） 2 USDT（GC） 3 记分牌（chip）
+                time_long: TimeHelper.Now, //时间戳
+                start_time: 0, //开始时间戳
+                end_time: 0, //结束时间戳
+            },
+            club_id: ClubCache.club_id,
+        }).then(
             (res: any) => {
-
                 this.currData = res.data.list;
                 //this.refreshFriendData();
                 this.gameTypeTabs.reset(0);
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
 
     //顶部标签点击切换响应 0-all,1-NLH，2-PLO，3-6+
@@ -225,15 +233,16 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         let status_list = Tabs_Status[index];
         items.forEach((item, index) => {
             let status = status_list[index];
-            item.getChildByName("lbl_show").color = status ? cc.Color.BLACK.fromHEX(TextColor.Color7) : cc.Color.BLACK.fromHEX(TextColor.Color3);
+            item.getChildByName("lbl_show").color = status
+                ? cc.Color.BLACK.fromHEX(TextColor.Color7)
+                : cc.Color.BLACK.fromHEX(TextColor.Color3);
             item.getChildByName("line").active = status == 1;
-        })
+        });
         //////////////////////////////////
         if (index == -1) return;
         //this.reqAgentFriendData(index);
 
         this.refreshDownList(index);
-
     }
 
     //选择器点击
@@ -247,8 +256,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
                 this.gold_index = index;
                 this.refreshDownListLabel();
                 this.reqAgentStatistics(index);
-            }
-        })
+            },
+        });
     }
-
 }

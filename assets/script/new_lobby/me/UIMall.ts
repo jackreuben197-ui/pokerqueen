@@ -1,5 +1,5 @@
 import SimpleNodePool from "../../common/MyNodePool";
-import { WebMallShopList, WebMallBuy, WebWww } from "../../net/https/WebRequest";
+import { WebMallShopList, WebMallBuy, WWW } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -7,12 +7,10 @@ import ItemMall from "./ItemMall";
 import UIChangeName from "./UIChangeName";
 import UIMe from "./UIMe";
 
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIMall extends BaseFormPlus {
-
     $ItemMall: cc.Node = null;
     $content: cc.Node = null;
     /////////////////////////////////////////////
@@ -35,23 +33,18 @@ export default class UIMall extends BaseFormPlus {
     }
     //请求商城列表P
     reqMallList() {
-
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebMallShopList,
-                body: {
-                    channel: 1,
-                    shopping_type_id: 1
-                }
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebMallShopList,
+            body: {
+                channel: 1,
+                shopping_type_id: 1,
+            },
+        }).then(
             (res: any) => {
                 this.refreshList(res);
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
     refreshList(res: any) {
         let list = res.data.list;
@@ -69,11 +62,11 @@ export default class UIMall extends BaseFormPlus {
     }
     //清理列表
     cleanList() {
-        this.$content.children.forEach(item => {
+        this.$content.children.forEach((item) => {
             //if(item.getComponent(ItemLobbyRoom)){
             this.item_pool.BackNode(item);
             //}
-        })
+        });
         this.$content.removeAllChildren();
     }
     onItemClick(button: cc.Button) {
@@ -84,14 +77,12 @@ export default class UIMall extends BaseFormPlus {
 
         let goods_id: number = WebMallShopList.Response.data.list[index].id;
 
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebMallBuy,
-                body: {
-                    goods_id: goods_id,
-                }
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebMallBuy,
+            body: {
+                goods_id: goods_id,
+            },
+        }).then(
             (res: any) => {
                 UIComponent.Instance.ToastLanguage("钻石购买成功");
                 //let uime: UIMe = UIComponent.Instance.getComponent("UIMe");
@@ -100,9 +91,7 @@ export default class UIMall extends BaseFormPlus {
                 // changeName.refreshWallet();
                 this.obj.fromComponent?.refreshWallet?.();
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
 }

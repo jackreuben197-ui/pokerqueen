@@ -3,13 +3,23 @@ import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import { GameCache } from "../../game/GameCache";
-import GameUtil, { GameEnterType, GameType, PokerType } from "../../game/util/GameUtil";
+import GameUtil, {
+    GameEnterType,
+    GameType,
+    PokerType,
+} from "../../game/util/GameUtil";
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { Bundle_Resources } from "../../manager/ResManager";
 import SceneManager from "../../manager/SceneManager";
-import { WebWalletTotal, WebGuildAdminHas, WebRoomCenterRooms, WebUserInfo, WebWww } from "../../net/https/WebRequest";
+import {
+    WebWalletTotal,
+    WebGuildAdminHas,
+    WebRoomCenterRooms,
+    WebUserInfo,
+    WWW,
+} from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import AssetContext from "../../ui/component/AssetContext";
 import { UIPasswordDialogType } from "../../ui/dialog/UIPasswordDialog";
@@ -72,10 +82,8 @@ export default class UILobbyIndex extends UIBasePlus {
             game_type: null,
             poker_type: [PokerType.SixPlus],
         },
-
-    }
+    };
     _gametype_status: number = 0;
-
 
     protected lateLoad(): void {
         this.name = "UILobbyIndex";
@@ -91,7 +99,7 @@ export default class UILobbyIndex extends UIBasePlus {
         this.setButtonClick(this.$mtt, this.onMTTClick);
         this.setButtonClick(this.$banner, this.onBannerClick);
         this.setButtonClick(this.$game, this.onGameClick);
-        this.listen(EventName.refreshUserData, this.refreshUserInfo)
+        this.listen(EventName.refreshUserData, this.refreshUserInfo);
     }
 
     onShow(param: any): void {
@@ -100,15 +108,20 @@ export default class UILobbyIndex extends UIBasePlus {
         this.activeRooms(false);
     }
     refreshUserInfo() {
-        WebImageHelper.SetHeadImage(this.cc_Sprite$head, WebUserInfo.Response.data.user.avatar);
-        this.cc_Label$welcome.string = "Hey," + WebUserInfo.Response.data.user.nickname + "!";
+        WebImageHelper.SetHeadImage(
+            this.cc_Sprite$head,
+            WebUserInfo.Response.data.user.avatar,
+        );
+        this.cc_Label$welcome.string =
+            "Hey," + WebUserInfo.Response.data.user.nickname + "!";
     }
     private showGameTypeTabs() {
         this.$GameTypeTabs.children.forEach((item, index) => {
-            item.getChildByName("label").getComponent(cc.Label).string = this.GameTypeTabs[index].label;
+            item.getChildByName("label").getComponent(cc.Label).string =
+                this.GameTypeTabs[index].label;
             item["index"] = index;
             this.setButtonClick(item, this.onGameTypeTabClick);
-        })
+        });
     }
     //激活房间选项和房间列表
     private activeRooms(boo: boolean) {
@@ -135,11 +148,17 @@ export default class UILobbyIndex extends UIBasePlus {
     ///////////////////////click////////////////////
     //头像点击
     onHeadClick() {
-        UIComponent.open(UIDefine.UIEditInformation, null, { SceneUI: SceneManager.Instance.currUI });
+        UIComponent.open(UIDefine.UIEditInformation, null, {
+            SceneUI: SceneManager.Instance.currUI,
+        });
     }
     //消息点击
     onMessageClick() {
-        UIComponent.open(UIDefine.UIMyMessage, { from: 2 }, { SceneUI: SceneManager.Instance.currUI });
+        UIComponent.open(
+            UIDefine.UIMyMessage,
+            { from: 2 },
+            { SceneUI: SceneManager.Instance.currUI },
+        );
     }
     //banner点击
     onBannerClick() {
@@ -153,7 +172,9 @@ export default class UILobbyIndex extends UIBasePlus {
     //mtt入口点击
     onMTTClick() {
         //UIComponent.open(UIDefine.MttListForm, null, { SceneUI: SceneManager.Instance.currUI })
-        UIComponent.open(UIDefine.UIMTTList, null, { SceneUI: SceneManager.Instance.currUI })
+        UIComponent.open(UIDefine.UIMTTList, null, {
+            SceneUI: SceneManager.Instance.currUI,
+        });
     }
     //游戏类型页签点击
     onGameTypeTabClick(button: cc.Button) {
@@ -181,7 +202,7 @@ export default class UILobbyIndex extends UIBasePlus {
     // //请求总钱包
     // reqWalletTotal() {
 
-    //     WebWww.Instance.CommonAPI(
+    //     WWW.Instance.CommonAPI(
     //         {
     //             web_class: WebWalletTotal,
     //         }
@@ -204,33 +225,30 @@ export default class UILobbyIndex extends UIBasePlus {
         this.reqRooms();
     }
 
-    //请求所有房间  
+    //请求所有房间
     reqRooms() {
-
         if (this.offset_end) {
             console.log("请求到头");
             return;
         }
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebRoomCenterRooms,
-                body: {
-                    limit: this.room_limit,
-                    offset: this.curr_room_offset,
-                    game_type: this.GameTypeTabs[this.gametype_status].game_type,
-                    poker_type: this.GameTypeTabs[this.gametype_status].poker_type,
-                    order: ["players_desc", "game_type"]
-                },
-                juhua: false
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebRoomCenterRooms,
+            body: {
+                limit: this.room_limit,
+                offset: this.curr_room_offset,
+                game_type: this.GameTypeTabs[this.gametype_status].game_type,
+                poker_type: this.GameTypeTabs[this.gametype_status].poker_type,
+                order: ["players_desc", "game_type"],
+            },
+            juhua: false,
+        }).then(
             (res: any) => {
                 //{"limit":50,"offset":0,"records":[],"total":0}
                 this.activeRooms(true);
                 this.cleanList();
                 //判断数据长度0
                 if (res.data.total == 0) {
-                    this.$table.x = (this.gametype_status == 0) ? 2000 : 0;
+                    this.$table.x = this.gametype_status == 0 ? 2000 : 0;
                     this.$null.parent = this.$list;
                 } else {
                     this.$table.x = 0;
@@ -244,29 +262,28 @@ export default class UILobbyIndex extends UIBasePlus {
                     this.offset_end = true;
                 }
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
     //////////////////////////////////
     //清理列表
     cleanList() {
-        this.$list.children.forEach(item => {
+        this.$list.children.forEach((item) => {
             if (item.getComponent(ItemLobbyRoom)) {
                 this.room_item_pool.BackNode(item);
             }
-        })
+        });
         this.$list.removeAllChildren();
     }
-    //刷新显示房间列表 
+    //刷新显示房间列表
     refreshRooms() {
         console.log("刷新显示房间列表");
         if (this.curr_room_list.length) {
             this.curr_room_list.forEach((room, index) => {
                 let item_node: cc.Node = this.room_item_pool.GetNode();
                 item_node.parent = this.$list;
-                let item_sc: ItemLobbyRoom = item_node.getComponent(ItemLobbyRoom);
+                let item_sc: ItemLobbyRoom =
+                    item_node.getComponent(ItemLobbyRoom);
                 item_sc.onShow(room);
                 item_node["room"] = room;
                 item_node.on("click", this.onRoomClick, this);
@@ -275,7 +292,6 @@ export default class UILobbyIndex extends UIBasePlus {
         }
     }
     onRoomClick(button: cc.Button) {
-
         if (!GameCache.Instance.isHadClub) {
             UIComponent.Instance.ToastLanguage("UIGuides_clubetips");
             return;
@@ -283,44 +299,55 @@ export default class UILobbyIndex extends UIBasePlus {
 
         let room = button.node["room"];
         if (room.private_room != 1) {
-            GameUtil.EnterRoomAPI(room, { game_enter_type: GameEnterType.Lobby });
+            GameUtil.EnterRoomAPI(room, {
+                game_enter_type: GameEnterType.Lobby,
+            });
             return;
         }
 
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebGuildAdminHas,
-                body: {
-                    club_id: room.club_id
-                }
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebGuildAdminHas,
+            body: {
+                club_id: room.club_id,
+            },
+        }).then(
             (res: any) => {
-
                 if (res.data) {
-                    GameUtil.EnterRoomAPI(room, { game_enter_type: GameEnterType.Lobby });
+                    GameUtil.EnterRoomAPI(room, {
+                        game_enter_type: GameEnterType.Lobby,
+                    });
                 } else {
-                    let password: string = GameCache.Instance.privateRoomPdDic.get(room.rid) || "";
-                    UIComponent.open<UIPasswordDialogType>(UIDefine.UIPasswordDialog, {
-                        title: i18nMgr.Get("UIGuild_JoinGameTitle"),
-                        this: this,
-                        password: password,
-                        commit_click: (password: string) => {
-                            if (password == room.room_password) {
-                                GameCache.Instance.privateRoomPdDic.set(room.rid, password);
-                                UIComponent.close(UIDefine.UIPasswordDialog);
-                                GameUtil.EnterRoomAPI(room, { game_enter_type: GameEnterType.Lobby });
-                            } else {
-                                UIComponent.Instance.ToastLanguage("roomError6_2");
-                            }
+                    let password: string =
+                        GameCache.Instance.privateRoomPdDic.get(room.rid) || "";
+                    UIComponent.open<UIPasswordDialogType>(
+                        UIDefine.UIPasswordDialog,
+                        {
+                            title: i18nMgr.Get("UIGuild_JoinGameTitle"),
+                            this: this,
+                            password: password,
+                            commit_click: (password: string) => {
+                                if (password == room.room_password) {
+                                    GameCache.Instance.privateRoomPdDic.set(
+                                        room.rid,
+                                        password,
+                                    );
+                                    UIComponent.close(
+                                        UIDefine.UIPasswordDialog,
+                                    );
+                                    GameUtil.EnterRoomAPI(room, {
+                                        game_enter_type: GameEnterType.Lobby,
+                                    });
+                                } else {
+                                    UIComponent.Instance.ToastLanguage(
+                                        "roomError6_2",
+                                    );
+                                }
+                            },
                         },
-
-                    })
+                    );
                 }
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
 }

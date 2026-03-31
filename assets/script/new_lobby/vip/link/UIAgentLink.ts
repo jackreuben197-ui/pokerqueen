@@ -3,7 +3,11 @@ import SimpleNodePool from "../../../common/MyNodePool";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import UserInfoData from "../../../frame/data/user/UserInfoData";
 import GC from "../../../frame/GameControl";
-import { WebClubAgentAdd, WebClubAgentList, WebWww } from "../../../net/https/WebRequest";
+import {
+    WebClubAgentAdd,
+    WebClubAgentList,
+    WWW,
+} from "../../../net/https/WebRequest";
 import UIBase from "../../../ui/UIBase";
 import UIBasePlus from "../../../ui/UIBasePlus";
 import UIComponent from "../../../ui/UIComponent";
@@ -29,7 +33,6 @@ export default class UIAgentLink extends UIBasePlus {
 
     private list: any[] = null;
 
-
     protected _param: { user_id: number };
 
     protected lateLoad() {
@@ -52,7 +55,6 @@ export default class UIAgentLink extends UIBasePlus {
     }
 
     refreshList(res) {
-
         this.list = res.data?.data;
 
         this.$null.active = !this.list?.length;
@@ -61,7 +63,11 @@ export default class UIAgentLink extends UIBasePlus {
             this.list.forEach((child, index) => {
                 let item = this.Item_Pool.GetNode();
                 item.parent = this.cc_ScrollView$Scroller.content;
-                item.getComponent(ItemAgentLink).onShow({ data: child, index: index, own: this });
+                item.getComponent(ItemAgentLink).onShow({
+                    data: child,
+                    index: index,
+                    own: this,
+                });
             });
         }
 
@@ -74,9 +80,9 @@ export default class UIAgentLink extends UIBasePlus {
         // })
     }
     clearList() {
-        this.cc_ScrollView$Scroller.content.children.forEach(item => {
+        this.cc_ScrollView$Scroller.content.children.forEach((item) => {
             this.Item_Pool.BackNode(item);
-        })
+        });
         this.cc_ScrollView$Scroller.content.removeAllChildren();
     }
 
@@ -97,23 +103,21 @@ export default class UIAgentLink extends UIBasePlus {
     }
     //提交点击
     private commitClick() {
-
         if (this.select_index == -1) {
-
             return;
         }
 
         UIComponent.close(this.UIDefine);
 
         this.reqAgentAdd();
-
     }
     //条目点击的回调
     public onItemClick(index: number, switch_on: boolean) {
         if (switch_on) {
-
             if (this.select_index > -1) {
-                this.cc_ScrollView$Scroller.content.children[this.select_index].getComponent(ItemAgentLink).switch = false;
+                this.cc_ScrollView$Scroller.content.children[
+                    this.select_index
+                ].getComponent(ItemAgentLink).switch = false;
             }
             this.select_index = index;
         } else {
@@ -123,49 +127,40 @@ export default class UIAgentLink extends UIBasePlus {
     //////////////////////////////////////////////请求
     // -> 请求贵宾列表
     reqAgentList() {
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebClubAgentList,
-                body: {
-                    "club_random_id": ClubCache.random_id,
-                    "search": "",
-                    "limit": 20,
-                    "offset": 0
-                },
-                club_id: ClubCache.club_id
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebClubAgentList,
+            body: {
+                club_random_id: ClubCache.random_id,
+                search: "",
+                limit: 20,
+                offset: 0,
+            },
+            club_id: ClubCache.club_id,
+        }).then(
             (res: any) => {
                 this.refreshList(res);
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
     // -> 请求绑定贵宾
     reqAgentAdd() {
-
         let user: any = this.list[this.select_index];
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebClubAgentAdd,
-                body: {
-                    "user_id": this._param.user_id,
-                    "club_id": ClubCache.club_id,
-                    "agent_id": user.user_id
-                },
-                club_id: ClubCache.club_id
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebClubAgentAdd,
+            body: {
+                user_id: this._param.user_id,
+                club_id: ClubCache.club_id,
+                agent_id: user.user_id,
+            },
+            club_id: ClubCache.club_id,
+        }).then(
             (res: any) => {
                 //this.refreshList(res);
-                this.post('refresh_vip_ui')
+                this.post("refresh_vip_ui");
                 UIComponent.Instance.Toast("成功绑定贵宾");
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
 }

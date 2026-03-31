@@ -4,7 +4,13 @@ import { UIDefine } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { WebMallShopList, WebMallBuy, WebUserModifyPassword, WebUserSendCode, WebWww } from "../../net/https/WebRequest";
+import {
+    WebMallShopList,
+    WebMallBuy,
+    WebUserModifyPassword,
+    WebUserSendCode,
+    WWW,
+} from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
@@ -68,13 +74,13 @@ export default class UIResetPassword extends BaseFormPlus {
         this.code_cd_run = false;
     }
     resetView() {
-
         this.cc_EditBox$mobile_number.string = "";
         this.cc_EditBox$mobile_vcode.string = "";
         this.cc_EditBox$mobile_password.string = "";
 
         this.cc_Label$send_code.string = i18nMgr.Get("UILogin_GetCode");
-        this.cc_Label$send_code.node.getComponent(cc.Button).interactable = true;
+        this.cc_Label$send_code.node.getComponent(cc.Button).interactable =
+            true;
         this.cc_Label$area_code.string = LoginSession.AreaCode;
     }
     //区号改变
@@ -92,7 +98,6 @@ export default class UIResetPassword extends BaseFormPlus {
     }
     //点击发送验证码
     click_send_code() {
-
         //判断手机号
         let phone: string = this.cc_EditBox$mobile_number.string.trim();
         let area: string = this.cc_Label$area_code.string.replace("+", "");
@@ -101,28 +106,25 @@ export default class UIResetPassword extends BaseFormPlus {
             return;
         }
         if (this.cc_Label$send_code.string != i18nMgr.Get("UILogin_GetCode")) {
-            UIComponent.Instance.ToastLanguage("UIMine_Setting106");//Toast("请稍等再发");
+            UIComponent.Instance.ToastLanguage("UIMine_Setting106"); //Toast("请稍等再发");
             return;
         }
         if (this.mIsCanClickCode == false) {
-            UIComponent.Instance.ToastLanguage("UIMine_Setting106");//Toast("请稍等再发");
+            UIComponent.Instance.ToastLanguage("UIMine_Setting106"); //Toast("请稍等再发");
             return;
         }
 
         this.mIsCanClickCode = false;
 
-
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebUserSendCode,
-                body: {
-                    area: area,
-                    phone: phone,
-                }
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebUserSendCode,
+            body: {
+                area: area,
+                phone: phone,
+            },
+        }).then(
             (res: any) => {
-                UIComponent.Instance.ToastLanguage("UIMine_Setting107");//Toast("验证码已发送");
+                UIComponent.Instance.ToastLanguage("UIMine_Setting107"); //Toast("验证码已发送");
                 //显示倒计时
                 //UILoginModel.mInstance.ShowTimes(textCode);
                 this.code_cd_run = true;
@@ -131,12 +133,11 @@ export default class UIResetPassword extends BaseFormPlus {
             },
             (res: any) => {
                 this.mIsCanClickCode = true;
-            }
-        )
+            },
+        );
     }
     //点击提交
     click_confirm() {
-
         let phone: string = this.cc_EditBox$mobile_number.string.trim();
         let password: string = this.cc_EditBox$mobile_password.string.trim();
         let code: string = this.cc_EditBox$mobile_vcode.string.trim();
@@ -157,29 +158,26 @@ export default class UIResetPassword extends BaseFormPlus {
             return;
         }
 
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebUserModifyPassword,
-                body: {
-                    area: area,
-                    phone: phone,
-                    code: code,
-                    password: Md5.hashStr(password)
-                }
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebUserModifyPassword,
+            body: {
+                area: area,
+                phone: phone,
+                code: code,
+                password: Md5.hashStr(password),
+            },
+        }).then(
             (res: any) => {
-                UIComponent.Instance.ToastLanguage("UIMine_Setting105");//Toast("更改密码成功~");
+                UIComponent.Instance.ToastLanguage("UIMine_Setting105"); //Toast("更改密码成功~");
                 UIComponent.close(UIDefine.UIResetPassword);
             },
             (res: any) => {
                 //UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(res.code));
-            }
-        )
+            },
+        );
     }
 
     set code_cd_run(boo: boolean) {
-
         this._code_cd_run = boo;
 
         boo && (this.cd_start_time = 60);
@@ -189,9 +187,7 @@ export default class UIResetPassword extends BaseFormPlus {
     }
 
     protected update(dt: number): void {
-
         if (this.code_cd_run) {
-
             this.cd_start_time -= dt;
 
             let show_time = Math.ceil(this.cd_start_time);

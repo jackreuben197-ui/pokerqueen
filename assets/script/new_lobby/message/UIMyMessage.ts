@@ -1,7 +1,12 @@
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { WebMsgMessageList, WebMsgMessageUnread, WebMsgMessageUnreadClear, WebWww } from "../../net/https/WebRequest";
+import {
+    WebMsgMessageList,
+    WebMsgMessageUnread,
+    WebMsgMessageUnreadClear,
+    WWW,
+} from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 import ItemMyMessage from "./ItemMyMessage";
@@ -39,7 +44,7 @@ export default class UIMyMessage extends BaseFormPlus {
             item_sc.refreshIcon(this.icon_res[index]);
             item_sc.index = index;
             this.setButtonClick(item, this.onItemClick);
-        })
+        });
     }
     refreshUI() {
         let from = this._param.from;
@@ -49,7 +54,6 @@ export default class UIMyMessage extends BaseFormPlus {
         }
         let indexs: number[] = MyMessageModel.Instance.ui_show_from[from];
         this.$content.children.forEach((item, index) => {
-
             //过滤显示当前应该展示的条目
             if (~indexs.indexOf(index)) {
                 item.active = true;
@@ -60,47 +64,56 @@ export default class UIMyMessage extends BaseFormPlus {
             //     item.active = false;
             // }
             let item_sc = item.getComponent(ItemMyMessage);
-            item_sc.refreshName(i18nMgr.Get(MyMessageModel.Instance.message_items[index].name));
-            item_sc.refreshContent(false, i18nMgr.Get("MsgContentUnRead"), MyMessageModel.Instance.content_colors[0]);
-        })
+            item_sc.refreshName(
+                i18nMgr.Get(MyMessageModel.Instance.message_items[index].name),
+            );
+            item_sc.refreshContent(
+                false,
+                i18nMgr.Get("MsgContentUnRead"),
+                MyMessageModel.Instance.content_colors[0],
+            );
+        });
     }
     //刷新未读消息
     lateRefreshUI(data: any[]) {
         if (data?.length) {
-            data.forEach(item => {
-                let order = MyMessageModel.Instance.message_order[item.msg_main_type];
+            data.forEach((item) => {
+                let order =
+                    MyMessageModel.Instance.message_order[item.msg_main_type];
                 let item_node = this.$content.children[order];
-                let content = i18nMgr.Get("UIMine_MsgHasNoRead").replace("{0}", item.num);
-                item_node.getComponent(ItemMyMessage).refreshContent(true, content, MyMessageModel.Instance.content_colors[1]);
-            })
+                let content = i18nMgr
+                    .Get("UIMine_MsgHasNoRead")
+                    .replace("{0}", item.num);
+                item_node
+                    .getComponent(ItemMyMessage)
+                    .refreshContent(
+                        true,
+                        content,
+                        MyMessageModel.Instance.content_colors[1],
+                    );
+            });
         }
     }
     //请求未读消息
     reqUnreads() {
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebMsgMessageUnread,
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebMsgMessageUnread,
+        }).then(
             (res: any) => {
                 this.lateRefreshUI(res.data);
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
 
     //清理未读消息
     reqUnreadClear(msg_type: number) {
-        return WebWww.Instance.CommonAPI(
-            {
-                web_class: WebMsgMessageUnreadClear,
-                body: {
-                    msg_type: msg_type
-                },
-            }
-        )
+        return WWW.Instance.CommonAPI({
+            web_class: WebMsgMessageUnreadClear,
+            body: {
+                msg_type: msg_type,
+            },
+        });
     }
 
     async onItemClick(button: cc.Button) {
@@ -108,31 +121,58 @@ export default class UIMyMessage extends BaseFormPlus {
         let index = script.index;
         let item = MyMessageModel.Instance.message_items[index];
         if (script.unread) {
-            let res = await this.reqUnreadClear(item.msg_type).catch(() => { });
+            let res = await this.reqUnreadClear(item.msg_type).catch(() => {});
             if (res) {
-                script.refreshContent(false, i18nMgr.Get("MsgContentUnRead"), MyMessageModel.Instance.content_colors[0]);
+                script.refreshContent(
+                    false,
+                    i18nMgr.Get("MsgContentUnRead"),
+                    MyMessageModel.Instance.content_colors[0],
+                );
             }
         }
         switch (index) {
-            case 0://系统消息
-                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name, from: this._param.from });
+            case 0: //系统消息
+                UIComponent.open(UIDefine.UIMsgSystem, {
+                    msg_type: item.msg_type,
+                    name: item.name,
+                    from: this._param.from,
+                });
                 break;
-            case 1://钱包消息
+            case 1: //钱包消息
                 //this.reqMsgList(EnumMSG.MSG_Money);
-                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name, from: this._param.from });
+                UIComponent.open(UIDefine.UIMsgSystem, {
+                    msg_type: item.msg_type,
+                    name: item.name,
+                    from: this._param.from,
+                });
                 break;
-            case 2://背包消息
+            case 2: //背包消息
                 //this.reqMsgList(EnumMSG.MSG_Backpack);
-                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name, from: this._param.from });
+                UIComponent.open(UIDefine.UIMsgSystem, {
+                    msg_type: item.msg_type,
+                    name: item.name,
+                    from: this._param.from,
+                });
                 break;
-            case 3://公会消息
-                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name, from: this._param.from });
+            case 3: //公会消息
+                UIComponent.open(UIDefine.UIMsgSystem, {
+                    msg_type: item.msg_type,
+                    name: item.name,
+                    from: this._param.from,
+                });
                 break;
-            case 4://联盟消息
-                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name, from: this._param.from });
+            case 4: //联盟消息
+                UIComponent.open(UIDefine.UIMsgSystem, {
+                    msg_type: item.msg_type,
+                    name: item.name,
+                    from: this._param.from,
+                });
                 break;
-            case 5://带入申请
-                UIComponent.open(UIDefine.UIMsgBring, { from: this._param.from, name: item.name, });
+            case 5: //带入申请
+                UIComponent.open(UIDefine.UIMsgBring, {
+                    from: this._param.from,
+                    name: item.name,
+                });
                 break;
         }
     }
@@ -146,27 +186,20 @@ export default class UIMyMessage extends BaseFormPlus {
     //     MSG_ApplyList,//带入申请
     // }
 
-
     reqMsgList(type: number) {
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebMsgMessageList,
-                body: {
-                    clubID: ClubCache.club_id,
-                    TribeID: ClubCache.tribe_id,
-                    msg_type: type,
-                    limit: 20,
-                    offset: 0
-                },
-                //club_id: ClubCache.club_id
-            }
-        ).then(
-            (res: any) => {
-
+        WWW.Instance.CommonAPI({
+            web_class: WebMsgMessageList,
+            body: {
+                clubID: ClubCache.club_id,
+                TribeID: ClubCache.tribe_id,
+                msg_type: type,
+                limit: 20,
+                offset: 0,
             },
-            (res: any) => {
-
-            }
-        )
+            //club_id: ClubCache.club_id
+        }).then(
+            (res: any) => {},
+            (res: any) => {},
+        );
     }
 }

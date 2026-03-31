@@ -8,16 +8,21 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import UIFriendMatch from "../../lobby/new_club/createMatch/UIFriendMatch";
 
-import { WebClubApplyAudit, WebClubApplyList, WebMeApply, WebRoomSitApplyAudit, WebRoomSitApplyRecords, WebWww } from "../../net/https/WebRequest";
+import {
+    WebClubApplyAudit,
+    WebClubApplyList,
+    WebMeApply,
+    WebRoomSitApplyAudit,
+    WebRoomSitApplyRecords,
+    WWW,
+} from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
-
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIMsgBring extends BaseFormPlus {
-
     ///////////////////////引用声明////////////////////////
     $content: cc.Node = null;
     $ItemMsgBring: cc.Node = null;
@@ -52,14 +57,13 @@ export default class UIMsgBring extends BaseFormPlus {
                 item_node["data"] = item;
                 item_node["index"] = index;
                 this.refreshItem(item_node, item);
-            })
+            });
         } else {
             this.$Null.active = true;
         }
     }
 
     refreshItem(node, data) {
-
         // {
         //     "id": 4,
         //     "room_id": 95077866,
@@ -80,67 +84,97 @@ export default class UIMsgBring extends BaseFormPlus {
         //     "status": 1,
         //     "create_time": "2022-11-30T10:52:56Z"
         //   }
-        //"origin_type": 0, // 1 平台，2 联盟，3 公会 4 朋友桌 
+        //"origin_type": 0, // 1 平台，2 联盟，3 公会 4 朋友桌
         // status 状态 1:申请中 2通过 3拒绝
 
         let index = node["index"];
 
         this.setChildVisible(node, "bg", index % 2 == 0);
 
-        this.setChildLabel(node, "label_title", `<color=#FEEC8E>${GetGameTypeName(data)}</color><color=#757CAB> ID：${data.room_id}</color>`);
+        this.setChildLabel(
+            node,
+            "label_title",
+            `<color=#FEEC8E>${GetGameTypeName(data)}</color><color=#757CAB> ID：${data.room_id}</color>`,
+        );
 
         this.setChildVisible(node, "room_type/club", data.origin_type == 3);
         this.setChildVisible(node, "room_type/friend", data.origin_type == 4);
 
         this.setChildLabel(node, "room_type/label_room", data.sender_name);
 
-
         this.setChildLabel(node, "label_nick", data.user_name);
         this.setChildLabel(node, "label_id", `ID：${data.user_random_id}`);
-        this.setChildLabel(node, "label_bring", StringHelper.GetLongString(data.bring_in));
-        this.setChildLabel(node, "label_time", TimeHelper.UTCToLocal(data.create_time));
+        this.setChildLabel(
+            node,
+            "label_bring",
+            StringHelper.GetLongString(data.bring_in),
+        );
+        this.setChildLabel(
+            node,
+            "label_time",
+            TimeHelper.UTCToLocal(data.create_time),
+        );
 
-        WebImageHelper.SetHeadImage(node.getChildByName("head").getComponent(cc.Sprite), data.avatar);
+        WebImageHelper.SetHeadImage(
+            node.getChildByName("head").getComponent(cc.Sprite),
+            data.avatar,
+        );
 
         switch (data.status) {
-            case 1://待审核
+            case 1: //待审核
                 this.setChildVisible(node, "refuse", true);
                 this.setChildVisible(node, "agree", true);
                 this.setChildVisible(node, "label_status", false);
-                this.setChildButtonClick(node, "refuse", this.click_refuse);//this.reqApplyDeal.bind(this, data, 3));
-                this.setChildButtonClick(node, "agree", this.click_agree);//this.reqApplyDeal.bind(this, data, 2));
+                this.setChildButtonClick(node, "refuse", this.click_refuse); //this.reqApplyDeal.bind(this, data, 3));
+                this.setChildButtonClick(node, "agree", this.click_agree); //this.reqApplyDeal.bind(this, data, 2));
                 break;
-            case 2:// 审核通过
+            case 2: // 审核通过
                 this.setChildVisible(node, "refuse", false);
                 this.setChildVisible(node, "agree", false);
                 this.setChildVisible(node, "label_status", true);
-                this.setChildLabel(node, "label_status", `<color=#B0FFAE>${i18nMgr.Get("UIClub_AuditRecords_ok")}</color>`);
+                this.setChildLabel(
+                    node,
+                    "label_status",
+                    `<color=#B0FFAE>${i18nMgr.Get("UIClub_AuditRecords_ok")}</color>`,
+                );
                 break;
-            case 4:// 取消
+            case 4: // 取消
                 this.setChildVisible(node, "refuse", false);
                 this.setChildVisible(node, "agree", false);
                 this.setChildVisible(node, "label_status", true);
-                this.setChildLabel(node, "label_status", `<color=#B0FFAE>${i18nMgr.Get("adaptation10013")}</color>`);
+                this.setChildLabel(
+                    node,
+                    "label_status",
+                    `<color=#B0FFAE>${i18nMgr.Get("adaptation10013")}</color>`,
+                );
                 break;
-            case 5:// 自动拒绝
+            case 5: // 自动拒绝
                 this.setChildVisible(node, "refuse", false);
                 this.setChildVisible(node, "agree", false);
                 this.setChildVisible(node, "label_status", true);
-                this.setChildLabel(node, "label_status", `<color=#B0FFAE>${i18nMgr.Get("UIClub_AuditRecords_auto")}</color>`);
+                this.setChildLabel(
+                    node,
+                    "label_status",
+                    `<color=#B0FFAE>${i18nMgr.Get("UIClub_AuditRecords_auto")}</color>`,
+                );
                 break;
-            default://已拒绝 3
+            default: //已拒绝 3
                 this.setChildVisible(node, "refuse", false);
                 this.setChildVisible(node, "agree", false);
                 this.setChildVisible(node, "label_status", true);
-                this.setChildLabel(node, "label_status", `<color=#FF7C7C>${i18nMgr.Get("UIClub_AuditRecords_no")}</color>`);
+                this.setChildLabel(
+                    node,
+                    "label_status",
+                    `<color=#FF7C7C>${i18nMgr.Get("UIClub_AuditRecords_no")}</color>`,
+                );
                 break;
         }
     }
 
     clearList() {
-        this.$content.children.forEach(item => {
+        this.$content.children.forEach((item) => {
             this.item_pool.BackNode(item);
-        })
+        });
         this.$content.removeAllChildren();
     }
     click_refuse(button: cc.Button) {
@@ -159,33 +193,29 @@ export default class UIMsgBring extends BaseFormPlus {
         let web_class = null;
         let club_id = 0;
         let body = {
-            "apply_id": data.id,
-            "audit_op": op
-        }
+            apply_id: data.id,
+            audit_op: op,
+        };
         if (data.origin_type == 4) {
             web_class = WebRoomSitApplyAudit;
         } else {
             web_class = WebClubApplyAudit;
             club_id = data.club_id;
-
         }
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: web_class,
-                body: body,
-                club_id: club_id
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: web_class,
+            body: body,
+            club_id: club_id,
+        }).then(
             (res: any) => {
-
-                UIComponent.Instance.ToastLanguage("Uiclubrechargeconfirmordersuccessfully");
+                UIComponent.Instance.ToastLanguage(
+                    "Uiclubrechargeconfirmordersuccessfully",
+                );
                 this.reqMsgList();
                 GameCache.Instance.CurGame?.UpdateMsgBtnSprite();
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
 
     reqMsgList() {
@@ -194,47 +224,48 @@ export default class UIMsgBring extends BaseFormPlus {
         let club_id = 0;
         let body: any = null;
         switch (from) {
-            case 0://朋友桌
+            case 0: //朋友桌
                 web_class = WebRoomSitApplyRecords;
                 body = {
-                    "limit": 10,
-                    "offset": 0,
-                    "status": 0 //0-all，1-待审批，2-通过，3-拒绝，4-取消
-                }
+                    limit: 10,
+                    offset: 0,
+                    status: 0, //0-all，1-待审批，2-通过，3-拒绝，4-取消
+                };
                 break;
-            case 1://公会桌
+            case 1: //公会桌
                 web_class = WebClubApplyList;
                 club_id = ClubCache.club_id;
                 body = {
-                    "limit": 10,
-                    "offset": 0,
-                }
+                    limit: 10,
+                    offset: 0,
+                };
                 break;
-            case 2://我的
+            case 2: //我的
                 web_class = WebMeApply;
                 body = {
-                    "limit": 10,
-                    "offset": 0,
-                }
+                    limit: 10,
+                    offset: 0,
+                };
                 break;
         }
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: web_class,
-                body: body,
-                club_id: club_id
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: web_class,
+            body: body,
+            club_id: club_id,
+        }).then(
             (res: any) => {
                 this.refreshList(res.data.data);
                 if (from == 0) {
-                    let friend = UIComponent.Instance.getComponent<UIFriendMatch>("UIFriendMatch");
+                    let friend =
+                        UIComponent.Instance.getComponent<UIFriendMatch>(
+                            "UIFriendMatch",
+                        );
                     if (friend) friend.ReqMsgRed();
                 }
             },
             (res: any) => {
                 this.refreshList(null);
-            }
-        )
+            },
+        );
     }
 }

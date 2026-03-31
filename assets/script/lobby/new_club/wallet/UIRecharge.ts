@@ -1,13 +1,18 @@
-
 import { GameConfig, Tabs_Status, TextColor } from "../../../config/GameConfig";
 import { UIDefine } from "../../../define/UIDefine";
 import PublicHelper from "../../../helper/PublicHelper";
 import { StringHelper } from "../../../helper/StringHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { WebRechargeGold, WebTiquGold, WebWww } from "../../../net/https/WebRequest";
+import {
+    WebRechargeGold,
+    WebTiquGold,
+    WWW,
+} from "../../../net/https/WebRequest";
 import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
 import { UIRechargeDialogType } from "../../../ui/dialog/UIRechargeDialog";
-import UISuperDialog, { UISuperDialogType } from "../../../ui/dialog/UISuperDialog";
+import UISuperDialog, {
+    UISuperDialogType,
+} from "../../../ui/dialog/UISuperDialog";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
@@ -18,18 +23,16 @@ import WalletModel from "./WalletModel";
 //充值界面
 const { ccclass } = cc._decorator;
 
-
 export type UIRechargeParam = {
-    type?: number,
-    walletType?: number,
-    club_id?: number,
-    club_name?: string,
-    tribe_name?: string
-}
+    type?: number;
+    walletType?: number;
+    club_id?: number;
+    club_name?: string;
+    tribe_name?: string;
+};
 
 @ccclass
 export default class UIRecharge extends BaseFormPlus {
-
     protected _param: UIRechargeParam = null;
 
     isUSDT: boolean = false;
@@ -37,7 +40,6 @@ export default class UIRecharge extends BaseFormPlus {
     send_gold: number = 0;
 
     Gold_Text = [100, 300, 500, 1000, 5000, 50000];
-
 
     $TopTabs: cc.Node = null;
     $GoldOptions: cc.Node = null;
@@ -51,18 +53,20 @@ export default class UIRecharge extends BaseFormPlus {
     lateLoad() {
         super.lateLoad();
 
-        this.cc_EditBox$Recharge.placeholder = i18nMgr.Get("Uimine_ptcz_playgold");
+        this.cc_EditBox$Recharge.placeholder = i18nMgr.Get(
+            "Uimine_ptcz_playgold",
+        );
 
         this.$GoldOptions.children.forEach((item, index) => {
-            item.getChildByName("lbl_gold").getComponent(cc.Label).string = `${this.Gold_Text[index]}`;
+            item.getChildByName("lbl_gold").getComponent(cc.Label).string =
+                `${this.Gold_Text[index]}`;
             item["index"] = index;
             this.setButtonClick(item, this.optionClick);
-        })
+        });
         this.$TopTabs.children.forEach((item, index) => {
             item["index"] = index;
             this.setButtonClick(item, this.topTabClick);
-        })
-
+        });
     }
     regiterTouchEvents() {
         super.regiterTouchEvents();
@@ -73,7 +77,6 @@ export default class UIRecharge extends BaseFormPlus {
      * 每次打开面板处理的内容
      */
     onShow(param?: UIRechargeParam, fromUI?: cc.Node): void {
-
         super.onShow(param, fromUI);
 
         this.cc_EditBox$Recharge.string = "";
@@ -81,7 +84,6 @@ export default class UIRecharge extends BaseFormPlus {
         this.Top_Index = 0;
 
         this.SelectIndex = -1;
-
     }
 
     //刷新 金币|USDT 选择按钮
@@ -90,40 +92,31 @@ export default class UIRecharge extends BaseFormPlus {
         this.SelectIndex = -1;
     }
 
-
     //请求充值or提现
     reqRechargeOrDraw(value: number) {
-
         let gold_type = this.Top_Index ? 2 : 1;
 
         switch (this._param.walletType) {
-
-            case WalletType.Club://公会玩家钱包
-
+            case WalletType.Club: //公会玩家钱包
                 //充
                 if (this._param.type == 1) {
+                    WWW.Instance.CommonAPI({
+                        web_class: WebRechargeGold,
 
-                    WebWww.Instance.CommonAPI(
-                        {
-                            web_class: WebRechargeGold,
+                        body: { amount: value, gold_type: gold_type },
 
-                            body: { amount: value, gold_type: gold_type },
-
-                            club_id: this._param.club_id
-                        }
-                    ).then(
+                        club_id: this._param.club_id,
+                    }).then(
                         (res: any) => {
                             this.requestSuccess(res.data);
                         },
-                        (res: any) => {
-
-                        }
-                    )
+                        (res: any) => {},
+                    );
                 }
                 //提
                 // if (this._param.type == 2) {
 
-                //     WebWww.Instance.CommonAPI(
+                //     WWW.Instance.CommonAPI(
                 //         {
                 //             web_class: WebTiquGold,
 
@@ -141,18 +134,21 @@ export default class UIRecharge extends BaseFormPlus {
                 //     )
                 // }
                 break;
-            case WalletType.Fund://公会基金
+            case WalletType.Fund: //公会基金
                 //充
 
                 if (this._param.type == 1) {
-                    UIClubModel.mInstance.reqClubFundRecharge(this._param.club_id, { amount: value, gold_type: gold_type }).then(
-                        (res: any) => {
-                            this.requestSuccess(res.data);
-                        },
-                        () => {
-
-                        },
-                    )
+                    UIClubModel.mInstance
+                        .reqClubFundRecharge(this._param.club_id, {
+                            amount: value,
+                            gold_type: gold_type,
+                        })
+                        .then(
+                            (res: any) => {
+                                this.requestSuccess(res.data);
+                            },
+                            () => {},
+                        );
                 }
                 //提
                 // if (this._param.type == 2) {
@@ -166,9 +162,7 @@ export default class UIRecharge extends BaseFormPlus {
                 //     )
                 // }
                 break;
-
         }
-
     }
 
     set Top_Index(index: number) {
@@ -179,7 +173,7 @@ export default class UIRecharge extends BaseFormPlus {
             let color = status[index] ? TextColor.Color7 : TextColor.Color3;
             item.children[0].color = cc.Color.BLACK.fromHEX(color);
             item.children[1].active = !!status[index];
-        })
+        });
         this.refreshCenterGoldIcon();
     }
     get Top_Index(): number {
@@ -194,7 +188,7 @@ export default class UIRecharge extends BaseFormPlus {
         let status = Tabs_Status[index];
         this.$GoldOptions.children.forEach((item, index) => {
             item.children[1].active = status[index];
-        })
+        });
     }
     get SelectIndex(): number {
         return this._SelectIndex;
@@ -214,7 +208,6 @@ export default class UIRecharge extends BaseFormPlus {
         this.send_gold = +this.cc_EditBox$Recharge.string;
 
         if (this.send_gold == 0) {
-
             UIComponent.Instance.ToastLanguage("Uimine_ptcz_playgold");
 
             return;
@@ -222,18 +215,24 @@ export default class UIRecharge extends BaseFormPlus {
         let content = "";
         let target_name: string = "";
         switch (this._param.walletType) {
-            case WalletType.Club://公会玩家钱包
-                content = this.Top_Index == 0 ? i18nMgr.Get("UIGuildFund_RtPlayerTips001") : i18nMgr.Get("UIGuildFund_RtPlayerTips002");
+            case WalletType.Club: //公会玩家钱包
+                content =
+                    this.Top_Index == 0
+                        ? i18nMgr.Get("UIGuildFund_RtPlayerTips001")
+                        : i18nMgr.Get("UIGuildFund_RtPlayerTips002");
                 target_name = this._param.club_name;
                 break;
-            case WalletType.Fund://公会基金
-                content = this.Top_Index == 0 ? i18nMgr.Get("UIGuildFund_RtTips001") : i18nMgr.Get("UIGuildFund_RtTips002");
+            case WalletType.Fund: //公会基金
+                content =
+                    this.Top_Index == 0
+                        ? i18nMgr.Get("UIGuildFund_RtTips001")
+                        : i18nMgr.Get("UIGuildFund_RtTips002");
                 target_name = this._param.tribe_name;
                 break;
         }
         content = StringHelper.Format(content, [
             ` ${StringHelper.GetColorText(target_name, TextColor.Color4)} `,
-            ` ${StringHelper.GetColorText(`${this.send_gold}`, TextColor.Color4)} `
+            ` ${StringHelper.GetColorText(`${this.send_gold}`, TextColor.Color4)} `,
         ]);
         UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
             this: this,
@@ -243,7 +242,7 @@ export default class UIRecharge extends BaseFormPlus {
             commit: i18nMgr.Get("UI_Recharge_confirm"),
             commit_click: () => {
                 this.reqRechargeOrDraw(this.send_gold * 100);
-            }
+            },
         });
     }
     //申请成功响应弹窗
@@ -251,19 +250,32 @@ export default class UIRecharge extends BaseFormPlus {
         //act.data.more_contact, act.data.digital_wallet_erc, act.data.digital_wallet_trc
         if (data?.more_contact) {
             let copy_list = [];
-            data.digital_wallet_erc && copy_list.push({ show: `ERC:${data.digital_wallet_erc}`, copy: `${data.digital_wallet_erc}` });
-            data.digital_wallet_trc && copy_list.push({ show: `TRC:${data.digital_wallet_trc}`, copy: `${data.digital_wallet_trc}` });
+            data.digital_wallet_erc &&
+                copy_list.push({
+                    show: `ERC:${data.digital_wallet_erc}`,
+                    copy: `${data.digital_wallet_erc}`,
+                });
+            data.digital_wallet_trc &&
+                copy_list.push({
+                    show: `TRC:${data.digital_wallet_trc}`,
+                    copy: `${data.digital_wallet_trc}`,
+                });
 
             UIComponent.open<UIRechargeDialogType>(UIDefine.UIRechargeDialog, {
                 this: this,
                 title: i18nMgr.Get("UIGuild_TipsTitle"),
                 cancel: i18nMgr.Get("UIBackDialog_ticketsbtnClose"),
                 commit: i18nMgr.Get("CopyContact"),
-                content: StringHelper.Format(i18nMgr.Get("UIGuildFund_RtTips005"), [` ${StringHelper.GetColorText(data.more_contact, TextColor.Color4)} `]),
+                content: StringHelper.Format(
+                    i18nMgr.Get("UIGuildFund_RtTips005"),
+                    [
+                        ` ${StringHelper.GetColorText(data.more_contact, TextColor.Color4)} `,
+                    ],
+                ),
                 copy_list: copy_list.length > 0 ? copy_list : null,
                 commit_click: () => {
                     PublicHelper.copyToClipBoard(data.more_contact);
-                }
+                },
             });
         } else {
             UIComponent.Instance.ToastLanguage("roomError171_5");

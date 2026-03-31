@@ -4,7 +4,14 @@ import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { UIMineModel } from "../../lobby/UIMineModel";
-import { WebUserDiamondsWallet, WebConfigGlobalConfig, WebUserCheckNickname, WebUserInfo, WebUserModifyUserInfo, WebWww } from "../../net/https/WebRequest";
+import {
+    WebUserDiamondsWallet,
+    WebConfigGlobalConfig,
+    WebUserCheckNickname,
+    WebUserInfo,
+    WebUserModifyUserInfo,
+    WWW,
+} from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import BottomSelector from "../../ui/component/BottomSelector";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
@@ -29,7 +36,7 @@ export default class UIChangeName extends BaseFormPlus {
     //输入框
     cc_EditBox$input: cc.EditBox = null;
 
-    //part2 
+    //part2
     $confirm: cc.Node = null;
     $blight: cc.Node = null;
     cc_Label$confirm: cc.Label = null;
@@ -63,20 +70,22 @@ export default class UIChangeName extends BaseFormPlus {
         let handler = new cc.Component.EventHandler();
         handler.target = this.node;
         handler.component = "UIChangeName";
-        handler.handler = "onNickInputChange"
+        handler.handler = "onNickInputChange";
         this.cc_EditBox$input.textChanged = [handler];
     }
     refreshUI() {
-
         this.activeConfirm(true);
 
         this.title_label.i18NString = "UIMine_Mission_8";
 
         this.cc_EditBox$input.string = WebUserInfo.Response.data.user.nickname;
 
-        this.cc_EditBox$input.placeholder = i18nMgr.Get("UIMine_SetNick_InputTips");
+        this.cc_EditBox$input.placeholder = i18nMgr.Get(
+            "UIMine_SetNick_InputTips",
+        );
 
-        this.user_modify_name_cost = WebConfigGlobalConfig.Response.data.user_modify_name_cost;
+        this.user_modify_name_cost =
+            WebConfigGlobalConfig.Response.data.user_modify_name_cost;
 
         //this.cc_Label$Tips.string = i18nMgr.Get("UIMine_ChangeNameTipsZS").replace("{0}", `${this.user_modify_name_cost}`);
 
@@ -86,21 +95,26 @@ export default class UIChangeName extends BaseFormPlus {
     }
     //刷新次数，显示消耗
     refreshModifyCount() {
-
         //let user_modify_name_cost = WebConfigGlobalConfig.Response.data.user_modify_name_cost;
 
-        if (WebConfigGlobalConfig.Response.data.user_modify_name_price?.length > 0) {
-
-            this.priceData = JSON.parse(WebConfigGlobalConfig.Response.data.user_modify_name_price);
+        if (
+            WebConfigGlobalConfig.Response.data.user_modify_name_price?.length >
+            0
+        ) {
+            this.priceData = JSON.parse(
+                WebConfigGlobalConfig.Response.data.user_modify_name_price,
+            );
             this.cc_RichText$diamond.string = `<color=#757CAB>${i18nMgr.Get("UIMine_XHZS")}</color><color=#7187FF>${this.priceData.pay_price}</color>`;
             this.cc_RichText$diamond_dis.string = `${i18nMgr.Get("UIMine_DiamondsPrice")}${this.priceData.raw_price}`;
-            this.cc_Label$Tips.string = StringHelper.Format(i18nMgr.Get("UIMine_ChangeNameTipsZS"), [this.priceData.raw_price]);
+            this.cc_Label$Tips.string = StringHelper.Format(
+                i18nMgr.Get("UIMine_ChangeNameTipsZS"),
+                [this.priceData.raw_price],
+            );
 
             this.cc_RichText$diamond.node.active = true;
             this.cc_RichText$diamond_dis.node.active = true;
             this.cc_Label$Tips.node.active = true;
-        }
-        else {
+        } else {
             this.cc_RichText$diamond.node.active = false;
             this.cc_RichText$diamond_dis.node.active = false;
             this.cc_Label$Tips.node.active = false;
@@ -113,18 +127,14 @@ export default class UIChangeName extends BaseFormPlus {
 
     //刷新钱包获取钻石
     refreshWallet() {
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebUserDiamondsWallet,
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebUserDiamondsWallet,
+        }).then(
             (res: any) => {
                 this.cc_Label$remain.string = `${i18nMgr.Get("UIMine_ZSYE")}${res.data?.diamonds_wallet?.diamonds || 0}`;
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
     //激活提交按钮
     activeConfirm(boo: boolean) {
@@ -137,7 +147,6 @@ export default class UIChangeName extends BaseFormPlus {
             this.$blight.active = false;
             this.cc_Label$confirm.node.opacity = 76;
         }
-
     }
     ////////////click////////////
     //跳转商城
@@ -162,17 +171,21 @@ export default class UIChangeName extends BaseFormPlus {
         }
         //判断特殊字符
         if (StringHelper.IsContainSpecialCharacter(text)) {
-            UIComponent.Instance.ToastLanguage("UIMine_UserInfoNick_Include_Special");
+            UIComponent.Instance.ToastLanguage(
+                "UIMine_UserInfoNick_Include_Special",
+            );
             return;
         }
         //判断钻石数量 非免费情况
-        if (WebUserInfo.Response.data.user.mnt > 0 &&
-            WebUserDiamondsWallet.Response.data.diamonds_wallet?.diamonds < this.priceData.pay_price) {
+        if (
+            WebUserInfo.Response.data.user.mnt > 0 &&
+            WebUserDiamondsWallet.Response.data.diamonds_wallet?.diamonds <
+                this.priceData.pay_price
+        ) {
             UIComponent.Instance.ToastLanguage("UIMine_DiamondsNotEnough");
             return;
         }
         this.reqCheckName();
-
     }
     onNickInputChange() {
         //this.cc_Label$count.string = `${this.cc_EditBox$input.string.length}/10`;
@@ -182,73 +195,61 @@ export default class UIChangeName extends BaseFormPlus {
     //////////////请求消息//////////////
     //请求检测姓名
     reqCheckName() {
-
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebUserCheckNickname,
-                body: {
-                    nickname: this.cc_EditBox$input.string
-                }
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebUserCheckNickname,
+            body: {
+                nickname: this.cc_EditBox$input.string,
+            },
+        }).then(
             (res: any) => {
                 this.reqChangeName();
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
     //请求用户信息，判断剩余修改次数
     reqUserInfo() {
+        LobbySession.APIUserInfo().then((res: any) => {
+            this.refreshModifyCount();
 
-        LobbySession.APIUserInfo().then(
-            (res: any) => {
-                this.refreshModifyCount();
+            this.refreshWallet();
 
-                this.refreshWallet();
-
-                UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshNick();
-                UIComponent.Instance.getComponent<UIEditInformation>("UIEditInformation")?.refreshNick();
-                UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
-            }
-        )
+            UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshNick();
+            UIComponent.Instance.getComponent<UIEditInformation>(
+                "UIEditInformation",
+            )?.refreshNick();
+            UIComponent.Instance.getComponent<UILobbyIndex>(
+                "UILobbyIndex",
+            )?.refreshUserInfo();
+        });
     }
     //请求改变姓名
     reqChangeName() {
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebUserModifyUserInfo,
-                body: {
-                    nick_name: this.cc_EditBox$input.string,
-                }
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebUserModifyUserInfo,
+            body: {
+                nick_name: this.cc_EditBox$input.string,
+            },
+        }).then(
             (res: typeof WebUserModifyUserInfo.Response) => {
-
                 GameCache.Instance.nick = this.cc_EditBox$input.string;
 
                 UIComponent.Instance.ToastLanguage("UIMine_Setting116");
 
                 this.reqUserInfo();
-
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
 
     characterLength: number = 0;
     //获取名称长度
     private RefreshNameLength(name: string) {
-
         let number = 0;
         let zimu = 0;
         let chinese = 0;
 
         for (let i = 0; i < name.length; i++) {
-
             if (name[i].match(/^[\u4e00-\u9fa5]$/)) {
                 chinese++;
             }

@@ -1,5 +1,5 @@
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { WebPropUserPropUsed, WebWww } from "../../net/https/WebRequest";
+import { WebPropUserPropUsed, WWW } from "../../net/https/WebRequest";
 import UIMyPack from "../../new_lobby/me/UIMyPack";
 import UIBasePlus from "../UIBasePlus";
 import UIComponent from "../UIComponent";
@@ -7,19 +7,19 @@ import UIComponent from "../UIComponent";
 const { ccclass, menu } = cc._decorator;
 
 @ccclass
-@menu('脚本分组/ui/dialog/UIBackDialog')
+@menu("脚本分组/ui/dialog/UIBackDialog")
 export default class UIBackDialog extends UIBasePlus {
     static type: {
-        title?: string,
-        content?: string,
-        cancelText?: string,
-        commitText?: string,
-        knowText?: string,
-        callbacks?: Function[],
-        this: any,
-        cover?: Function,
-        isactiveclosebtn?: boolean
-        info?: any,
+        title?: string;
+        content?: string;
+        cancelText?: string;
+        commitText?: string;
+        knowText?: string;
+        callbacks?: Function[];
+        this: any;
+        cover?: Function;
+        isactiveclosebtn?: boolean;
+        info?: any;
     };
     $cover: cc.Node = null;
     //panel
@@ -71,15 +71,22 @@ export default class UIBackDialog extends UIBasePlus {
     onClickKnow() {
         if (this._param.info.prop_type == 2) {
             this.SendMessageOptions(this._param.info.prop_id, 3);
-        }
-        else if (this._param.info.prop_type == 3) {
-            if (this.cc_EditBox$phone.string == "" || this.cc_EditBox$phone.string.length < 7) {
-                UIComponent.Instance.ToastLanguage("UIMine_BackPack_inputrightphone");
+        } else if (this._param.info.prop_type == 3) {
+            if (
+                this.cc_EditBox$phone.string == "" ||
+                this.cc_EditBox$phone.string.length < 7
+            ) {
+                UIComponent.Instance.ToastLanguage(
+                    "UIMine_BackPack_inputrightphone",
+                );
                 return;
             }
-            this.SendMessageOptions(this._param.info.prop_id, 3, this.cc_EditBox$phone.string);
-        }
-        else if (this._param.info.prop_type == 4) {
+            this.SendMessageOptions(
+                this._param.info.prop_id,
+                3,
+                this.cc_EditBox$phone.string,
+            );
+        } else if (this._param.info.prop_type == 4) {
             this.SendMessageOptions(this._param.info.prop_id, 3);
         }
     }
@@ -88,26 +95,29 @@ export default class UIBackDialog extends UIBasePlus {
         this.hideUI();
     }
     onClickCommit() {
-
         this._param.callbacks?.[1]?.call(this._param.this);
 
         switch (this._param.info.prop_type) {
-            case 2://实物
-                this.cc_Label$content.string = i18nMgr.Get("UIBackDiolg_textContent02");
-                this.cc_Label$content.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
+            case 2: //实物
+                this.cc_Label$content.string = i18nMgr.Get(
+                    "UIBackDiolg_textContent02",
+                );
+                this.cc_Label$content.horizontalAlign =
+                    cc.Label.HorizontalAlign.CENTER;
                 break;
-            case 3://电话卡
+            case 3: //电话卡
                 this.cc_Label$content.node.active = false;
                 this.$phone.active = true;
                 break;
-            case 4://购物卡
-                this.cc_Label$content.string = i18nMgr.Get("UIBackDiolg_textContent01");
+            case 4: //购物卡
+                this.cc_Label$content.string = i18nMgr.Get(
+                    "UIBackDiolg_textContent01",
+                );
                 break;
-            case 5://代金券
+            case 5: //代金券
                 this.SendMessageOptions(this._param.info.prop_id, 4);
                 this.hideUI();
                 break;
-
         }
         this.$value.active = false;
         this.$status2.active = false;
@@ -125,27 +135,30 @@ export default class UIBackDialog extends UIBasePlus {
     }
     //////////////////
 
-    private SendMessageOptions(prop_id: number, type: number, phoneNum = "", quantity = 1) {
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebPropUserPropUsed,
-                body: {
-                    prop_id: prop_id,//道具id
-                    quantity: quantity,//道具数量
-                    type: type,//"道具类型(type):2-转金豆，3-转平台，4-转IM钱包" 
-                    user_phone: phoneNum//"电话号码"
-                }
-            }
-        ).then(
+    private SendMessageOptions(
+        prop_id: number,
+        type: number,
+        phoneNum = "",
+        quantity = 1,
+    ) {
+        WWW.Instance.CommonAPI({
+            web_class: WebPropUserPropUsed,
+            body: {
+                prop_id: prop_id, //道具id
+                quantity: quantity, //道具数量
+                type: type, //"道具类型(type):2-转金豆，3-转平台，4-转IM钱包"
+                user_phone: phoneNum, //"电话号码"
+            },
+        }).then(
             (res: any) => {
                 UIComponent.Instance.ToastLanguage("adaptation10199");
                 //刷新 UIMyPack
-                let uipack: UIMyPack = UIComponent.Instance.getComponent("UIMyPack");
+                let uipack: UIMyPack =
+                    UIComponent.Instance.getComponent("UIMyPack");
                 uipack.reqPackList();
             },
-            (res: any) => {
-            }
-        )
+            (res: any) => {},
+        );
         this.hideUI();
     }
 }

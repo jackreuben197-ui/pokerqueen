@@ -2,19 +2,15 @@ import List from "../common/List";
 import ListEx from "../common/ListEx";
 import { StringHelper } from "../helper/StringHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { WebWww, WebRoomCenterMttRooms } from "../net/https/WebRequest";
+import { WWW, WebRoomCenterMttRooms } from "../net/https/WebRequest";
 import LobbySession from "../session/LobbySession";
 import UIBasePlus from "../ui/UIBasePlus";
 import { UIMTTModel } from "./UIMTTModel";
-
-
-
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIMTTDetail_Desk extends UIBasePlus {
-
     $top_desk: cc.Node = null;
 
     $scroller_desk: cc.Node = null;
@@ -39,32 +35,30 @@ export default class UIMTTDetail_Desk extends UIBasePlus {
     }
     refreshTop(res?: any) {
         if (res) {
-            this.$top_desk.children[1].getComponent(cc.Label).string = StringHelper.Format(i18nMgr.Get("MTT_Desk_Num"), [res.data.records.length]);
-
+            this.$top_desk.children[1].getComponent(cc.Label).string =
+                StringHelper.Format(i18nMgr.Get("MTT_Desk_Num"), [
+                    res.data.records.length,
+                ]);
         } else {
-
-            this.$top_desk.children[0].getComponent(cc.RichText).string = StringHelper.Format(i18nMgr.Get("MTT_State_DeskPlayerCount"), [this.mtt_detail.mtt.seat_count]);
-            this.$top_desk.children[1].getComponent(cc.Label).string = '';
+            this.$top_desk.children[0].getComponent(cc.RichText).string =
+                StringHelper.Format(i18nMgr.Get("MTT_State_DeskPlayerCount"), [
+                    this.mtt_detail.mtt.seat_count,
+                ]);
+            this.$top_desk.children[1].getComponent(cc.Label).string = "";
         }
     }
 
     reqList() {
-
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebRoomCenterMttRooms,
-                api_id: this.mtt_detail.mtt.match_id
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebRoomCenterMttRooms,
+            api_id: this.mtt_detail.mtt.match_id,
+        }).then(
             (res: any) => {
-
                 this.refreshTop(res);
                 this.listEx.refresh(res.data.records, res.data.total);
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
     ////////////////////////////////////List/////////////////////////////
     private listEx: ListEx = null;
@@ -75,12 +69,11 @@ export default class UIMTTDetail_Desk extends UIBasePlus {
             list: this.$scroller_desk.getComponent(List),
             nullNode: this.$null_desk,
             this: this,
-            request: this.reqList
+            request: this.reqList,
         });
     }
     //滚动节点渲染
     render_item(node: cc.Node, index: number) {
-
         let data = this.listEx.data[index];
 
         this.setChildLabel(node, "table", data.rid);
@@ -88,17 +81,21 @@ export default class UIMTTDetail_Desk extends UIBasePlus {
         this.setChildLabel(node, "min", data.rid);
         this.setChildLabel(node, "max", data.rid);
 
-
         if (data.roomers != null && data.roomers.length == 1) {
             this.setChildLabel(node, "min", data.roomers[0].chip / 100);
             this.setChildLabel(node, "max", data.roomers[0].chip / 100);
-        }
-        else if (data.roomers != null && data.roomers.length > 1) {
-
-            this.setChildLabel(node, "min", this.GetMaxMinChipByPlayerList(data.roomers)[0] / 100);
-            this.setChildLabel(node, "max", this.GetMaxMinChipByPlayerList(data.roomers)[1] / 100);
-        }
-        else {
+        } else if (data.roomers != null && data.roomers.length > 1) {
+            this.setChildLabel(
+                node,
+                "min",
+                this.GetMaxMinChipByPlayerList(data.roomers)[0] / 100,
+            );
+            this.setChildLabel(
+                node,
+                "max",
+                this.GetMaxMinChipByPlayerList(data.roomers)[1] / 100,
+            );
+        } else {
             this.setChildLabel(node, "min", "");
             this.setChildLabel(node, "max", "");
         }

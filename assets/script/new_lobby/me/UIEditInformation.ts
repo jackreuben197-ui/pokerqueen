@@ -2,7 +2,12 @@ import { UIDefine } from "../../define/UIDefine";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { UIClubModel } from "../../lobby/labor/UIClubModel";
-import { WebOrgClubUploadIcon, WebUserInfo, WebUserModifyUserInfo, WebWww } from "../../net/https/WebRequest";
+import {
+    WebOrgClubUploadIcon,
+    WebUserInfo,
+    WebUserModifyUserInfo,
+    WWW,
+} from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import BottomSelector from "../../ui/component/BottomSelector";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
@@ -14,7 +19,6 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIEditInformation extends BaseFormPlus {
-
     $Head: cc.Node = null;
     cc_Sprite$head: cc.Sprite = null;
     BottomSelector$selector: BottomSelector = null;
@@ -37,18 +41,24 @@ export default class UIEditInformation extends BaseFormPlus {
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.refreshUserInfo();
-        this.BottomSelector$selector.data = ["UIMine_UserInfoSetting_Female", "UIMine_UserInfoSetting_Male", this];
+        this.BottomSelector$selector.data = [
+            "UIMine_UserInfoSetting_Female",
+            "UIMine_UserInfoSetting_Male",
+            this,
+        ];
     }
     regiterTouchEvents() {
         super.regiterTouchEvents();
         this.setButtonClick(this.$name, this.onNameClick);
         this.setButtonClick(this.$sex, this.onSexClick);
         this.setButtonClick(this.$Head, this.onHeadClick);
-
     }
     //刷新用户信息
     refreshUserInfo() {
-        WebImageHelper.SetHeadImage(this.cc_Sprite$head, WebUserInfo.Response.data.user.avatar);
+        WebImageHelper.SetHeadImage(
+            this.cc_Sprite$head,
+            WebUserInfo.Response.data.user.avatar,
+        );
         this.refreshNick();
         this.refreshSex();
     }
@@ -59,7 +69,11 @@ export default class UIEditInformation extends BaseFormPlus {
     // 1女 2男
     refreshSex() {
         console.log("刷新性别,", WebUserInfo.Response.data.user.sex);
-        this.cc_Label$sex.string = i18nMgr.Get(WebUserInfo.Response.data.user.sex == 1 ? "UIMine_UserInfoSetting_Female" : "UIMine_UserInfoSetting_Male");
+        this.cc_Label$sex.string = i18nMgr.Get(
+            WebUserInfo.Response.data.user.sex == 1
+                ? "UIMine_UserInfoSetting_Female"
+                : "UIMine_UserInfoSetting_Male",
+        );
     }
     ////////////click////////////
 
@@ -71,8 +85,6 @@ export default class UIEditInformation extends BaseFormPlus {
             this.reqUserHead(icon);
         }
     }
-
-
 
     onNameClick() {
         //更改姓名
@@ -89,27 +101,23 @@ export default class UIEditInformation extends BaseFormPlus {
 
     //请求改变性别
     reqChangeSex(sex: number) {
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebUserModifyUserInfo,
-                body: {
-                    sex: sex,
-                    used_prop_id: 0,
-                }
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebUserModifyUserInfo,
+            body: {
+                sex: sex,
+                used_prop_id: 0,
+            },
+        }).then(
             (res: typeof WebUserModifyUserInfo.Response) => {
                 UIComponent.Instance.ToastLanguage("UIMine_Setting117");
                 this.reqUserInfo();
             },
-            (res: any) => {
-            }
-        )
+            (res: any) => {},
+        );
     }
     //请求用户信息，判断剩余修改次数
     reqUserInfo() {
-
-        // WebWww.Instance.CommonAPI(
+        // WWW.Instance.CommonAPI(
         //     {
         //         web_class: WebUserInfo,
         //     }
@@ -124,31 +132,26 @@ export default class UIEditInformation extends BaseFormPlus {
         //     }
         // )
 
-        LobbySession.APIUserInfo().then(
-            (res: any) => {
-                this.refreshUserInfo();
-                UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshUserInfo();
-                UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
-            }
-        )
+        LobbySession.APIUserInfo().then((res: any) => {
+            this.refreshUserInfo();
+            UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshUserInfo();
+            UIComponent.Instance.getComponent<UILobbyIndex>(
+                "UILobbyIndex",
+            )?.refreshUserInfo();
+        });
     }
     //修改头像
     reqUserHead(avatar: string) {
-
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebUserModifyUserInfo,
-                body: {
-                    avatar: avatar,
-                }
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebUserModifyUserInfo,
+            body: {
+                avatar: avatar,
+            },
+        }).then(
             (res: typeof WebUserInfo.Response) => {
                 this.reqUserInfo();
             },
-            (res: any) => {
-
-            }
-        )
+            (res: any) => {},
+        );
     }
 }

@@ -2,18 +2,16 @@ import List from "../../common/List";
 import ListEx from "../../common/ListEx";
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
-import { WebMsgMessageList, WebWww } from "../../net/https/WebRequest";
+import { WebMsgMessageList, WWW } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 import ItemMsgSystem from "./ItemMsgSystem";
 import { EnumMSG } from "./MyMessageModel";
 
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIMsgSystem extends BaseFormPlus {
-
     ///////////////////////引用声明////////////////////////
     $content: cc.Node = null;
     //$ItemMsgSystem: cc.Node = null;
@@ -62,27 +60,25 @@ export default class UIMsgSystem extends BaseFormPlus {
         let club_id = 0;
         if (this._param.from == 1) club_id = ClubCache.club_id;
 
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebMsgMessageList,
-                body: {
-                    //clubID: ClubCache.club_id,
-                    //TribeID: tribe_id,
-                    msg_type: this._param.msg_type,
-                    limit: 10,
-                    offset: offset
-                },
-                club_id: club_id
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebMsgMessageList,
+            body: {
+                //clubID: ClubCache.club_id,
+                //TribeID: tribe_id,
+                msg_type: this._param.msg_type,
+                limit: 10,
+                offset: offset,
+            },
+            club_id: club_id,
+        }).then(
             (res: any) => {
                 //this.refreshList(res.data.list);
                 this.listEx.refresh(res.data.list, res.data.total);
             },
             (res: any) => {
                 this.listEx.error();
-            }
-        )
+            },
+        );
     }
     ///////////////////////////////////////////////////////////
     private List$list: List = null;
@@ -93,19 +89,26 @@ export default class UIMsgSystem extends BaseFormPlus {
     private initEX() {
         this.listEx = new ListEx({
             list: this.List$list,
-            nullNode: this.$Null,//this.$Page0.getChildByName("Null"),
+            nullNode: this.$Null, //this.$Page0.getChildByName("Null"),
             this: this,
-            request: this.reqMsgList
+            request: this.reqMsgList,
         });
     }
     //////////////////////////////////滚动节点渲染///////////////////////
     render_item(node: cc.Node, index: number) {
         let item_data = this.listEx.data[index];
-        let show_obj = { data: item_data, type: this._param.msg_type == EnumMSG.MSG_System ? 0 : 1 };
-        let click_obj = { name: this._param.name, isFromEx: true, data: item_data, type: this._param.msg_type == EnumMSG.MSG_System ? 0 : 1 }
+        let show_obj = {
+            data: item_data,
+            type: this._param.msg_type == EnumMSG.MSG_System ? 0 : 1,
+        };
+        let click_obj = {
+            name: this._param.name,
+            isFromEx: true,
+            data: item_data,
+            type: this._param.msg_type == EnumMSG.MSG_System ? 0 : 1,
+        };
         node["obj"] = click_obj;
         node.getComponent(ItemMsgSystem).onShow(show_obj);
         node.on("click", this.click_item, this);
     }
-
 }

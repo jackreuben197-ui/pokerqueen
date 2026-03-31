@@ -9,7 +9,12 @@ import { i18nLabel } from "../../i18n/i18nLabel";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import ToastManager from "../../manager/ToastManager";
-import { WebOrgClubUserInfo, WebUserRoom, WebUserRoomBringin, WebWww } from "../../net/https/WebRequest";
+import {
+    WebOrgClubUserInfo,
+    WebUserRoom,
+    WebUserRoomBringin,
+    WWW,
+} from "../../net/https/WebRequest";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
@@ -17,7 +22,6 @@ import { AddClipsData } from "../new_ui/UIBringIn";
 import { OutClipsData } from "../new_ui/UIBringOut";
 import TexasGame from "../texas/TexasGame";
 import GameUtil from "../util/GameUtil";
-
 
 const { ccclass, property } = cc._decorator;
 
@@ -40,7 +44,6 @@ export default class UITexasMenu extends UIBasePlus {
     outTipNode: cc.Node = null;
     outGold: cc.Label = null;
 
-
     gold_click: cc.Node = null;
 
     ////////////////////////////////////
@@ -59,7 +62,6 @@ export default class UITexasMenu extends UIBasePlus {
     //仓库存储节点
     $node_storage: cc.Node = null;
 
-
     tips_show: boolean = false;
 
     IMenuButton_Type: {
@@ -69,8 +71,6 @@ export default class UITexasMenu extends UIBasePlus {
         hideLine?: boolean;
         onClick?: Function;
     };
-
-
 
     options = [
         {
@@ -92,66 +92,66 @@ export default class UITexasMenu extends UIBasePlus {
             node: null,
             text: "Functions",
             i18n_string: "UITexas_OwerFund",
-            onClick: this.click_ower_fund
+            onClick: this.click_ower_fund,
         },
         {
-            id: 3,// 个性设置
+            id: 3, // 个性设置
             node: null,
             text: "Options",
             i18n_string: "UITexas_Setting",
             onClick: this.click_setting,
         },
         {
-            id: 4,// 规则
+            id: 4, // 规则
             node: null,
             text: "Rules",
             i18n_string: "UITexas_RuleTips",
-            onClick: this.click_rule_tips
+            onClick: this.click_rule_tips,
         },
         {
-            id: 5,// 自动上桌筹码
+            id: 5, // 自动上桌筹码
             node: null,
             text: "Set up automatic table chips",
             i18n_string: "UITexasAutoOutChip",
-            onClick: this.click_auto_table
+            onClick: this.click_auto_table,
         },
         {
-            id: 6,// 带入
+            id: 6, // 带入
             node: null,
             text: "Supplementary scoreboard",
             i18n_string: "UITexas_AddChipsMenu",
-            onClick: this.click_bringin
+            onClick: this.click_bringin,
         },
         {
-            id: 7,// 带出
+            id: 7, // 带出
             node: null,
             text: "Bring out the scoreboard",
             i18n_string: "UITexas_BringOutChipsMenu",
-            onClick: this.click_bringout
+            onClick: this.click_bringout,
         },
         {
-            id: 8,// trust
+            id: 8, // trust
             node: null,
             text: "Auto check/fold",
             i18n_string: "UITexas_TrustGame",
-            onClick: this.click_trust
+            onClick: this.click_trust,
         },
         {
-            id: 9,// 离座留桌
+            id: 9, // 离座留桌
             node: null,
             text: "Leave the table",
             i18n_string: "UITexas_LeaveTheTable",
-            onClick: this.click_leave_table
+            onClick: this.click_leave_table,
         },
         {
-            id: 10,// 离开
+            id: 10, // 离开
             node: null,
             text: "Exit to lobby",
             i18n_string: "UITexas_Leave",
             hideLine: true,
-            onClick: this.click_leave
+            onClick: this.click_leave,
         },
-    ]
+    ];
 
     //获取选项配置
     public getOption(index: number) {
@@ -161,13 +161,15 @@ export default class UITexasMenu extends UIBasePlus {
     public setOptionInteractable(index: number, boo: boolean) {
         let node: cc.Node = this.getOption(index).node;
         node.getChildByName("click").getComponent(cc.Button).interactable = boo;
-        node.getChildByName("label").color = cc.Color.BLACK.fromHEX(boo ? TextColor.Color7 : TextColor.Color3);
+        node.getChildByName("label").color = cc.Color.BLACK.fromHEX(
+            boo ? TextColor.Color7 : TextColor.Color3,
+        );
     }
 
     public clearOptions() {
-        this.options.forEach(item => {
+        this.options.forEach((item) => {
             item.node.active = false;
-        })
+        });
     }
 
     lateLoad() {
@@ -193,8 +195,6 @@ export default class UITexasMenu extends UIBasePlus {
 
         //刷新bb
         this.refreshBB();
-
-
     }
     refreshBB() {
         this.refreshBB_switch(GameCache.Instance.bb_on);
@@ -212,7 +212,7 @@ export default class UITexasMenu extends UIBasePlus {
     }
 
     private buildMenuButtons() {
-        this.options.forEach(item => {
+        this.options.forEach((item) => {
             let button = cc.instantiate(this.$option_0);
             let label = button.getChildByName("label");
             button.parent = this.$layout;
@@ -220,17 +220,24 @@ export default class UITexasMenu extends UIBasePlus {
             label.getComponent(i18nLabel).i18NString = item.i18n_string;
             this.setButtonClick(button, item.onClick);
             item.node = button;
-        })
+        });
         this.$option_0.active = false;
         this.$option_bb.setSiblingIndex(this.$layout.childrenCount - 1);
         this.setOptionBB();
-
     }
 
     setOptionBB() {
         this.setChildButtonClick(this.$option_bb, "click", this.click_bb);
-        this.setChildButtonClick(this.$option_bb, "label_con/btn_showtips", this.click_bb_showtips);
-        this.setChildButtonClick(this.$option_bb, "tips/close_con/close", this.click_bb_hidetips);
+        this.setChildButtonClick(
+            this.$option_bb,
+            "label_con/btn_showtips",
+            this.click_bb_showtips,
+        );
+        this.setChildButtonClick(
+            this.$option_bb,
+            "tips/close_con/close",
+            this.click_bb_hidetips,
+        );
     }
 
     //金币点击跳转钱包
@@ -244,42 +251,36 @@ export default class UITexasMenu extends UIBasePlus {
     // }
 
     click_coin() {
-
         let data = WebUserRoomBringin.Response.data;
 
-        UIComponent.open(UIDefine.UIToRecharge,
-            {
-                type: 1,
-                walletType: WalletType.Club,
-                club_id: data.club_id,
-                club_name: data.club_name,
-                //tribe_name: data.tribe_name,
-            });
-
+        UIComponent.open(UIDefine.UIToRecharge, {
+            type: 1,
+            walletType: WalletType.Club,
+            club_id: data.club_id,
+            club_name: data.club_name,
+            //tribe_name: data.tribe_name,
+        });
     }
     //面板移入
     fadeIn(animation: boolean = true) {
         if (animation) {
             cc.tween(this.$panel).to(0.25, { x: 0 }).start();
-        }
-        else {
+        } else {
             this.$panel.x = 0;
         }
         this.$black.active = true;
         this.$block.active = true;
-
     }
     //面板移出
     fadeOut(animation: boolean = true) {
-
         let view_width = 1242;
 
         this.$panel.width = view_width;
 
         if (animation) {
-            cc.tween(this.$panel).to(0.25, { x: - view_width }).start();
+            cc.tween(this.$panel).to(0.25, { x: -view_width }).start();
         } else {
-            this.$panel.x = - view_width;
+            this.$panel.x = -view_width;
         }
         this.$black.active = false;
         this.$block.active = false;
@@ -296,7 +297,6 @@ export default class UITexasMenu extends UIBasePlus {
         this.fadeOut(param);
     }
 
-
     /******左侧菜单按钮点击******/
     //站起
     click_stand_up() {
@@ -309,58 +309,53 @@ export default class UITexasMenu extends UIBasePlus {
         }
         this.game.Standup();
     }
-    click_rebuy() {
-
-    }
-    click_ower_fund() {
-
-    }
+    click_rebuy() {}
+    click_ower_fund() {}
     click_setting() {
         this.click_black();
-        UIComponent.open(UIDefine.UITexasSettingComponent, null, { parentUI: this.game.uirc.Common_Con });
+        UIComponent.open(UIDefine.UITexasSettingComponent, null, {
+            parentUI: this.game.uirc.Common_Con,
+        });
     }
     click_rule_tips() {
         this.click_black();
-        UIComponent.open(UIDefine.UITexasRule, null, { parentUI: this.game.uirc.Common_Con });
+        UIComponent.open(UIDefine.UITexasRule, null, {
+            parentUI: this.game.uirc.Common_Con,
+        });
     }
 
     //设置自动上桌筹码
     click_auto_table() {
-
         this.click_black();
         // if (null == this.MenuButtons_Dic.Button_SetAutoOnTable || !this.MenuButtons_Dic.Button_SetAutoOnTable.node.getComponent(cc.Button).interactable) {
         //     return;
         // }
 
         if (GameUtil.GetFriendsOrClubTable() == 3) {
-
-            WebWww.Instance.CommonAPI(
-                {
-                    web_class: WebUserRoomBringin,
-                    api_id: GameCache.Instance.room_id,
-                }
-            ).then(
+            WWW.Instance.CommonAPI({
+                web_class: WebUserRoomBringin,
+                api_id: GameCache.Instance.room_id,
+            }).then(
                 (res: any) => {
                     UIComponent.Instance.ShowUI(PrefabUI.UIAutoBringIn, {
                         bigBlind: GameCache.Instance.CurGame.bigBlind,
                         smallBlind: GameCache.Instance.CurGame.smallBlind,
-                        currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-                        currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                        currentMinRate:
+                            GameCache.Instance.CurGame.currentMinRate,
+                        currentMaxRate:
+                            GameCache.Instance.CurGame.currentMaxRate,
                         tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
                         totalCoin: GC.data.user.info.gold,
-                        storeChips: GameCache.Instance.CurGame.mainPlayer.cacheStoreChips,
+                        storeChips:
+                            GameCache.Instance.CurGame.mainPlayer
+                                .cacheStoreChips,
                         isFromSetting: true,
                         wallets: [res.data],
                     });
-
                 },
-                (res: any) => {
-
-                }
-            )
-
-        }
-        else {
+                (res: any) => {},
+            );
+        } else {
             UIComponent.Instance.ShowUI(PrefabUI.UIAutoBringIn, {
                 bigBlind: GameCache.Instance.CurGame.bigBlind,
                 smallBlind: GameCache.Instance.CurGame.smallBlind,
@@ -368,7 +363,8 @@ export default class UITexasMenu extends UIBasePlus {
                 currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
                 totalCoin: GC.data.user.info.gold,
                 tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
-                storeChips: GameCache.Instance.CurGame.mainPlayer.cacheStoreChips,
+                storeChips:
+                    GameCache.Instance.CurGame.mainPlayer.cacheStoreChips,
                 isFromSetting: true,
             });
         }
@@ -382,8 +378,7 @@ export default class UITexasMenu extends UIBasePlus {
         this.click_black();
 
         if (GameUtil.GetFriendsOrClubTable() == 3) {
-
-            WebWww.Instance.CommonAPI({
+            WWW.Instance.CommonAPI({
                 web_class: WebUserRoomBringin,
                 api_id: GameCache.Instance.room_id,
             }).then(
@@ -393,40 +388,35 @@ export default class UITexasMenu extends UIBasePlus {
                         {
                             bigBlind: GameCache.Instance.CurGame.bigBlind,
                             smallBlind: GameCache.Instance.CurGame.smallBlind,
-                            currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-                            currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                            currentMinRate:
+                                GameCache.Instance.CurGame.currentMinRate,
+                            currentMaxRate:
+                                GameCache.Instance.CurGame.currentMaxRate,
                             totalCoin: GC.data.user.info.gold,
-                            tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
+                            tableChips:
+                                GameCache.Instance.CurGame.mainPlayer.chips,
                             wallets: [res.data],
                             fromMenu: true,
-                        }
-                    )
+                        },
+                    );
                 },
-                (res: any) => {
-
-                },
-            )
-        }
-        else {
-
-            UIComponent.Instance.ShowUI<AddClipsData>(
-                PrefabUI.UIBringIn,
-                {
-                    bigBlind: GameCache.Instance.CurGame.bigBlind,
-                    smallBlind: GameCache.Instance.CurGame.smallBlind,
-                    currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-                    currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-                    totalCoin: GC.data.user.info.gold,
-                    tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
-                    fromMenu: true,
-                }
-            )
+                (res: any) => {},
+            );
+        } else {
+            UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIBringIn, {
+                bigBlind: GameCache.Instance.CurGame.bigBlind,
+                smallBlind: GameCache.Instance.CurGame.smallBlind,
+                currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+                currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                totalCoin: GC.data.user.info.gold,
+                tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
+                fromMenu: true,
+            });
         }
     }
 
     //手动带出
     click_bringout() {
-
         // if (null == this.MenuButtons_Dic.Button_TakeOut || !this.MenuButtons_Dic.Button_TakeOut.node.getComponent(cc.Button).interactable) {
         //     return;
         // }
@@ -435,7 +425,7 @@ export default class UITexasMenu extends UIBasePlus {
         UIComponent.Instance.ShowUI<OutClipsData>(PrefabUI.UIBringOut, {
             currentMinRate: this.game.currentMinRate,
             tableChips: this.game.mainPlayer.chips,
-        })
+        });
     }
 
     click_trust() {
@@ -450,8 +440,7 @@ export default class UITexasMenu extends UIBasePlus {
             return;
         }
 
-        if (this.game.mainPlayer.IsAutoOp)
-            return;
+        if (this.game.mainPlayer.IsAutoOp) return;
 
         this.game.SendTrustAction(true);
     }
@@ -485,5 +474,4 @@ export default class UITexasMenu extends UIBasePlus {
         this.setChildVisible(this.$option_bb, "switch/on", boo);
         this.setChildVisible(this.$option_bb, "switch/off", !boo);
     }
-
 }

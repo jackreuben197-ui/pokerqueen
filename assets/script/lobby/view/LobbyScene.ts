@@ -1,15 +1,15 @@
 /*
  * @Author: xfj
  * @Date: 2023-03-23 20:28:06
- * @description: 
- * @LastEditors: 
+ * @description:
+ * @LastEditors:
  * @LastEditTime: 2023-03-29 16:25:37
  * @FilePath: /pokerqueen/assets/script/lobby/view/LobbyScene.ts
  */
 const { ccclass } = cc._decorator;
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
-import { WebConfigGlobalConfig, WebWww } from "../../net/https/WebRequest";
+import { WebConfigGlobalConfig, WWW } from "../../net/https/WebRequest";
 import UILobbyIndex from "../../new_lobby/index/UILobbyIndex";
 import UILobbyIndexNew from "../../new_lobby/index/UILobbyIndexNew";
 import BaseScene from "../../ui/scene/BaseScene";
@@ -19,7 +19,6 @@ import UILobbyMenu from "./UILobbyMenu";
 
 @ccclass
 export default class LobbyScene extends BaseScene {
-
     //private currUI: cc.Node = null;
 
     private layer: cc.Node = null;
@@ -27,7 +26,6 @@ export default class LobbyScene extends BaseScene {
     menu: UILobbyMenu = null;
 
     onLoad(): void {
-
         this.name = "LobbyScene";
 
         super.onLoad();
@@ -37,11 +35,10 @@ export default class LobbyScene extends BaseScene {
 
         LobbyControl.getInstance().setLobbyInfo({
             //curShowUI: this.currUI,
-            Layer: this.layer
-        })
+            Layer: this.layer,
+        });
     }
     protected lateEnter(param) {
-
         console.log("进入大厅--->", param);
 
         if (param.mode == 0) {
@@ -54,7 +51,7 @@ export default class LobbyScene extends BaseScene {
         }
         //编辑界面
         if (GC.data.user.isRegist) {
-            UIComponent.open(UIDefine.UIEditMess)
+            UIComponent.open(UIDefine.UIEditMess);
         }
     }
     /**
@@ -62,7 +59,10 @@ export default class LobbyScene extends BaseScene {
      * @return {*}
      */
     public async setLooby() {
-        await LobbyControl.getInstance().switchContent("UILobbyIndex", "main/lobby/index/");
+        await LobbyControl.getInstance().switchContent(
+            "UILobbyIndex",
+            "main/lobby/index/",
+        );
         //await LobbyControl.getInstance().switchContent("UILobbyIndexNew", "main/lobby/index/");
         this.toReady();
     }
@@ -86,7 +86,7 @@ export default class LobbyScene extends BaseScene {
         });
     }
     private async refreshConfig() {
-        await WebWww.Instance.CommonAPI({ web_class: WebConfigGlobalConfig });
+        await WWW.Instance.CommonAPI({ web_class: WebConfigGlobalConfig });
         this.readyComplete();
     }
     //大厅相关数据加载完成

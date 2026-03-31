@@ -5,18 +5,16 @@ import GC from "../frame/GameControl";
 import { GameCache } from "../game/GameCache";
 import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
-import { WebWww, WebRoomCenterMttList } from "../net/https/WebRequest";
+import { WWW, WebRoomCenterMttList } from "../net/https/WebRequest";
 import UIComponent from "../ui/UIComponent";
 import BaseFormPlus from "../ui/form/BaseFormPlus";
 import ItemMTTList from "./ItemMTTList";
 import { MTTListOrderTypeString } from "./UIMTTModel";
 
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIMTTList extends BaseFormPlus {
-
     ///////////////////////引用声明////////////////////////
 
     ////////////////////////////////////////////////////
@@ -54,21 +52,19 @@ export default class UIMTTList extends BaseFormPlus {
     }
 
     reqList(offset: number = 0) {
-
         this.isReqing = true;
 
-        WebWww.Instance.CommonAPI(
-            {
-                web_class: WebRoomCenterMttList,
-                body: {
-
-                    limit: 10,
-                    offset: offset,
-                    status: [0, 1],
-                    order: [MTTListOrderTypeString[MTTListOrderTypeString.start_asc]],
-                },
-            }
-        ).then(
+        WWW.Instance.CommonAPI({
+            web_class: WebRoomCenterMttList,
+            body: {
+                limit: 10,
+                offset: offset,
+                status: [0, 1],
+                order: [
+                    MTTListOrderTypeString[MTTListOrderTypeString.start_asc],
+                ],
+            },
+        }).then(
             (res: any) => {
                 this.listEx.refresh(res.data.records, res.data.total);
                 this.isReqing = false;
@@ -76,8 +72,8 @@ export default class UIMTTList extends BaseFormPlus {
             (res: any) => {
                 this.listEx.error();
                 this.isReqing = false;
-            }
-        )
+            },
+        );
     }
 
     ///////////////////////////////////////////////////////////
@@ -91,12 +87,11 @@ export default class UIMTTList extends BaseFormPlus {
             list: this.List$list,
             //nullNode: this.$Null,//this.$Page0.getChildByName("Null"),
             this: this,
-            request: this.reqList
+            request: this.reqList,
         });
     }
     //////////////////////////////////滚动节点渲染///////////////////////
     render_item(node: cc.Node, index: number) {
-
         let data = this.listEx.data[index];
 
         node.getComponent(ItemMTTList).onShow(data);
@@ -104,7 +99,6 @@ export default class UIMTTList extends BaseFormPlus {
         node["data"] = data;
 
         node.on("click", this.click_item, this);
-
     }
 
     click_item(button: cc.Button) {
@@ -120,10 +114,8 @@ export default class UIMTTList extends BaseFormPlus {
             GC.data.mtt.list.select = data;
             //UIComponent.open(UIDefine.MttDetailForm, data);
             UIComponent.open(UIDefine.UIMTTDetail, data);
-        }
-        else {
+        } else {
             UIComponent.Instance.ToastLanguage("PleaseJoinAUnionFirs");
         }
     }
-
 }

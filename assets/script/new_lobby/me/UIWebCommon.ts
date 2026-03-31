@@ -1,10 +1,9 @@
 import SimpleNodePool from "../../common/MyNodePool";
-import { WebMallShopList, WebMallBuy, WebWww } from "../../net/https/WebRequest";
+import { WebMallShopList, WebMallBuy, WWW } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 import ItemMall from "./ItemMall";
 import UIMe from "./UIMe";
-
 
 const { ccclass, property } = cc._decorator;
 
@@ -16,7 +15,6 @@ export default class UIWebCommon extends BaseFormPlus {
 
     lateLoad() {
         super.lateLoad();
-
     }
     /**
      * 每次打开面板处理的内容
@@ -26,5 +24,4 @@ export default class UIWebCommon extends BaseFormPlus {
         this.title_label.i18NString = param.title;
         this.cc_WebView$content.url = param.url;
     }
-
 }
