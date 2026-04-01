@@ -1057,6 +1057,14 @@ export const UIDefine = {
         Bundle: '',
         Path: "login/form/UIEditMess",
     },
+    // 牌桌列表界面：
+    UIPokerRoomList:{
+        UIType: UIType.Form,
+        Name: "UIPokerRoomList",
+        Bundle: null,
+        Path: "main/lobby/shareUI/PokerRoomList",
+    },
+
     //MTT比赛列表界面
     UIMTTList: {
         UIType: UIType.Form,

@@ -119,8 +119,33 @@ export default class HttpClient {
                     xhr.setRequestHeader(header[0], header[1]);
                 }
             }
+
+            let strToDebug: string = this.xhrToCurl(xhr);
+            console.log(strToDebug);
+
             xhr.send(body ? body : null);
         })
+    }
+
+    static xhrToCurl(xhrConfig) {
+        // 假设 xhrConfig 是你发送请求时的配置对象
+        const { method, url, headers, data } = xhrConfig;
+
+        let curl = `curl '${url}'`;
+        curl += ` -X ${method}`;
+
+        // 遍历并添加请求头
+        for (let key in headers) {
+            curl += ` -H '${key}: ${headers[key]}'`;
+        }
+
+        // 如果有数据体（如 POST 请求）
+        if (data) {
+            const body = typeof data === 'object' ? JSON.stringify(data) : data;
+            curl += ` --data-raw '${body}'`;
+        }
+
+        return curl;
     }
 
     static checkGetUrl(reqUrl: string, body: any, isGet: boolean) {
