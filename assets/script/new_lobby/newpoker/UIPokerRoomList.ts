@@ -1,12 +1,14 @@
 import { API_User_Rooms_ids, API_User_Rooms_List, WWW } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
-import AreaCodeFormItem from "../../ui/item/AreaCodeFormItem";
-
+import UIPokerListItem from "./UIPokerListItem";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIPokerRoomList extends BaseFormPlus {
+
+    @property(cc.Prefab)
+    pokerItemPrefab: cc.Prefab = null;
 
     protected isReqing: boolean = false;
 
@@ -24,13 +26,8 @@ export default class UIPokerRoomList extends BaseFormPlus {
     protected $contentPoker: cc.Node = null;
     protected $bkTest: cc.Node = null;
 
-    protected $dropdownBtn1: cc.Node = null;
-    protected $tableLayout: cc.Node = null;
-
     // 记录 bkTest 的原始尺寸，用于动画恢复
     private _bkTestOriginalSize: cc.Size = null;
-    // 记录 tableLayout 的原始尺寸，用于动画恢复
-    private _tableLayoutOriginalSize: cc.Size = null;
     // 记录当前是否正在动画中
     private _isAnimating: boolean = false;
     // 记录当前是否正在动画中（tableLayout）
@@ -58,9 +55,10 @@ export default class UIPokerRoomList extends BaseFormPlus {
         if (this.$dropdownBtn)
             this.$dropdownBtn.on(cc.Node.EventType.TOUCH_END, this.onDropDownBtn, this);
 
+        /*
         if (this.$dropdownBtn1) {
             this.$dropdownBtn1.on(cc.Node.EventType.TOUCH_END, this.onDropDownBtn1, this);
-        }
+        }*/
 
         // 记录 bkTest 的原始尺寸
         if (this.$bkTest) {
@@ -71,18 +69,14 @@ export default class UIPokerRoomList extends BaseFormPlus {
             this.$bkTest.setAnchorPoint(0.5, 1);
         }
 
-        // 记录 tableLayout 的原始尺寸
-        if (this.$tableLayout) {
-            this._tableLayoutOriginalSize = this.$tableLayout.getContentSize();
-            // 初始状态为隐藏（高度设为0）
-            this.$tableLayout.setContentSize(this._tableLayoutOriginalSize.width, 0);
-            // 设置锚点为 (0.5, 1)，这样展开时从上往下，收起时从下往上
-            this.$tableLayout.setAnchorPoint(0.5, 1);
-        }
+        // 
+        this.reqRoomIdxList();
+
     }
 
     protected onDropDownBtn1(event: cc.Event.EventTouch): void {
-        if (!this.$tableLayout || !this._tableLayoutOriginalSize) return;
+
+        //if (!this.$tableLayout || !this._tableLayoutOriginalSize) return;
 
         /*
         // 简单测试：直接切换高度
@@ -92,14 +86,14 @@ export default class UIPokerRoomList extends BaseFormPlus {
         this.$tableLayout.setContentSize(this._tableLayoutOriginalSize.width, newHeight);
         */
 
-        this.$tableLayout.active = !this.$tableLayout.active;
+        //this.$tableLayout.active = !this.$tableLayout.active;
 
         // 更新 Layout
         //let tableLayoutComp = this.$tableLayout.getComponent(cc.Layout);
 
         //if (tableLayoutComp) tableLayoutComp.updateLayout();
-        let contentLayout = this.$contentPoker ? this.$contentPoker.getComponent(cc.Layout) : null;
-        if (contentLayout) contentLayout.updateLayout();
+        //let contentLayout = this.$contentPoker ? this.$contentPoker.getComponent(cc.Layout) : null;
+        //if (contentLayout) contentLayout.updateLayout();
 
     }
 
@@ -162,7 +156,6 @@ export default class UIPokerRoomList extends BaseFormPlus {
         console.log('Holdem Tab clicked');
         this.setTabSel(1);
 
-        this.reqRoomIdxList();
     }
 
     protected onOmahaTabClick(event: cc.Event.EventTouch): void {
@@ -187,6 +180,63 @@ export default class UIPokerRoomList extends BaseFormPlus {
         return arrRid;
     }
 
+    /**
+         * 根据 game_type 和 poker_type 分组（第一层）
+         * 在集合内部，根据 sb 字段由小到大排列（第二层）
+         */
+    protected filterRecords(records: Array<any>): any[] {
+        if (!records || records.length === 0) {
+            return [];
+        }
+
+        // 第一步：使用嵌套 Map 进行 $O(n)$ 时间复杂度的快速分组
+        const groupMap = new Map<string, Map<number, any[]>>();
+
+        for (const record of records) {
+            const { game_type, poker_type, sb } = record;
+            const primaryKey = `${game_type}_${poker_type}`;
+
+            if (!groupMap.has(primaryKey)) {
+                groupMap.set(primaryKey, new Map<number, any[]>());
+            }
+
+            const secondaryMap = groupMap.get(primaryKey)!;
+            if (!secondaryMap.has(sb)) {
+                secondaryMap.set(sb, []);
+            }
+            secondaryMap.get(sb)!.push(record);
+        }
+
+        // 第二步：将 Map 转换为数组，并对第二层（sb）进行排序
+        // 外层：处理不同的 game_type + poker_type 集合
+        return Array.from(groupMap.values(), (secondaryMap) => {
+
+            // 内层：处理相同集合下不同的 sb 列表
+            // 将 Map 转换为 [sb, list][] 格式以便排序
+            return Array.from(secondaryMap.entries())
+                .sort((a, b) => a[0] - b[0]) // 根据键名（即 sb 的值）进行升序排列
+                .map(entry => entry[1]);     // 只提取排序后的 list 列表部分
+        });
+    }
+
+    // 
+    protected addPokerListItem( resarr : any ): void {
+        if (this.$contentPoker) {
+            for( let ti : number = 0;ti<resarr.length;ti ++ ){
+                for( let tj : number = 0;tj<resarr[ti].length;tj ++ ){
+                    let tnode : cc.Node = cc.instantiate(this.pokerItemPrefab);
+                    this.$contentPoker.addChild(tnode);        
+
+                    let scrpit : UIPokerListItem = tnode.getComponent( UIPokerListItem)
+                    scrpit.setListData(resarr[ti][tj]);
+
+                }
+            }
+            
+        }
+    }
+
+
     protected reqRoomInfo(arrRid: Array<number>) {
         this.isReqing = true;
         WWW.Instance.CommonAPI(
@@ -199,6 +249,10 @@ export default class UIPokerRoomList extends BaseFormPlus {
         ).then(
             (res: any) => {
                 debugger;
+
+                let resArr: any[] = this.filterRecords(res.data.records);
+
+                this.addPokerListItem( resArr );
 
                 this.isReqing = false;
             },

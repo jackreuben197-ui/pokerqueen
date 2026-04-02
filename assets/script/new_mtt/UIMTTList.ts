@@ -29,10 +29,8 @@ export default class UIMTTList extends BaseFormPlus {
     }
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         this.isReqing = false;
-        setTimeout(() => {
-            this.listEx.reset();
-            super.onShow(param, fromUI, sceneUI);
-        }, 30);
+        this.listEx.reset();
+        super.onShow(param, fromUI, sceneUI);
     }
     fadeInComplete() {
         super.fadeInComplete();
