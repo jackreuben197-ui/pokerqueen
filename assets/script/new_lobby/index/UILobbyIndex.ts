@@ -258,7 +258,7 @@ export default class UILobbyIndex extends UIBasePlus {
     }
     protected onPoker(event: cc.Event.EventTouch): void {
         console.log("扑克区域被点击.");
-        UIComponent.open(UIDefine.UIMTTList, null, {
+        UIComponent.open(UIDefine.UIPokerRoomList, null, {
             SceneUI: SceneManager.Instance.currUI,
         });
     }
