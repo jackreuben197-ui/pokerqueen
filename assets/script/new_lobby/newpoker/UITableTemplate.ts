@@ -4,5 +4,107 @@ const { ccclass, property } = cc._decorator;
 export default class UITableTemplate extends cc.Component {
 
 
-    
+    @property(cc.Label)
+    protected tableName: cc.Label = null;
+
+    @property(cc.Label)
+    protected userLabel: cc.Label = null;
+
+    @property(cc.Label)
+    protected timeLabel: cc.Label = null;
+
+    @property(cc.Label)
+    protected betLabel: cc.Label = null;
+
+    @property(cc.Sprite)
+    protected himg0: cc.Sprite = null;
+    @property(cc.Sprite)
+    protected himg1: cc.Sprite = null;
+    @property(cc.Sprite)
+    protected himg2: cc.Sprite = null;
+    @property(cc.Sprite)
+    protected himg3: cc.Sprite = null;
+    @property(cc.Sprite)
+    protected himg4: cc.Sprite = null;
+    @property(cc.Sprite)
+    protected himg5: cc.Sprite = null;
+    @property(cc.Sprite)
+    protected himg6: cc.Sprite = null;
+    @property(cc.Sprite)
+    protected himg7: cc.Sprite = null;
+    @property(cc.Sprite)
+    protected himg8: cc.Sprite = null;
+
+
+    /**
+     * 设置TableName:
+     * @param data 
+     */
+    public setTableData(data: any): void {
+        this.tableName.string = data.name;
+        this.timeLabel.string = this.getTimeDiffString(data.start_time) + "/" + data.play_duration / 60 + "h";
+        this.userLabel.string = (data.seat_count - data.empty_seat) + "/" + data.seat_count;
+        //this.betLabel.string = data.min_bet + " - " + data.max_bet;
+
+        // 处理对应的头像数据：
+        this.loadHeadImage(data.users);
+
+    }
+
+    /**
+     * 加载头像数据：
+     */
+    protected loadHeadImage(users: Array<any>): void {
+        let arrHeadImg: Array<cc.Sprite> = [this.himg0, this.himg1, this.himg2,
+        this.himg3, this.himg4, this.himg5, this.himg6, this.himg7, this.himg8];
+
+        for (let ti: number = 0; ti < users.length; ti++) {
+            if (users[ti].avatar) {
+                cc.assetManager.loadRemote(users[ti].avatar, (err, texture: cc.Texture2D) => {
+                    if (err) {
+                        cc.error("加载失败", err);
+                        return;
+                    }
+
+                    // 关键：禁用动态合图
+                    if (cc.dynamicAtlasManager) {
+                        cc.dynamicAtlasManager.insertSpriteFrame(null); // 彻底关闭此纹理参与合图
+                    }
+                    texture.packable = false; // 2.4.x 建议设置此属性
+
+                    const sf = new cc.SpriteFrame();
+                    sf.setTexture(texture);
+                    if (arrHeadImg[ti]) {
+                        arrHeadImg[ti].spriteFrame = sf;
+                    }
+                });
+            }
+        }
+    }
+
+    /** 
+     * 计算给定 ISO 时间字符串距离当前时间的差值
+     * 输出格式: "1h28m"
+     * @param isoString 时间字符串 (如: 2026-04-03T02:44:12Z)
+     */
+    protected getTimeDiffString(isoString: string): string {
+        const targetDate = new Date(isoString);
+        const now = new Date();
+
+        // 获取毫秒差值的绝对值（防止计算未来的时间出现负数）
+        const diffMs = Math.abs(now.getTime() - targetDate.getTime());
+
+        // 转换为总分钟数
+        const totalMinutes = Math.floor(diffMs / (1000 * 60));
+
+        // 计算小时和剩余分钟
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+
+        // 拼接字符串
+        if (hours > 0)
+            return `${hours}h${minutes}m`;
+        return `${minutes}m`;
+    }
+
 }
