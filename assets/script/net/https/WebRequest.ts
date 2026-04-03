@@ -44,6 +44,8 @@ import {
 } from "./web_request/WebRequestConfig";
 
 import {
+    API_User_Rooms_ids,
+    API_User_Rooms_List,
     WebChannel,
     WebLogin,
     WebUserInfo,
@@ -91,11 +93,6 @@ import { WebCommon } from "./WebRequestBase";
 (window as any).WebRoomCenterMttList = WebRoomCenterMttList;
 (window as any).WebUserRoom = WebUserRoom;
 
-//! 获取玩家房间列表：api/roomcenter/user/rooms/list
-export class API_User_Rooms_List extends WebCommon {
-    static API: string = "/api/roomcenter/user/rooms/list";
-}
-
-export class API_User_Rooms_ids extends WebCommon {
-    static API: string = "/api/roomcenter/user/all/room/ids";
-}
+//! 获取牌桌相关的信息：
+(window as any).API_User_Rooms_List = API_User_Rooms_List;
+(window as any).API_User_Rooms_ids = API_User_Rooms_ids;

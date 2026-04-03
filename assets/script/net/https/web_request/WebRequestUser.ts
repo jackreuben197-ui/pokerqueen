@@ -336,6 +336,17 @@ export class WebGoldChangeInsureLog {
     static API: string = "/api/user/gold_insure_change_log";
 }
 
+
+//! 获取玩家房间列表：api/roomcenter/user/rooms/list
+export class API_User_Rooms_List extends WebCommon {
+    static API: string = "/api/roomcenter/user/rooms/list";
+}
+
+export class API_User_Rooms_ids extends WebCommon {
+    static API: string = "/api/roomcenter/user/all/room/ids";
+}
+
+
 export class WebUserRoom extends WebCommon {
     //接口地址
     static API: string = "/api/user/room/{id}";
