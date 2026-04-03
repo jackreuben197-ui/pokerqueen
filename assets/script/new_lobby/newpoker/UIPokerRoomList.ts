@@ -74,28 +74,6 @@ export default class UIPokerRoomList extends BaseFormPlus {
 
     }
 
-    protected onDropDownBtn1(event: cc.Event.EventTouch): void {
-
-        //if (!this.$tableLayout || !this._tableLayoutOriginalSize) return;
-
-        /*
-        // 简单测试：直接切换高度
-        let currentHeight = this.$tableLayout.getContentSize().height;
-        let newHeight = currentHeight > 0 ? 0 : this._tableLayoutOriginalSize.height;
-        
-        this.$tableLayout.setContentSize(this._tableLayoutOriginalSize.width, newHeight);
-        */
-
-        //this.$tableLayout.active = !this.$tableLayout.active;
-
-        // 更新 Layout
-        //let tableLayoutComp = this.$tableLayout.getComponent(cc.Layout);
-
-        //if (tableLayoutComp) tableLayoutComp.updateLayout();
-        //let contentLayout = this.$contentPoker ? this.$contentPoker.getComponent(cc.Layout) : null;
-        //if (contentLayout) contentLayout.updateLayout();
-
-    }
 
     protected onDropDownBtn(event: cc.Event.EventTouch): void {
         // 防止动画过程中重复点击

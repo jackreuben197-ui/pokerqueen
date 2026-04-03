@@ -42,13 +42,29 @@ export default class UITableTemplate extends cc.Component {
      */
     public setTableData(data: any): void {
         this.tableName.string = data.name;
-        this.timeLabel.string = this.getTimeDiffString(data.start_time) + "/" + data.play_duration / 60 + "h";
-        this.userLabel.string = (data.seat_count - data.empty_seat) + "/" + data.seat_count;
-        //this.betLabel.string = data.min_bet + " - " + data.max_bet;
+        this.timeLabel.string = this.getTimeDiffString(data.start_time) + "/" + this.getMaxTimeString(data.play_duration);
+        this.userLabel.string = data.users.length + "/" + data.seat_count;
+        
+        // min_rate*sb*2/100
+        // sb的单位是分，所以除以100
+        this.betLabel.string = data.min_rate*data.sb/50 + "买入";
 
         // 处理对应的头像数据：
         this.loadHeadImage(data.users);
 
+    }
+
+    /**
+     * 处理时间相关：
+     * @param dur 
+     * @returns 
+     */
+    protected getMaxTimeString( dur : number ) : string{
+        if( dur<3600 )
+            return dur/60 + "m";
+        else{
+            return dur/3600 + "h";
+        }
     }
 
     /**
@@ -65,13 +81,7 @@ export default class UITableTemplate extends cc.Component {
                         cc.error("加载失败", err);
                         return;
                     }
-
-                    // 关键：禁用动态合图
-                    if (cc.dynamicAtlasManager) {
-                        cc.dynamicAtlasManager.insertSpriteFrame(null); // 彻底关闭此纹理参与合图
-                    }
                     texture.packable = false; // 2.4.x 建议设置此属性
-
                     const sf = new cc.SpriteFrame();
                     sf.setTexture(texture);
                     if (arrHeadImg[ti]) {
