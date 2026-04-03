@@ -585,13 +585,7 @@ export default class TexasGame {
     }
     SetDeskType(type: number) {
         this.setting.deskType = type;
-
-        let material: cc.Material = this.uirc.sp_table_bg.getMaterials()[0];
-        let colors = GameUtil.Table_Colors[type] || GameUtil.Table_Colors[0];
-        material.setProperty("color_top", PublicHelper.GetColorArr(colors[0]));
-        material.setProperty("color_bottom", PublicHelper.GetColorArr(colors[1]));
-
-        this.uirc.sp_table_face.spriteFrame = AssetContext.getAsset(`top_table_${type}`, AssetFold.texture_table);
+        this.uirc.sp_table_bg.spriteFrame = AssetContext.getAsset(`new_ui_top_table_0`, AssetFold.texture_table);
         if (this.isBombPot) {
             this.bombPotFeature?.PlayOpenScreen();
         }

@@ -8937,7 +8937,7 @@
       "__id__": 252
     },
     "_enabled": true,
-    "horizontal": true,
+    "horizontal": false,
     "vertical": false,
     "inertia": true,
     "brake": 0.75,
