@@ -61,6 +61,7 @@ import {
     WebRoomCenterRooms,
     WebRoomCenterRoomsBlinds,
 } from "./web_request/WebRequestRoomCenter";
+import { WebCommon } from "./WebRequestBase";
 
 /**
  * 注册全局访问
@@ -89,3 +90,12 @@ import {
 (window as any).WebUserRoomSettleDetail = WebUserRoomSettleDetail;
 (window as any).WebRoomCenterMttList = WebRoomCenterMttList;
 (window as any).WebUserRoom = WebUserRoom;
+
+//! 获取玩家房间列表：api/roomcenter/user/rooms/list
+export class API_User_Rooms_List extends WebCommon {
+    static API: string = "/api/roomcenter/user/rooms/list";
+}
+
+export class API_User_Rooms_ids extends WebCommon {
+    static API: string = "/api/roomcenter/user/all/room/ids";
+}
