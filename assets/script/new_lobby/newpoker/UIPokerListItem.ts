@@ -35,7 +35,22 @@ export default class UIPokerListItem extends cc.Component {
 
     protected onDropDownBtn() {
         if( this.$tableLayout ){
-            this.$tableLayout.active = !this.$tableLayout.active;
+            if (!this.$tableLayout.active) {
+                // 激活时先设为透明，避免布局未计算完成时的闪烁
+                this.$tableLayout.active = true;
+                this.$tableLayout.opacity = 0;
+                // 强制立即更新布局
+                let layout = this.$tableLayout.getComponent(cc.Layout);
+                if (layout) {
+                    layout.updateLayout();
+                }
+                // 下一帧布局计算完成后再显示
+                this.scheduleOnce(() => {
+                    this.$tableLayout.opacity = 255;
+                });
+            } else {
+                this.$tableLayout.active = false;
+            }
         }
     }
 
