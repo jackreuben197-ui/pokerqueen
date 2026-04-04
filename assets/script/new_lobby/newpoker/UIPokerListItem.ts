@@ -27,30 +27,79 @@ export default class UIPokerListItem extends cc.Component {
     @property(cc.Node)
     protected $tableLayout: cc.Node = null;
 
+    // 记录 tableLayout 完全展开时的原始高度
+    private _originalTableHeight: number = 0;
+    // 记录当前是否正在动画中
+    private _isAnimating: boolean = false;
+    // 记录当前是否已展开，初始为展开状态
+    private _isExpanded: boolean = true;
+
     protected onLoad(): void {
 
         if (this.$dropdownBtn)
             this.$dropdownBtn.on(cc.Node.EventType.TOUCH_END, this.onDropDownBtn, this);
+
+        // 当前 item 锚点 Y 设为 1（顶部），高度增加时顶部不动，只往下扩展
+        this.node.setAnchorPoint(0.5, 1);
+
+        // 初始状态为展开
+        if (this.$tableLayout) {
+            this.$tableLayout.setAnchorPoint(0.5, 1);
+        }
     }
 
     protected onDropDownBtn() {
-        if( this.$tableLayout ){
-            if (!this.$tableLayout.active) {
-                // 激活时先设为透明，避免布局未计算完成时的闪烁
-                this.$tableLayout.active = true;
-                this.$tableLayout.opacity = 0;
-                // 强制立即更新布局
-                let layout = this.$tableLayout.getComponent(cc.Layout);
-                if (layout) {
-                    layout.updateLayout();
-                }
-                // 下一帧布局计算完成后再显示
-                this.scheduleOnce(() => {
-                    this.$tableLayout.opacity = 255;
-                });
-            } else {
-                this.$tableLayout.active = false;
-            }
+        if (!this.$tableLayout || this._isAnimating) return;
+
+        // 首次点击时记录原始高度（此时处于展开状态）
+        if (this._originalTableHeight <= 0) {
+            this._originalTableHeight = this.$tableLayout.height;
+        }
+        if (this._originalTableHeight <= 0) return;
+
+        this._isAnimating = true;
+        let isShowing = this._isExpanded;
+
+        // 动画期间禁用内部 Layout，防止子节点重新排列
+        let innerLayout = this.$tableLayout.getComponent(cc.Layout);
+        if (innerLayout) innerLayout.enabled = false;
+
+        if (!isShowing) {
+            // 展开：激活并设为极小缩放
+            this.$tableLayout.active = true;
+            this.$tableLayout.scaleY = 0.001;
+            this.$tableLayout.height = 0;
+            cc.tween(this.$tableLayout)
+                .to(0.25, { scaleY: 1 }, { easing: "sineOut" })
+                .call(() => {
+                    this.$tableLayout.height = this._originalTableHeight;
+                    if (innerLayout) {
+                        innerLayout.enabled = true;
+                        innerLayout.updateLayout();
+                    }
+                    this._isAnimating = false;
+                    this._isExpanded = true;
+                })
+                .start();
+        } else {
+            // 收起：动画缩放到极小
+            cc.tween(this.$tableLayout)
+                .to(0.25, { scaleY: 0.001 }, { easing: "sineIn" })
+                .call(() => {
+                    this.$tableLayout.active = false;
+                    this.$tableLayout.height = this._originalTableHeight;
+                    if (innerLayout) innerLayout.enabled = true;
+                    this._isAnimating = false;
+                    this._isExpanded = false;
+                })
+                .start();
+        }
+    }
+
+    protected update(dt: number): void {
+        // 动画期间每帧同步 height = originalHeight * scaleY，让父级 Layout 实时跟随
+        if (this._isAnimating && this.$tableLayout && this.$tableLayout.active && this._originalTableHeight > 0) {
+            this.$tableLayout.height = this._originalTableHeight * Math.max(this.$tableLayout.scaleY, 0.001);
         }
     }
 
