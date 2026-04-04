@@ -8,18 +8,18 @@ const { ccclass, property } = cc._decorator;
 export default class UIPokerListItem extends cc.Component {
 
     @property(cc.Prefab)
-    pokerTablePrefab : cc.Prefab = null;
+    pokerTablePrefab: cc.Prefab = null;
 
     //
     // 界面细节信息：
     @property(cc.Label)
-    protected cc_Label$gametype : cc.Label = null;
+    protected cc_Label$gametype: cc.Label = null;
     @property(cc.Label)
-    protected cc_Label$sbinfo : cc.Label = null;
+    protected cc_Label$sbinfo: cc.Label = null;
     @property(cc.Label)
-    protected cc_Label$tablenum : cc.Label = null;
+    protected cc_Label$tablenum: cc.Label = null;
     @property(cc.Label)
-    protected cc_Label$usernum : cc.Label = null;
+    protected cc_Label$usernum: cc.Label = null;
 
     @property(cc.Node)
     protected $dropdownBtn: cc.Node = null;
@@ -27,12 +27,23 @@ export default class UIPokerListItem extends cc.Component {
     @property(cc.Node)
     protected $tableLayout: cc.Node = null;
 
+    // 记录当前的游戏类型:
+    protected curGameType: number = -1;
+
     // 记录 tableLayout 完全展开时的原始高度
     private _originalTableHeight: number = 0;
     // 记录当前是否正在动画中
     private _isAnimating: boolean = false;
     // 记录当前是否已展开，初始为展开状态
     private _isExpanded: boolean = true;
+
+    protected onDestroy(): void {
+        if (this.$tableLayout) {
+            cc.tween(this.$tableLayout).stop();
+            let innerLayout = this.$tableLayout.getComponent(cc.Layout);
+            if (innerLayout) innerLayout.enabled = true;
+        }
+    }
 
     protected onLoad(): void {
 
@@ -103,8 +114,8 @@ export default class UIPokerListItem extends cc.Component {
         }
     }
 
-    protected getGTypeStr( type : number ) : string{
-        switch( type ){
+    protected getGTypeStr(type: number): string {
+        switch (type) {
             case 0:
                 return "德州";
             case 1:
@@ -119,29 +130,47 @@ export default class UIPokerListItem extends cc.Component {
     }
 
     /**
+     * 根据类型来决定当前的数据是否显示.
+     * @param type 
+     */
+    public showByGameType(type: number): void {
+        if (type < 0)
+            this.node.active = true;
+        else {
+            if (type == this.curGameType) {
+                this.node.active = true;
+            } else {
+                this.node.active = false;
+            }
+        }
+    }
+
+    /**
      * 设置当前List需要的数据
      * @param data
      */
     public setListData(data: Array<any>): void {
-        if (data&&data.length>0) {
-            let tblNum : number = data.length;
-            let userNum : number = 0;
-            for( let ti : number = 0;ti<data.length;ti ++ ){
+        if (data && data.length > 0) {
+            let tblNum: number = data.length;
+            let userNum: number = 0;
+            for (let ti: number = 0; ti < data.length; ti++) {
                 userNum += data[ti].users.length;
             }
 
-            this.cc_Label$gametype.string = this.getGTypeStr( data[0].game_type ) + "_" + data[0].poker_type;
-            this.cc_Label$sbinfo.string = data[0].sb + "/" + data[0].sb*2;
+            this.cc_Label$gametype.string = this.getGTypeStr(data[0].game_type) + "_" + data[0].poker_type;
+            this.cc_Label$sbinfo.string = data[0].sb + "/" + data[0].sb * 2;
             this.cc_Label$tablenum.string = tblNum + "桌";
             this.cc_Label$usernum.string = userNum + "人";
 
+            this.curGameType = data[0].game_type;
+
             //
             // 给桌子加数据：
-            for( let tblidx : number = 0;tblidx<tblNum;tblidx ++ ){
-                let table : cc.Node = cc.instantiate( this.pokerTablePrefab );
-                let script : UITableTemplate = table.getComponent( UITableTemplate );
+            for (let tblidx: number = 0; tblidx < tblNum; tblidx++) {
+                let table: cc.Node = cc.instantiate(this.pokerTablePrefab);
+                let script: UITableTemplate = table.getComponent(UITableTemplate);
                 debugger;
-                script.setTableData( data[tblidx] );
+                script.setTableData(data[tblidx]);
 
                 this.$tableLayout.addChild(table);
             }

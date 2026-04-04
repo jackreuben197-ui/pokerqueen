@@ -35,19 +35,37 @@ export default class UITableTemplate extends cc.Component {
     @property(cc.Sprite)
     protected himg8: cc.Sprite = null;
 
+    // 记录当前持有的 SpriteFrame 引用，用于清理
+    private _spriteFrames: cc.SpriteFrame[] = [];
+
+    protected onDestroy(): void {
+        this.releaseSpriteFrames();
+    }
+
+    /**
+     * 释放所有已加载的 SpriteFrame
+     */
+    protected releaseSpriteFrames(): void {
+        for (let i = 0; i < this._spriteFrames.length; i++) {
+            if (this._spriteFrames[i]) {
+                this._spriteFrames[i].destroy();
+            }
+        }
+        this._spriteFrames.length = 0;
+    }
 
     /**
      * 设置TableName:
-     * @param data 
+     * @param data
      */
     public setTableData(data: any): void {
         this.tableName.string = data.name;
         this.timeLabel.string = this.getTimeDiffString(data.start_time) + "/" + this.getMaxTimeString(data.play_duration);
         this.userLabel.string = data.users.length + "/" + data.seat_count;
-        
+
         // min_rate*sb*2/100
         // sb的单位是分，所以除以100
-        this.betLabel.string = data.min_rate*data.sb/50 + "买入";
+        this.betLabel.string = data.min_rate * data.sb / 50 + "买入";
 
         // 处理对应的头像数据：
         this.loadHeadImage(data.users);
@@ -56,14 +74,14 @@ export default class UITableTemplate extends cc.Component {
 
     /**
      * 处理时间相关：
-     * @param dur 
-     * @returns 
+     * @param dur
+     * @returns
      */
-    protected getMaxTimeString( dur : number ) : string{
-        if( dur<3600 )
-            return dur/60 + "m";
-        else{
-            return dur/3600 + "h";
+    protected getMaxTimeString(dur: number): string {
+        if (dur < 3600)
+            return dur / 60 + "m";
+        else {
+            return dur / 3600 + "h";
         }
     }
 
@@ -71,8 +89,18 @@ export default class UITableTemplate extends cc.Component {
      * 加载头像数据：
      */
     protected loadHeadImage(users: Array<any>): void {
+        // 清理旧的 SpriteFrame
+        this.releaseSpriteFrames();
+
+        // 先清空所有头像
         let arrHeadImg: Array<cc.Sprite> = [this.himg0, this.himg1, this.himg2,
         this.himg3, this.himg4, this.himg5, this.himg6, this.himg7, this.himg8];
+
+        for (let ti: number = 0; ti < arrHeadImg.length; ti++) {
+            if (arrHeadImg[ti]) {
+                arrHeadImg[ti].spriteFrame = null;
+            }
+        }
 
         for (let ti: number = 0; ti < users.length; ti++) {
             if (users[ti].avatar) {
@@ -81,10 +109,14 @@ export default class UITableTemplate extends cc.Component {
                         cc.error("加载失败", err);
                         return;
                     }
+                    // 异步回调中校验节点是否仍然有效
+                    if (!cc.isValid(this.node)) return;
+
                     texture.packable = false; // 2.4.x 建议设置此属性
                     const sf = new cc.SpriteFrame();
                     sf.setTexture(texture);
-                    if (arrHeadImg[ti]) {
+                    this._spriteFrames.push(sf);
+                    if (arrHeadImg[ti] && cc.isValid(arrHeadImg[ti].node)) {
                         arrHeadImg[ti].spriteFrame = sf;
                     }
                 });
@@ -92,7 +124,7 @@ export default class UITableTemplate extends cc.Component {
         }
     }
 
-    /** 
+    /**
      * 计算给定 ISO 时间字符串距离当前时间的差值
      * 输出格式: "1h28m"
      * @param isoString 时间字符串 (如: 2026-04-03T02:44:12Z)

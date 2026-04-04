@@ -22,9 +22,7 @@ export default class UIPokerRoomList extends BaseFormPlus {
     protected cc_Sprite$omahaTab: cc.Sprite = null;
     protected cc_Sprite$sixplusTab: cc.Sprite = null;
 
-    protected $dropdownBtn: cc.Node = null;
     protected $contentPoker: cc.Node = null;
-    protected $bkTest: cc.Node = null;
 
     // 记录 bkTest 的原始尺寸，用于动画恢复
     private _bkTestOriginalSize: cc.Size = null;
@@ -38,7 +36,6 @@ export default class UIPokerRoomList extends BaseFormPlus {
     protected lateLoad() {
         this.name = "UIPokerRoomList";
         super.lateLoad();
-        debugger;
 
         // 处理点击事件：
         if (this.$allTabNode) {
@@ -51,65 +48,11 @@ export default class UIPokerRoomList extends BaseFormPlus {
             this.setTabSel(0);
         }
 
-        // TEST CODE to Delete:
-        if (this.$dropdownBtn)
-            this.$dropdownBtn.on(cc.Node.EventType.TOUCH_END, this.onDropDownBtn, this);
-
-        /*
-        if (this.$dropdownBtn1) {
-            this.$dropdownBtn1.on(cc.Node.EventType.TOUCH_END, this.onDropDownBtn1, this);
-        }*/
-
-        // 记录 bkTest 的原始尺寸
-        if (this.$bkTest) {
-            this._bkTestOriginalSize = this.$bkTest.getContentSize();
-            // 初始状态为隐藏（高度设为0）
-            this.$bkTest.setContentSize(this._bkTestOriginalSize.width, 0);
-            // 设置锚点为 (0.5, 1)，这样展开时从上往下，收起时从下往上
-            this.$bkTest.setAnchorPoint(0.5, 1);
-        }
-
         // 
         this.reqRoomIdxList();
 
     }
 
-
-    protected onDropDownBtn(event: cc.Event.EventTouch): void {
-        // 防止动画过程中重复点击
-        if (this._isAnimating || !this.$bkTest || !this._bkTestOriginalSize) return;
-
-        this._isAnimating = true;
-        let layout = this.$contentPoker ? this.$contentPoker.getComponent(cc.Layout) : null;
-
-        // 判断当前是显示还是隐藏状态（通过高度判断）
-        let isShowing = this.$bkTest.getContentSize().height > 0;
-        let targetHeight = isShowing ? 0 : this._bkTestOriginalSize.height;
-
-        // 使用 Tween 动画改变高度，显示从下往上展开，隐藏从上往下收起
-        // 由于锚点设为 (0.5, 1)，高度变化会从上往下动画
-        let easing = isShowing ? "sineOut" : "sineIn";
-        cc.tween(this.$bkTest)
-            .to(0.2, { height: targetHeight }, { easing: easing })
-            .call(() => {
-                this._isAnimating = false;
-                if (layout) layout.updateLayout();
-            })
-            .start();
-
-        // 动画过程中更新 Layout（几个关键时间点）
-        if (layout) {
-            this.scheduleOnce(() => {
-                if (layout) layout.updateLayout();
-            }, 0.05);
-            this.scheduleOnce(() => {
-                if (layout) layout.updateLayout();
-            }, 0.1);
-            this.scheduleOnce(() => {
-                if (layout) layout.updateLayout();
-            }, 0.15);
-        }
-    }
 
     protected setTabSel(idx: number = 0): void {
         let tabArr: Array<cc.Sprite> = [this.cc_Sprite$allTab, this.cc_Sprite$holdemTab, this.cc_Sprite$omahaTab, this.cc_Sprite$sixplusTab];
@@ -128,11 +71,16 @@ export default class UIPokerRoomList extends BaseFormPlus {
     protected onAllTabClick(event: cc.Event.EventTouch): void {
         console.log('All Tab clicked');
         this.setTabSel(0);
+
+        this.showTabByGameType( -1 );
     }
 
     protected onHoldemTabClick(event: cc.Event.EventTouch): void {
         console.log('Holdem Tab clicked');
         this.setTabSel(1);
+
+        // 只显示Holdem游戏类型
+        this.showTabByGameType( 0 );
 
     }
 
@@ -148,7 +96,7 @@ export default class UIPokerRoomList extends BaseFormPlus {
 
     protected getRidList(res: any): Array<number> {
 
-        if (res.code != 0) return;
+        if (res.code != 0) return [];
         let arrRid: Array<number> = [];
         let arr: Array<any> = res.data.records;
         for (let ti: number = 0; ti < arr.length; ti++) {
@@ -159,9 +107,9 @@ export default class UIPokerRoomList extends BaseFormPlus {
     }
 
     /**
-         * 根据 game_type 和 poker_type 分组（第一层）
-         * 在集合内部，根据 sb 字段由小到大排列（第二层）
-         */
+     * 根据 game_type 和 poker_type 分组（第一层）
+     * 在集合内部，根据 sb 字段由小到大排列（第二层）
+     */
     protected filterRecords(records: Array<any>): any[] {
         if (!records || records.length === 0) {
             return [];
@@ -197,20 +145,33 @@ export default class UIPokerRoomList extends BaseFormPlus {
         });
     }
 
-    // 
-    protected addPokerListItem( resarr : any ): void {
-        if (this.$contentPoker) {
-            for( let ti : number = 0;ti<resarr.length;ti ++ ){
-                for( let tj : number = 0;tj<resarr[ti].length;tj ++ ){
-                    let tnode : cc.Node = cc.instantiate(this.pokerItemPrefab);
-                    this.$contentPoker.addChild(tnode);        
+    /**
+     * 根据游戏类型来显示桌面：
+     * @param type 
+     */
+    protected showTabByGameType(type: number) {
+        this.$contentPoker.children.forEach(node => {
+            node.getComponent(UIPokerListItem).showByGameType(type);
+        });
+    }
 
-                    let scrpit : UIPokerListItem = tnode.getComponent( UIPokerListItem)
+    //
+    protected addPokerListItem(resarr: any): void {
+        if (this.$contentPoker) {
+            // 清除旧的子节点，防止内存泄漏
+            this.$contentPoker.removeAllChildren(true);
+
+            for (let ti: number = 0; ti < resarr.length; ti++) {
+                for (let tj: number = 0; tj < resarr[ti].length; tj++) {
+                    let tnode: cc.Node = cc.instantiate(this.pokerItemPrefab);
+                    this.$contentPoker.addChild(tnode);
+
+                    let scrpit: UIPokerListItem = tnode.getComponent(UIPokerListItem)
                     scrpit.setListData(resarr[ti][tj]);
 
                 }
             }
-            
+
         }
     }
 
@@ -230,7 +191,7 @@ export default class UIPokerRoomList extends BaseFormPlus {
 
                 let resArr: any[] = this.filterRecords(res.data.records);
 
-                this.addPokerListItem( resArr );
+                this.addPokerListItem(resArr);
 
                 this.isReqing = false;
             },
@@ -264,11 +225,11 @@ export default class UIPokerRoomList extends BaseFormPlus {
             (res: any) => {
                 debugger;
                 let arrRis: Array<number> = this.getRidList(res);
-                if (arrRis.length > 0)
+                if (arrRis.length > 0) {
                     this.reqRoomInfo(arrRis);
-                //debugger;
-                //this.listEx.refresh(res.data.records, res.data.total);
-                //this.isReqing = false;
+                } else {
+                    this.isReqing = false;
+                }
             },
             (res: any) => {
                 //this.listEx.error();
