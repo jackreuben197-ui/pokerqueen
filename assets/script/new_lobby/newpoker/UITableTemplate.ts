@@ -1,3 +1,7 @@
+import { UIDefine } from "../../define/UIDefine";
+import GameUtil, { GameEnterType } from "../../game/util/GameUtil";
+import UIComponent from "../../ui/UIComponent";
+
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -38,6 +42,9 @@ export default class UITableTemplate extends cc.Component {
     // 记录当前持有的 SpriteFrame 引用，用于清理
     private _spriteFrames: cc.SpriteFrame[] = [];
 
+    // 记录当前的Table数据。
+    private _data: any = null;
+
     protected onDestroy(): void {
         this.releaseSpriteFrames();
     }
@@ -70,6 +77,21 @@ export default class UITableTemplate extends cc.Component {
         // 处理对应的头像数据：
         this.loadHeadImage(data.users);
 
+        this._data = data;
+
+        this.node.on( cc.Node.EventType.TOUCH_END, this.enterRoomTable, this );
+    }
+
+    /**
+     *　处理进入牌桌房间的逻辑.
+     */
+    protected enterRoomTable(): void {
+        if (this._data) {
+            UIComponent.Instance.CloseNoAnimation(UIDefine.UIPokerRoomList);
+            GameUtil.EnterRoomAPI(this._data, {
+                game_enter_type: GameEnterType.Club,
+            });
+        }
     }
 
     /**
