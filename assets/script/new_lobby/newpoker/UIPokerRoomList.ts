@@ -1,4 +1,5 @@
-import { API_User_Rooms_ids, API_User_Rooms_List, WWW } from "../../net/https/WebRequest";
+import { API_User_Rooms_ids, API_User_Rooms_List, WebRoomCenterAutoChageRoom, WebRoomCenterUserContrAstRooms, WWW } from "../../net/https/WebRequest";
+import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIPokerListItem from "./UIPokerListItem";
 
@@ -31,6 +32,8 @@ export default class UIPokerRoomList extends BaseFormPlus {
     // 记录当前是否正在动画中（tableLayout）
     private _isAnimating1: boolean = false;
 
+    //! 记录上次获取房间信息时间戳:
+    private lastReqTimeStamp : number = 0;
 
 
     protected lateLoad() {
@@ -49,8 +52,18 @@ export default class UIPokerRoomList extends BaseFormPlus {
         }
 
         // 
-        this.reqRoomIdxList();
+        // 不同的获取信息类型:
+        if( this.lastReqTimeStamp ){
+            this.reqContrastInfo();
+        }else
+            this.reqRoomIdxList();
+    }
 
+    public onEnable(): void {
+        super.onEnable();
+        if( this.lastReqTimeStamp && (ProtocolAgency.gTimeStamp!=this.lastReqTimeStamp) ){
+            this.reqContrastInfo();
+        }        
     }
 
 
@@ -163,7 +176,10 @@ export default class UIPokerRoomList extends BaseFormPlus {
         });
     }
 
-    //
+    /**
+     * 处理对应的PokerListItem数据:
+     * @param resarr 
+     */
     protected addPokerListItem(resarr: any): void {
         if (this.$contentPoker) {
             // 清除旧的子节点，防止内存泄漏
@@ -211,27 +227,62 @@ export default class UIPokerRoomList extends BaseFormPlus {
         )
     }
 
+    /**
+     * 更新数据:
+     * @param data 
+     */
+    protected updatePokerRoomList( data : any ) : void{
+        //data.record
+    }
+
+    /**
+     * 请求对比信息
+     */
+    protected reqContrastInfo() : void{
+        this.isReqing = true;
+        WWW.Instance.CommonAPI(
+
+            {
+
+                web_class: WebRoomCenterUserContrAstRooms,
+                body: {
+                    "last_time" : this.lastReqTimeStamp,
+                }
+            }
+
+        ).then(
+
+            (res: any) => {
+                if( res.data.record.length>0 ){
+
+                }
+                debugger;
+            }
+            ,
+            (res: any) => {
+                debugger;
+            }
+        );
+    }
+
+    /**
+     * 获取全部信息:
+     * @param offset 
+     */
     protected reqRoomIdxList(offset: number = 0): void {
 
         this.isReqing = true;
+        this.lastReqTimeStamp = ProtocolAgency.gTimeStamp;
 
         WWW.Instance.CommonAPI(
             {
                 web_class: API_User_Rooms_ids,// API_User_Rooms_List,
                 body: {
                 },
-                /*
-                body: {
-
-                    limit: 10,
-                    offset: offset,
-                    status: [0, 1],
-                    order: [MTTListOrderTypeString[MTTListOrderTypeString.start_asc]],
-                },*/
             }
         ).then(
             (res: any) => {
-                debugger;
+                
                 let arrRis: Array<number> = this.getRidList(res);
                 if (arrRis.length > 0) {
                     this.reqRoomInfo(arrRis);
@@ -242,6 +293,7 @@ export default class UIPokerRoomList extends BaseFormPlus {
             (res: any) => {
                 //this.listEx.error();
                 debugger;
+                this.lastReqTimeStamp = 0;
                 this.isReqing = false;
             }
         )

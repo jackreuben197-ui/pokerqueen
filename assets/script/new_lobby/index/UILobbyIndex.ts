@@ -32,13 +32,16 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class UILobbyIndex extends UIBasePlus {
     //Part1
+    /*
     cc_Label$uc_des: cc.Label = null;
     cc_Label$uc_num: cc.Label = null;
     cc_Label$gc_des: cc.Label = null;
     cc_Label$gc_num: cc.Label = null;
     cc_Label$welcome: cc.Label = null;
     cc_Sprite$head: cc.Sprite = null;
+    */
 
+    /*
     $message: cc.Node = null;
     //Part2
     $mtt: cc.Node = null;
@@ -54,6 +57,7 @@ export default class UILobbyIndex extends UIBasePlus {
     room_item_pool: SimpleNodePool = null;
     $ItemLobbyRoom: cc.Node = null;
     //room_offset = 0;
+    */
 
     //当前房间列表
     curr_room_list: any[] = null;
@@ -233,9 +237,6 @@ export default class UILobbyIndex extends UIBasePlus {
         // 旧代码本身后期也需要删除:
         // 以下旧代码会产生异常，暂不执行：
         return;
-        this.showGameTypeTabs();
-        this.room_item_pool = new SimpleNodePool(this.$ItemLobbyRoom);
-        this.curr_room_list = [];
     }
 
     protected onGame1Click(event: cc.Event.EventTouch): void {
@@ -318,11 +319,13 @@ export default class UILobbyIndex extends UIBasePlus {
     }
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
+        /*
         this.setButtonClick(this.cc_Sprite$head.node, this.onHeadClick);
         this.setButtonClick(this.$message, this.onMessageClick);
         this.setButtonClick(this.$mtt, this.onMTTClick);
         this.setButtonClick(this.$banner, this.onBannerClick);
         this.setButtonClick(this.$game, this.onGameClick);
+        */
         this.listen(EventName.refreshUserData, this.refreshUserInfo);
     }
 
@@ -332,26 +335,32 @@ export default class UILobbyIndex extends UIBasePlus {
         this.activeRooms(false);
     }
     refreshUserInfo() {
+        /*
         WebImageHelper.SetHeadImage(
             this.cc_Sprite$head,
             WebUserInfo.Response.data.user.avatar,
         );
         this.cc_Label$welcome.string =
             "Hey," + WebUserInfo.Response.data.user.nickname + "!";
+        */
     }
     private showGameTypeTabs() {
+        /*
         this.$GameTypeTabs.children.forEach((item, index) => {
             item.getChildByName("label").getComponent(cc.Label).string =
                 this.GameTypeTabs[index].label;
             item["index"] = index;
             this.setButtonClick(item, this.onGameTypeTabClick);
         });
+        */
     }
     //激活房间选项和房间列表
     private activeRooms(boo: boolean) {
+        /*
         if (!this.$table || !this.$list) return;
         this.$table.active = boo;
         this.$list.active = boo;
+        */
     }
     ////////////////////////////////////////////////
     //游戏类型选择
@@ -362,10 +371,12 @@ export default class UILobbyIndex extends UIBasePlus {
     set gametype_status(value: number) {
         //if (this._gametype_status == value) return;
         this._gametype_status = value;
+        /*
         this.$GameTypeTabs.children.forEach((item, index) => {
             this.gametype_select(item, 0);
         });
         this.gametype_select(this.$GameTypeTabs.children[value], 1);
+        */
     }
     get gametype_status(): number {
         return this._gametype_status;
@@ -458,6 +469,7 @@ export default class UILobbyIndex extends UIBasePlus {
                 this.activeRooms(true);
                 this.cleanList();
                 //判断数据长度0
+                /*
                 if (res.data.total == 0) {
                     this.$table.x = this.gametype_status == 0 ? 2000 : 0;
                     this.$null.parent = this.$list;
@@ -466,7 +478,7 @@ export default class UILobbyIndex extends UIBasePlus {
                     this.$null.parent = null;
                     this.curr_room_list.push(...res.data.records);
                     this.refreshRooms();
-                }
+                }*/
                 if (res.data.total > this.curr_room_list.length) {
                     this.curr_room_offset += this.room_limit;
                 } else {
@@ -479,6 +491,7 @@ export default class UILobbyIndex extends UIBasePlus {
     //////////////////////////////////
     //清理列表
     cleanList() {
+        /*
         if (this.$list) {
             this.$list.children.forEach((item) => {
                 if (item.getComponent(ItemLobbyRoom)) {
@@ -486,11 +499,12 @@ export default class UILobbyIndex extends UIBasePlus {
                 }
             });
             this.$list.removeAllChildren();
-        }
+        }*/
     }
     //刷新显示房间列表
     refreshRooms() {
         console.log("刷新显示房间列表");
+        /*
         if (this.curr_room_list.length) {
             this.curr_room_list.forEach((room, index) => {
                 let item_node: cc.Node = this.room_item_pool.GetNode();
@@ -502,7 +516,7 @@ export default class UILobbyIndex extends UIBasePlus {
                 item_node.on("click", this.onRoomClick, this);
                 item_sc.index = index;
             });
-        }
+        }*/
     }
     onRoomClick(button: cc.Button) {
         if (!GameCache.Instance.isHadClub) {

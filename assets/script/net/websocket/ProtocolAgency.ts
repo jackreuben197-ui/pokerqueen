@@ -13,6 +13,8 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class ProtocolAgency extends cc.Component {
+    public static gTimeStamp : number = 0;
+
     static Send<Client_AsObject>(param: {
         Code: number;
         RoomID: number;
@@ -245,13 +247,20 @@ export default class ProtocolAgency extends cc.Component {
         }
         let body = ProtocolCommon.Instance.Response(body_ua, server);
 
-        if (OpCodeHelper.NeedLog(code))
+        if (OpCodeHelper.NeedLog(code)){
             console.log(
                 "%c%s\n%s",
                 LogStyle.ws_response,
                 `>>>>> protocol receive : ${protocol_name}`,
                 `RoomID:${roomid},MatchID:${matchid},body:${JSON.stringify(body)}`,
             );
+        }
+        else if( code == ProtocolCode.Protocol_Holdem_Heartbeat ){
+            // 记录当前Server时间戳:
+            if( (body as any).timestamp ){
+                this.gTimeStamp = (body as any).timestamp;
+            }
+        }
 
         GC.notify.post(code, body);
 
