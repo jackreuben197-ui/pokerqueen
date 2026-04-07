@@ -169,7 +169,6 @@ export default class UIPokerListItem extends cc.Component {
             for (let tblidx: number = 0; tblidx < tblNum; tblidx++) {
                 let table: cc.Node = cc.instantiate(this.pokerTablePrefab);
                 let script: UITableTemplate = table.getComponent(UITableTemplate);
-                debugger;
                 script.setTableData(data[tblidx]);
 
                 this.$tableLayout.addChild(table);
