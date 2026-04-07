@@ -65,6 +65,15 @@ export class SeatFSM {
 
 
         this.seat.uirc.TextRequesting.node.active = false;
+        console.log(12345,this.seat.uirc.Nick_Coin);
+        
+        if (this.seat.uirc.Nick_Coin) {
+            this.seat.uirc.Nick_Coin.active = false;
+        }
+        if (this.seat.uirc.table_sprite_line) {
+            this.seat.uirc.table_sprite_line.opacity = 0;
+            this.seat.uirc.table_sprite_line.color = cc.Color.WHITE;
+        }
 
         this.seat.FoldHeadGray(false);
 

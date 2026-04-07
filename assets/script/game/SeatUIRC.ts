@@ -61,6 +61,7 @@ export default class SeatUIRC extends UIBase {
 
     //座位上下名字和筹码
     Nick_Coin: cc.Node = null;
+    table_sprite_line: cc.Node = null;
     Text_NickName: cc.Label = null;
 
 
@@ -85,6 +86,7 @@ export default class SeatUIRC extends UIBase {
     MushroomIcon: cc.Sprite = null;
     MushroomLabel: cc.Node = null;
     Label_MushroomCount: cc.Label = null;
+    MushroomChip: cc.Node = null;
     Label_MushroomChip: cc.Label = null;
     // 鱿鱼数量组件（玩家）
     PlayerSquidCount: cc.Node = null;
@@ -170,6 +172,15 @@ export default class SeatUIRC extends UIBase {
         this.Raw_Head = this.getChildNodeOrComponent("Raw_Head", cc.Sprite);
         this.Gray_Head = this.getChildNodeOrComponent("Gray_Head");
 
+        this.Nick_Coin = this.getChildNodeOrComponent("Nick_Coin");
+        this.table_sprite_line = this.getChildNodeOrComponent("table_sprite_line");
+        if (this.Nick_Coin) {
+            this.Nick_Coin.active = false;
+        }
+        if (this.table_sprite_line) {
+            this.table_sprite_line.opacity = 0;
+            this.table_sprite_line.color = cc.Color.WHITE;
+        }
         this.Coin_Con = this.getChildNodeOrComponent("Coin_Con");
         this.Text_Coin = this.getChildNodeOrComponent("Text_Coin", cc.Label);
         this.Text_NickName = this.getChildNodeOrComponent("Text_NickName", cc.Label);
@@ -189,7 +200,8 @@ export default class SeatUIRC extends UIBase {
         this.MushroomIcon = this.getChildNodeOrComponent("MushroomIcon", cc.Sprite);
         this.MushroomLabel = this.getChildNodeOrComponent("MushroomLabel");
         this.Label_MushroomCount = this.getChildNodeOrComponent("MushroomLabelCount", cc.Label);
-        this.Label_MushroomChip = this.getChildNodeOrComponent("MushroomLabelChip", cc.Label);
+        this.MushroomChip = this.getChildNodeOrComponent("MushroomChip");
+        this.Label_MushroomChip = this.getChildNodeOrComponent("MushroomChipCount", cc.Label);
         this.PlayerSquidCount = this.getChildNodeOrComponent("PlayerSquidCount");
         this.PlayerSquidIcon = this.PlayerSquidCount?.getChildByName("PlayerSquidIcon");
         this.PlayerSquidLabel = this.PlayerSquidCount?.getChildByName("PlayerSquidLabel");

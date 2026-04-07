@@ -179,6 +179,7 @@ export default class Seat {
         this.HideCoinShadow();
         this.HideTrust();
         this.HideHeadCD();
+        this.RefreshNickCoinVisible(false);
     }
 
 
@@ -215,11 +216,20 @@ export default class Seat {
         if (this.uirc.MushroomPool) {
             const mushPos = info.mushroom_pos || cc.Vec3.ZERO;
             this.uirc.MushroomPool.setPosition(mushPos);
+            if (this.uirc.MushroomLabel) {
+                this.uirc.MushroomLabel.setPosition(info.mushroom_label_pos || cc.Vec3.ZERO);
+            }
+            if (this.uirc.MushroomChip) {
+                this.uirc.MushroomChip.setPosition(info.mushroom_chip_pos || cc.Vec3.ZERO);
+            }
             this.ClearMushroomTag(); // 切换座位时先隐藏
         }
         if (this.uirc.PlayerSquidCount) {
             const squidPos = info.squid_pos || cc.Vec3.ZERO;
             this.uirc.PlayerSquidCount.setPosition(squidPos);
+            if(this.uirc.PlayerSquidLabel){
+                this.uirc.PlayerSquidLabel.setPosition(info.mushroom_label_pos || cc.Vec3.ZERO);
+            }
         }
         this.ClearSquidTag();
 
@@ -448,11 +458,23 @@ export default class Seat {
         if (null == this.Player) {
             this.uirc.imageEmpty.node.active = true;
             this.uirc.Frame_Head.active = false;
+            this.RefreshNickCoinVisible(false);
             this.ClearMushroomTag();
             this.ClearSquidTag();
         }
         else {
+            this.RefreshNickCoinVisible(true);
             WebImageHelper.SetHeadImage(this.uirc.Raw_Head, this.Player.headPic);
+        }
+    }
+
+    private RefreshNickCoinVisible(show: boolean): void {
+        if (this.uirc.Nick_Coin) {
+            this.uirc.Nick_Coin.active = show;
+        }
+        if (this.uirc.table_sprite_line) {
+            this.uirc.table_sprite_line.opacity = show ? 255 : 0;
+            this.uirc.table_sprite_line.color = cc.Color.WHITE;
         }
     }
 
@@ -487,7 +509,7 @@ export default class Seat {
         if (!show) return;
         const cnt = Math.floor(pool / base);
         this.uirc.Label_MushroomCount && (this.uirc.Label_MushroomCount.string = `${cnt}`);
-        this.uirc.Label_MushroomChip && (this.uirc.Label_MushroomChip.string = `(${pool / 100})`);
+        this.uirc.Label_MushroomChip && (this.uirc.Label_MushroomChip.string = `${pool / 100}`);
     }
 
     /** 清理/隐藏蘑菇标识（换桌/重置时调用） */
@@ -808,6 +830,10 @@ export default class Seat {
         let mEnumRoomType: RoomType = GameCache.Instance.room_type;
         if (mEnumRoomType == RoomType.MTTTexasHoldemStandardNoLimit) {
             this.uirc.imageOffline.active = false;
+            if (this.uirc.table_sprite_line) {
+                this.uirc.table_sprite_line.opacity = 255;
+                this.uirc.table_sprite_line.color = cc.Color.WHITE;
+            }
             return;
         }
         if (this.uirc.imageReserveSeat.activeInHierarchy) {
@@ -815,6 +841,10 @@ export default class Seat {
         }
         else {
             this.uirc.imageOffline.active = this.Player.isOffLine > 0 && !this.IsMySeat;
+        }
+        if (this.uirc.table_sprite_line) {
+            this.uirc.table_sprite_line.opacity = this.uirc.Nick_Coin?.active ? 255 : 0;
+            this.uirc.table_sprite_line.color = cc.Color.WHITE;
         }
     }
 
@@ -1725,6 +1755,7 @@ export default class Seat {
         this.HideReturnGame();
         this.HideCardBack();
         this.HideHeadCD();
+        this.RefreshNickCoinVisible(false);
         this.ClearMushroomTag();
         this.ClearSquidTag();
     }
@@ -1904,11 +1935,11 @@ export default class Seat {
         } else {
             this.SetCoin("");
         }
-        if (this.IsMySeat) {
-            this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[1]);
-        } else {
-            this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[0]);
-        }
+        // if (this.IsMySeat) {
+        //     this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[1]);
+        // } else {
+        //     this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[0]);
+        // }
 
         console.log("刷新下方筹码位置");
 

@@ -97,16 +97,16 @@ export class some_pos {
     ];
     //所有气泡位置
     public static readonly all_bubble_pos: cc.Vec3[] = [
-        cc.v3(123, 55),
-        cc.v3(123, 55),
-        cc.v3(123, 55),
-        cc.v3(123, 55),
-        cc.v3(123, 55),
-        cc.v3(123, 55),
-        cc.v3(-123, 55),
-        cc.v3(-123, 55),
-        cc.v3(-123, 55),
-        cc.v3(-123, 55),
+        cc.v3(0, 100),
+        cc.v3(0, 100),
+        cc.v3(0, 100),
+        cc.v3(0, 100),
+        cc.v3(0, 100),
+        cc.v3(0, 100),
+        cc.v3(-0, 100),
+        cc.v3(-0, 100),
+        cc.v3(-0, 100),
+        cc.v3(-0, 100),
     ];
     //保险时间位置
 
@@ -125,33 +125,79 @@ export class some_pos {
 
     //蘑菇位置
     public static readonly all_mushroom_pos: cc.Vec3[] = [
-        cc.v3(100, -190),//中下为自己的位置
-        cc.v3(80, -190),//除自己外所有方位的位置
-        cc.v3(80, -190),
-        cc.v3(80, -190),
-        cc.v3(-120, -190),
-        cc.v3(80, -190),
-        cc.v3(80, -190),
-        cc.v3(-120, -190),
-        cc.v3(-120, -190),
-        cc.v3(-120, -190),
-        cc.v3(100, -190),// 10 中下为自己的位置
-        cc.v3(80, -190),// 11 中下为其他玩家的位置
+        cc.v3(80, 55),//中下为自己的位置
+
+        cc.v3(80, 55),//除自己外所有方位的位置
+        cc.v3(80, 55),
+        cc.v3(80, 55),
+
+        cc.v3(80, 55),
+        cc.v3(80, 55),
+        cc.v3(-80, 55),
+
+        cc.v3(-80, 55),
+        cc.v3(-80, 55),
+        cc.v3(-80, 55),
+
+        cc.v3(80, 55),// 10 中下为自己的位置
+        cc.v3(80, 55),// 11 中下为其他玩家的位置
+    ]
+    //蘑菇数字容器位置（相对于 MushroomPool）
+    public static readonly all_mushroom_label_pos: cc.Vec3[] = [
+        cc.v3(20, 55, 0),   // 0
+
+        cc.v3(20, 55, 0),   // 1
+        cc.v3(20, 55, 0),   // 2
+        cc.v3(20, 55, 0),   // 3
+
+        cc.v3(20, 55, 0),  // 4
+        cc.v3(-20, 55, 0),   // 5
+        cc.v3(-20, 55, 0),   // 6
+
+        cc.v3(-20, 55, 0),  // 7
+        cc.v3(-20, 55, 0),  // 8
+        cc.v3(-20, 55, 0),  // 9
+
+        cc.v3(20, 55, 0),   // 10
+        cc.v3(20, 55, 0),   // 11
+    ]
+    //蘑菇价值文本位置（相对于 MushroomLabel）
+    public static readonly all_mushroom_chip_pos: cc.Vec3[] = [
+        cc.v3(-65, 50, 0), // 0
+
+        cc.v3(-65, 50, 0), // 1
+        cc.v3(-65, 50, 0), // 2
+        cc.v3(-65, 50, 0), // 3
+
+        cc.v3(-65, 50, 0),  // 4
+        cc.v3(-65, 50, 0), // 5
+        cc.v3(75, 50, 0), // 6
+
+        cc.v3(75, 50, 0),  // 7
+        cc.v3(75, 50, 0),  // 8
+        cc.v3(75, 50, 0),  // 9
+
+        cc.v3(-65, 50, 0), // 10
+        cc.v3(-65, 50, 0), // 11
     ]
     //鱿鱼位置
     public static readonly all_squid_pos: cc.Vec3[] = [
-        cc.v3(100, -190),//中下为自己的位置
-        cc.v3(80, -190),//除自己外所有方位的位置
-        cc.v3(80, -190),
-        cc.v3(80, -190),
-        cc.v3(-120, -190),
-        cc.v3(80, -190),
-        cc.v3(80, -190),
-        cc.v3(-120, -190),
-        cc.v3(-120, -190),
-        cc.v3(-120, -190),
-        cc.v3(210, -190),// 10 中下为自己的位置
-        cc.v3(80, -190),// 11 中下为其他玩家的位置
+        cc.v3(80, 50),//中下为自己的位置
+
+        cc.v3(80, 50),//除自己外所有方位的位置
+        cc.v3(80, 50),
+        cc.v3(80, 50),
+
+        cc.v3(80, 50),
+        cc.v3(80, 50),
+        cc.v3(-95, 50),
+
+        cc.v3(-95, 50),
+        cc.v3(-95, 50),
+        cc.v3(-95, 50),
+
+        cc.v3(80, 50),// 10 中下为自己的位置
+        cc.v3(80, 50),// 11 中下为其他玩家的位置
     ]
 }
 export class seat_info {
@@ -162,7 +208,10 @@ export class seat_info {
     bubble_pos: cc.Vec3 = null;
     insurance_pos: cc.Vec3 = null;
     mushroom_pos: cc.Vec3 = null;
+    mushroom_label_pos: cc.Vec3 = null;
+    mushroom_chip_pos: cc.Vec3 = null;
     squid_pos: cc.Vec3 = null;
+    squid_label_pos: cc.Vec3 = null;
     constructor(public index: number) {
         this.seat_pos = some_pos.all_seat_pos[index];
         this.bank_pos = some_pos.all_bank_pos[index];
@@ -171,7 +220,10 @@ export class seat_info {
         this.bubble_pos = some_pos.all_bubble_pos[index];
         this.insurance_pos = some_pos.all_insurance_pos[index];
         this.mushroom_pos = some_pos.all_mushroom_pos[index];
+        this.mushroom_label_pos = some_pos.all_mushroom_label_pos[index];
+        this.mushroom_chip_pos = some_pos.all_mushroom_chip_pos[index];
         this.squid_pos = some_pos.all_squid_pos[index];
+        this.squid_label_pos = some_pos.all_mushroom_label_pos[index];
     }
 }
 /**
@@ -590,18 +642,18 @@ export default class GameUtil {
     /// </summary>
     public static readonly TexasPots: cc.Vec3[] = [
 
-        cc.v3(0, -650),
+        cc.v3(0, -812),
 
-        cc.v3(-283, -791),
-        cc.v3(0, -791),
-        cc.v3(283, -791),
+        cc.v3(-283, -960),
+        cc.v3(0, -960),
+        cc.v3(283, -960),
 
-        cc.v3(-283, -858),
-        cc.v3(0, -858),
-        cc.v3(283, -858),
+        cc.v3(-283, -1025),
+        cc.v3(0, -1025),
+        cc.v3(283, -1025),
 
-        cc.v3(-143, -923),
-        cc.v3(143, -923),
+        cc.v3(-143, -1090),
+        cc.v3(143, -1090),
 
     ];
 
