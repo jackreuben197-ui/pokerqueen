@@ -72,7 +72,7 @@ export default class UIPokerRoomList extends BaseFormPlus {
         console.log('All Tab clicked');
         this.setTabSel(0);
 
-        this.showTabByGameType( -1 );
+        this.showTabByGameType( [],-1 );
     }
 
     protected onHoldemTabClick(event: cc.Event.EventTouch): void {
@@ -80,18 +80,22 @@ export default class UIPokerRoomList extends BaseFormPlus {
         this.setTabSel(1);
 
         // 只显示Holdem游戏类型
-        this.showTabByGameType( 0 );
+        this.showTabByGameType( [0],0 );
 
     }
 
     protected onOmahaTabClick(event: cc.Event.EventTouch): void {
         console.log('Omaha Tab clicked');
         this.setTabSel(2);
+        
+        this.showTabByGameType( [1,2,3],0 );
     }
 
     protected onSixPlusTabClick(event: cc.Event.EventTouch): void {
         console.log('SixPlus Tab clicked');
         this.setTabSel(3);
+
+        this.showTabByGameType( [0],2 );
     }
 
     protected getRidList(res: any): Array<number> {
@@ -119,6 +123,10 @@ export default class UIPokerRoomList extends BaseFormPlus {
         const groupMap = new Map<string, Map<number, any[]>>();
 
         for (const record of records) {
+            if (record.game_type > 3 ) {
+                continue;
+            }
+
             const { game_type, poker_type, sb } = record;
             const primaryKey = `${game_type}_${poker_type}`;
 
@@ -147,11 +155,11 @@ export default class UIPokerRoomList extends BaseFormPlus {
 
     /**
      * 根据游戏类型来显示桌面：
-     * @param type 
+     * @param game_type 
      */
-    protected showTabByGameType(type: number) {
+    protected showTabByGameType(game_type: Array<number>,poker_type:number) {
         this.$contentPoker.children.forEach(node => {
-            node.getComponent(UIPokerListItem).showByGameType(type);
+            node.getComponent(UIPokerListItem).showByGameType(game_type,poker_type);
         });
     }
 

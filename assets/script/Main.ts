@@ -134,6 +134,13 @@ export default class Main extends cc.Component {
     
     }
 }
+
+// @ts-ignore
+BigInt.prototype.toJSON = function() {
+    return this.toString();
+};
+
+
 (window as any).Main = Main;
 
 //http://localhost:7456/assets/resources/native/ff/ff223a1d-adf2-4ecd-a826-ca1e0628cb82.png

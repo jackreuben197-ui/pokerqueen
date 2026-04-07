@@ -29,6 +29,7 @@ export default class UIPokerListItem extends cc.Component {
 
     // 记录当前的游戏类型:
     protected curGameType: number = -1;
+    protected curPokerType :number = -1;
 
     // 记录 tableLayout 完全展开时的原始高度
     private _originalTableHeight: number = 0;
@@ -114,18 +115,22 @@ export default class UIPokerListItem extends cc.Component {
         }
     }
 
-    protected getGTypeStr(type: number): string {
-        switch (type) {
-            case 0:
-                return "德州";
-            case 1:
-                return "奥马哈四张";
-            case 2:
-                return "奥马哈五张";
-            case 6:
+    /**
+     * 扑克专区要过滤的game_type是： 0，1，2，3
+     *  game_type为0时:  poker_type 0 表示当前游戏类型为德州  2 表示游戏类型为6+
+     *  game_type 1,2,3都是奥马哈
+     * @param type 
+     * @param poker_type 
+     * @returns 
+     */
+    protected getGTypeStr(type: number,poker_type:number): string {
+        if( type == 0 ){
+            if(poker_type == 0)
+                return "德州扑克";
+            else if(poker_type == 2)
                 return "6+";
-            default:
-                return type.toString();
+        }else {
+            return "奥马哈";
         }
     }
 
@@ -133,11 +138,11 @@ export default class UIPokerListItem extends cc.Component {
      * 根据类型来决定当前的数据是否显示.
      * @param type 
      */
-    public showByGameType(type: number): void {
-        if (type < 0)
+    public showByGameType(type: Array<number>,poker_type:number): void {
+        if (type.length <= 0)
             this.node.active = true;
         else {
-            if (type == this.curGameType) {
+            if( (type.indexOf( this.curGameType)>=0) && (poker_type==this.curPokerType) ) {
                 this.node.active = true;
             } else {
                 this.node.active = false;
@@ -157,12 +162,13 @@ export default class UIPokerListItem extends cc.Component {
                 userNum += data[ti].users.length;
             }
 
-            this.cc_Label$gametype.string = this.getGTypeStr(data[0].game_type) + "_" + data[0].poker_type;
+            this.cc_Label$gametype.string = this.getGTypeStr(data[0].game_type,data[0].poker_type);
             this.cc_Label$sbinfo.string = data[0].sb + "/" + data[0].sb * 2;
             this.cc_Label$tablenum.string = tblNum + "桌";
             this.cc_Label$usernum.string = userNum + "人";
 
             this.curGameType = data[0].game_type;
+            this.curPokerType = data[0].poker_type;
 
             //
             // 给桌子加数据：

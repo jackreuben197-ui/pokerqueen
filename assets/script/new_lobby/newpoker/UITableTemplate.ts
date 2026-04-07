@@ -67,7 +67,11 @@ export default class UITableTemplate extends cc.Component {
      */
     public setTableData(data: any): void {
         this.tableName.string = data.name;
-        this.timeLabel.string = this.getTimeDiffString(data.start_time) + "/" + this.getMaxTimeString(data.play_duration);
+        if( data.start_time )
+            this.timeLabel.string = this.getTimeDiffString(data.start_time) + "/" + this.getMaxTimeString(data.play_duration);
+        else
+            this.timeLabel.string = '0m/' + this.getMaxTimeString(data.play_duration);
+        
         this.userLabel.string = data.users.length + "/" + data.seat_count;
 
         // min_rate*sb*2/100
