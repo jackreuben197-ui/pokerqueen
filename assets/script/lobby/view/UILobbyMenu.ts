@@ -84,13 +84,14 @@ export default class UILobbyMenu extends UIBasePlus {
                 LobbyControl.getInstance().switchContent("UILobbyIndexNew", "main/lobby/index/");
                 //UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex").run();
                 break;
-            case 1://朋友
-                LobbyControl.getInstance().switchContent("UIFriendMatch")
+            case 1://新界面中，１是公会界面：
+                LobbyControl.getInstance().switchContent("UIClubList");
                 break;
-            case 2://公会
-                LobbyControl.getInstance().switchContent("UIClubList")
+            case 2://新界面中，2是充值界面:
+                LobbyControl.getInstance().switchContent("UIFriendMatch");
                 break;
             case 3://生涯
+                
                 LobbyControl.getInstance().switchContent("UICareer")
                 break;
             case 4://我得
