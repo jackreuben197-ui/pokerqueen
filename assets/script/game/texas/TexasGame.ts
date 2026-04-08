@@ -1651,6 +1651,7 @@ export default class TexasGame {
             let seat = this.dicSeatOnlyClient.get(0);
             seat.uirc.imageBanker.setPosition(seat.seatUIInfo.bank_pos);
             seat.uirc.transCurRoundHaveBet.setPosition(seat.seatUIInfo.bet_pos);
+            seat.RefreshCurRoundHaveBetContentPos(seat.seatUIInfo.bet_pos);
             return;
         }
         this.dicSeatOnlyClient.clear();

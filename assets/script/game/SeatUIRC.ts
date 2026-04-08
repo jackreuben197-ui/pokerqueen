@@ -75,6 +75,7 @@ export default class SeatUIRC extends UIBase {
 
 
     transCurRoundHaveBet: cc.Node = null;
+    Bet_Bg: cc.Node = null;
     imageIconChip: cc.Sprite = null;
     textCurRoundHaveBet: cc.Label = null;
 
@@ -189,6 +190,7 @@ export default class SeatUIRC extends UIBase {
         this.WaitforthenextmoveTips = this.getChildNodeOrComponent("WaitforthenextmoveTips", cc.Label);
 
         this.transCurRoundHaveBet = this.getChildNodeOrComponent("CurRoundHaveBet");
+        this.Bet_Bg = this.getChildNodeOrComponent("Bet_Bg");
         this.imageIconChip = this.getChildNodeOrComponent("Image_IconChip", cc.Sprite);
         this.textCurRoundHaveBet = this.getChildNodeOrComponent("Text_CurRoundHaveBet", cc.Label);
 

@@ -1019,7 +1019,7 @@ export default class UITexasReportComponent extends UIBase {
 
     private isJackpotEnabled(): boolean {
         const curGame: any = GameCache.Instance.CurGame;
-        return Number(GameCache.Instance.jackPot_on || curGame?.jackpot || 0) > 0;
+        return Number(curGame?.jackpot || GameCache.Instance.jackPot_on || 0) === 1;
     }
     private RefreshJackpotTotalLabel(): void {
         const total = Math.floor(Number(GameCache.Instance.jackPot_parent_gold || 0) / 100);

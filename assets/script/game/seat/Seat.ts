@@ -212,6 +212,7 @@ export default class Seat {
         this.uirc.imageBanker.setPosition(info.bank_pos);
         this.uirc.transSmallCardBacks.setPosition(info.card_back_pos);
         this.uirc.transCurRoundHaveBet.setPosition(info.bet_pos);
+        this.RefreshCurRoundHaveBetContentPos(info.bet_pos);
         // 蘑菇标位置：按座位方位设置
         if (this.uirc.MushroomPool) {
             const mushPos = info.mushroom_pos || cc.Vec3.ZERO;
@@ -261,6 +262,17 @@ export default class Seat {
         }
         else {
             //mRectTransform.localPosition = info.InsurancetoubaoPos;
+        }
+    }
+
+    public RefreshCurRoundHaveBetContentPos(betPos: cc.Vec3): void {
+        const x = betPos?.x || 0;
+        const targetX = x > 0 ? 90 : -90;
+        if (this.uirc.Bet_Bg) {
+            this.uirc.Bet_Bg.setPosition(targetX, 0);
+        }
+        if (this.uirc.textCurRoundHaveBet?.node) {
+            this.uirc.textCurRoundHaveBet.node.setPosition(targetX, 0);
         }
     }
 
@@ -886,6 +898,7 @@ export default class Seat {
         // this.uirc.textCurRoundHaveBet.string = str;
 
         this.uirc.textCurRoundHaveBet.node.active = true;
+        if (this.uirc.Bet_Bg) this.uirc.Bet_Bg.active = true;
 
         this.UpdateBet();
 
@@ -1186,6 +1199,7 @@ export default class Seat {
         let tween = cc.tween(this.ui);
         if (this.uirc.imageIconChip.node.activeInHierarchy) {
             this.uirc.textCurRoundHaveBet.node.active = false;
+            if (this.uirc.Bet_Bg) this.uirc.Bet_Bg.active = false;
             let pos = this.uirc.textCurRoundHaveBet.node.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
             GC.sound.Play('sfx_desk_move_chips');
             cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }, cc.easeQuadraticActionOut()).call(() => {
@@ -1212,6 +1226,7 @@ export default class Seat {
         this.UpdateBet(GameCache.Instance.CurGame.groupBet);
 
         this.uirc.textCurRoundHaveBet.node.active = true;
+        if (this.uirc.Bet_Bg) this.uirc.Bet_Bg.active = true;
         //RectTransform mRectTransform = imageCurRoundHaveBetFrame.transform as RectTransform;
         //mRectTransform.sizeDelta = new Vector2(textCurRoundHaveBet.preferredWidth + imageIconChip.rectTransform.sizeDelta.x, mRectTransform.sizeDelta.y);
 
