@@ -255,9 +255,16 @@ export default class ProtocolAgency extends cc.Component {
                 `RoomID:${roomid},MatchID:${matchid},body:${JSON.stringify(body)}`,
             );
         }
-        else if( code == ProtocolCode.Protocol_Holdem_Heartbeat ){
+        
+        // 
+        // 记录服务器的timeStamp数据：
+        if( (code == ProtocolCode.Protocol_Holdem_Heartbeat)||(code == ProtocolCode.Protocol_Holdem_Register)){
             // 记录当前Server时间戳:
             if( (body as any).timestamp ){
+                
+                if( !this.gTimeStamp )
+                    console.log( "首次设置全局的GTimeStamp:" + (body as any).timestamp );
+
                 this.gTimeStamp = (body as any).timestamp;
             }
         }

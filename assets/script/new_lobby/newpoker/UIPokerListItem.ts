@@ -151,6 +151,39 @@ export default class UIPokerListItem extends cc.Component {
     }
 
     /**
+     * 在已有分组中追加新的桌面数据（增量更新）
+     * @param newRecords 新增的桌面记录数组
+     */
+    public appendTableData(newRecords: Array<any>): void {
+        if (!newRecords || newRecords.length <= 0) return;
+
+        // 添加新桌面节点
+        for (let i = 0; i < newRecords.length; i++) {
+            let tableNode: cc.Node = cc.instantiate(this.pokerTablePrefab);
+            let script: UITableTemplate = tableNode.getComponent(UITableTemplate);
+            script.setTableData(newRecords[i]);
+            this.$tableLayout.addChild(tableNode);
+        }
+
+        // 更新统计标签
+        let curTblNum: number = parseInt(this.cc_Label$tablenum.string) || 0;
+        let addUserNum: number = 0;
+        for (let i = 0; i < newRecords.length; i++) {
+            addUserNum += newRecords[i].users.length;
+        }
+        let curUserNum: number = parseInt(this.cc_Label$usernum.string) || 0;
+        this.cc_Label$tablenum.string = (curTblNum + newRecords.length) + "桌";
+        this.cc_Label$usernum.string = (curUserNum + addUserNum) + "人";
+
+        // 刷新内部布局并更新记录的高度
+        let layout = this.$tableLayout.getComponent(cc.Layout);
+        if (layout) layout.updateLayout();
+        if (this._originalTableHeight > 0) {
+            this._originalTableHeight = this.$tableLayout.height;
+        }
+    }
+
+    /**
      * 设置当前List需要的数据
      * @param data
      */
