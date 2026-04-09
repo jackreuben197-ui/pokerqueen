@@ -19,6 +19,8 @@ import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
 import GC from '../../../frame/GameControl'
+import { prototype } from "events";
+import clubListItemNew from "./clubListItemNew";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/new_club/UIClubList')
@@ -30,6 +32,11 @@ export default class UIClubList extends BaseForm {
 
     @property(cc.PageView)
     pageViews: cc.PageView = null;
+
+    @property(cc.Node)
+    protected clubListContent: cc.Node = null;
+    @property(cc.Prefab)
+    protected clubListItemPrefab : cc.Prefab = null;
 
     @property(cc.Label)
     num: cc.Label = null;
@@ -73,14 +80,40 @@ export default class UIClubList extends BaseForm {
     }
     async refreshList() {
         await UIClubModel.mInstance.APIOrgClubGet(false);
-        let data: any = WebOrgClubGet.Response.data
+        let data: any = WebOrgClubGet.Response.data;
         this.num.string = data.length;
+
+        this.initClubListItem(data);
+
         // this.initListNode(data)
         this.initPageNode(data)
         this.initTop()
         this.sortData()
         this.setText(this.dropNode_lbl, clubListConfig[this._selectIndex].desc);
     }
+
+    /**
+     * 初始化所有的俱乐部列表项
+     * @param data 
+     */
+    protected initClubListItem(data: any): void {
+        debugger;
+
+        let clc: cc.Node = this.clubListContent;
+        if (!clc) return;
+
+        // 清除旧的子节点，防止内存泄漏
+        clc.removeAllChildren(true);
+        for (let ti: number = 0; ti < data.length; ti++) {
+            let tnode: cc.Node = cc.instantiate(this.clubListItemPrefab);
+            clc.addChild(tnode);
+
+            let scrpit: clubListItemNew = tnode.getComponent(clubListItemNew)
+            scrpit.initData( data[ti] );
+        }
+
+    }
+
     //根据条件排序
     sortData() {
         let data: any = WebOrgClubGet.Response.data

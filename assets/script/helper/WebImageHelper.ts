@@ -29,6 +29,8 @@ export default class WebImageHelper {
 
             cc.assetManager.loadRemote(url, { ext: '.png' }, (err, asset: cc.Texture2D) => {
 
+                // 设置packable为false,用于防止图片被打包
+                asset.packable = false;
                 if (err) {
 
                 } else {
