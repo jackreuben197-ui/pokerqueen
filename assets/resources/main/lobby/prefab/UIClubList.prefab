@@ -995,7 +995,7 @@
         1,
         1,
         1,
-        1
+        0
       ]
     },
     "_eulerAngles": {
@@ -1204,8 +1204,8 @@
     "clickEvents": [],
     "_N$interactable": true,
     "_N$enableAutoGrayEffect": false,
-    "_N$transition": 2,
-    "transition": 2,
+    "_N$transition": 3,
+    "transition": 3,
     "_N$normalColor": {
       "__type__": "cc.Color",
       "r": 230,
@@ -1251,21 +1251,11 @@
     "_N$normalSprite": {
       "__uuid__": "76fce3a5-10cf-4a0c-9afe-c489aca8bea8"
     },
-    "_N$pressedSprite": {
-      "__uuid__": "e9ec654c-97a2-4787-9325-e6a10375219a"
-    },
-    "pressedSprite": {
-      "__uuid__": "e9ec654c-97a2-4787-9325-e6a10375219a"
-    },
-    "_N$hoverSprite": {
-      "__uuid__": "f0048c10-f03e-4c97-b9d3-3506e1d58952"
-    },
-    "hoverSprite": {
-      "__uuid__": "f0048c10-f03e-4c97-b9d3-3506e1d58952"
-    },
-    "_N$disabledSprite": {
-      "__uuid__": "29158224-f8dd-4661-a796-1ffab537140e"
-    },
+    "_N$pressedSprite": null,
+    "pressedSprite": null,
+    "_N$hoverSprite": null,
+    "hoverSprite": null,
+    "_N$disabledSprite": null,
     "_N$target": {
       "__id__": 23
     },
@@ -1405,7 +1395,7 @@
         1,
         1,
         1,
-        1
+        0
       ]
     },
     "_eulerAngles": {
@@ -1614,8 +1604,8 @@
     "clickEvents": [],
     "_N$interactable": true,
     "_N$enableAutoGrayEffect": false,
-    "_N$transition": 2,
-    "transition": 2,
+    "_N$transition": 3,
+    "transition": 3,
     "_N$normalColor": {
       "__type__": "cc.Color",
       "r": 230,
@@ -1661,21 +1651,11 @@
     "_N$normalSprite": {
       "__uuid__": "53ecf884-bba0-4133-bc89-128ed1a144e3"
     },
-    "_N$pressedSprite": {
-      "__uuid__": "e9ec654c-97a2-4787-9325-e6a10375219a"
-    },
-    "pressedSprite": {
-      "__uuid__": "e9ec654c-97a2-4787-9325-e6a10375219a"
-    },
-    "_N$hoverSprite": {
-      "__uuid__": "f0048c10-f03e-4c97-b9d3-3506e1d58952"
-    },
-    "hoverSprite": {
-      "__uuid__": "f0048c10-f03e-4c97-b9d3-3506e1d58952"
-    },
-    "_N$disabledSprite": {
-      "__uuid__": "29158224-f8dd-4661-a796-1ffab537140e"
-    },
+    "_N$pressedSprite": null,
+    "pressedSprite": null,
+    "_N$hoverSprite": null,
+    "hoverSprite": null,
+    "_N$disabledSprite": null,
     "_N$target": {
       "__id__": 33
     },
@@ -2514,7 +2494,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -2772,
+        -2800,
         0,
         0,
         0,
@@ -5444,8 +5424,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        273,
-        995.5,
+        240.63,
+        1205.902,
         0,
         0,
         0,
@@ -5606,7 +5586,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 260.5000000000001,
+    "_top": 50.097999999999956,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -7005,8 +6985,8 @@
     "_alignFlags": 5,
     "_left": 621,
     "_right": 621,
-    "_top": 2772,
-    "_bottom": -2772,
+    "_top": 2800,
+    "_bottom": -2800,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -7094,6 +7074,12 @@
     },
     "clubListItemPrefab": {
       "__uuid__": "2bdf099f-a96d-43df-b442-f3ed180b3514"
+    },
+    "searchClubNode": {
+      "__id__": 5
+    },
+    "createClubBtn": {
+      "__id__": 30
     },
     "num": {
       "__id__": 161

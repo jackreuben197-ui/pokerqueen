@@ -37,6 +37,10 @@ export default class UIClubList extends BaseForm {
     protected clubListContent: cc.Node = null;
     @property(cc.Prefab)
     protected clubListItemPrefab : cc.Prefab = null;
+    @property(cc.Node)
+    protected searchClubNode : cc.Node = null;
+    @property(cc.Button)
+    protected createClubBtn : cc.Node = null;
 
     @property(cc.Label)
     num: cc.Label = null;
@@ -57,6 +61,9 @@ export default class UIClubList extends BaseForm {
         this.listNode.active = this.listType == 1
         this.sortNode = this.getChildNodeOrComponent("sortNode");
         this.dropNode_lbl = this.getChildNodeOrComponent("dropNode_lbl", cc.Label);
+        this.bindClick(this.searchClubNode, this.joinClub, this);
+        this.bindClick(this.createClubBtn, this.ceateClub, this);
+
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
