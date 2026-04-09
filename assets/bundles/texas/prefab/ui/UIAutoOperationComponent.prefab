@@ -202,8 +202,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -211,
-        0,
+        -300,
+        1,
         0,
         0,
         0,
@@ -257,7 +257,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 139,
+      "width": 140,
       "height": 140
     },
     "_anchorPoint": {
@@ -310,7 +310,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "aeea4987-0dc3-4ded-aebe-fcfb3114f3b9"
+      "__uuid__": "2d769ae9-6823-4ef8-b502-ab7a20549ba6"
     },
     "_type": 0,
     "_sizeMode": 2,
@@ -488,7 +488,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "9243ac00-394a-459a-9141-324952f66e79"
+      "__uuid__": "67fbbfed-ea62-40ff-a241-aa668b324dbf"
     },
     "_type": 0,
     "_sizeMode": 2,
@@ -603,7 +603,7 @@
     "_prefab": {
       "__id__": 15
     },
-    "_opacity": 135,
+    "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
@@ -613,7 +613,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160.31,
+      "width": 140,
       "height": 45.36
     },
     "_anchorPoint": {
@@ -626,7 +626,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -95,
+        0,
         0,
         0,
         0,
@@ -667,7 +667,7 @@
     "_dstBlendFactor": 771,
     "_string": "让牌/弃牌",
     "_N$string": "让牌/弃牌",
-    "_fontSize": 36,
+    "_fontSize": 32,
     "_lineHeight": 36,
     "_enableWrapText": true,
     "_N$file": {
@@ -676,12 +676,12 @@
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
-    "_styleFlags": 0,
+    "_styleFlags": 1,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 0,
+    "_N$overflow": 3,
     "_N$cacheMode": 0,
     "_id": ""
   },
@@ -787,8 +787,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        212,
-        0,
+        300,
+        1,
         0,
         0,
         0,
@@ -1188,7 +1188,7 @@
     "_prefab": {
       "__id__": 30
     },
-    "_opacity": 135,
+    "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
@@ -1198,7 +1198,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 144,
+      "width": 140,
       "height": 45.36
     },
     "_anchorPoint": {
@@ -1211,7 +1211,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -95,
+        0,
         0,
         0,
         0,
@@ -1252,7 +1252,7 @@
     "_dstBlendFactor": 771,
     "_string": "自动跟牌",
     "_N$string": "自动跟牌",
-    "_fontSize": 36,
+    "_fontSize": 32,
     "_lineHeight": 36,
     "_enableWrapText": true,
     "_N$file": {
@@ -1261,12 +1261,12 @@
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
-    "_styleFlags": 0,
+    "_styleFlags": 1,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 0,
+    "_N$overflow": 3,
     "_N$cacheMode": 0,
     "_id": ""
   },
@@ -1382,7 +1382,7 @@
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
-    "_styleFlags": 0,
+    "_styleFlags": 1,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1484,8 +1484,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        212,
-        0,
+        300,
+        1,
         0,
         0,
         0,
@@ -1885,7 +1885,7 @@
     "_prefab": {
       "__id__": 48
     },
-    "_opacity": 135,
+    "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
@@ -1895,7 +1895,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 141.59,
+      "width": 140,
       "height": 45.36
     },
     "_anchorPoint": {
@@ -1908,7 +1908,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -95,
+        0,
         0,
         0,
         0,
@@ -1949,7 +1949,7 @@
     "_dstBlendFactor": 771,
     "_string": "自动AllIn",
     "_N$string": "自动AllIn",
-    "_fontSize": 36,
+    "_fontSize": 32,
     "_lineHeight": 36,
     "_enableWrapText": true,
     "_N$file": {
@@ -1958,12 +1958,12 @@
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
-    "_styleFlags": 0,
+    "_styleFlags": 1,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 0,
+    "_N$overflow": 3,
     "_N$cacheMode": 0,
     "_id": ""
   },
@@ -2178,8 +2178,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        212,
-        0,
+        300,
+        1,
         0,
         0,
         0,
@@ -2286,7 +2286,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "050cc52c-439e-41db-87cc-ca19be9320b7"
+      "__uuid__": "2d769ae9-6823-4ef8-b502-ab7a20549ba6"
     },
     "_type": 0,
     "_sizeMode": 2,
@@ -2464,7 +2464,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "ff0e8681-e5a4-419b-b42d-ba15b3cd490d"
+      "__uuid__": "304e7e5f-49f4-43b0-a622-19229dbe38f2"
     },
     "_type": 0,
     "_sizeMode": 2,
@@ -2579,7 +2579,7 @@
     "_prefab": {
       "__id__": 66
     },
-    "_opacity": 135,
+    "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
@@ -2589,7 +2589,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 144,
+      "width": 140,
       "height": 79.38
     },
     "_anchorPoint": {
@@ -2602,7 +2602,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -95,
+        0,
         0,
         0,
         0,
@@ -2643,7 +2643,7 @@
     "_dstBlendFactor": 771,
     "_string": "自动让牌",
     "_N$string": "自动让牌",
-    "_fontSize": 36,
+    "_fontSize": 32,
     "_lineHeight": 63,
     "_enableWrapText": true,
     "_N$file": {
@@ -2652,12 +2652,12 @@
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
-    "_styleFlags": 0,
+    "_styleFlags": 1,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 0,
+    "_N$overflow": 3,
     "_N$cacheMode": 0,
     "_id": ""
   },

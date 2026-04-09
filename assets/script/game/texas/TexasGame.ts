@@ -1582,12 +1582,12 @@ export default class TexasGame {
     //初始化操作面板的位置
     InitOperationPos() {
         let Seat0: Seat = this.listSeat[0];
-        // let Operation_Pos = this.uirc.UIOperation_Con.convertToNodeSpaceAR(Seat0.ui.convertToWorldSpaceAR(Seat0.uirc.Operation_Pos_Mark.getPosition()));
-        // this.uirc.UIOperation_Com.SetUIPos(Operation_Pos);
-        // this.uirc.UIAutoOperation_Com.SetUIPos(Operation_Pos);
-        let Operation_Pos = Seat0.ui.getPosition();
-        this.uirc.UIOperation_Com.SetUIPos(Operation_Pos);
-        this.uirc.UIAutoOperation_Com.SetUIPos(Operation_Pos);
+        let Operation_Pos = this.uirc.UIOperation_Con.convertToNodeSpaceAR(
+            Seat0.uirc.Operation_Pos_Mark.parent.convertToWorldSpaceAR(Seat0.uirc.Operation_Pos_Mark.position)
+        );
+        const operationPos2D = cc.v2(Operation_Pos.x, Operation_Pos.y+200);
+        this.uirc.UIOperation_Com.SetUIPos(operationPos2D);
+        this.uirc.UIAutoOperation_Com.SetUIPos(operationPos2D);
 
         console.log("设置 - InitOperationPos", Operation_Pos.toString());
     }
@@ -2305,11 +2305,11 @@ export default class TexasGame {
             return;
         }
         if (this.mainPlayer != null) {
-            let mSeat: Seat = null;
             for (let i = 0; i < this.listSeat.length; i++) {
-                mSeat = this.listSeat[i];
+                const mSeat = this.listSeat[i];
                 if (this.mainPlayer.seatID == mSeat.seatID) {
-                    mSeat.SetOperationHeadActive(false);
+                    mSeat.SetOperationHeadActive(true);
+                    break;
                 }
             }
         }
@@ -2322,15 +2322,6 @@ export default class TexasGame {
     /// 隐藏操作面板
     /// </summary>
     public HideOperationPanel(): void {
-        if (this.mainPlayer != null) {
-            let mSeat: Seat = null;
-            for (let i = 0; i < this.listSeat.length; i++) {
-                mSeat = this.listSeat[i];
-                if (this.mainPlayer.seatID == mSeat.seatID) {
-                    mSeat.SetOperationHeadActive(true);
-                }
-            }
-        }
         this.uirc.Button_Delay.active = false;
         UIComponent.Instance.HideUI(PrefabUI.UIOperationComponent);
 

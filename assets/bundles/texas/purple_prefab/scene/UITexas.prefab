@@ -11626,7 +11626,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 191,
+      "width": 160,
       "height": 67
     },
     "_anchorPoint": {
@@ -11638,7 +11638,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        90,
+        80,
         0,
         0,
         0,
@@ -11682,7 +11682,7 @@
       "__uuid__": "85481a85-3df0-4840-b261-852841c47fb5"
     },
     "_type": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -11840,8 +11840,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 68.57999999999998,
-      "height": 50.39999999999999
+      "width": 118.58,
+      "height": 50.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -11852,7 +11852,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        90,
+        80,
         0,
         0,
         0,
@@ -11892,8 +11892,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "100",
-    "_N$string": "100",
+    "_string": "10000",
+    "_N$string": "10000",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": false,
@@ -12974,7 +12974,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -65,
+        -150,
         216,
         0,
         0,
@@ -13015,12 +13015,12 @@
       "__id__": 340
     },
     "_name": "Image_Card1",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -40,
+        -90,
         216,
         0,
         0,
@@ -13061,12 +13061,12 @@
       "__id__": 342
     },
     "_name": "Image_Card2",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
+        -30,
         216,
         0,
         0,
@@ -13112,7 +13112,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        65,
+        30,
         216,
         0,
         0,
@@ -13153,12 +13153,12 @@
       "__id__": 346
     },
     "_name": "Image_Card4",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        120,
+        90,
         216,
         0,
         0,
@@ -13199,7 +13199,7 @@
       "__id__": 348
     },
     "_name": "Image_Card5",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
@@ -15924,7 +15924,7 @@
         "__id__": 428
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 432
@@ -15943,8 +15943,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 137,
-      "height": 61
+      "width": 120,
+      "height": 60
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -15955,8 +15955,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -387,
-        -258,
+        -210,
+        55,
         0,
         0,
         0,
@@ -16000,7 +16000,7 @@
     "_prefab": {
       "__id__": 431
     },
-    "_opacity": 127,
+    "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
@@ -16010,8 +16010,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 130,
-      "height": 61
+      "width": 113,
+      "height": 60
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -16064,8 +16064,8 @@
     "_dstBlendFactor": 771,
     "_string": "2 Pair",
     "_N$string": "2 Pair",
-    "_fontSize": 32,
-    "_lineHeight": 28,
+    "_fontSize": 29,
+    "_lineHeight": 29,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
@@ -16136,7 +16136,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "cebcce9d-c04b-4779-9af4-dcdc5ab98723"
+      "__uuid__": "ff42ca4e-82da-4152-8272-770a35086117"
     },
     "_type": 0,
     "_sizeMode": 2,
@@ -22581,7 +22581,7 @@
         "__id__": 627
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 643

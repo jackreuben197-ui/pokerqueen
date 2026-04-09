@@ -920,7 +920,7 @@ export default class GameUtil {
                     cc.v3(-48, 0),
                     cc.v3(45, 0),
                 ],
-                myCardTypePos: [cc.v3(-218, -258)],
+                myCardTypePos: [cc.v3(-210, 55)],
                 voiceStatePositon: cc.v3(284, -237, 0),
 
                 myCardsScale: 1
@@ -944,7 +944,7 @@ export default class GameUtil {
                     cc.v3(11, 0),
                     cc.v3(38, 0),
                 ],
-                myCardTypePos: [cc.v3(-291, -258)],
+                myCardTypePos: [cc.v3(-210, 55)],
                 voiceStatePositon: cc.v3(335.4, -232, 0),
 
                 myCardsScale: 1
@@ -971,7 +971,7 @@ export default class GameUtil {
                     cc.v3(24, 0),
                     cc.v3(52, 0),
                 ],
-                myCardTypePos: [cc.v3(-338, -258)],
+                myCardTypePos: [cc.v3(-210, 55)],
                 voiceStatePositon: cc.v3(446, -233, 0),
 
                 myCardsScale: 1
@@ -1001,7 +1001,7 @@ export default class GameUtil {
                     cc.v3(37, 0),
                     cc.v3(64, 0),
                 ],
-                myCardTypePos: [cc.v3(-387, -258)],
+                myCardTypePos: [cc.v3(-210, 55)],
                 voiceStatePositon: cc.v3(515, -237, 0),
                 myCardsScale: 1
             },

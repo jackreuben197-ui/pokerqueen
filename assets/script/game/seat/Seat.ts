@@ -267,7 +267,7 @@ export default class Seat {
 
     public RefreshCurRoundHaveBetContentPos(betPos: cc.Vec3): void {
         const x = betPos?.x || 0;
-        const targetX = x > 0 ? 90 : -90;
+        const targetX = x > 0 ? 80 : -80;
         if (this.uirc.Bet_Bg) {
             this.uirc.Bet_Bg.setPosition(targetX, 0);
         }
