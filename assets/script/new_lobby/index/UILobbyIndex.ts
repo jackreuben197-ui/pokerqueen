@@ -25,6 +25,7 @@ import AssetContext from "../../ui/component/AssetContext";
 import { UIPasswordDialogType } from "../../ui/dialog/UIPasswordDialog";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent from "../../ui/UIComponent";
+import { LobbyControl } from "../../lobby/control/LobbyControl";
 import ItemLobbyRoom from "./ItemLobbyRoom";
 
 const { ccclass, property } = cc._decorator;
@@ -234,6 +235,30 @@ export default class UILobbyIndex extends UIBasePlus {
             this.$poker.on(cc.Node.EventType.TOUCH_END, this.onPoker, this);
         }
 
+        // 注册底部栏 tab 回调，与 UILobbyMenu 的 switchContent 一致
+        const pqBar: any = (window as any).pqBottomBar;
+        if (pqBar) {
+            pqBar.onTab = (index: number) => {
+                switch (index) {
+                    case 0: // 首页
+                        LobbyControl.getInstance().switchContent("UILobbyIndexNew", "main/lobby/index/");
+                        break;
+                    case 1: // 俱乐部
+                        LobbyControl.getInstance().switchContent("UIClubList");
+                        break;
+                    case 2: // 充值
+                        LobbyControl.getInstance().switchContent("UIFriendMatch");
+                        break;
+                    case 3: // 消息
+                        LobbyControl.getInstance().switchContent("UICareer");
+                        break;
+                    case 4: // 我的
+                        LobbyControl.getInstance().switchContent("UIMe", "main/lobby/me/");
+                        break;
+                }
+            };
+        }
+
         // 旧代码本身后期也需要删除:
         // 以下旧代码会产生异常，暂不执行：
         return;
@@ -250,6 +275,7 @@ export default class UILobbyIndex extends UIBasePlus {
     }
     protected onMahjong(event: cc.Event.EventTouch): void {
         console.log("麻将区域被点击.");
+        (window as any).pqBottomBar?.toggle();
     }
     protected onMatch(event: cc.Event.EventTouch): void {
         console.log("赛事区域被点击.");
