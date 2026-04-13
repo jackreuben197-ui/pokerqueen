@@ -10,7 +10,7 @@
 import { UIDefine } from "../../../define/UIDefine";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import GC from "../../../frame/GameControl";
-import GameUtil, { GameEnterType } from "../../../game/util/GameUtil";
+import GameUtil, { GameEnterType, GameType } from "../../../game/util/GameUtil";
 import { GM } from "../../../gm/GMAPI";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import ToastManager from "../../../manager/ToastManager";
@@ -50,11 +50,12 @@ export default class UIClubMatchItem extends UIBase {
     initData(data) {
         this._data = data;
 
-        let lbl_center_left = this.labelNode
-            .getChildByName("lbl_1")
-            .getComponent(cc.Label);
+        const lbl1 = this.labelNode.getChildByName('lbl_1');
+        const lbl_center_left = lbl1?.getChildByName('name')?.getComponent(cc.Label);
         let sb = this._data.sb / 100;
-        lbl_center_left.string = `${sb}/${sb * 2}（${this._data.ante}）`;
+        if (lbl_center_left) {
+            lbl_center_left.string = `${sb}/${sb * 2}（${this._data.ante}）`
+        }
 
         this.lbl_num.string = `${this._data.seat_count - this._data.empty_seat}/${this._data.seat_count}`;
         this.lbl_status = this.labelNode
@@ -65,11 +66,32 @@ export default class UIClubMatchItem extends UIBase {
             this._data.status == 1 ? "MTT_State_NotStart" : "adaptation10186",
         );
         (lbl_center_left as any)._forceUpdateRenderData();
-        let lock = this.node.getChildByName("lock");
-        lock.active = this._data.private_room == 1;
 
-        let bx = lbl_center_left.node.getChildByName("bx");
-        bx.active = this._data.insurance_on;
+
+        let lock = this.node.getChildByName('lock');
+        lock.active = this._data.private_room == 1
+        const icon_bx = lbl1?.getChildByName('icon_bx');
+        if (icon_bx) icon_bx.active = !!this._data.insurance_on;
+        const icon_squid = lbl1?.getChildByName('icon_squid');
+        if (icon_squid) icon_squid.active = this._data.squid_on == 1;
+        const icon_mushroom = lbl1?.getChildByName('icon_mushroom');
+        if (icon_mushroom) icon_mushroom.active = this._data.mushroom_mode == 1;
+        const icon_bombpot = lbl1?.getChildByName('icon_bombpot');
+        if (icon_bombpot) {
+            const gameType = Number(this._data?.game_type ?? -1);
+            const isTexasOrOmaha =
+                gameType === GameType.Holdem
+                || gameType === GameType.Omaha4
+                || gameType === GameType.Omaha5
+                || gameType === GameType.Omaha6;
+            icon_bombpot.active = Number(this._data?.bombpot ?? this._data?.bomb_pot ?? 0) === 1 && isTexasOrOmaha;
+        }
+        const icon_jackpot = lbl1?.getChildByName('icon_jackpot');
+        if (icon_jackpot) icon_jackpot.active = Number(this._data?.jackpot ?? 0) === 1;
+        const icon_critical_hit = lbl1?.getChildByName('icon_critical_hit');
+        if (icon_critical_hit) icon_critical_hit.active = this._data.critical_hit == 1;
+        const icon_calltime = lbl1?.getChildByName('icon_calltime');
+        if (icon_calltime) icon_calltime.active = this._data.call_time == 1;
 
         let isJoin = this._data.participation_status == 1;
 

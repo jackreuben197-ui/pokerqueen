@@ -71,7 +71,8 @@ proto.holdem.pb.ClientMessageCbPlay.toObject = function(includeInstance, msg) {
     gameNum: jspb.Message.getFieldWithDefault(msg, 1, 0),
     roomId: jspb.Message.getFieldWithDefault(msg, 4, 0),
     slotsList: jspb.Message.toObjectList(msg.getSlotsList(),
-    protobuf_holdem_define_cb_pb.CBPlaySummary.toObject, includeInstance)
+    protobuf_holdem_define_cb_pb.CBPlaySummary.toObject, includeInstance),
+    clubId: jspb.Message.getFieldWithDefault(msg, 6, 0)
   };
 
   if (includeInstance) {
@@ -120,6 +121,10 @@ proto.holdem.pb.ClientMessageCbPlay.deserializeBinaryFromReader = function(msg, 
       var value = new protobuf_holdem_define_cb_pb.CBPlaySummary;
       reader.readMessage(value,protobuf_holdem_define_cb_pb.CBPlaySummary.deserializeBinaryFromReader);
       msg.addSlots(value);
+      break;
+    case 6:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setClubId(value);
       break;
     default:
       reader.skipField();
@@ -170,6 +175,13 @@ proto.holdem.pb.ClientMessageCbPlay.serializeBinaryToWriter = function(message, 
       5,
       f,
       protobuf_holdem_define_cb_pb.CBPlaySummary.serializeBinaryToWriter
+    );
+  }
+  f = message.getClubId();
+  if (f !== 0) {
+    writer.writeUint64(
+      6,
+      f
     );
   }
 };
@@ -233,6 +245,21 @@ proto.holdem.pb.ClientMessageCbPlay.prototype.addSlots = function(opt_value, opt
 
 proto.holdem.pb.ClientMessageCbPlay.prototype.clearSlotsList = function() {
   this.setSlotsList([]);
+};
+
+
+/**
+ * optional uint64 club_id = 6;
+ * @return {number}
+ */
+proto.holdem.pb.ClientMessageCbPlay.prototype.getClubId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ClientMessageCbPlay.prototype.setClubId = function(value) {
+  jspb.Message.setField(this, 6, value);
 };
 
 

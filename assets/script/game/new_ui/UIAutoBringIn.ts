@@ -43,6 +43,8 @@ export type SetAutoAddClipsData = {
     storeChips: number, // 藏钱记分牌
     isFromSetting?: boolean,//是否来自设置界面
     wallets?: any,//钱包列表
+    /** 直接指定最小带入（已含蘑菇押金），单位与 bigBlind 一致 */
+    minBringIn?: number,
 }
 
 
@@ -132,7 +134,9 @@ export default class UIAutoBringIn extends UIBasePlus {
 
             //最大带入值
             let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
-            let min = data.currentMinRate * data.bigBlind / 100;
+            let min = data.minBringIn != null
+                ? data.minBringIn / 100
+                : data.currentMinRate * data.bigBlind / 100;
             max = Math.max(min, max);
 
 

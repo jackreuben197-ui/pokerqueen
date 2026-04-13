@@ -1,7 +1,7 @@
 import { LogStyle } from "../../config/GameConfig";
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
-import { ClientMessageLeave } from "../../protobuf/holdem/req_leave_pb";
+import { ClientMessageLeave } from "../../protobuf/holdem/req_th_leave_pb";
 import LoginSession from "../../session/LoginSession";
 import OpCodeHelper from "./OpCodeHelper";
 import PacketHead from "./PacketHead";

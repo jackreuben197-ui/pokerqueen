@@ -61,10 +61,9 @@ export default class ProcedureConfig extends ProcedureBase {
                 };
                 break;
             case 1:
-
                 GameConfig.Network = {
                     WebHost: `http://${GameConfig.Web_Host_Test1}`,
-                    WSS: `ws://${GameConfig.Web_Host_Test1}/api/channel/`
+                    WSS: `ws://${GameConfig.Web_Host_Test1}{0}`
                 };
                 break;
             case 2:
@@ -88,8 +87,8 @@ export default class ProcedureConfig extends ProcedureBase {
                 break;
             case 5:
                 GameConfig.Network = {
-                    WebHost: `https://${GameConfig.Web_Host_Test2}`,
-                    WSS: `wss://${GameConfig.Web_Host_Test2}{0}`
+                    WebHost: `https://${GameConfig.Web_Host_Test1}`,
+                    WSS: `wss://${GameConfig.Web_Host_Test1}{0}`
                 };
                 break;
 

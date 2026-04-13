@@ -34,6 +34,7 @@ goog.exportSymbol('proto.holdem.pb.DefCB.ConsumeType', null, global);
 goog.exportSymbol('proto.holdem.pb.DefCB.HistoryResult', null, global);
 goog.exportSymbol('proto.holdem.pb.DefCB.HistorySlot', null, global);
 goog.exportSymbol('proto.holdem.pb.DefCB.LeaveReason', null, global);
+goog.exportSymbol('proto.holdem.pb.DefCB.OrderByType', null, global);
 goog.exportSymbol('proto.holdem.pb.DefCB.PlaySlot', null, global);
 goog.exportSymbol('proto.holdem.pb.DefCB.RoomCloseReason', null, global);
 goog.exportSymbol('proto.holdem.pb.DefCB.WayPointColor', null, global);
@@ -169,7 +170,10 @@ proto.holdem.pb.DefCB.HistorySlot = {
   HS_TWO_PAIR: 8,
   HS_STA_FLUSH_THREE: 9,
   HS_FULL_HOUSE: 10,
-  HS_FOUR_STAFLUSH_ROYALFLUSH: 11
+  HS_FOUR_STAFLUSH_ROYALFLUSH: 11,
+  HS_FLUSH: 12,
+  HS_STA: 13,
+  HS_STAFLUSH: 14
 };
 
 /**
@@ -199,7 +203,10 @@ proto.holdem.pb.DefCB.PlaySlot = {
   PS_TWO_PAIR: 8,
   PS_STA_FLUSH_THREE: 9,
   PS_FULL_HOUSE: 10,
-  PS_FOUR_STAFLUSH_ROYALFLUSH: 11
+  PS_FOUR_STAFLUSH_ROYALFLUSH: 11,
+  PS_FLUSH: 12,
+  PS_STA: 13,
+  PS_STAFLUSH: 14
 };
 
 /**
@@ -246,7 +253,18 @@ proto.holdem.pb.DefCB.LeaveReason = {
   LR_ACTIVE: 1,
   LR_FORCE: 2,
   LR_GAMEOVER: 3,
-  LR_OFFLINE: 4
+  LR_OFFLINE: 4,
+  LR_STAND_UP: 5
+};
+
+/**
+ * @enum {number}
+ */
+proto.holdem.pb.DefCB.OrderByType = {
+  OT_ORDER_BY_NONE: 0,
+  OT_ORDER_BY_PLAY: 1,
+  OT_ORDER_BY_WALLET: 2,
+  OT_ORDER_BY_RATE: 3
 };
 
 
@@ -311,7 +329,9 @@ proto.holdem.pb.CBRoom.toObject = function(includeInstance, msg) {
     proto.holdem.pb.CBPlaySummary.toObject, includeInstance),
     startTime: jspb.Message.getFieldWithDefault(msg, 5, 0),
     duration: jspb.Message.getFieldWithDefault(msg, 6, 0),
-    gameDuration: jspb.Message.getFieldWithDefault(msg, 7, 0)
+    gameDuration: jspb.Message.getFieldWithDefault(msg, 7, 0),
+    bringInMinLimit: jspb.Message.getFieldWithDefault(msg, 8, 0),
+    playBetMinLimit: jspb.Message.getFieldWithDefault(msg, 9, 0)
   };
 
   if (includeInstance) {
@@ -377,6 +397,14 @@ proto.holdem.pb.CBRoom.deserializeBinaryFromReader = function(msg, reader) {
     case 7:
       var value = /** @type {number} */ (reader.readUint32());
       msg.setGameDuration(value);
+      break;
+    case 8:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setBringInMinLimit(value);
+      break;
+    case 9:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setPlayBetMinLimit(value);
       break;
     default:
       reader.skipField();
@@ -455,6 +483,20 @@ proto.holdem.pb.CBRoom.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeUint32(
       7,
+      f
+    );
+  }
+  f = message.getBringInMinLimit();
+  if (f !== 0) {
+    writer.writeUint64(
+      8,
+      f
+    );
+  }
+  f = message.getPlayBetMinLimit();
+  if (f !== 0) {
+    writer.writeUint64(
+      9,
       f
     );
   }
@@ -595,6 +637,36 @@ proto.holdem.pb.CBRoom.prototype.getGameDuration = function() {
 /** @param {number} value */
 proto.holdem.pb.CBRoom.prototype.setGameDuration = function(value) {
   jspb.Message.setField(this, 7, value);
+};
+
+
+/**
+ * optional uint64 bring_in_min_limit = 8;
+ * @return {number}
+ */
+proto.holdem.pb.CBRoom.prototype.getBringInMinLimit = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 8, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.CBRoom.prototype.setBringInMinLimit = function(value) {
+  jspb.Message.setField(this, 8, value);
+};
+
+
+/**
+ * optional uint64 play_bet_min_limit = 9;
+ * @return {number}
+ */
+proto.holdem.pb.CBRoom.prototype.getPlayBetMinLimit = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.CBRoom.prototype.setPlayBetMinLimit = function(value) {
+  jspb.Message.setField(this, 9, value);
 };
 
 
@@ -2027,7 +2099,8 @@ proto.holdem.pb.CBUserPlaySummary.toObject = function(includeInstance, msg) {
     userId: jspb.Message.getFieldWithDefault(msg, 1, 0),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     avatar: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    amount: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    amount: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    win: jspb.Message.getFieldWithDefault(msg, 5, 0)
   };
 
   if (includeInstance) {
@@ -2079,6 +2152,10 @@ proto.holdem.pb.CBUserPlaySummary.deserializeBinaryFromReader = function(msg, re
     case 4:
       var value = /** @type {number} */ (reader.readUint64());
       msg.setAmount(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setWin(value);
       break;
     default:
       reader.skipField();
@@ -2134,6 +2211,13 @@ proto.holdem.pb.CBUserPlaySummary.serializeBinaryToWriter = function(message, wr
   if (f !== 0) {
     writer.writeUint64(
       4,
+      f
+    );
+  }
+  f = message.getWin();
+  if (f !== 0) {
+    writer.writeInt64(
+      5,
       f
     );
   }
@@ -2197,6 +2281,21 @@ proto.holdem.pb.CBUserPlaySummary.prototype.getAmount = function() {
 /** @param {number} value */
 proto.holdem.pb.CBUserPlaySummary.prototype.setAmount = function(value) {
   jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * optional int64 win = 5;
+ * @return {number}
+ */
+proto.holdem.pb.CBUserPlaySummary.prototype.getWin = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.CBUserPlaySummary.prototype.setWin = function(value) {
+  jspb.Message.setField(this, 5, value);
 };
 
 

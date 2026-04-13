@@ -33,6 +33,7 @@ import UIOperationComponent from "./ui/UIOperationComponent";
 import UIOutChipsTipComponent from "./ui/UIOutChipsTipComponent";
 import UITexasMenu from "./ui/UITexasMenu";
 import GameUtil, { GameEnterType } from "./util/GameUtil";
+import Seat from "./seat/Seat";
 
 export class PlayerBarrageRecord {
     public name: string;
@@ -99,6 +100,26 @@ export default class UITexas extends BaseScene {
     seats_content: cc.Node = null;
 
     textRoomInfo: cc.Label = null;
+    RemainingSquidCount: cc.Node = null;
+    RemainingSquidLabelCount: cc.Label = null;
+    SquidSwitch: cc.Node = null;
+    private SquidSwitchClickNode: cc.Node = null;
+    SquidStandUp: cc.Node = null;
+    SquidJoinLabel: cc.Label = null;
+    SquidStart: cc.Node = null;
+    SquidStartAnim: cc.Animation = null;
+    BombPotOpen: cc.Node = null;
+    BombPotOpenAnim: cc.Animation = null;
+    BombPotLogo: cc.Node = null;
+    BombPotLogoAnim: cc.Animation = null;
+    CriticalHitStart: cc.Node = null;
+    CriticalHitStartAnim: cc.Animation = null;
+    callTimeArea: cc.Node = null;
+    callTimeDes: cc.Label = null;
+    StartGameButton: cc.Node = null;
+    JackpotButton: cc.Node = null;
+    JackpotGoldLabel: cc.Label | cc.RichText = null;
+    JackpotAnimRoot: cc.Node = null;
 
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
@@ -196,6 +217,7 @@ export default class UITexas extends BaseScene {
     TransPot_Pool: SimpleNodePool = null;
     TransAllPot_Pool: SimpleNodePool = null;
 
+
     //#region 弹幕界面
     /// <summary>
     /// 弹幕界面
@@ -242,6 +264,82 @@ export default class UITexas extends BaseScene {
 
         this.seats_content = this.getChildNodeOrComponent("seats_content");
         this.Seat_Temp = this.getChildNodeOrComponent("Seat_Temp");
+        this.RemainingSquidCount = this.main?.getChildByName("RemainingSquidCount");
+        this.RemainingSquidLabelCount = this.RemainingSquidCount
+            ?.getChildByName("RemainingSquidLabel")
+            ?.getChildByName("RemainingSquidLabelCount")
+            ?.getComponent(cc.Label);
+        if (this.RemainingSquidCount) {
+            this.RemainingSquidCount.active = false;
+        }
+        this.SquidSwitch = this.main?.getChildByName("SquidSwitch");
+        this.SquidSwitchClickNode = this.SquidSwitch
+            ?.getChildByName("content")
+            ?.getChildByName("GGSwitch2") || this.SquidSwitch;
+
+        this.SquidJoinLabel = this.SquidSwitch
+            ?.getChildByName("content")
+            ?.getChildByName("$joinLabel")
+            ?.getComponent(cc.Label);
+        if (this.SquidJoinLabel) {
+            this.SquidJoinLabel.string = i18nMgr.Get("UIClub_RoomJoin");
+        }
+        if (this.SquidSwitch) {
+            this.SquidSwitch.active = false;
+        }
+        this.SquidStandUp = this.main?.getChildByName("squidStandUp");
+        if (this.SquidStandUp) {
+            this.SquidStandUp.active = false;
+        }
+        this.SquidStart = this.getChildNodeOrComponent("squid_start");
+        this.SquidStartAnim = this.SquidStart?.getComponent(cc.Animation);
+        if (this.SquidStart) {
+            this.SquidStart.active = false;
+            this.SquidStartAnim?.stop();
+        }
+        this.BombPotOpen = this.main?.getChildByName("bombpot_open");
+        this.BombPotOpenAnim = this.BombPotOpen?.getComponent(cc.Animation);
+        if (this.BombPotOpen) {
+            this.BombPotOpen.active = false;
+            this.BombPotOpenAnim?.stop();
+        }
+        this.BombPotLogo = this.main?.getChildByName("bombpot_logo");
+        this.BombPotLogoAnim = this.BombPotLogo?.getComponent(cc.Animation);
+        if (this.BombPotLogo) {
+            this.BombPotLogo.active = false;
+            this.BombPotLogoAnim?.stop();
+        }
+        this.CriticalHitStart = this.main?.getChildByName("critical_hit_start");
+        this.CriticalHitStartAnim = this.CriticalHitStart?.getComponent(cc.Animation);
+        if (this.CriticalHitStart) {
+            this.CriticalHitStart.active = false;
+            this.CriticalHitStartAnim?.stop();
+        }
+        this.callTimeArea = this.main?.getChildByName("callTimeArea");
+        this.callTimeDes = this.callTimeArea?.getChildByName("callTimeDes")?.getComponent(cc.Label) || null;
+        if (this.callTimeArea) {
+            this.callTimeArea.active = false;
+        }
+        this.StartGameButton =
+            this.main?.getChildByName("StartGameButton")
+            || this.getChildNodeOrComponent("StartGameButton")
+            || cc.find("main/StartGameButton", this.node);
+        if (this.StartGameButton) {
+            this.StartGameButton.active = false;
+        } else {
+            cc.warn("[UITexas] StartGameButton not found");
+        }
+        this.JackpotButton = this.main?.getChildByName("Button_Jackpot");
+        if (this.JackpotButton) {
+            this.JackpotButton.active = false;
+            const jackpotTextNode = this.JackpotButton.getChildByName("Label_Gold");
+            this.JackpotGoldLabel = jackpotTextNode?.getComponent(cc.Label) || jackpotTextNode?.getComponent(cc.RichText) || null;
+        }
+        this.JackpotAnimRoot = this.main?.getChildByName("JackpotAnimRoot");
+        if (this.JackpotAnimRoot) {
+            this.JackpotAnimRoot.active = false;
+            this.JackpotAnimRoot.getComponent(cc.Animation)?.stop();
+        }
 
         //this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
@@ -252,6 +350,8 @@ export default class UITexas extends BaseScene {
         this.transPots = this.getChildNodeOrComponent("Pots");
         this.transPot = this.getChildNodeOrComponent("Pot");
         this.transAllPot = this.getChildNodeOrComponent("AllPot");
+
+
 
 
         this.Button_Delay = this.getChildNodeOrComponent("Button_Delay");
@@ -369,6 +469,11 @@ export default class UITexas extends BaseScene {
 
         this.setButtonClick(this.Button_Delay, this.onClickDelay);
         this.setButtonClick(this.Button_SeeMorePublic, this.onClickSeeMorePublic);
+        this.setButtonClick(this.buttonWaitBlind, this.onClickWaitBlind);
+        this.setButtonClick(this.StartGameButton, this.onClickStartGame);
+        this.setButtonClick(this.JackpotButton, this.onClickJackpot);
+        this.setButtonClick(this.SquidSwitchClickNode, this.onClickJoinGame);
+        this.setButtonClick(this.SquidStandUp, this.onClickSquidStandUp);
 
         this.setButtonClick(this.Button_AddOn, this.onClickAddOn);
 
@@ -377,6 +482,7 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.Button_CancelTrust, this.onClickCancelTrust);
 
     }
+
 
     Enter(param: { game_enter_type: GameEnterType, isLookOn: boolean }): void {
 
@@ -428,6 +534,11 @@ export default class UITexas extends BaseScene {
         //this.ShowInvateCode();
         //this.setActive(this.Button_BringIn, false);
         this.setActive(this.Button_AddOn, false);
+        this.setActive(this.SquidSwitch, false);
+        this.setActive(this.SquidStandUp, false);
+        this.setActive(this.StartGameButton, false);
+        this.setActive(this.BombPotOpen, false);
+        this.setActive(this.BombPotLogo, false);
         //消息按钮显示
         this.btn_msg.active = GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2;
     }
@@ -462,6 +573,13 @@ export default class UITexas extends BaseScene {
             this.Image_WaitForStartBathTips,
             this.Image_ReserveSeatTips,
             this.Image_InsuranceTips,
+            this.SquidSwitch,
+            this.SquidStandUp,
+            this.StartGameButton,
+            this.JackpotButton,
+            this.JackpotAnimRoot,
+            this.BombPotOpen,
+            this.BombPotLogo,
         ].forEach(item => {
             this.setActive(item, false);
         });
@@ -473,8 +591,6 @@ export default class UITexas extends BaseScene {
         UIComponent.close(UIDefine.UITexasSettingComponent);
         //关闭规则
         UIComponent.close(UIDefine.UITexasRule);
-        //关闭战况
-        UIComponent.close(UIDefine.UITexasReportComponent);
         //关闭战绩
         UIComponent.close(UIDefine.UITexasHistoryComponent);
     }
@@ -547,6 +663,22 @@ export default class UITexas extends BaseScene {
     }
     private onClickSeeMorePublic() {
         this.game.onClickSeeMorePublic();
+    }
+    private onClickWaitBlind() {
+        this.game?.onClickWaitBlind();
+    }
+    private onClickStartGame() {
+        this.game?.onClickStartGame();
+    }
+    private onClickJackpot() {
+        this.game?.OnClickJackpot();
+    }
+    private onClickJoinGame() {
+        console.log(`==>onClickJoinGame`);
+        this.game?.OnClickSquidJoinSwitch();
+    }
+    private onClickSquidStandUp() {
+        this.game?.OnClickSquidStandUp();
     }
 
     public async ShowInsuranceTipJieSuan(paynum: number) {

@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 17:20:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-29 13:13:55
+ * @LastEditTime: 2022-12-03 19:34:48
  * @FilePath: /pokerqueen/assets/script/config/GameConfig.ts
  */
 /**
@@ -14,22 +14,21 @@ import { INetWork } from "../define/EIDefine";
 
 export class GameConfig {
 
-    static publish: boolean = false;
-
     //需要清理storage,就递增这个值
     static clean_all_flag: number = 2;
-    static Web_Host_Test1 = "test1.awanptest.com";
+
+    static debug: boolean = true;
+    static Web_Host_Test1 = "test2.awanptest.com";
     static Web_Host_Dev1 = "dev1.awanptest.com";
     static Web_Host_Dev = "dev.awanptest.com";
-    static Web_Host_Test2 = "test2.awanptest.com";
     //0: http://dev.awanptest.com 
-    //1: http://test1.awanptest.com  
+    //1: http://test2.awanptest.com  
     //2: http://dev1.awanptest.com 
-    //3: https://test1.awanptest.com  
+    //3: https://test2.awanptest.com  
     //4: https://dev1.awanptest.com 
     static BuildType: number = 5;
     //版本号
-    static Version: string = "20230518_0130";
+    static Version: string = "20230109_2130";
 
     static Default_Language: string = "cn";
     //是否使用代理
@@ -44,15 +43,16 @@ export class GameConfig {
     static ENABLE_MULTI_TOUCH = false;
 
     //服务器类型 1测试 2正式
-    static Server_Type = 1;
+    static Server_Type = 2;
 
     //对应 GlobalProto.txt
-    //static GlobalProto: any = null;
+    static GlobalProto:  any = null;
     //网络配置
     static Network: INetWork = null;
 
     //默认区号
     static DefaultAreaCode: string = "+55";
+
 }
 /**
  * 网络配置
@@ -76,9 +76,9 @@ export var NetWorkBase = {
  * 语言列表
  */
 export var LanguageList: { lan: string, name: string }[] = [
-    { lan: "en", name: "sl_K8cPNvxU" },
+    { lan: "en", name: "UILogin_USA" },
     { lan: "pt", name: "sl_ptyyPutao" },
-    { lan: "cn", name: "sl_bnftN7UY" },
+    { lan: "cn", name: "UILogin_China" },
 ];
 /**
  * Log样式
@@ -89,34 +89,26 @@ export var LogStyle = {
     ws_request: "color:#E3C127;background:#47100A",
     ws_response: "color:#19FF00;background:#47100A",
 }
-//文本选中文字颜色
-//export var Text_Colors = ["#FFFFFF", "#35A3B3"];
 
 export var TextColor = {
-    Color1: "#FFFFFF",//白色
-    Color2: "#35A3B3",//亮蓝色
-    Color3: "#757CAB",//灰色
-    Color4: "#7187FF",//蓝色
-    Color5: "#B0FFAE",//亮绿
-    Color6: "#FF7C7C",//亮红
-    Color7: "#EEF5FF",//次白色
-    Color8: "#FEEC8E",//淺黃色
-
+    Color1: "#FFFFFF",
+    Color2: "#35A3B3",
+    Color3: "#757CAB",
+    Color4: "#7187FF",
+    Color5: "#B0FFAE",
+    Color6: "#FF7C7C",
+    Color7: "#EEF5FF",
+    Color8: "#FEEC8E",
 }
-//成员管理排序表
+
 export var Member_Order_List = [
     { show: "UIGuild_MemberManagerSortByWinOrLose", index: 0, icon: "Up", sort_type: 1, order_type: 1 },
-
     { show: "UIGuild_MemberManagerSortByHands", index: 2, icon: "Up", sort_type: 2, order_type: 1 },
-
     { show: "UIGuild_MemberManagerSortByServiceFee", index: 4, icon: "Up", sort_type: 3, order_type: 1 },
-
     { show: "UIGuild_MemberManagerSortByLastLoginTime", index: 6, icon: "Up", sort_type: 4, order_type: 1 },
-
 ];
-//页签状态 暂时支持6个页签
-export var Tabs_Status =
-{
+
+export var Tabs_Status = {
     [-1]: [0, 0, 0, 0, 0, 0],
     0: [1, 0, 0, 0, 0, 0],
     1: [0, 1, 0, 0, 0, 0],
@@ -124,8 +116,8 @@ export var Tabs_Status =
     3: [0, 0, 0, 1, 0, 0],
     4: [0, 0, 0, 0, 1, 0],
     5: [0, 0, 0, 0, 0, 1],
-}
-//获取游戏类型名
+};
+
 export function GetGameTypeName(data: any): string {
     let str = "NLH";
     if (data.game_type == 1) {

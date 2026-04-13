@@ -198,6 +198,27 @@ export class WebOrgTribeSearchById extends WebCommon {
   static API: string = "/api/org/tribe/info";
 }
 
+/**
+ * 查询玩家已读新标签次数
+ */
+export class APIOrgUserNewLabelReadNum extends WebCommon {
+  static API: string = "/api/org/user/new_label/read/num";
+}
+
+/**
+* 上报玩家已读新标签
+*/
+export class APIOrgUserNewLabelRead extends WebCommon {
+  static API: string = "/api/org/user/new_label/read";
+}
+
+/**
+* 获取俱乐部/联盟房间权限
+*/
+export class APIOrgTribeRoomPermissions extends WebCommon {
+  static API: string = "/api/org/tribe/room_permissions";
+}
+
 export class WebOrgJoinTrip extends WebCommon {
   //接口地址
   static API: string = "/api/org/tribe/club/join/apply";

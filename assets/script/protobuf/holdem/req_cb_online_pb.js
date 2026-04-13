@@ -269,7 +269,8 @@ proto.holdem.pb.ServerMessageCbOnline.toObject = function(includeInstance, msg) 
     limit: jspb.Message.getFieldWithDefault(msg, 3, 0),
     usersList: jspb.Message.toObjectList(msg.getUsersList(),
     protobuf_holdem_define_cb_pb.CBUser.toObject, includeInstance),
-    online: jspb.Message.getFieldWithDefault(msg, 5, 0)
+    online: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    guestCount: jspb.Message.getFieldWithDefault(msg, 6, 0)
   };
 
   if (includeInstance) {
@@ -326,6 +327,10 @@ proto.holdem.pb.ServerMessageCbOnline.deserializeBinaryFromReader = function(msg
     case 5:
       var value = /** @type {number} */ (reader.readUint32());
       msg.setOnline(value);
+      break;
+    case 6:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setGuestCount(value);
       break;
     default:
       reader.skipField();
@@ -389,6 +394,13 @@ proto.holdem.pb.ServerMessageCbOnline.serializeBinaryToWriter = function(message
   if (f !== 0) {
     writer.writeUint32(
       5,
+      f
+    );
+  }
+  f = message.getGuestCount();
+  if (f !== 0) {
+    writer.writeUint32(
+      6,
       f
     );
   }
@@ -483,6 +495,21 @@ proto.holdem.pb.ServerMessageCbOnline.prototype.getOnline = function() {
 /** @param {number} value */
 proto.holdem.pb.ServerMessageCbOnline.prototype.setOnline = function(value) {
   jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * optional uint32 guest_count = 6;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageCbOnline.prototype.getGuestCount = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageCbOnline.prototype.setGuestCount = function(value) {
+  jspb.Message.setField(this, 6, value);
 };
 
 

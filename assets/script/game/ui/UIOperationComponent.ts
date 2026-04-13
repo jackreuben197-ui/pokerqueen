@@ -8,7 +8,7 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { ActionLimit, ActionShortcutLimit, Def } from "../../protobuf/holdem/define_pb";
-import { ServerMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
+import { ServerMessageAddTime } from "../../protobuf/holdem/req_th_add_time_pb";
 import GGSlider from "../../ui/component/GGSlider";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
@@ -308,12 +308,11 @@ export default class UIOperationComponent extends UIBase {
     }
 
     refreshSliderValueStr() {
-
-        if (this.slider.value >= this.slider_max_value) {
-            this.slider.refreshValueLabelStr(i18nMgr.Get("adaptation30074"));
-        } else {
-            this.slider.refreshValueLabelStr(GameUtil.TransBetValue(this.slider.value));
-        }
+        const currentValue = Number(this.slider.value || 0);
+        this.slider.refreshValueLabelStr(GameUtil.TransBetValue(currentValue));
+        const totalChips = Number(GameCache.Instance.CurGame.mainPlayer?.chips || 0);
+        const percent = totalChips > 0 ? Math.round((currentValue / totalChips) * 100) : 0;
+        this.slider.refreshPercentLabelStr(`${percent}%`);
 
     }
 
@@ -958,7 +957,6 @@ export default class UIOperationComponent extends UIBase {
             this.buttonCallRight.active = false;
             this.slider.reset();
             this.refreshSliderValueStr();
-            if (this.slider_allin) this.slider.refreshValueLabelStr(i18nMgr.Get("adaptation30074"));
         }
         else {
             this.imageFreeCallMask.active = false;

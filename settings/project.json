@@ -23,8 +23,8 @@
     "3D Particle"
   ],
   "preview-port": 7456,
-  "design-resolution-width": 960,
-  "design-resolution-height": 640,
+  "design-resolution-width": 1125,
+  "design-resolution-height": 2436,
   "fit-width": true,
   "fit-height": false,
   "use-project-simulator-setting": false,

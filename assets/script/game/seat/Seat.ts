@@ -179,6 +179,7 @@ export default class Seat {
         this.HideCoinShadow();
         this.HideTrust();
         this.HideHeadCD();
+        this.RefreshNickCoinVisible(false);
     }
 
 
@@ -211,6 +212,27 @@ export default class Seat {
         this.uirc.imageBanker.setPosition(info.bank_pos);
         this.uirc.transSmallCardBacks.setPosition(info.card_back_pos);
         this.uirc.transCurRoundHaveBet.setPosition(info.bet_pos);
+        this.RefreshCurRoundHaveBetContentPos(info.bet_pos);
+        // 蘑菇标位置：按座位方位设置
+        if (this.uirc.MushroomPool) {
+            const mushPos = info.mushroom_pos || cc.Vec3.ZERO;
+            this.uirc.MushroomPool.setPosition(mushPos);
+            if (this.uirc.MushroomLabel) {
+                this.uirc.MushroomLabel.setPosition(info.mushroom_label_pos || cc.Vec3.ZERO);
+            }
+            if (this.uirc.MushroomChip) {
+                this.uirc.MushroomChip.setPosition(info.mushroom_chip_pos || cc.Vec3.ZERO);
+            }
+            this.ClearMushroomTag(); // 切换座位时先隐藏
+        }
+        if (this.uirc.PlayerSquidCount) {
+            const squidPos = info.squid_pos || cc.Vec3.ZERO;
+            this.uirc.PlayerSquidCount.setPosition(squidPos);
+            if(this.uirc.PlayerSquidLabel){
+                this.uirc.PlayerSquidLabel.setPosition(info.mushroom_label_pos || cc.Vec3.ZERO);
+            }
+        }
+        this.ClearSquidTag();
 
         if (this.IsMySeat) {
             this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20090)}`;
@@ -240,6 +262,17 @@ export default class Seat {
         }
         else {
             //mRectTransform.localPosition = info.InsurancetoubaoPos;
+        }
+    }
+
+    public RefreshCurRoundHaveBetContentPos(betPos: cc.Vec3): void {
+        const x = betPos?.x || 0;
+        const targetX = x > 0 ? 80 : -80;
+        if (this.uirc.Bet_Bg) {
+            this.uirc.Bet_Bg.setPosition(targetX, 0);
+        }
+        if (this.uirc.textCurRoundHaveBet?.node) {
+            this.uirc.textCurRoundHaveBet.node.setPosition(targetX, 0);
         }
     }
 
@@ -437,9 +470,23 @@ export default class Seat {
         if (null == this.Player) {
             this.uirc.imageEmpty.node.active = true;
             this.uirc.Frame_Head.active = false;
+            this.RefreshNickCoinVisible(false);
+            this.ClearMushroomTag();
+            this.ClearSquidTag();
         }
         else {
+            this.RefreshNickCoinVisible(true);
             WebImageHelper.SetHeadImage(this.uirc.Raw_Head, this.Player.headPic);
+        }
+    }
+
+    private RefreshNickCoinVisible(show: boolean): void {
+        if (this.uirc.Nick_Coin) {
+            this.uirc.Nick_Coin.active = show;
+        }
+        if (this.uirc.table_sprite_line) {
+            this.uirc.table_sprite_line.opacity = show ? 255 : 0;
+            this.uirc.table_sprite_line.color = cc.Color.WHITE;
         }
     }
 
@@ -465,6 +512,64 @@ export default class Seat {
     }
     public SetCoin(coin: string) {
         this.uirc.Text_Coin.string = coin;
+    }
+
+    /** 刷新座位蘑菇标识（庄家池） */
+    public UpdateMushroomTag(pool: number, base: number, enabled: boolean): void {
+        const show = enabled && this.isBank && pool > 0 && base > 0;
+        this.uirc.MushroomPool.active = show;
+        if (!show) return;
+        const cnt = Math.floor(pool / base);
+        this.uirc.Label_MushroomCount && (this.uirc.Label_MushroomCount.string = `${cnt}`);
+        this.uirc.Label_MushroomChip && (this.uirc.Label_MushroomChip.string = `${pool / 100}`);
+    }
+
+    /** 清理/隐藏蘑菇标识（换桌/重置时调用） */
+    public ClearMushroomTag(): void {
+        if (this.uirc?.MushroomPool) {
+            this.uirc.MushroomPool.active = false;
+        }
+    }
+
+    /** 刷新头像上的鱿鱼标记 */
+    public UpdateSquidTag(enabled: boolean, inRound: boolean): void {
+        if (!this.uirc) return;
+        const p = this.Player;
+        const inSquidRound = !!(enabled && inRound && p && p.inSquid);
+        const hasSquidMark = !!(inSquidRound && p.squidCount > 0);
+        const showSquidMask = !!(inSquidRound && p.squidCount <= 0);
+
+        if (this.uirc.PlayerSquidCount) {
+            this.uirc.PlayerSquidCount.active = hasSquidMark;
+        }
+        if (this.uirc.Head_Squid_Mask) {
+            this.uirc.Head_Squid_Mask.active = showSquidMask;
+        }
+
+        if (hasSquidMark && this.uirc.Label_SquidCount) {
+            this.uirc.Label_SquidCount.string = `${p.squidCount}`;
+        }
+    }
+
+    /** 清理/隐藏鱿鱼标记 */
+    public ClearSquidTag(): void {
+        if (this.uirc?.PlayerSquidCount) {
+            this.uirc.PlayerSquidCount.active = false;
+        }
+        if (this.uirc?.Head_Squid_Mask) {
+            this.uirc.Head_Squid_Mask.active = false;
+        }
+    }
+
+    /** 首次获得鱿鱼标记时播放头像提示动画 */
+    public PlaySquidGetMarkAnim(): void {
+        if (!this.uirc?.PlayerSquidCount || !this.uirc.PlayerSquidCount.activeInHierarchy) return;
+        this.uirc.PlayerSquidCount.stopAllActions();
+        this.uirc.PlayerSquidCount.setScale(0.7);
+        cc.tween(this.uirc.PlayerSquidCount)
+            .to(0.12, { scale: 1.2 }, cc.easeBackOut())
+            .to(0.1, { scale: 1.0 }, cc.easeSineOut())
+            .start();
     }
     /// <summary>
     /// 刷新状态机，主要用户刷新冒泡
@@ -737,6 +842,10 @@ export default class Seat {
         let mEnumRoomType: RoomType = GameCache.Instance.room_type;
         if (mEnumRoomType == RoomType.MTTTexasHoldemStandardNoLimit) {
             this.uirc.imageOffline.active = false;
+            if (this.uirc.table_sprite_line) {
+                this.uirc.table_sprite_line.opacity = 255;
+                this.uirc.table_sprite_line.color = cc.Color.WHITE;
+            }
             return;
         }
         if (this.uirc.imageReserveSeat.activeInHierarchy) {
@@ -744,6 +853,10 @@ export default class Seat {
         }
         else {
             this.uirc.imageOffline.active = this.Player.isOffLine > 0 && !this.IsMySeat;
+        }
+        if (this.uirc.table_sprite_line) {
+            this.uirc.table_sprite_line.opacity = this.uirc.Nick_Coin?.active ? 255 : 0;
+            this.uirc.table_sprite_line.color = cc.Color.WHITE;
         }
     }
 
@@ -785,6 +898,7 @@ export default class Seat {
         // this.uirc.textCurRoundHaveBet.string = str;
 
         this.uirc.textCurRoundHaveBet.node.active = true;
+        if (this.uirc.Bet_Bg) this.uirc.Bet_Bg.active = true;
 
         this.UpdateBet();
 
@@ -1041,6 +1155,42 @@ export default class Seat {
 
     }
 
+    /**
+     * 播放庄家位蘑菇投注动画。
+     * 蘑菇图标从玩家头像位置出发，缩放由 0 到原始大小并移动到蘑菇池位置；
+     * 动画完成后显示蘑菇文案。
+     * @returns 动画时长（秒）
+     */
+    public PlayMushroomBetAnimation(): number {
+        if (!this.uirc?.MushroomIcon?.node || !this.uirc?.MushroomLabel || !this.uirc?.Frame_Head) {
+            return 0;
+        }
+
+        const iconNode = this.uirc.MushroomIcon.node;
+        const labelNode = this.uirc.MushroomLabel;
+        const sourceWorldPos = this.uirc.Frame_Head.parent.convertToWorldSpaceAR(this.uirc.Frame_Head.position);
+        const targetPos = iconNode.position.clone();
+        const targetScaleX = iconNode.scaleX;
+        const targetScaleY = iconNode.scaleY;
+        const duration = 0.35;
+
+        // 开始动画前先隐藏文字，仅展示飞行中的蘑菇图标
+        labelNode.active = false;
+        iconNode.stopAllActions();
+        iconNode.active = true;
+        iconNode.setPosition(iconNode.parent.convertToNodeSpaceAR(sourceWorldPos));
+        iconNode.setScale(0, 0);
+
+        cc.tween(iconNode)
+            .to(duration, { position: targetPos, scaleX: targetScaleX, scaleY: targetScaleY }, cc.easeQuadraticActionOut())
+            .call(() => {
+                labelNode.active = true;
+            })
+            .start();
+
+        return duration;
+    }
+
 
     /// <summary>
     /// 播放回收筹码动画
@@ -1049,6 +1199,7 @@ export default class Seat {
         let tween = cc.tween(this.ui);
         if (this.uirc.imageIconChip.node.activeInHierarchy) {
             this.uirc.textCurRoundHaveBet.node.active = false;
+            if (this.uirc.Bet_Bg) this.uirc.Bet_Bg.active = false;
             let pos = this.uirc.textCurRoundHaveBet.node.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
             GC.sound.Play('sfx_desk_move_chips');
             cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }, cc.easeQuadraticActionOut()).call(() => {
@@ -1075,6 +1226,7 @@ export default class Seat {
         this.UpdateBet(GameCache.Instance.CurGame.groupBet);
 
         this.uirc.textCurRoundHaveBet.node.active = true;
+        if (this.uirc.Bet_Bg) this.uirc.Bet_Bg.active = true;
         //RectTransform mRectTransform = imageCurRoundHaveBetFrame.transform as RectTransform;
         //mRectTransform.sizeDelta = new Vector2(textCurRoundHaveBet.preferredWidth + imageIconChip.rectTransform.sizeDelta.x, mRectTransform.sizeDelta.y);
 
@@ -1618,6 +1770,9 @@ export default class Seat {
         this.HideReturnGame();
         this.HideCardBack();
         this.HideHeadCD();
+        this.RefreshNickCoinVisible(false);
+        this.ClearMushroomTag();
+        this.ClearSquidTag();
     }
     /// <summary>
     /// 删除所有Tweener动画
@@ -1795,11 +1950,11 @@ export default class Seat {
         } else {
             this.SetCoin("");
         }
-        if (this.IsMySeat) {
-            this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[1]);
-        } else {
-            this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[0]);
-        }
+        // if (this.IsMySeat) {
+        //     this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[1]);
+        // } else {
+        //     this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[0]);
+        // }
 
         console.log("刷新下方筹码位置");
 
@@ -1826,4 +1981,3 @@ export interface SeatUIInfo {
     InsurancetoubaoPos: cc.Vec3;
     AoMaHaInsurancetoubaoPos: cc.Vec3;
 }
-

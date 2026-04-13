@@ -36,7 +36,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.holdem.pb.ServerMessageCbGameResult.repeatedFields_ = [4,7];
+proto.holdem.pb.ServerMessageCbGameResult.repeatedFields_ = [4,7,8];
 
 
 
@@ -75,7 +75,9 @@ proto.holdem.pb.ServerMessageCbGameResult.toObject = function(includeInstance, m
     myWin: jspb.Message.getFieldWithDefault(msg, 5, 0),
     online: jspb.Message.getFieldWithDefault(msg, 6, 0),
     itemsList: jspb.Message.toObjectList(msg.getItemsList(),
-    protobuf_holdem_define_cb_pb.CBHistoryItem.toObject, includeInstance)
+    protobuf_holdem_define_cb_pb.CBHistoryItem.toObject, includeInstance),
+    otherUserPlaysList: jspb.Message.toObjectList(msg.getOtherUserPlaysList(),
+    protobuf_holdem_define_cb_pb.CBUserPlaySummary.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -142,6 +144,11 @@ proto.holdem.pb.ServerMessageCbGameResult.deserializeBinaryFromReader = function
       var value = new protobuf_holdem_define_cb_pb.CBHistoryItem;
       reader.readMessage(value,protobuf_holdem_define_cb_pb.CBHistoryItem.deserializeBinaryFromReader);
       msg.addItems(value);
+      break;
+    case 8:
+      var value = new protobuf_holdem_define_cb_pb.CBUserPlaySummary;
+      reader.readMessage(value,protobuf_holdem_define_cb_pb.CBUserPlaySummary.deserializeBinaryFromReader);
+      msg.addOtherUserPlays(value);
       break;
     default:
       reader.skipField();
@@ -222,6 +229,14 @@ proto.holdem.pb.ServerMessageCbGameResult.serializeBinaryToWriter = function(mes
       7,
       f,
       protobuf_holdem_define_cb_pb.CBHistoryItem.serializeBinaryToWriter
+    );
+  }
+  f = message.getOtherUserPlaysList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      8,
+      f,
+      protobuf_holdem_define_cb_pb.CBUserPlaySummary.serializeBinaryToWriter
     );
   }
 };
@@ -376,6 +391,37 @@ proto.holdem.pb.ServerMessageCbGameResult.prototype.addItems = function(opt_valu
 
 proto.holdem.pb.ServerMessageCbGameResult.prototype.clearItemsList = function() {
   this.setItemsList([]);
+};
+
+
+/**
+ * repeated CBUserPlaySummary other_user_plays = 8;
+ * @return {!Array.<!proto.holdem.pb.CBUserPlaySummary>}
+ */
+proto.holdem.pb.ServerMessageCbGameResult.prototype.getOtherUserPlaysList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.CBUserPlaySummary>} */ (
+    jspb.Message.getRepeatedWrapperField(this, protobuf_holdem_define_cb_pb.CBUserPlaySummary, 8));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.CBUserPlaySummary>} value */
+proto.holdem.pb.ServerMessageCbGameResult.prototype.setOtherUserPlaysList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 8, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.CBUserPlaySummary=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.CBUserPlaySummary}
+ */
+proto.holdem.pb.ServerMessageCbGameResult.prototype.addOtherUserPlays = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 8, opt_value, proto.holdem.pb.CBUserPlaySummary, opt_index);
+};
+
+
+proto.holdem.pb.ServerMessageCbGameResult.prototype.clearOtherUserPlaysList = function() {
+  this.setOtherUserPlaysList([]);
 };
 
 

@@ -118,6 +118,12 @@ export default class UITexasRule extends UIBase {
             if (GameCache.Instance.poker_type == PokerType.SixPlus) {
                 rulerStr += i18nMgr.Get("UI6Plus_Introduce");
             }
+            const curGameAny = GameCache.Instance.CurGame as any;
+            const isCriticalHitEnable = !!curGameAny?.criticalHitEnabled
+                || Number((GameCache.Instance as any).room_critical_hit || 0) === 1;
+            if (isCriticalHitEnable) {
+                rulerStr += i18nMgr.Get("UICriticalHit_GameRuleTips").replace(/ /g, "\u00A0");
+            }
             rulerStr = rulerStr.replace(/\\n/g, '<br/>')
             this.RulerText.string = rulerStr;
 

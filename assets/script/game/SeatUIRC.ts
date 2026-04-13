@@ -8,11 +8,9 @@ import { WebUserRoomBringin, WWW } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
-import { ClientMessageKeepSeatActive } from "../protobuf/holdem/req_keep_seat_active_pb";
-import { ClientMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
-import UIDialogComponent, {
-    UIDialogParam,
-} from "../ui/dialog/UIDialogComponent";
+import { ClientMessageKeepSeatActive } from "../protobuf/holdem/req_th_keep_seat_active_pb";
+import { ClientMessageShowdown } from "../protobuf/holdem/req_th_showdown_pb";
+import UIDialogComponent, { UIDialogParam } from "../ui/dialog/UIDialogComponent";
 import UIBase from "../ui/UIBase";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
@@ -69,6 +67,7 @@ export default class SeatUIRC extends UIBase {
 
     //座位上下名字和筹码
     Nick_Coin: cc.Node = null;
+    table_sprite_line: cc.Node = null;
     Text_NickName: cc.Label = null;
 
     Coin_Con: cc.Node = null; //手上筹码容器 位置自己和Other -109 -187
@@ -78,11 +77,27 @@ export default class SeatUIRC extends UIBase {
     WaitforthenextmoveTips: cc.Label = null;
 
     transCurRoundHaveBet: cc.Node = null;
+    Bet_Bg: cc.Node = null;
     imageIconChip: cc.Sprite = null;
     textCurRoundHaveBet: cc.Label = null;
 
     transSmallCardBacks: cc.Node = null;
     imageBanker: cc.Node = null;
+
+    // 蘑菇池（座位级，靠近庄家位）
+    MushroomPool: cc.Node = null;
+    MushroomIcon: cc.Sprite = null;
+    MushroomLabel: cc.Node = null;
+    Label_MushroomCount: cc.Label = null;
+    MushroomChip: cc.Node = null;
+    Label_MushroomChip: cc.Label = null;
+    // 鱿鱼数量组件（玩家）
+    PlayerSquidCount: cc.Node = null;
+    PlayerSquidIcon: cc.Node = null;
+    PlayerSquidLabel: cc.Node = null;
+    Label_SquidCount: cc.Label = null;
+    Head_Squid_Mask: cc.Node = null;
+
 
     Head_CD: cc.Node = null;
     Head_CD_Label: cc.Label = null;
@@ -156,6 +171,15 @@ export default class SeatUIRC extends UIBase {
         this.Raw_Head = this.getChildNodeOrComponent("Raw_Head", cc.Sprite);
         this.Gray_Head = this.getChildNodeOrComponent("Gray_Head");
 
+        this.Nick_Coin = this.getChildNodeOrComponent("Nick_Coin");
+        this.table_sprite_line = this.getChildNodeOrComponent("table_sprite_line");
+        if (this.Nick_Coin) {
+            this.Nick_Coin.active = false;
+        }
+        if (this.table_sprite_line) {
+            this.table_sprite_line.opacity = 0;
+            this.table_sprite_line.color = cc.Color.WHITE;
+        }
         this.Coin_Con = this.getChildNodeOrComponent("Coin_Con");
         this.Text_Coin = this.getChildNodeOrComponent("Text_Coin", cc.Label);
         this.Text_NickName = this.getChildNodeOrComponent(
@@ -172,25 +196,37 @@ export default class SeatUIRC extends UIBase {
             cc.Label,
         );
 
-        this.transCurRoundHaveBet =
-            this.getChildNodeOrComponent("CurRoundHaveBet");
-        this.imageIconChip = this.getChildNodeOrComponent(
-            "Image_IconChip",
-            cc.Sprite,
-        );
-        this.textCurRoundHaveBet = this.getChildNodeOrComponent(
-            "Text_CurRoundHaveBet",
-            cc.Label,
-        );
+        this.transCurRoundHaveBet = this.getChildNodeOrComponent("CurRoundHaveBet");
+        this.Bet_Bg = this.getChildNodeOrComponent("Bet_Bg");
+        this.imageIconChip = this.getChildNodeOrComponent("Image_IconChip", cc.Sprite);
+        this.textCurRoundHaveBet = this.getChildNodeOrComponent("Text_CurRoundHaveBet", cc.Label);
 
         this.transSmallCardBacks =
             this.getChildNodeOrComponent("SmallCardBacks");
         this.imageBanker = this.getChildNodeOrComponent("Image_Banker");
 
-        this.Spine_Winner = this.getChildNodeOrComponent(
-            "Spine_Winner",
-            sp.Skeleton,
-        );
+        // 蘑菇池（座位模板内，固定路径）
+        this.MushroomPool = this.getChildNodeOrComponent("MushroomPool");
+        this.MushroomIcon = this.getChildNodeOrComponent("MushroomIcon", cc.Sprite);
+        this.MushroomLabel = this.getChildNodeOrComponent("MushroomLabel");
+        this.Label_MushroomCount = this.getChildNodeOrComponent("MushroomLabelCount", cc.Label);
+        this.MushroomChip = this.getChildNodeOrComponent("MushroomChip");
+        this.Label_MushroomChip = this.getChildNodeOrComponent("MushroomChipCount", cc.Label);
+        this.PlayerSquidCount = this.getChildNodeOrComponent("PlayerSquidCount");
+        this.PlayerSquidIcon = this.PlayerSquidCount?.getChildByName("PlayerSquidIcon");
+        this.PlayerSquidLabel = this.PlayerSquidCount?.getChildByName("PlayerSquidLabel");
+        this.Label_SquidCount = this.PlayerSquidLabel
+            ?.getChildByName("PlayerSquidLabelCount")
+            ?.getComponent(cc.Label);
+        if (this.PlayerSquidCount) {
+            this.PlayerSquidCount.active = false;
+        }
+        this.Head_Squid_Mask = this.getChildNodeOrComponent("Head_Squid_Mask");
+        if (this.Head_Squid_Mask) {
+            this.Head_Squid_Mask.active = false;
+        }
+
+        this.Spine_Winner = this.getChildNodeOrComponent("Spine_Winner", sp.Skeleton);
 
         //当前最大6张
         this.imageCards = [];
@@ -297,6 +333,7 @@ export default class SeatUIRC extends UIBase {
         // this.voiceprintList.Add(VoiceprintReal);
         // this.voiceprintList.Add(VoiceprintVoting);
     }
+
     protected update(dt: number): void {
         //刷新带入申请中倒计时
 
@@ -353,22 +390,28 @@ export default class SeatUIRC extends UIBase {
                                 currentMaxRate:
                                     GameCache.Instance.CurGame.currentMaxRate,
                                 totalCoin: GC.data.user.info.gold,
-                                tableChips: this.seat.Player.chips,
-                                wallets: [res.data],
-                            },
-                        );
+                            tableChips: this.seat.Player.chips,
+                            wallets: [res.data],
+                            minBringIn: GameCache.Instance.CurGame.GetMinBringInWithMush(),
+                            }
+                        )
                     },
                     (res: any) => {},
                 );
             } else {
-                UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIBringIn, {
-                    bigBlind: GameCache.Instance.CurGame.bigBlind,
-                    smallBlind: GameCache.Instance.CurGame.smallBlind,
-                    currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-                    currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-                    totalCoin: GC.data.user.info.gold,
-                    tableChips: this.seat.Player.chips,
-                });
+
+                UIComponent.Instance.ShowUI<AddClipsData>(
+                    PrefabUI.UIBringIn,
+                    {
+                        bigBlind: GameCache.Instance.CurGame.bigBlind,
+                        smallBlind: GameCache.Instance.CurGame.smallBlind,
+                        currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+                        currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                        totalCoin: GC.data.user.info.gold,
+                        tableChips: this.seat.Player.chips,
+                        minBringIn: GameCache.Instance.CurGame.GetMinBringInWithMush(),
+                    }
+                )
             }
         } else {
             ProtocolAgency.Send<ClientMessageKeepSeatActive.AsObject>({

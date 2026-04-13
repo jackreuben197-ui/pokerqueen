@@ -38,6 +38,8 @@ export default class SliderPlus extends cc.Component {
     bar: cc.Node = null;
     @property(cc.Label)
     label_value: cc.Label = null;
+    @property(cc.Label)
+    label_precent: cc.Label = null;
 
     @property({ type: cc.Enum(BarPosType) })
     barPosType: BarPosType = BarPosType.Outer;
@@ -66,6 +68,9 @@ export default class SliderPlus extends cc.Component {
     private curr_value: number = 0;
 
     onLoad() {
+        if (!this.label_precent) {
+            this.label_precent = this.node.getChildByName("move_button")?.getChildByName("label_precent")?.getComponent(cc.Label) || null;
+        }
         this.initView();
         this.initEvents();
         this.initData(this.data);
@@ -207,6 +212,11 @@ export default class SliderPlus extends cc.Component {
         this.label_value.string = str;
     }
 
+    refreshPercentLabelStr(str: string) {
+        if (!this.label_precent) return;
+        this.label_precent.string = str;
+    }
+
 
     getCount(value) {
 
@@ -253,5 +263,3 @@ export default class SliderPlus extends cc.Component {
         this.refreshValueLabel(this.data.min_value);
     }
 }
-
-

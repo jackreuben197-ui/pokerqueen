@@ -302,6 +302,42 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/prefab/dialog/UIDialogComponent",
     },
+    /**
+     * 自适应内容对话框(不再提示)
+     */
+    UIDialogContentSizeLimit: {
+        UIType: UIType.Dialog,
+        Name: "UIDialogContentSizeLimit",
+        Bundle: null,
+        Path: "main/prefab/dialog/UIDialogContentSizeLimit",
+    },
+    /**
+     * 鱿鱼玩法引导弹窗
+     */
+    UIDialogSquid: {
+        UIType: UIType.Dialog,
+        Name: "UIDialogSquid",
+        Bundle: null,
+        Path: "main/prefab/dialog/UIDialogSquid",
+    },
+    /**
+     * 牌局安全设置（代入前）
+     */
+    UIGameplaySecuritySetting: {
+        UIType: UIType.Dialog,
+        Name: "UIGameplaySecuritySetting",
+        Bundle: null,
+        Path: "main/prefab/dialog/UIGameplaySecuritySetting",
+    },
+    /**
+     * 牌局开桌设置（安全设置后）
+     */
+    UIGameplayTableSetting: {
+        UIType: UIType.Dialog,
+        Name: "UIGameplayTableSetting",
+        Bundle: null,
+        Path: "main/prefab/dialog/UIGameplayTableSetting",
+    },
 
     /**
     * 确认取消 弹窗面板(默认触摸全屏可关闭)
@@ -365,6 +401,31 @@ export const UIDefine = {
         Name: "UITexasGameEnd",
         Bundle: 'texas',
         Path: "purple_prefab/ui/UITexasGameEnd",
+    },
+    //鱿鱼轮结算
+    UISquidEnd: {
+        UIType: UIType.CommonUI,
+        Name: "UISquidEnd",
+        Bundle: 'texas',
+        Path: "purple_prefab/ui/UISquidOver",
+    },
+    UITexasJackpotRecentAwardRecord: {
+        UIType: UIType.CommonUI,
+        Name: "UITexasJackpotRecentAwardRecord",
+        Bundle: null,
+        Path: "main/prefab/dialog/UITexasJackpotRecentAwardRecord",
+    },
+    UITexasJackpotRewardDescription: {
+        UIType: UIType.CommonUI,
+        Name: "UITexasJackpotRewardDescription",
+        Bundle: 'texas',
+        Path: "purple_prefab/ui/UITexasJackpotRewardDescription",
+    },
+    UITexasDialogJackpotAwards: {
+        UIType: UIType.CommonUI,
+        Name: "UITexasDialogJackpotAwards",
+        Bundle: 'texas',
+        Path: "purple_prefab/ui/UITexasDialogJackpotAwards",
     },
 
     //房间模版

@@ -24,7 +24,7 @@ import {
     WebUserRoomInsur,
 } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { ServerMessageRegister } from "../protobuf/holdem/req_register_pb";
+import { ServerMessageRegister } from "../protobuf/holdem/req_g_register_pb";
 
 import GlobalSession from "./GlobalSession";
 import LoginSession from "./LoginSession";
@@ -258,6 +258,7 @@ export default class LobbySession {
         LobbySession.Switch.apple_mtt_switch = data.apple_mtt_switch;
         LobbySession.Switch.android_mtt_switch = data.android_mtt_switch;
         LobbySession.Switch.android_pay_switch = data.android_pay_switch;
+        GameCache.Instance.newLabelsMaxNumber = Number(data.tribe_permission_new_label_view_num || 0);
     }
 
     /**

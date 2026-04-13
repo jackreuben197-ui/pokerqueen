@@ -1,6 +1,6 @@
 
 import GC from "../frame/GameControl";
-import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
+import { ServerMessageEnterRoom } from "../protobuf/holdem/req_th_enter_room_pb";
 import TexasGame from "./texas/TexasGame";
 import GameUtil, { GameEnterType } from "./util/GameUtil";
 
@@ -130,6 +130,56 @@ export class GameCache {
     /// 房间名称
     /// </summary>
     public roomName: string = "";
+    /** 大厅入口缓存：是否鱿鱼桌（来自列表/分享房间信息） */
+    public room_squid_on: number = 0;
+    /** 大厅入口缓存：鱿鱼价值（优先 room.squid_base） */
+    public room_squid_base: number = 0;
+    /** 大厅入口缓存：子配置鱿鱼价值（兜底 sub_configs[0].squid_base） */
+    public room_squid_sub_base: number = 0;
+    /** 大厅入口缓存：鱿鱼模式（0普通，1血战） */
+    public room_squid_mode: number = 0;
+    /** 大厅入口缓存：头鱿鱼开关 */
+    public room_squid_head: number = 0;
+    /** 大厅入口缓存：尾鱿鱼开关 */
+    public room_squid_tail: number = 0;
+    /** 大厅入口缓存：鱿鱼上限配置 */
+    public room_squid_max: number = 0;
+    /** 大厅入口缓存：鱿鱼开启人数配置 */
+    public room_squid_open_number: number = 0;
+    /** 大厅入口缓存：血战鱿鱼额外数量 */
+    public room_squid_extra_count: number = 0;
+    /** 大厅入口缓存：鱿鱼翻倍配置 */
+    public room_squid_count_rate: { count: number, rate: number }[] = [];
+    /** 大厅入口缓存：蘑菇开关 */
+    public room_mushroom_mode: number = 0;
+    /** 大厅入口缓存：蘑菇基础值 */
+    public room_mushroom_base: number = 0;
+    /** 大厅入口缓存：暴击开关 */
+    public room_critical_hit: number = 0;
+    /** 大厅入口缓存：暴击轮次 */
+    public room_critical_hit_round: number = 0;
+    /** 大厅入口缓存：暴击子玩法 ante */
+    public room_critical_hit_ante: number = 0;
+    /** 大厅入口缓存：CallTime 开关（1 开，2 关） */
+    public room_call_time: number = 0;
+    /** 大厅入口缓存：CallTime 盈利阈值（BB） */
+    public room_call_time_winline: number = 0;
+    /** 大厅入口缓存：CallTime 连续手数限制 */
+    public room_call_time_count: number = 0;
+    /** 大厅入口缓存：付费看手牌模式（0关 1看全部 2看单家） */
+    public room_view_player_cards: number = 0;
+    /** 大厅入口缓存：Jackpot 配置 */
+    public room_jackpot_config: any = null;
+    /** 大厅入口缓存：随机入座开关 */
+    public room_random_seat: number = 0;
+    /** 大厅入口缓存：安全牌桌开关（seated_messaging） */
+    public room_seated_messaging: number = 0;
+    /** 大厅入口缓存：最小开局人数 */
+    public room_min_players: number = 0;
+    /** 大厅入口缓存：自动开局最小人数（0 表示手动开始） */
+    public room_autostart_min_players: number = 0;
+    /** 大厅入口缓存：是否房管/房主 */
+    public room_is_manager: boolean = false;
     /// <summary>
     /// 房间类型 RoomType枚举
     /// </summary>
@@ -211,6 +261,14 @@ export class GameCache {
     /// jackPot基金，如60824
     /// </summary>
     public jackPot_fund: number = 0;
+    /**
+     * 当前 Jackpot 金额
+     */
+    public jackPot_gold: number = 0;
+    /**
+     * 当前展示 Jackpot 金额
+     */
+    public jackPot_parent_gold: number = 0;
     /// <summary>
     /// 是否开启JackPot，0 1
     /// </summary>
@@ -327,7 +385,10 @@ export class GameCache {
 
 
     public anti_cheat_type: number = 0;//防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
+    /** 新标签可展示最大次数（全局配置） */
+    public newLabelsMaxNumber: number = 0;
 
+    private securitySettingRoomsPrivate: number[] = null;
 
     //密码存储
     privateRoomPdDic: Map<number, string> = new Map();
@@ -348,13 +409,109 @@ export class GameCache {
         return (this as any).instance ??= new GameCache;
     }
 
+    private get securitySettingRooms(): number[] {
+        if (this.securitySettingRoomsPrivate == null) {
+            const value = cc.sys.localStorage.getItem("SecuritySettingRooms") || "";
+            this.securitySettingRoomsPrivate = value
+                .split(",")
+                .map(v => Number(v))
+                .filter(v => Number.isFinite(v) && v > 0);
+        }
+        return this.securitySettingRoomsPrivate;
+    }
+
+    public HasSecuritySettingRoom(roomId: number): boolean {
+        if (roomId <= 0) return false;
+        return this.securitySettingRooms.indexOf(roomId) >= 0;
+    }
+
+    public SetSecuritySettingRoom(roomId: number): void {
+        if (roomId <= 0) return;
+
+        const list = this.securitySettingRooms;
+        const idx = list.indexOf(roomId);
+        if (idx >= 0) {
+            list.splice(idx, 1);
+        }
+        list.push(roomId);
+        if (list.length > 10) {
+            list.splice(0, list.length - 10);
+        }
+        cc.sys.localStorage.setItem("SecuritySettingRooms", list.join(","));
+    }
+
     InitTexasGame() {
         this.CurGame = GameUtil.InstantiateTexasGame(this.room_type);
     }
 
     InitEnterRoomInfo(room_info: EnterRoomInfo) {
+        const subConfigs = room_info.sub_configs || [];
+        const sub0 = (subConfigs && subConfigs.length > 0) ? subConfigs[0] : null;
+        const roomAdminAny = (room_info as any).room_admin ?? (room_info as any).roomAdmin ?? null;
+        const roomAdminFlag = roomAdminAny?.is_admin ?? roomAdminAny?.isAdmin;
+        const creatorRandomId = Number((room_info as any).creator_random_id ?? (room_info as any).creatorRandomId ?? 0);
+        const creatorId = Number((room_info as any).creator_id ?? (room_info as any).creatorId ?? 0);
+
         GameCache.Instance.serviceId = room_info.service_id;
         GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(room_info.name);
+        GameCache.Instance.room_squid_sub_base = sub0?.sqb || 0;
+        GameCache.Instance.room_squid_base =
+        (room_info.squid_base || 0) > 0 ? room_info.squid_base : GameCache.Instance.room_squid_sub_base;
+        GameCache.Instance.room_squid_mode = room_info.squid_mode || 0;
+        GameCache.Instance.room_squid_head = room_info.squid_head || 0;
+        GameCache.Instance.room_squid_tail = room_info.squid_tail || 0;
+        GameCache.Instance.room_squid_max = room_info.squid_max || 0;
+        GameCache.Instance.room_squid_on =
+        room_info.squid_on ?? ((GameCache.Instance.room_squid_base > 0 || GameCache.Instance.room_squid_sub_base > 0) ? 1 : 0);
+        GameCache.Instance.room_squid_open_number = sub0?.ppcl || room_info.squid_player_count || 2;
+        GameCache.Instance.room_squid_extra_count = Number(room_info.squid_extra_count || 0);
+        GameCache.Instance.room_squid_count_rate = (room_info.squid_count_rate || [])
+            .map((cfg: any) => ({ count: Number(cfg?.count || 0), rate: Number(cfg?.rate || 0) }))
+            .filter(cfg => cfg.count > 0 && cfg.rate > 0)
+            .sort((a, b) => a.count - b.count);
+        GameCache.Instance.room_mushroom_mode = room_info.mushroom_mode || 0;
+        GameCache.Instance.room_mushroom_base = room_info.mushroom_base || 0;
+        GameCache.Instance.room_critical_hit =
+        room_info.critical_hit ?? sub0?.critical_hit ?? sub0?.criticalHit ?? 0;
+        GameCache.Instance.room_critical_hit_round =
+        room_info.rounds ?? 0;
+        GameCache.Instance.room_critical_hit_ante =
+        sub0?.ante ?? sub0?.an ?? room_info.sub_game_play_ante ?? 0;
+        GameCache.Instance.room_call_time = Number(room_info.call_time || 0);
+        GameCache.Instance.room_call_time_winline = Number(room_info.call_time_winline || 0);
+        GameCache.Instance.room_call_time_count = Number(room_info.call_time_count || 0);
+        GameCache.Instance.room_view_player_cards = Number(room_info.view_player_cards ?? room_info.viewPlayerCards ?? 0);
+        const jackpotConfigRaw = room_info.jackpot_config ?? room_info.jackpotConfig ?? null;
+        if (typeof jackpotConfigRaw === "string") {
+            try {
+                GameCache.Instance.room_jackpot_config = JSON.parse(jackpotConfigRaw);
+            } catch {
+                GameCache.Instance.room_jackpot_config = null;
+            }
+        } else {
+            GameCache.Instance.room_jackpot_config = jackpotConfigRaw || null;
+        }
+        GameCache.Instance.jackPot_on = Number(room_info.jackpot || 0);
+        GameCache.Instance.jackPot_id = Number(room_info.jackpot_id ?? room_info.jackpotId ?? 0);
+        GameCache.Instance.jackPot_gold = Number(room_info.jackpot_gold ?? room_info.jackpotGold ?? 0);
+        GameCache.Instance.jackPot_parent_gold = Number(
+            room_info.jackpot_parent_gold
+            ?? room_info.jackpotParentGold
+            ?? GameCache.Instance.jackPot_gold
+            ?? 0
+        );
+        GameCache.Instance.jackPot_fund = GameCache.Instance.jackPot_parent_gold;
+        GameCache.Instance.room_random_seat = Number(room_info.random_seat || 0);
+        GameCache.Instance.room_seated_messaging = Number(room_info.seated_messaging || 0);
+        GameCache.Instance.room_min_players = Number((room_info as any).min_players ?? (room_info as any).minPlayers ?? 0);
+        GameCache.Instance.room_autostart_min_players = Number((room_info as any).autostart_min_players ?? (room_info as any).autostartMinPlayers ?? 0);
+        if (roomAdminFlag !== undefined && roomAdminFlag !== null) {
+            GameCache.Instance.room_is_manager = roomAdminFlag === true || Number(roomAdminFlag) === 1;
+        } else {
+            GameCache.Instance.room_is_manager =
+                (creatorRandomId > 0 && creatorRandomId === Number(GameCache.Instance.nUserId || 0)) ||
+                (creatorId > 0 && creatorId === Number(GameCache.Instance.userId || 0));
+        }
         GameCache.Instance.room_type = room_info.room_type;
         GameCache.Instance.game_type = room_info.game_type;
         GameCache.Instance.poker_type = room_info.poker_type;
@@ -415,5 +572,39 @@ export interface EnterRoomInfo {
     anti_cheat_type?;
     club_id?;
     tribe_id?;
+    squid_on?;
+    squid_base?;
+    squid_mode?;
+    squid_head?;
+    squid_tail?;
+    squid_max?;
+    squid_extra_count?;
+    squid_count_rate?: { count?: number, rate?: number }[];
+    mushroom_mode?;
+    mushroom_base?;
+    critical_hit?;
+    call_time?;
+    call_time_winline?;
+    call_time_count?;
+    view_player_cards?;
+    viewPlayerCards?;
+    jackpot_config?;
+    jackpotConfig?;
+    random_seat?;
+    seated_messaging?;
+    min_players?;
+    minPlayers?;
+    autostart_min_players?;
+    autostartMinPlayers?;
+    room_admin?: { is_admin?: number | boolean };
+    roomAdmin?: { isAdmin?: number | boolean };
+    creator_random_id?;
+    creatorRandomId?;
+    creator_id?;
+    creatorId?;
+    sub_game_play_ante?;
+    rounds?;
+    sub_configs?;
+    squid_player_count?;
 }
 (window as any).GameCache = GameCache;

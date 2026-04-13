@@ -3,7 +3,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 import { Def } from "../../protobuf/holdem/define_pb";
-import { ServerMessageLeaveNotification } from "../../protobuf/holdem/recv_leave_notification_pb";
+import { ServerMessageLeaveNotification } from "../../protobuf/holdem/recv_th_leave_notification_pb";
 import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import MTTGame from "../texas/MTTGame";

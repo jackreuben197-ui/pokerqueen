@@ -45,6 +45,8 @@ export enum ProtocolCode {
     Protocol_Holdem_Roomers = Code.MSG_D_ROOMERS, // Code: 1021 房间内人员信息
     Protocol_Holdem_AgreeSecondPcsActive = Code.MSG_D_AGREE_SECOND_PCS_ACTIVE, // Code: 1022 同意/拒绝发第2套公共牌
     Protocol_Holdem_Observers = Code.MSG_D_OBSERVERS,//Code: 1023 旁观者信息(包含历史)
+    Protocol_Holdem_SquidInActive = Code.MSG_D_SQUID_IN_ACTIVE, // Code: 1024 主动加入/退出鱿鱼轮
+    Protocol_Holdem_PlayerJackpotSummary = Code.MSG_D_PLAYER_JACKPOT_SUMMARY, // Code: 1027 Jackpot玩家汇总
     Protocol_Holdem_ShowPublicCardsOthers = Code.MSG_S_SHOW_PUBLIC_CARDS_OTHERS, // Code: 1100 其他人收到有人看公共牌
     Protocol_Holdem_Showcards = Code.MSG_S_SHOWCARDS, // Code: 1101 亮牌
     Protocol_Holdem_SeatedOthers = Code.MSG_S_SEATED_OTHERS, // Code: 1102 房间内人收到有人坐下的信息（不包括坐下的本人）
@@ -70,6 +72,10 @@ export enum ProtocolCode {
     Protocol_Holdem_AgreeSecondPcsTrigged = Code.MSG_S_AGREE_SECOND_PCS_TRIGGED, // Code: 1122 是否允许第2套公共牌出发信息
     Protocol_Holdem_AgreeSecondPcs = Code.MSG_S_AGREE_SECOND_PCS, // Code: 1123 所有人收到有人是否允许的结果信息
     Protocol_Holdem_SyncHand = Code.MSG_S_SYNC_HAND, // Code: 1124 等待同步开始(MTT)
+    Protocol_Holdem_SquidIn = Code.MSG_S_SQUID_IN, // Code: 1125 鱿鱼轮加入状态变更
+    Protocol_Holdem_NextChange = Code.MSG_S_NEXT_CHANGE, // Code: 1126 下一手房间配置变更
+    Protocol_Holdem_JackpotGoldChange = Code.MSG_S_JACKPOT_GOLD_CHANGE, // Code: 1129 Jackpot金额变化
+    Protocol_Holdem_JackpotAward = Code.MSG_S_JACKPOT_AWARD, // Code: 1130 Jackpot获奖
 
     /**
      * 牛仔相关

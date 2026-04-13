@@ -62,7 +62,8 @@ proto.holdem.pb.ClientMessageCbBringIn.toObject = function(includeInstance, msg)
   var f, obj = {
     roomId: jspb.Message.getFieldWithDefault(msg, 1, 0),
     bringIn: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    clubId: jspb.Message.getFieldWithDefault(msg, 3, 0)
+    clubId: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    returnOrNew: jspb.Message.getFieldWithDefault(msg, 4, 0)
   };
 
   if (includeInstance) {
@@ -110,6 +111,10 @@ proto.holdem.pb.ClientMessageCbBringIn.deserializeBinaryFromReader = function(ms
     case 3:
       var value = /** @type {number} */ (reader.readUint64());
       msg.setClubId(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setReturnOrNew(value);
       break;
     default:
       reader.skipField();
@@ -161,6 +166,13 @@ proto.holdem.pb.ClientMessageCbBringIn.serializeBinaryToWriter = function(messag
       f
     );
   }
+  f = message.getReturnOrNew();
+  if (f !== 0) {
+    writer.writeInt32(
+      4,
+      f
+    );
+  }
 };
 
 
@@ -206,6 +218,21 @@ proto.holdem.pb.ClientMessageCbBringIn.prototype.getClubId = function() {
 /** @param {number} value */
 proto.holdem.pb.ClientMessageCbBringIn.prototype.setClubId = function(value) {
   jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional int32 return_or_new = 4;
+ * @return {number}
+ */
+proto.holdem.pb.ClientMessageCbBringIn.prototype.getReturnOrNew = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ClientMessageCbBringIn.prototype.setReturnOrNew = function(value) {
+  jspb.Message.setField(this, 4, value);
 };
 
 

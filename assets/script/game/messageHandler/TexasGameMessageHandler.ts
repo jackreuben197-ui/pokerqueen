@@ -11,19 +11,21 @@ import ToastManager from "../../manager/ToastManager";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { ServerErrorCode } from "../../net/websocket/ServerErrorCode";
 import { Def } from "../../protobuf/holdem/define_pb";
-import { ServerMessageError } from "../../protobuf/holdem/recv_error_pb";
-import { ServerMessageHandClear } from "../../protobuf/holdem/recv_hand_clear_pb";
-import { ServerMessageLeaveNotification } from "../../protobuf/holdem/recv_leave_notification_pb";
-import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_post_status_change_pb";
-import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_public_cards_pb";
-import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
-import { ServerMessageStandup } from "../../protobuf/holdem/recv_stand_up_pb";
-import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
-import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
-import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
-import { ServerMessageLeave } from "../../protobuf/holdem/req_leave_pb";
-import { ServerMessageSeated } from "../../protobuf/holdem/req_seated_pb";
-import { ServerMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
+import { ServerMessageError } from "../../protobuf/holdem/recv_g_error_pb";
+import { ServerMessageHandClear } from "../../protobuf/holdem/recv_th_hand_clear_pb";
+import { ServerMessageLeaveNotification } from "../../protobuf/holdem/recv_th_leave_notification_pb";
+import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_th_post_status_change_pb";
+import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_th_public_cards_pb";
+import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_th_seated_others_pb";
+import { ServerMessageStandup } from "../../protobuf/holdem/recv_th_stand_up_pb";
+import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_th_start_info_pb";
+import { ServerMessageWinner } from "../../protobuf/holdem/recv_th_winner_pb";
+import { ServerMessageJackpotGoldChange } from "../../protobuf/holdem/recv_th_jackpot_gold_change_pb";
+import { ServerMessageJackpotAward } from "../../protobuf/holdem/recv_th_jackpot_award_pb";
+import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_th_enter_room_pb";
+import { ServerMessageLeave } from "../../protobuf/holdem/req_th_leave_pb";
+import { ServerMessageSeated } from "../../protobuf/holdem/req_th_seated_pb";
+import { ServerMessageStandupActive } from "../../protobuf/holdem/req_th_stand_up_active_pb";
 import GlobalSession from "../../session/GlobalSession";
 import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
@@ -32,6 +34,7 @@ import { SeatStandupAnimation } from "../SeatStateHandler";
 import MTTGame from "../texas/MTTGame";
 import TexasGame from "../texas/TexasGame";
 import { TexasGameState } from "../TexasGameState";
+import { GamePlaySubType } from "../ui/UITexasGameEnd";
 import GameUtil, { RoomType } from "../util/GameUtil";
 
 
@@ -77,6 +80,8 @@ export default class TexasGameMessageHandler {
         GC.notify.register(ProtocolCode.Protocol_Holdem_BringInOrStoreFail, this.Protocol_Holdem_BringInOrStoreFail_Handler, this);
         GC.notify.register(ProtocolCode.Protocol_Holdem_HandClear, this.Protocol_Holdem_HandClear_Handler, this);
         GC.notify.register(ProtocolCode.Protocol_Holdem_UpBlind, this.Protocol_Holdem_UpBlind_Handler, this);
+        GC.notify.register(ProtocolCode.Protocol_Holdem_JackpotGoldChange, this.Protocol_Holdem_JackpotGoldChange_Handler, this);
+        GC.notify.register(ProtocolCode.Protocol_Holdem_JackpotAward, this.Protocol_Holdem_JackpotAward_Handler, this);
         GC.notify.register(ProtocolCode.Protocol_Holdem_Error, this.Protocol_Holdem_Error_Handler, this);
     }
 
@@ -116,6 +121,8 @@ export default class TexasGameMessageHandler {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_BringInOrStoreFail, this.Protocol_Holdem_BringInOrStoreFail_Handler, this);
         GC.notify.remove(ProtocolCode.Protocol_Holdem_HandClear, this.Protocol_Holdem_HandClear_Handler, this);
         GC.notify.remove(ProtocolCode.Protocol_Holdem_UpBlind, this.Protocol_Holdem_UpBlind_Handler, this);
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_JackpotGoldChange, this.Protocol_Holdem_JackpotGoldChange_Handler, this);
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_JackpotAward, this.Protocol_Holdem_JackpotAward_Handler, this);
         GC.notify.remove(ProtocolCode.Protocol_Holdem_Error, this.Protocol_Holdem_Error_Handler, this);
     }
 
@@ -212,8 +219,11 @@ export default class TexasGameMessageHandler {
         if (response == null) return;
 
         if (response.status != 0) {
-            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(response.status));
+            console.warn(`Protocol_Holdem_Leave: status = ${response.status}`);
+            return;
         }
+
+        UIComponent.Instance.Toast(i18nMgr.Get(`LeaveReason${Def.LeaveReason.LR_ACTIVE}`));
         this.game.TexasGameUtils.ExitRoom();
 
     }
@@ -224,7 +234,10 @@ export default class TexasGameMessageHandler {
      */
     Protocol_Holdem_SeatedOthers_Handler(response: ServerMessageSeatedOthers.AsObject) {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_SeatedOthers_Handler`);
-
+        // 协议层会先更新座位数据，这里下一帧再刷新开始按钮，避免回调顺序导致人数未更新
+        setTimeout(() => {
+            this.game?.UpdateStartGameState?.();
+        }, 0);
     }
     /// <summary>
     /// 主动坐下(非MTT使用) 消息回调
@@ -233,7 +246,23 @@ export default class TexasGameMessageHandler {
     Protocol_Holdem_Seated_Handler(response: ServerMessageSeated.AsObject) {
 
         console.log(`# MSG_CALLBACK: Protocol_Holdem_Seated_Handler`);
+        // 协议层会先更新自己座位数据，这里下一帧再刷新开始按钮，避免回调顺序导致人数未更新
+        setTimeout(() => {
+            this.game?.UpdateStartGameState?.();
+            this.game?.PlayJackpotStartAnim?.();
+        }, 0);
+    }
 
+    Protocol_Holdem_JackpotGoldChange_Handler(response: ServerMessageJackpotGoldChange.AsObject) {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_JackpotGoldChange_Handler`);
+        if (!response) return;
+        this.game?.OnJackpotGoldChange?.(response);
+    }
+
+    Protocol_Holdem_JackpotAward_Handler(response: ServerMessageJackpotAward.AsObject) {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_JackpotAward_Handler`);
+        if (!response) return;
+        this.game?.OnJackpotAward?.(response);
     }
 
     /// <summary>
@@ -279,6 +308,9 @@ export default class TexasGameMessageHandler {
             this.game.HideOperationPanel();
             this.game.HideAutoOperationPanel();
             this.game.HideSeeMorePublic();
+            this.game.callTimeStay = false;
+            this.game.callTimeCount = 0;
+            this.game.ShowCallTime();
             this.game.TexasGameUtils.doStandUp(localSeatID);
         }
         else {
@@ -287,9 +319,13 @@ export default class TexasGameMessageHandler {
             //         UITexasPlayerInfoComponent uiComponent = uiTexasPlayerInfo.GetComponent<UITexasPlayerInfoComponent>();
             //     uiComponent.PlayerStandUp((int)seat.Player.userID);
             // }
+            // 站起消息到达时先清理扩展玩法角标，避免动画期间残留
+            seat.ClearMushroomTag();
+            seat.ClearSquidTag();
             seat.HideFold();
             seat.FsmLogicComponent.SM.ChangeState(SeatStandupAnimation.Instance);
         }
+        this.game.UpdateStartGameState();
     }
 
     /// <summary>
@@ -338,6 +374,9 @@ export default class TexasGameMessageHandler {
             case Def.LeaveReason.LR_GAME_END: // 游戏结束
                 {
                     if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
+                        const gamePlaySubType = this.game?.squidEnabled
+                            ? GamePlaySubType.SQUID
+                            : (this.game?.mushroomEnabled ? GamePlaySubType.MUSH : GamePlaySubType.NONE);
                         UIComponent.open(UIDefine.UITexasGameEnd, {
                             roomID: GameCache.Instance.room_id.toString(),
                             blind: GameCache.Instance.CurGame.smallBlind,
@@ -345,6 +384,7 @@ export default class TexasGameMessageHandler {
                             game_type: GameCache.Instance.game_type,
                             bet_type: GameCache.Instance.bet_type,
                             poker_type: GameCache.Instance.poker_type,
+                            gamePlaySubType: gamePlaySubType,
                         },
                             { parentUI: Main.Dialog }
                         )

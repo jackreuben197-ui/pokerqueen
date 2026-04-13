@@ -38,11 +38,8 @@ import { WWW } from "../../../net/https/WebRequest";
 import { WebRoomSitApplyRecords } from "../../../net/https/WebRequest";
 import GC from "../../../frame/GameControl";
 import { ProtocolCode } from "../../../net/websocket/ProtocolCode";
-import { ServerMessageGetMsg } from "../../../protobuf/holdem/recv_get_msg_pb";
-import {
-    Broadcast,
-    BroadcastCode,
-} from "../../../net/websocket/ProtocolHoldemMessages";
+import { ServerMessageGetMsg } from "../../../protobuf/holdem/recv_th_get_msg_pb";
+import { Broadcast, BroadcastCode } from "../../../net/websocket/ProtocolHoldemMessages";
 import PublicHelper from "../../../helper/PublicHelper";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass

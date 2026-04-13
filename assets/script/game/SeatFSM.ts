@@ -65,6 +65,15 @@ export class SeatFSM {
 
 
         this.seat.uirc.TextRequesting.node.active = false;
+        console.log(12345,this.seat.uirc.Nick_Coin);
+        
+        if (this.seat.uirc.Nick_Coin) {
+            this.seat.uirc.Nick_Coin.active = false;
+        }
+        if (this.seat.uirc.table_sprite_line) {
+            this.seat.uirc.table_sprite_line.opacity = 0;
+            this.seat.uirc.table_sprite_line.color = cc.Color.WHITE;
+        }
 
         this.seat.FoldHeadGray(false);
 
@@ -79,6 +88,9 @@ export class SeatFSM {
         this.seat.StopLightArmature();
 
         this.seat.uirc.imageEmpty.node.active = true;
+        // 进入空座位时，和头像置空同步清理扩展玩法角标，避免离座残留
+        this.seat.ClearMushroomTag();
+        this.seat.ClearSquidTag();
         this.seat.UpdateVoiceprintState(VoiceprintState.None);
 
         this.seat.HideReturnGame();
@@ -161,7 +173,11 @@ export class SeatFSM {
 
     //#region 等待补盲
     public WaitBlindEnter(): void {
-
+        // 兜底：自己进入补盲状态时直接发送同意补盲，避免状态卡住导致多手不发牌。
+        if (this.seat?.IsMySeat) {
+            console.log("[WaitBlind] enter my seat, trigger agree post");
+            (GameCache.Instance.CurGame as any)?.onClickWaitBlind?.();
+        }
     }
 
     public WaitBlindExecute(): void {

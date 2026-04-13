@@ -1,11 +1,11 @@
 /**
  * TexasGameStateHandler
  */
-import { ServerMessageHandClear } from "../protobuf/holdem/recv_hand_clear_pb";
-import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
-import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
-import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
-import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
+import { ServerMessageHandClear } from "../protobuf/holdem/recv_th_hand_clear_pb";
+import { ServerMessagePublicCards } from "../protobuf/holdem/recv_th_public_cards_pb";
+import { ServerMessageStartInfo } from "../protobuf/holdem/recv_th_start_info_pb";
+import { ServerMessageWinner } from "../protobuf/holdem/recv_th_winner_pb";
+import { ServerMessageEnterRoom } from "../protobuf/holdem/req_th_enter_room_pb";
 import GlobalSession from "../session/GlobalSession";
 import { StateHandler } from "../statemachine/StateHandler";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";

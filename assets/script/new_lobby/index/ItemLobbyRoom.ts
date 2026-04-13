@@ -1,5 +1,6 @@
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import { GameCache } from "../../game/GameCache";
+import { GameType } from "../../game/util/GameUtil";
 import { StringHelper } from "../../helper/StringHelper";
 import { WebOrgClubGet } from "../../net/https/WebRequest";
 import UIBasePlus from "../../ui/UIBasePlus";
@@ -23,6 +24,13 @@ export default class ItemLobbyRoom extends UIBasePlus {
 
     // 1 平台，2 联盟，3 公会 4 朋友桌
     $icon_origin_type: cc.Node = null;
+    //玩法类型
+    $icon_mushroom: cc.Node = null;
+    $icon_squid: cc.Node = null;
+    $icon_bombpot: cc.Node = null;
+    $icon_jackpot: cc.Node = null;
+    $icon_critical_hit: cc.Node = null;
+    $icon_calltime: cc.Node = null;
 
     //防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
     $icon_anti_cheat_type: cc.Node = null;
@@ -46,6 +54,15 @@ export default class ItemLobbyRoom extends UIBasePlus {
         this.refreshUI(data);
     }
     refreshUI(data: any) {
+        const gameType = Number(data?.game_type ?? -1);
+        const isTexasOrOmaha =
+            gameType === GameType.Holdem
+            || gameType === GameType.Omaha4
+            || gameType === GameType.Omaha5
+            || gameType === GameType.Omaha6;
+        const isBombPot = Number(data?.bombpot ?? data?.bomb_pot ?? 0) === 1 && isTexasOrOmaha;
+        const isJackpot = Number(data?.jackpot ?? 0) === 1;
+
         //gametype 图标
         this.cc_Sprite$type_icon.spriteFrame = this.getIconSpriteFrame(data.poker_type, data.game_type);
         this.cc_Label$bb.string = `${StringHelper.GetLongString(data.sb)}/${StringHelper.GetLongString(data.sb * 2)}(${data.ante})`;
@@ -62,6 +79,14 @@ export default class ItemLobbyRoom extends UIBasePlus {
         this.$icon_origin_type.getChildByName("union").active = data.origin_type == 2;
         this.$icon_origin_type.getChildByName("club").active = data.origin_type == 3;
         this.$icon_origin_type.getChildByName("friend").active = data.origin_type == 4;
+        //玩法类型
+        this.$icon_mushroom.active = data.mushroom_mode > 0 && data.mushroom_base > 0;
+        const isSquidVaild: boolean = data.sub_configs && data.sub_configs.length > 0 && data.sub_configs[0].sqb > 0;
+        this.$icon_squid.active = data.squid_base > 0 || isSquidVaild;
+        if (this.$icon_bombpot) this.$icon_bombpot.active = isBombPot;
+        if (this.$icon_jackpot) this.$icon_jackpot.active = isJackpot;
+        this.$icon_critical_hit.active = data.critical_hit == 1;
+        this.$icon_calltime.active = data.call_time == 1;
 
         //刷新 anti_cheat_type 图标
         this.$icon_anti_cheat_type.active = data.anti_cheat_type > 1;
@@ -81,6 +106,8 @@ export default class ItemLobbyRoom extends UIBasePlus {
     }
 
     getIconSpriteFrame(poker_type: number, game_type: number) {
+        //额外玩法暂不处理
+        game_type = game_type >= 6 ? 1 : game_type
         //return this.$room_type_icons.children[index].getComponent(cc.Sprite).spriteFrame;
         if (poker_type == 0) {
 
