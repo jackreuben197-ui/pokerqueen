@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(ls:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(curl -s \"https://api.github.com/repos/AgoraIO-Community/Agora-Cocos-Quickstart/contents/CocosCreator\")",
+      "WebSearch",
+      "Bash(curl -s \"https://api.github.com/repos/AgoraIO-Community/Agora-Cocos-Quickstart/branches\")",
+      "Bash(curl -s \"https://api.github.com/repos/AgoraIO-Community/Agora-Cocos-Quickstart/contents/Cocos2d-x\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/AgoraIO-Community/Agora-Cocos-Quickstart/master/CocosCreator/agora.d.ts\")",
+      "Bash(curl:*)",
+      "Bash(xargs grep:*)"
+    ]
+  }
+}

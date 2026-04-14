@@ -1,0 +1,160 @@
+(function () {
+    // 注入样式
+    var style = document.createElement('style');
+    style.textContent = [
+        '#pq-bottom-bar {',
+        '  position: fixed;',
+        '  bottom: 0;',
+        '  left: 0;',
+        '  width: 100%;',
+        '  height: 200px;',
+        '  z-index: 9999;',
+        '  display: flex;',
+        '  align-items: center;',
+        '  justify-content: center;',
+        '  gap: 24px;',
+        '  background: linear-gradient(135deg, rgba(255, 100, 100, 0.35), rgba(100, 100, 255, 0.35), rgba(100, 255, 200, 0.3));',
+        '  backdrop-filter: blur(24px) saturate(180%);',
+        '  -webkit-backdrop-filter: blur(24px) saturate(180%);',
+        '  border-top: 1px solid rgba(255, 255, 255, 0.25);',
+        '  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.15);',
+        '  pointer-events: none;',
+        '  box-sizing: border-box;',
+        '  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);',
+        '}',
+        '#pq-bottom-bar.collapsed {',
+        '  transform: translateY(200px);',
+        '}',
+        '#pq-bottom-bar .tab-btn {',
+        '  pointer-events: auto;',
+        '  display: flex;',
+        '  flex-direction: column;',
+        '  align-items: center;',
+        '  gap: 6px;',
+        '  color: rgba(255,255,255,0.7);',
+        '  font-size: 14px;',
+        '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;',
+        '  cursor: pointer;',
+        '  -webkit-tap-highlight-color: transparent;',
+        '  padding: 8px 12px;',
+        '  border-radius: 12px;',
+        '  transition: color 0.2s, background 0.2s;',
+        '}',
+        '#pq-bottom-bar .tab-btn:active,',
+        '#pq-bottom-bar .tab-btn.active {',
+        '  color: #ffffff;',
+        '  background: rgba(255,255,255,0.15);',
+        '}',
+        '#pq-bottom-bar .tab-btn .tab-icon {',
+        '  font-size: 28px;',
+        '  line-height: 1;',
+        '}',
+        '#pq-bottom-bar .tab-btn .tab-label {',
+        '  font-size: 13px;',
+        '  font-weight: 500;',
+        '  letter-spacing: 1px;',
+        '  text-shadow: 0 1px 4px rgba(0,0,0,0.3);',
+        '}',
+        '#pq-toggle-btn {',
+        '  position: fixed;',
+        '  right: 16px;',
+        '  bottom: 180px;',
+        '  z-index: 10000;',
+        '  pointer-events: auto;',
+        '  width: 44px;',
+        '  height: 44px;',
+        '  border-radius: 50%;',
+        '  border: 1px solid rgba(255, 255, 255, 0.3);',
+        '  background: rgba(255, 255, 255, 0.15);',
+        '  backdrop-filter: blur(12px);',
+        '  -webkit-backdrop-filter: blur(12px);',
+        '  color: #fff;',
+        '  font-size: 20px;',
+        '  display: flex;',
+        '  align-items: center;',
+        '  justify-content: center;',
+        '  cursor: pointer;',
+        '  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);',
+        '  transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;',
+        '  -webkit-tap-highlight-color: transparent;',
+        '}',
+        '#pq-toggle-btn:active {',
+        '  transform: scale(0.9);',
+        '}',
+        '#pq-toggle-btn.collapsed {',
+        '  bottom: 8px;',
+        '}',
+        '#pq-toggle-btn .arrow {',
+        '  display: inline-block;',
+        '  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);',
+        '  transform: rotate(180deg);',
+        '}',
+        '#pq-toggle-btn.collapsed .arrow {',
+        '  transform: rotate(0deg);',
+        '}'
+    ].join('\n');
+    document.head.appendChild(style);
+
+    // 5个tab定义
+    var tabs = [
+        { icon: '🏠', label: '首页' },
+        { icon: '♣️', label: '俱乐部' },
+        { icon: '💰', label: '充值' },
+        { icon: '✉️', label: '消息' },
+        { icon: '👤', label: '我的' }
+    ];
+
+    // 注入 DOM
+    var bar = document.createElement('div');
+    bar.id = 'pq-bottom-bar';
+
+    var tabBtns = [];
+    tabs.forEach(function (tab, index) {
+        var btn = document.createElement('div');
+        btn.className = 'tab-btn';
+        btn.innerHTML = '<span class="tab-icon">' + tab.icon + '</span><span class="tab-label">' + tab.label + '</span>';
+        btn.addEventListener('click', function () {
+            // 高亮切换
+            tabBtns.forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            // 回调给 Cocos TS
+            if (window.pqBottomBar && window.pqBottomBar.onTab) {
+                window.pqBottomBar.onTab(index);
+            }
+        });
+        tabBtns.push(btn);
+        bar.appendChild(btn);
+    });
+
+    document.body.appendChild(bar);
+
+    var toggleBtn = document.createElement('div');
+    toggleBtn.id = 'pq-toggle-btn';
+    toggleBtn.innerHTML = '<span class="arrow">▼</span>';
+    document.body.appendChild(toggleBtn);
+
+    // 折叠/展开逻辑
+    var collapsed = false;
+    function setCollapsed(value) {
+        collapsed = value;
+        if (collapsed) {
+            bar.classList.add('collapsed');
+            toggleBtn.classList.add('collapsed');
+        } else {
+            bar.classList.remove('collapsed');
+            toggleBtn.classList.remove('collapsed');
+        }
+    }
+    toggleBtn.addEventListener('click', function () {
+        setCollapsed(!collapsed);
+    });
+
+    // 暴露到 window，供 Cocos TS 调用
+    window.pqBottomBar = {
+        collapse: function () { setCollapsed(true); },
+        expand: function () { setCollapsed(false); },
+        toggle: function () { setCollapsed(!collapsed); },
+        isCollapsed: function () { return collapsed; },
+        onTab: null // 由 TS 端注册
+    };
+})();

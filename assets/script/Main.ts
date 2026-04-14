@@ -20,6 +20,7 @@ import SoundComponent from "./sound/SoundComponent";
 import CCTools from "./tools/CCTools";
 import TelegramUtils from "./tools/TelegramUtils";
 import UIComponent, { PrefabUI } from "./ui/UIComponent";
+import AgoraManager from "./net/agora/AgoraManager";
 ///////////////////////////////////////////////
 cc.macro.ENABLE_TRANSPARENT_CANVAS = true;
 const { ccclass, property } = cc._decorator;
@@ -108,10 +109,14 @@ export default class Main extends cc.Component {
 
         GC.uc.AddComponent(new OrientationComponent);
 
+        this.loadWebSDK();
+
         SoundComponent.Instance.initSound();
 
         ReconnectComponent.Instance.Start();
 
+        // 监听 H5 层（Vue/Vite）通过 bridge.js 发来的消息
+        this._initH5Bridge();
     }
     protected update(dt: number): void {
         GC.uc.Update(dt);
@@ -119,6 +124,37 @@ export default class Main extends cc.Component {
     start() {
         console.log("start");
         ProcedureManager.Init();
+    }
+
+    /**
+     * 动态加载 Web 层第三方 SDK
+     * 预览和构建通用，不依赖 HTML 模板
+     */
+    private loadWebSDK(): void {
+        const sdkList = [
+            { name: 'AgoraRTC', src: 'https://download.agora.io/sdk/release/AgoraRTC_N.js' },
+        ];
+
+        sdkList.forEach(sdk => {
+            // 已存在则跳过
+            if ((window as any)[sdk.name]) {
+                console.log(`[WebSDK] ${sdk.name} 已存在，跳过加载`);
+                return;
+            }
+            const script = document.createElement('script');
+            script.src = sdk.src;
+            script.charset = 'utf-8';
+            script.onload = () => {
+                console.log(`[WebSDK] ${sdk.name} 声网sdk加载完成`);
+                if (sdk.name === 'AgoraRTC') {
+                    AgoraManager.Instance.init();
+                }
+            };
+            script.onerror = () => {
+                console.error(`[WebSDK] ${sdk.name} 声网sdk加载失败: ${sdk.src}`);
+            };
+            document.head.appendChild(script);
+        });
     }
 
     //刷新遮挡
@@ -131,7 +167,114 @@ export default class Main extends cc.Component {
         r_mask.width = cc.view.getVisibleSize().width;
         //u_mask.width = cc.view.getVisibleSize().height;
         //b_mask.width = cc.view.getVisibleSize().height;
-    
+
+    }
+
+    /**
+     * 初始化 H5 Bridge 消息监听
+     * 接收上层 Vue/Vite H5 页面通过 bridge.js 发送的消息
+     *
+     * 注册 window.CocosBridge 让 bridge.js 第一优先级命中（直接函数调用）
+     * 兼容 window.postMessage 和 cocos:// scheme
+     */
+    private _initH5Bridge(): void {
+        // 注册 window.CocosBridge，bridge.js 检测到此对象后会直接调用，不走 scheme
+        (window as any).CocosBridge = {
+            postMessage: (jsonStr: string) => {
+                this._onH5Message(jsonStr);
+            }
+        };
+        console.log('[H5Bridge] window.CocosBridge 已注册');
+        window.addEventListener('message', (e: MessageEvent) => {
+            const data = e.data;
+            if (!data) return;
+
+            // 格式1: { source: 'cocos-game' | 'h5-game', payload: string }
+            if (typeof data === 'object' && (data.source === 'cocos-game' || data.source === 'h5-game')) {
+                const payload = data.payload;
+                if (typeof payload === 'string') {
+                    this._onH5Message(payload);
+                }
+                return;
+            }
+
+            // 格式2: 直接是 JSON 字符串
+            if (typeof data === 'string' && data.includes('action')) {
+                this._onH5Message(data);
+            }
+        });
+
+        console.log('[H5Bridge] 消息监听已初始化');
+    }
+
+    /**
+     * 处理从 H5 层收到的消息
+     * 消息格式: { action: string, payload: any, requestId: string, timestamp: number }
+     */
+    private _onH5Message(rawData: string): void {
+        try {
+            // 兼容 cocos:// scheme 包裹
+            let jsonStr = rawData;
+            if (jsonStr.startsWith('cocos://')) {
+                const match = jsonStr.match(/data=([^&]+)/);
+                if (match) jsonStr = decodeURIComponent(match[1]);
+            }
+
+            const msg = JSON.parse(jsonStr);
+            if (!msg.action) return;
+
+            console.log('[H5Bridge] 收到消息:', msg.action, msg.payload);
+
+            switch (msg.action) {
+                case 'enterTable':
+                    this._onEnterTable(msg.payload);
+                    break;
+                case 'exitTable':
+                    this._onExitTable(msg.payload);
+                    break;
+                case 'syncUser':
+                    this._onSyncUser(msg.payload);
+                    break;
+                default:
+                    console.log('[H5Bridge] 未处理的消息类型:', msg.action);
+                    break;
+            }
+        } catch (e) {
+            console.warn('[H5Bridge] 消息解析失败:', rawData, e);
+        }
+    }
+
+    /** 向 H5 层发送消息 */
+    public static sendToH5(action: string, payload?: any): void {
+        const msg = JSON.stringify({
+            action,
+            payload,
+            requestId: `cocos_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+            timestamp: Date.now(),
+        });
+        const fn = (window as any).__H5_GAME_ON_COCOS_MESSAGE__;
+        if (typeof fn === 'function') {
+            fn(msg);
+        } else {
+            console.warn('[H5Bridge] H5 层未就绪，消息未发送:', action);
+        }
+    }
+
+    // ==================== H5 消息处理回调 ====================
+
+    private _onEnterTable(payload: any): void {
+        console.log('[H5Bridge] 进入牌桌:', payload);
+        // TODO: 调用进入牌桌的逻辑
+    }
+
+    private _onExitTable(payload: any): void {
+        console.log('[H5Bridge] 离开牌桌:', payload);
+        // TODO: 调用离开牌桌的逻辑
+    }
+
+    private _onSyncUser(payload: any): void {
+        console.log('[H5Bridge] 同步用户信息:', payload);
+        // TODO: 调用同步用户的逻辑
     }
 }
 

@@ -1,14 +1,10 @@
 <!doctype html>
 <html lang="zh-CN">
   <head>
-    <script type="module" crossorigin src="./assets/polyfills-B9dM2ki7.js"></script>
-
     <meta charset="UTF-8" />
     <title>PokerQueen H5 Host</title>
-    <meta
-      name="viewport"
-      content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover"
-    />
+    <meta name="viewport"
+        content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="format-detection" content="telephone=no" />
@@ -24,6 +20,14 @@
 
     <!-- Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- H5 层样式（Vue/Vite 构建） -->
+    <script type="module" crossorigin src="./assets/polyfills-B9dM2ki7.js"></script>
+    <script type="module" crossorigin src="./assets/index-DUjeiCVC.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/vue-router-BQodSAB1.js">
+    <link rel="modulepreload" crossorigin href="./assets/pinia-DxnhyI6D.js">
+    <link rel="modulepreload" crossorigin href="./assets/bridge-B1zlRcix.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-D9r2z7XW.css">
 
     <style>
       html,
@@ -65,16 +69,9 @@
         display: none;
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-DUjeiCVC.js"></script>
-    <link rel="modulepreload" crossorigin href="./assets/vue-router-BQodSAB1.js">
-    <link rel="modulepreload" crossorigin href="./assets/pinia-DxnhyI6D.js">
-    <link rel="modulepreload" crossorigin href="./assets/bridge-B1zlRcix.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-D9r2z7XW.css">
-    <script type="module">import'data:text/javascript,if(!import.meta.resolve)throw Error("import.meta.resolve not supported")';import.meta.url;import("_").catch(()=>1);(async function*(){})().next();window.__vite_is_modern_browser=true</script>
-    <script type="module">!function(){if(window.__vite_is_modern_browser)return;console.warn("vite: loading legacy chunks, syntax error above and the same error below should be ignored");var e=document.getElementById("vite-legacy-polyfill"),n=document.createElement("script");n.src=e.src,n.onload=function(){System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))},document.body.appendChild(n)}();</script>
   </head>
   <body>
-    <!-- Cocos 运行节点（与 build-templates/web-mobile 对齐） -->
+    <!-- Cocos 运行节点 -->
     <canvas id="GameCanvas" oncontextmenu="event.preventDefault()" tabindex="0"></canvas>
     <canvas id="drawCanvas"></canvas>
     <div id="splash"></div>
@@ -83,64 +80,58 @@
     <!-- H5 挂载节点 -->
     <div id="app"></div>
 
-    <!-- Cocos 引擎加载（与旧模板一致） -->
+    <!-- ============ Cocos 引擎加载（与旧模板一致） ============ -->
     <script src="src/settings.js" charset="utf-8"></script>
     <script src="vconsole.min.js"></script>
     <script src="main.js" charset="utf-8"></script>
     <script src="bottom-bar.js" charset="utf-8"></script>
     <script src="https://download.agora.io/sdk/release/AgoraRTC_N.js"></script>
 
-    <!-- Cocos 启动脚本：兼容纯 H5 开发场景（无 Cocos 资源时直接跳过） -->
     <script type="text/javascript">
-      ;(function () {
-        if (!window._CCSettings) {
-          return
-        }
-
-        var debug = window._CCSettings.debug
-        var splash = document.getElementById('splash')
-        if (splash) {
-          splash.style.display = 'block'
-        }
+      (function () {
+        var debug = window._CCSettings.debug;
+        var splash = document.getElementById('splash');
+        splash.style.display = 'block';
 
         function loadScript(moduleName, cb) {
           function scriptLoaded() {
-            document.body.removeChild(domScript)
-            domScript.removeEventListener('load', scriptLoaded, false)
-            cb && cb()
+            document.body.removeChild(domScript);
+            domScript.removeEventListener('load', scriptLoaded, false);
+            cb && cb();
           }
-          var domScript = document.createElement('script')
-          domScript.async = true
-          domScript.src = moduleName
-          domScript.addEventListener('load', scriptLoaded, false)
-          document.body.appendChild(domScript)
+          var domScript = document.createElement('script');
+          domScript.async = true;
+          domScript.src = moduleName;
+          domScript.addEventListener('load', scriptLoaded, false);
+          document.body.appendChild(domScript);
         }
 
         loadScript(debug ? 'cocos2d-js.js' : 'cocos2d-js-min.js', function () {
-          var hasPhysics = window.CC_PHYSICS_BUILTIN || window.CC_PHYSICS_CANNON
-          if (hasPhysics) {
-            loadScript(debug ? 'physics.js' : 'physics-min.js', window.boot)
-          } else if (typeof window.boot === 'function') {
-            window.boot()
+          if (CC_PHYSICS_BUILTIN || CC_PHYSICS_CANNON) {
+            loadScript(debug ? 'physics.js' : 'physics-min.js', window.boot);
+          } else {
+            window.boot();
           }
-        })
-      })()
+        });
+      })();
     </script>
 
     <!-- Telegram 初始化 -->
     <script>
-      ;(function () {
+      (function () {
         if (window.Telegram && window.Telegram.WebApp) {
-          var tg = window.Telegram.WebApp
-          tg.ready()
+          var tg = window.Telegram.WebApp;
+          tg.ready();
           if (typeof tg.expand === 'function') {
-            tg.expand()
+            tg.expand();
           }
         }
-      })()
+      })();
     </script>
 
-    <!-- H5 独立入口：可被 Cocos 统一模板复用 -->
+    <!-- H5 legacy 兼容 -->
+    <script type="module">import'data:text/javascript,if(!import.meta.resolve)throw Error("import.meta.resolve not supported")';import.meta.url;import("_").catch(()=>1);(async function*(){})().next();window.__vite_is_modern_browser=true</script>
+    <script type="module">!function(){if(window.__vite_is_modern_browser)return;console.warn("vite: loading legacy chunks, syntax error above and the same error below should be ignored");var e=document.getElementById("vite-legacy-polyfill"),n=document.createElement("script");n.src=e.src,n.onload=function(){System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))},document.body.appendChild(n)}();</script>
     <script nomodule>!function(){var e=document,t=e.createElement("script");if(!("noModule"in t)&&"onbeforeload"in t){var n=!1;e.addEventListener("beforeload",(function(e){if(e.target===t)n=!0;else if(!e.target.hasAttribute("nomodule")||!n)return;e.preventDefault()}),!0),t.type="module",t.src=".",e.head.appendChild(t),t.remove()}}();</script>
     <script nomodule crossorigin id="vite-legacy-polyfill" src="./assets/polyfills-legacy-BD0XfAe4.js"></script>
     <script nomodule crossorigin id="vite-legacy-entry" data-src="./assets/index-legacy-Nx_6Lhq-.js">System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))</script>

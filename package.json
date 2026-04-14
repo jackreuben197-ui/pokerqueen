@@ -5,7 +5,8 @@
     "cocos:detect": "node ./scripts/cocos_cli.js detect",
     "cocos:build:web": "node ./scripts/cocos_cli.js build \"platform=web-mobile;debug=true\"",
     "cocos:build:web:release": "node ./scripts/cocos_cli.js build \"platform=web-mobile;debug=false;md5Cache=true\"",
-    "verify:code": "npm run check:ts && npm run cocos:build:web"
+    "verify:code": "npm run check:ts && npm run cocos:build:web",
+    "agora:token": "node scripts/agora-token-server.js"
   },
   "dependencies": {
     "@types/gapi": "^0.0.43",
@@ -16,6 +17,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.0.4",
+    "agora-token": "^2.0.5",
     "typescript": "^5.8.2"
   }
 }
