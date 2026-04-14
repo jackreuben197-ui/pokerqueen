@@ -16,7 +16,7 @@ export default class AgoraManager {
     /** 声网 App ID */
     public appId: string = 'da91afd18fa84618bee90c5468b06a5f';
     /** 声网 App Certificate（仅用于服务端生成 token，客户端留空） */
-    public appCertificate: string = '569bd27e2ef74ff4b2904910b359cf9d';
+    public appCertificate: string = '569bd27e2ef74ff4b29xxxxxxxxxx';
     /** Token 服务地址（本地测试用，生产环境替换为正式后端地址） */
     public tokenServerUrl: string = 'http://localhost:3333';
     // =========================================================
