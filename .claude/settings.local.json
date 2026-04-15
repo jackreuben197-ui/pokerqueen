@@ -11,7 +11,20 @@
       "Bash(curl -s \"https://api.github.com/repos/AgoraIO-Community/Agora-Cocos-Quickstart/contents/Cocos2d-x\")",
       "Bash(curl -s \"https://raw.githubusercontent.com/AgoraIO-Community/Agora-Cocos-Quickstart/master/CocosCreator/agora.d.ts\")",
       "Bash(curl:*)",
-      "Bash(xargs grep:*)"
+      "Bash(xargs grep:*)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files \\(x86\\)/**)",
+      "Read(//c//**)",
+      "Read(//d//**)",
+      "Read(//e//**)",
+      "Read(//e/Cocos/**)",
+      "Bash(npm list:*)",
+      "Bash(npx -y asar list \"E:/Cocos/editors/Creator/2.4.8/resources/app.asar\")",
+      "Bash(npx -y asar extract-file \"E:/Cocos/editors/Creator/2.4.8/resources/app.asar\" \"editor/lib/preview-server/index.ccc\" /tmp/preview-server-index.ccc)",
+      "Read(//tmp/**)",
+      "Bash(npx -y asar extract-file \"E:/Cocos/editors/Creator/2.4.8/resources/app.asar\" \"editor/lib/preview-server/index.ccc\" preview-server-index.ccc)",
+      "Bash(npx -y asar extract \"E:/Cocos/editors/Creator/2.4.8/resources/app.asar\" ./_cocos-extracted)",
+      "Bash(xxd)"
     ]
   }
 }
