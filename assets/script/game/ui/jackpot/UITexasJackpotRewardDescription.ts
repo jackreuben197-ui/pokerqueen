@@ -1,4 +1,4 @@
-import { Web_Org_Jackpot_Template_Info, WWW } from "../../../net/https/WebRequest";
+import { WebOrgJackpotTemplateInfo as Web_Org_Jackpot_Template_Info, WWW } from "../../../net/https/WebRequest";
 import BaseTouchBoard from "../../../ui/board/BaseTouchBoard";
 import UIComponent from "../../../ui/UIComponent";
 import { GameCache } from "../../GameCache";

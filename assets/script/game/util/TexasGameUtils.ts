@@ -55,6 +55,7 @@ export default class TexasGameUtils {
                     gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
                     mttPartialBringIn: UIMTTModel.Instance.PartialBringIn,
                     observer: GameCache.Instance.CurGame.IsLookOn,
+                    wantSeat: 0,
                 },
             });
 
@@ -72,6 +73,7 @@ export default class TexasGameUtils {
                     gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
                     mttPartialBringIn: 0,
                     observer: false,
+                    wantSeat: 0,
                 },
             });
         }

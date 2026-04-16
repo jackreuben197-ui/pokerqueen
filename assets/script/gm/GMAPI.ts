@@ -101,7 +101,7 @@ export class GM {
                 "muck": false,
                 "uniqueId": "1667992583",
                 "isAgreeSecondPcs": false
-            },
+            } as any,
             "handInfo": {
                 "handNum": 12,
                 "buSeatId": 7,
@@ -119,7 +119,7 @@ export class GM {
                 "extPublicCardsList": [
 
                 ]
-            },
+            } as any,
             "playersList": [
                 // {
                 //     "seatId": 7,
@@ -194,7 +194,7 @@ export class GM {
                 "addonPlusMode2Times": 0,
                 "hunterKillAwardOther": 0,
                 "hunterHeadValue": 0
-            },
+            } as any,
             "operatorList": [
                 {
                     "seatId": 5,
@@ -212,7 +212,7 @@ export class GM {
                     "isInsurance": false,
                     "isAgreeSecondPc": false,
                     "opDeadline": 1667992945
-                }
+                } as any
             ],
             "mttInfo": {
                 "upBlindInterval": 120,
@@ -240,7 +240,8 @@ export class GM {
                 "addOnPlusMode2": false,
                 "addOnPlusMode2EndBl": 0,
                 "addOnPlusMode2MaxTimes": 0,
-                "buyRatio": 1
+                "buyRatio": 1,
+                "sngId": 0,
             },
             "mttProgress": {
                 "upBlindLeftTime": 21,
@@ -255,7 +256,9 @@ export class GM {
             "mttRoom": {
                 "roomId": 1,
                 "matchId": 93226850
-            }
+            },
+            "muted": false,
+            "payTimes": 0
         }
     }
 

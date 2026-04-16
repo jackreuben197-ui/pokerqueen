@@ -1,7 +1,7 @@
 import { UIDefine } from "../../define/UIDefine";
 import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { APIOrgTribeRoomPermissions, APIOrgUserNewLabelRead, APIOrgUserNewLabelReadNum, Web_Config_Global_Config, WWW } from "../../net/https/WebRequest";
+import { APIOrgTribeRoomPermissions, APIOrgUserNewLabelRead, APIOrgUserNewLabelReadNum, WebConfigGlobalConfig as Web_Config_Global_Config, WWW } from "../../net/https/WebRequest";
 import { Def } from "../../protobuf/holdem/define_pb";
 import { GameCache } from "../../game/GameCache";
 import { GameType } from "../../game/util/GameUtil";

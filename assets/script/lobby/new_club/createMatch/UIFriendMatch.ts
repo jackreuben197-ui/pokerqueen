@@ -104,9 +104,10 @@ export default class UIFriendMatch extends UIBase {
         let responseData = Broadcast.Response(json);
         let code: number = responseData.code;
         //let data: string = responseData.data;
-        if (code == BroadcastCode.SeatFriendApplyRefreshMsgNum) {
-            this.ReqMsgRed();
-        }
+        // TODO: SeatFriendApplyRefreshMsgNum 待 BroadcastCode 枚举定义后启用
+        // if (code == BroadcastCode.SeatFriendApplyRefreshMsgNum) {
+        //     this.ReqMsgRed();
+        // }
     }
 
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {

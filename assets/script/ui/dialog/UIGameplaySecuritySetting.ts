@@ -2,7 +2,7 @@ import { UIDefine } from "../../define/UIDefine";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { StringHelper } from "../../helper/StringHelper";
 import { GameCache } from "../../game/GameCache";
-import { APIOrgTribeRoomPermissions, Web_Config_Global_Config, WWW } from "../../net/https/WebRequest";
+import { APIOrgTribeRoomPermissions, WebConfigGlobalConfig as Web_Config_Global_Config, WWW } from "../../net/https/WebRequest";
 import BaseTouchBoard from "../board/BaseTouchBoard";
 import UIComponent from "../UIComponent";
 

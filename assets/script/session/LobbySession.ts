@@ -258,7 +258,7 @@ export default class LobbySession {
         LobbySession.Switch.apple_mtt_switch = data.apple_mtt_switch;
         LobbySession.Switch.android_mtt_switch = data.android_mtt_switch;
         LobbySession.Switch.android_pay_switch = data.android_pay_switch;
-        GameCache.Instance.newLabelsMaxNumber = Number(data.tribe_permission_new_label_view_num || 0);
+        GameCache.Instance.newLabelsMaxNumber = Number((data as any).tribe_permission_new_label_view_num || 0);
     }
 
     /**

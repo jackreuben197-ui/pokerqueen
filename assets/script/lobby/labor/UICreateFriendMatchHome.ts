@@ -94,7 +94,7 @@ export default class UICreateFriendMatchHome extends UIBase {
         if (this.EditBox.string.length != 7) {
             return;
         }
-        let _data: any = await UIClubModel.mInstance.APIOrgInvitationRoom(this.EditBox.string);
+        let _data: any = await UIClubModel.mInstance.WebOrgiNvitatIonRoom(this.EditBox.string);
         if (_data?.data?.data) {
             _data = new LobbyRoomListItem(_data?.data?.data);
             GameUtil.EnterRoomAPI(_data, [UIDefine.UICreateMatch]);

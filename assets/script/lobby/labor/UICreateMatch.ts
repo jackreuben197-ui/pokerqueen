@@ -12,7 +12,7 @@ import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import GameUtil from "../../game/util/GameUtil";
 import TimeHelper from "../../helper/TimeHelper";
-import { APIOrgGetRoomConfig, Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { WebOrggetRoomConfig as APIOrgGetRoomConfig, WebOrgClubGet as Web_Org_Club_Get } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import { UIClubModel } from "./UIClubModel";
 import ComFormTitle from "../../common/ComFormTitle";
@@ -590,9 +590,9 @@ export default class UICreateMatch extends BaseForm {
             if (this._editModelData) {
 
                 params.id = this._editModelData.id
-                await UIClubModel.mInstance.APIOrgUpdateTemplate(params);
+                await UIClubModel.mInstance.WebOrgUpdateTemplate(params);
             } else {
-                await UIClubModel.mInstance.APIOrgCreateTemplate(params);
+                await UIClubModel.mInstance.WebOrgCreateTemplate(params);
             }
             this.post(EventName.matchModelChange)
 
@@ -602,7 +602,7 @@ export default class UICreateMatch extends BaseForm {
                 room_config.insurance = this.bxState
                 room_config.limit_friend_table = false
                 room_config.limit_bring_in = 0
-                let data = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+                let data = await UIClubModel.mInstance.WebOrgRoomConfigCreate(params);
                 this.post(EventName.updateChessView);
             }
             else {
@@ -618,10 +618,10 @@ export default class UICreateMatch extends BaseForm {
                 room_config.fee_permillage = Number(this.jslx.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //服务费比例(0-100)
                 room_config.limit_friend_table = true;
                 room_config.limit_bring_in = this.kzwjdrState;
-                let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+                let data: any = await UIClubModel.mInstance.WebOrgRoomConfigCreate(params);
                 this.top_block.active = true;
                 await TimeHelper.Sleep(1000);
-                data = await UIClubModel.mInstance.APIOrgFriendRoomInfo(data.data.room_id);
+                data = await UIClubModel.mInstance.WebOrgFriendRoomInfo(data.data.room_id);
                 this.post(EventName.updateFriendChessView)
                 this.top_block.active = false;
                 this._data = new LobbyRoomListItem(data.data.data);

@@ -5,7 +5,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
-import { BringInApplyMsg, Broadcast, BroadcastCode, BroadcastMsg } from "../../net/websocket/ProtocolHoldemMessages";
+import { Broadcast, BroadcastCode, BroadcastMsg } from "../../net/websocket/ProtocolHoldemMessages";
 import { Def, Operator, PlayerCards, PlayerChipChange, Result } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_th_action_all_pb";
 import { ServerMessageAddTimeOthers } from "../../protobuf/holdem/recv_th_add_time_others_pb";
@@ -1812,27 +1812,28 @@ export default class TexasGameProtocol {
                 //         break;
                 // }
                 break;
-            case BroadcastCode.SeatFriendBringInApply://朋友桌申请带入
-            case BroadcastCode.SeatClubBringInApply://公会桌申请带入
-                var BringInApplyData = BringInApplyMsg.Response(responseData.data);
-                if (BringInApplyData.status == 2) {
-                    UIComponent.Instance.ToastLanguage("UITexas_FriendtableapplyBringinTips003");
-                }
-                else if (BringInApplyData.status == 3) {
-                    UIComponent.Instance.ToastLanguage("UITexas_FriendtableapplyBringinTips002");
-                }
-                else if (BringInApplyData.status == 1) {
-                    UIComponent.Instance.ToastLanguage("UITexas_FriendtableapplyBringinTips001");
-                }
-                break;
-            case BroadcastCode.SeatFriendApplyRefreshMsgNum:
-            case BroadcastCode.SeatClubApplyRefreshMsgNum:
-                //牌桌
-                if (SceneManager.Instance.currUI.getComponent(UIBase).name == "UITexas") {
-                    this.game?.UpdateMsgBtnSprite();
-                }
-                //{"code":2001,"data":"{\"room_id\":90619954,\"user_id\":6922,\"bring_in\":200,\"status\":1,\"origin_type\":4}"}
-                break;
+            // TODO: SeatFriendBringInApply / SeatClubBringInApply / BringInApplyMsg 待协议定义后启用
+            // case BroadcastCode.SeatFriendBringInApply://朋友桌申请带入
+            // case BroadcastCode.SeatClubBringInApply://公会桌申请带入
+            //     var BringInApplyData = BringInApplyMsg.Response(responseData.data);
+            //     if (BringInApplyData.status == 2) {
+            //         UIComponent.Instance.ToastLanguage("UITexas_FriendtableapplyBringinTips003");
+            //     }
+            //     else if (BringInApplyData.status == 3) {
+            //         UIComponent.Instance.ToastLanguage("UITexas_FriendtableapplyBringinTips002");
+            //     }
+            //     else if (BringInApplyData.status == 1) {
+            //         UIComponent.Instance.ToastLanguage("UITexas_FriendtableapplyBringinTips001");
+            //     }
+            //     break;
+            // case BroadcastCode.SeatFriendApplyRefreshMsgNum:
+            // case BroadcastCode.SeatClubApplyRefreshMsgNum:
+            //     //牌桌
+            //     if (SceneManager.Instance.currUI.getComponent(UIBase).name == "UITexas") {
+            //         this.game?.UpdateMsgBtnSprite();
+            //     }
+            //     //{"code":2001,"data":"{\"room_id\":90619954,\"user_id\":6922,\"bring_in\":200,\"status\":1,\"origin_type\":4}"}
+            //     break;
 
             default:
                 break;

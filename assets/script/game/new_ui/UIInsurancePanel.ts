@@ -821,6 +821,7 @@ export default class UIInsurancePanel extends UIBasePlus {
             Body: {
                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
                 consume: this.addTimeCount == 0 ? Def.ConsumeType.CT_DELAY_2 : Def.ConsumeType.CT_DELAY_3,
+                directConsume: false,
             },
         })
         this.OnclickDelayButtonTimes++;
@@ -847,7 +848,9 @@ export default class UIInsurancePanel extends UIBasePlus {
             MatchID: GameCache.Instance.match_id,
             Body: {
                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                buyList: []
+                buyList: [],
+                confirm: false,
+                step: false,
             },
         });
         UIComponent.Instance.HideUI(PrefabUI.UIInsurancePanel);
@@ -890,6 +893,7 @@ export default class UIInsurancePanel extends UIBasePlus {
             potId: this.myWrapTriggedInsuranceData.subPot,
             passiveAmount: 0,
             passiveOutsList: [],
+            insurEv: 0,
         };
 
         GameCache.Instance.CurGame.cacheBuyInsurancePotUserCount = this.myWrapTriggedInsuranceData.PotUserCount;//缓存购买池子
@@ -900,7 +904,9 @@ export default class UIInsurancePanel extends UIBasePlus {
             MatchID: GameCache.Instance.match_id,
             Body: {
                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                buyList: [potInsuranceBuy]
+                buyList: [potInsuranceBuy],
+                confirm: false,
+                step: false,
             },
         })
 

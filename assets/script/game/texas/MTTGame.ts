@@ -502,6 +502,7 @@ export default class MTTGame extends TexasGame {
                     matchId: GameCache.Instance.match_id,
                 },
                 consume: this.TexasGameUtils.GetOpDelayConsumeType(),
+                directConsume: false,
             },
         });
     }

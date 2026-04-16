@@ -84,7 +84,7 @@ export default class TexasGameBombPot {
                 })
                 .parallel(
                     cc.scaleTo(0.2, 1, 1),
-                    cc.moveTo(0.4, endPos)
+                    cc.moveTo(0.4, cc.v2(endPos.x, endPos.y))
                 )
                 .call(() => {
                     if (cardIndex === 2) {

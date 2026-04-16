@@ -113,7 +113,7 @@ export default class TexasGame {
     private mushroomFeature: TexasGameMushroom = null;
     private squidFeature: TexasGameSquid = null;
     private bombPotFeature: TexasGameBombPot = null;
-    private jackpotFeature: TexasGameJackpot = null;
+    jackpotFeature: TexasGameJackpot = null;
     ///////////////////////////////
     private setting = {
         deskType: null,
@@ -1869,6 +1869,10 @@ export default class TexasGame {
                                     store: 0,
                                     clubId: res.data.last_bring_out.club_id,
                                     applyBringIn: false,
+                                    autoOnTableNoStore: false,
+                                    autoOnTableFix: 0,
+                                    depositAdvance: 0,
+                                    autoOnTableMax: 0,
                                 },
                             });
                         } else if (
@@ -1892,6 +1896,10 @@ export default class TexasGame {
                                     store: 0,
                                     clubId: res.data.last_bring_out.club_id,
                                     applyBringIn: false,
+                                    autoOnTableNoStore: false,
+                                    autoOnTableFix: 0,
+                                    depositAdvance: 0,
+                                    autoOnTableMax: 0,
                                 },
                             });
                         } else {
@@ -1931,6 +1939,10 @@ export default class TexasGame {
                             store: 0,
                             clubId: 0,
                             applyBringIn: true,
+                            autoOnTableNoStore: false,
+                            autoOnTableFix: 0,
+                            depositAdvance: 0,
+                            autoOnTableMax: 0,
                         },
                     });
                 } else {
@@ -2192,6 +2204,10 @@ export default class TexasGame {
                                 GameUtil.GetFriendsOrClubTable() == 2) &&
                             GameCache.Instance.FriendsTableLimitBringIn,
                         clubId: club_id,
+                        autoOnTableNoStore: false,
+                        autoOnTableFix: 0,
+                        depositAdvance: 0,
+                        autoOnTableMax: 0,
                     },
                 });
             }
@@ -2220,6 +2236,7 @@ export default class TexasGame {
                 bringIn: anteNumber,
                 useWallet: IsUseWallet,
                 applyBringIn: applyBringIn,
+                depositAdvance: 0,
             },
         });
         //需要审核的加入提示信息
@@ -2243,6 +2260,8 @@ export default class TexasGame {
                 },
                 autoOnTable: autoOnTable, //自动带入值
                 autoUseWallet: autoUseWallet, //是否账户带入
+                autoOnTableNoStore: false,
+                autoOnTableFix: 0,
             },
         });
     }
@@ -2268,6 +2287,8 @@ export default class TexasGame {
                     roomId: GameCache.Instance.room_id,
                     matchId: GameCache.Instance.match_id,
                 },
+                cancelStandup: false,
+                manualChangeRoom: false,
             },
         });
     }
@@ -2412,6 +2433,7 @@ export default class TexasGame {
                 },
                 action: action,
                 amount: anteNumber,
+                clubId: 0,
             },
         });
     }
@@ -4190,6 +4212,7 @@ export default class TexasGame {
                     matchId: GameCache.Instance.match_id,
                 },
                 consume: this.TexasGameUtils.GetOpDelayConsumeType(),
+                directConsume: false,
             },
         });
     }

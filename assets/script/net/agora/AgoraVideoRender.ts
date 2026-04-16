@@ -174,7 +174,7 @@ export default class AgoraVideoRender extends cc.Component {
         this._texture.packable = false;
 
         this._spriteFrame = new cc.SpriteFrame();
-        this._spriteFrame.initWithTexture(
+        (this._spriteFrame as any).initWithTexture(
             this._texture,
             cc.rect(0, 0, cw, ch),
             false,
@@ -295,7 +295,7 @@ export default class AgoraVideoRender extends cc.Component {
         this._texture.packable = false;
 
         this._spriteFrame = new cc.SpriteFrame();
-        this._spriteFrame.initWithTexture(
+        (this._spriteFrame as any).initWithTexture(
             this._texture,
             cc.rect(0, 0, cw, ch),
             false,
