@@ -53,6 +53,8 @@ export class GameConfig {
     //默认区号
     static DefaultAreaCode: string = "+55";
 
+    static publish?;
+
 }
 /**
  * 网络配置

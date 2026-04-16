@@ -606,5 +606,13 @@ export interface EnterRoomInfo {
     rounds?;
     sub_configs?;
     squid_player_count?;
+    jackpot?;
+    jackpot_id?;
+    jackpotId?;
+    jackpot_gold?;
+    jackpotGold?;
+    jackpot_parent_gold?;
+    jackpotParentGold?;
+    
 }
 (window as any).GameCache = GameCache;

@@ -3823,6 +3823,7 @@ export default class TexasGame {
                 wallets: wallets
             }
         )
+    }
 
 
     // 牌桌玩家信息
