@@ -120,8 +120,8 @@ export default class Main extends cc.Component {
         H5MsgMgr.Instance.init();
         this._registerH5Listeners();
 
-        // 通知 H5 层：CC 已就绪，可以开始收发消息
-        H5MsgMgr.sendToH5('ccReady');
+        // 启动握手：设置 __CC_READY__，等待 H5 发来 h5Ready，回复 ccAck
+        H5MsgMgr.Instance.startHandshake();
     }
     protected update(dt: number): void {
         GC.uc.Update(dt);
@@ -136,6 +136,11 @@ export default class Main extends cc.Component {
      * 预览和构建通用，不依赖 HTML 模板
      */
     private loadWebSDK(): void {
+        if (!GameConfig.enableAgora) {
+            console.log('[WebSDK] 声网已禁用（enableAgora=false），跳过加载');
+            return;
+        }
+
         const sdkList = [
             { name: 'AgoraRTC', src: 'https://download.agora.io/sdk/release/AgoraRTC_N.js' },
         ];

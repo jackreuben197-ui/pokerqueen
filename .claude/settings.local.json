@@ -25,7 +25,8 @@
       "Bash(npx -y asar extract-file \"E:/Cocos/editors/Creator/2.4.8/resources/app.asar\" \"editor/lib/preview-server/index.ccc\" preview-server-index.ccc)",
       "Bash(npx -y asar extract \"E:/Cocos/editors/Creator/2.4.8/resources/app.asar\" ./_cocos-extracted)",
       "Bash(xxd)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(npx tsc *)"
     ]
   }
 }
