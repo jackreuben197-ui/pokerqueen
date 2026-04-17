@@ -1,7 +1,5 @@
 
 import { GameConfig } from "../config/GameConfig";
-import { ProcedureEnum } from "../define/EIDefine";
-import ProcedureManager from "../manager/ProcedureManager";
 import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureInit extends ProcedureBase {
@@ -13,7 +11,8 @@ export default class ProcedureInit extends ProcedureBase {
         super.lateEnter(param);
         this.setCCC();
         this.setFit();
-        ProcedureManager.StartProcedure(ProcedureEnum.Config);
+        // 引擎设置完成，等待 H5 层发送消息驱动后续流程
+        console.log("ProcedureInit 完成，等待 H5 层指令...");
     }
     Leave() {
         super.Leave();

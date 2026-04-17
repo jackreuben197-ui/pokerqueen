@@ -22,6 +22,8 @@ import TelegramUtils from "./tools/TelegramUtils";
 import UIComponent, { PrefabUI } from "./ui/UIComponent";
 import AgoraManager from "./net/agora/AgoraManager";
 import H5MsgMgr from "./H5MsgMgr";
+import { GameCache } from "./game/GameCache";
+import { ProcedureEnum } from "./define/EIDefine";
 ///////////////////////////////////////////////
 cc.macro.ENABLE_TRANSPARENT_CANVAS = true;
 const { ccclass, property } = cc._decorator;
@@ -182,10 +184,44 @@ export default class Main extends cc.Component {
 
     // ==================== H5 消息处理 ====================
 
+    /** 进入牌桌必需字段定义 */
+    private static readonly ENTER_TABLE_REQUIRED: { key: string; label: string; type: string }[] = [
+        { key: 'nUserId', label: '用户ID', type: 'number' },
+        { key: 'nick', label: '昵称', type: 'string' },
+        { key: 'headPic', label: '头像', type: 'string' },
+        { key: 'sex', label: '性别', type: 'number' },
+        { key: 'gold', label: '金豆余额', type: 'number' },
+        { key: 'game_enter_type', label: '进入类型', type: 'number' },
+        { key: 'isLookOn', label: '是否观战', type: 'boolean' },
+        { key: 'room_type', label: '房间类型', type: 'number' },
+        { key: 'room_id', label: '房间号', type: 'number' },
+        { key: 'roomName', label: '房间名称', type: 'string' },
+        { key: 'game_type', label: '游戏类型', type: 'number' },
+        { key: 'poker_type', label: '牌类型', type: 'number' },
+        { key: 'bet_type', label: '下注类型', type: 'number' },
+        { key: 'seat_count', label: '座位数', type: 'number' },
+        { key: 'match_id', label: 'MTT比赛ID', type: 'number' },
+        { key: 'service_id', label: '服务器ID', type: 'string' },
+        { key: 'carry_small', label: '最小带入', type: 'number' },
+    ];
+
     private _registerH5Listeners(): void {
         H5MsgMgr.Instance.on('enterTable', (payload) => {
-            console.log('[H5Bridge] 进入牌桌:', payload);
-            // TODO: 调用进入牌桌的逻辑
+            console.log('[H5Bridge] 收到 enterTable:', JSON.stringify(payload));
+
+            const missing = Main._validateEnterTableData(payload);
+            if (missing.length > 0) {
+                console.error('[H5Bridge] enterTable 数据校验失败，缺少以下字段:');
+                missing.forEach(m => console.error(`  - ${m.key} (${m.label}): 期望 ${m.type}, 实际 ${m.actual}`));
+                return;
+            }
+
+            // 数据完整，写入 GameCache 并进入牌桌
+            Main._fillGameCache(payload);
+            ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, {
+                game_enter_type: payload.game_enter_type,
+                isLookOn: payload.isLookOn,
+            });
         });
         H5MsgMgr.Instance.on('exitTable', (payload) => {
             console.log('[H5Bridge] 离开牌桌:', payload);
@@ -195,6 +231,64 @@ export default class Main extends cc.Component {
             console.log('[H5Bridge] 同步用户信息:', payload);
             // TODO: 调用同步用户的逻辑
         });
+    }
+
+    /**
+     * 校验 enterTable 数据完整性
+     * 返回缺失/类型不匹配的字段列表
+     */
+    private static _validateEnterTableData(payload: any): { key: string; label: string; type: string; actual: string }[] {
+        if (!payload || typeof payload !== 'object') {
+            return Main.ENTER_TABLE_REQUIRED.map(f => ({ ...f, actual: 'undefined' }));
+        }
+
+        const missing: { key: string; label: string; type: string; actual: string }[] = [];
+        for (const field of Main.ENTER_TABLE_REQUIRED) {
+            const val = payload[field.key];
+            if (val === undefined || val === null) {
+                missing.push({ ...field, actual: 'undefined' });
+            } else if (field.type === 'number' && typeof val !== 'number') {
+                missing.push({ ...field, actual: typeof val });
+            } else if (field.type === 'string' && typeof val !== 'string') {
+                missing.push({ ...field, actual: typeof val });
+            } else if (field.type === 'boolean' && typeof val !== 'boolean') {
+                missing.push({ ...field, actual: typeof val });
+            }
+        }
+        return missing;
+    }
+
+    /**
+     * 将 H5 传入的数据写入 GameCache
+     */
+    private static _fillGameCache(payload: any): void {
+        const gc = GameCache.Instance;
+        // 用户信息
+        gc.nUserId = payload.nUserId;
+        gc.nick = payload.nick;
+        gc.headPic = payload.headPic;
+        gc.sex = payload.sex;
+        gc.gold = payload.gold;
+        // 房间信息
+        gc.room_type = payload.room_type;
+        gc.room_id = payload.room_id;
+        gc.roomName = payload.roomName;
+        gc.game_type = payload.game_type;
+        gc.poker_type = payload.poker_type;
+        gc.bet_type = payload.bet_type;
+        gc.seat_count = payload.seat_count;
+        gc.match_id = payload.match_id;
+        gc.serviceId = payload.service_id;
+        gc.carry_small = payload.carry_small;
+        // 可选字段（有则写入，无则保持默认）
+        gc.straddle = payload.straddle ?? 0;
+        gc.insurance = !!payload.insurance;
+        gc.muck_switch = payload.muck_switch ?? 0;
+        gc.ClubID = payload.club_id ?? 0;
+        gc.origin_type = payload.origin_type ?? 0;
+        gc.gold_type = payload.gold_type ?? 0;
+
+        console.log('[H5Bridge] GameCache 数据已写入, room_id:', gc.room_id, 'room_type:', gc.room_type);
     }
 }
 
