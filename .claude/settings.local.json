@@ -1,6 +1,10 @@
 {
+  "defaultMode": "acceptEdits",
   "permissions": {
     "allow": [
+      "Edit",
+      "Write",
+      "Read",
       "Bash(node:*)",
       "Bash(ls:*)",
       "Bash(npm install:*)",

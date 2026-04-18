@@ -115,39 +115,186 @@ export type TRoomListItem = {
 }
 
 export type TUserInfo = {
+    // ---- 基础信息 ----
     user_id: number,
-    area: string,
-    phone: string,
-    status: number,
-    forbid: number,
-    lc: number,
-    lt: string,
-    ut: number,
-    forbid_bring_in: number,
-    forbid_withdraw_gold: number,
-    limit: number,
-    description: string,
-    ub_operator_id: number,
-    w_u_id: number,
-    gold: number,
-    gold_lock: number,
-    wallet_status: number,
-    p_u_id: number,
-    un_id: number,
-    nickname: string,
-    avatar: string,
-    sex: number,
-    birthday: null,
-    country: string,
-    city: string,
-    province: string,
-    platform: number,
-    mnt: number,
-    mat: number,
-    operator_id: number,
-    vip: number,
-    vip_endtime: number
+    area: string,              // 手机号地区 例子：+86
+    phone: string,             // 手机号
+    email: string,             // 邮箱
+    status: number,            // 状态
+    forbid: number,            // 0禁止登录; 1正常登录
+    lc: number,                // 登录次数
+    lt: string,                // 登录时间
+    ut: number,                // 1普通用户; 2支桌号; 3牌局机器人; 4牛仔机器人
+    limit: number,             // 限制
+    description: string,       // 描述
+    group_id: number,          // 组ID
+    is_delete: number,         // 是否删除 0/1
+    operator_id: number,       // 运营商ID
+    ub_operator_id: number,    // 上级运营商ID
 
+    // ---- 密码与安全 ----
+    quick_login_switch: number,        // 快捷登录开关
+    quick_login_type: string,          // 快捷登录类型
+    bringin_pwd_switch: number,        // 带入密码开关
+    bringin_pwd_type: number,          // 带入密码类型
+    bringin_pwd_verify_type: number,   // 带入密码验证类型
+    digital_switch: number,            // 数字密码开关
+    gesture_switch: number,            // 手势密码开关
+    biometric_switch: number,          // 生物识别开关
+
+    // ---- 冻结与限制 ----
+    forbid_bring_in: number,           // 带入冻结 1开启 2关闭
+    forbid_withdraw_gold: number,      // 提现冻结 1开启 2关闭
+    recharge_diamonds_on: number,      // 充值钻石开关 1开启 2关闭
+
+    // ---- 用户身份 ----
+    w_u_id: number,                    // 钱包用户ID
+    p_u_id: number,                    // 平台用户ID
+    un_id: number,                     // 玩家随机ID
+    user_status: number,               // 用户状态
+    user_type: number,                 // 用户类型
+    login_country: string,             // 登录国家
+    guest_id: string,                  // 游客ID
+
+    // ---- 个人信息 ----
+    nickname: string,          // 昵称
+    avatar: string,            // 头像URL
+    back_avatar: string,       // 背面头像URL
+    sex: number,               // 性别
+    birthday: string,          // 生日
+    country: string,           // 国家
+    city: string,              // 城市
+    province: string,          // 省份
+    platform: number,          // 平台
+    mnt: number,               // 修改昵称次数
+    mat: number,               // 修改头像次数
+
+    // ---- VIP / 会员 ----
+    vip: number,                        // VIP等级 0普通 1伯爵 2侯爵 3王公
+    vip_endtime: string,                // VIP到期时间
+    user_subscription_id: number,       // 当前订阅ID
+    last_user_subscription_id: number,  // 上次订阅ID
+    user_subscription_price_type: number, // 订阅价格类型
+    user_subscription_begin_time: string, // 订阅开始时间
+    user_subscription_end_time: string,   // 订阅结束时间
+    user_current_subscription: TUserSubscription | null, // 当前订阅详情
+
+    // ---- 金币 ----
+    gold: number,              // 金豆
+    gold_lock: number,         // 被锁金豆
+    gold_type: number,         // 金币类型 1联盟币 2USDT 3记分牌
+    gold_currency: string,     // 金币货币
+    wallet_status: number,     // 钱包状态
+
+    // ---- 钻石 ----
+    diamonds: number,                  // 钻石余额
+    diamonds_lock: number,             // 锁定钻石
+    diamonds_cost_total: number,       // 钻石总消费
+    diamonds_buy_total: number,        // 钻石总购买
+    diamonds_give_total: number,       // 钻石总赠送
+    diamond_free_times: number,        // 钻石免费次数
+    user_today_diamond_send_time: number, // 今日钻石赠送次数
+
+    // ---- 公会 / 联盟 ----
+    club_id: number,               // 公会ID
+    club_random_id: number,        // 公会随机ID
+    club_name: string,             // 公会名称
+    club_logo: string,             // 公会logo
+    tribe_id: number,              // 联盟ID
+    tribe_random_id: number,       // 联盟随机ID
+    wallet_tribe_status: number,   // 钱包联盟状态
+    deposit_advance: number,       // 预存预付
+
+    // ---- IM ----
+    im_account: string,            // IM账号
+    im_name: string,               // IM名称
+    im_account_no: string,         // IM账号编号
+    im_notice_switch: number,      // IM通知开关 1开 2关
+
+    // ---- 人脸 / 安全 ----
+    save_face: number,             // 是否已人脸验证 0/1
+    face_file: string,             // 人脸文件名
+    anti_cheat_type: number,       // 防作弊类型
+    video_mask_id: number,         // 视频遮罩ID
+
+    // ---- 设备 / 位置 ----
+    device_model: string,          // 设备型号
+    device_timestamp: number,      // 设备时间戳
+    simulator: number,             // 模拟器
+    gps_latitude: number,          // GPS纬度
+    gps_longitude: number,         // GPS经度
+    gps_addr: string,              // GPS地址
+    client_ip: string,             // 客户端IP
+    ip_addr: string,               // IP所在地址
+    jump_ip: number,               // 跳转IP
+
+    // ---- 头像道具 ----
+    avatar_endtime: string,        // 头像到期时间
+    avatar_prop_id: number,        // 头像道具ID
+
+    // ---- 其他 ----
+    trader_expire_time: number,            // 交易员过期时间
+    delay_room_audit_switch: number,       // 延迟房间审计开关
+    lucky_num: number,                     // 幸运数字
+    assist: number,                        // 辅助
+    cheat_studio_id: number,               // 作弊工作室ID
+    geetest_root_id: string,               // 极验根ID
+    extra_status: TUserExtraStatus | null,  // 额外状态
+}
+
+/** 用户当前订阅详情 */
+export type TUserSubscription = {
+    id: number,
+    subscription_id: number,
+    subscription_name: string,
+    subscription_logo: string,
+    subscription_type: number,
+    subscription_status: number,
+    avatar_permission: number,
+    career_record_permission: number,
+    equity_comparison: number,
+    create_max_club_num: number,
+    create_max_tribe_num: number,
+    free_add_time_num: number,
+    free_view_card_num: number,
+    free_use_chat_prop_num: number,
+    free_use_chat_emoji_num: number,
+    free_use_chat_bullet_num: number,
+    free_use_chat_avatar_num: number,
+    created_club_num: number,
+    created_tribe_num: number,
+    subscription_begin_time: number,
+    subscription_end_time: number,
+    subscription_rank: number,
+    subscription_price_type: number,
+    last_user_subscription_id: number,
+    last_user_subscription_name: string,
+    last_user_subscription_logo: string,
+    last_user_subscription_status: number,
+    free_video_special_effect_hour: number,
+    free_dynamic_table_theme_hour: number,
+    free_static_table_theme_hour: number,
+    free_avatar_hour: number,
+    display_benefits: string[],
+    free_collect_card: number,
+    free_change_user_name: number,
+    free_watch_card: number,
+    free_added_time_num: number,
+    free_viewed_card_num: number,
+    free_used_chat_prop_num: number,
+    free_used_chat_emoji_num: number,
+    free_used_chat_bullet_num: number,
+    free_used_chat_avatar_num: number,
+    free_used_collect_card: number,
+    free_used_change_user_name: number,
+    free_used_watch_card: number,
+}
+
+/** 用户额外状态（引导标记等） */
+export type TUserExtraStatus = {
+    change_desk_guide: number,       // 换桌引导
+    share_table_guide: number,       // 分享牌桌引导
+    [key: string]: number,           // 允许扩展
 }
 
 export type TUserGoldChangeLogs = {
