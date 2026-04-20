@@ -9,10 +9,13 @@ import GC from "./frame/GameControl";
 import { GameCache } from "./game/GameCache";
 import AgoraManager from "./net/agora/AgoraManager";
 import H5MsgMgr from "./H5MsgMgr";
+import LobbyRoomListItem from "./frame/data/lobby/LobbyRoomListItem";
 import ProcedureManager from "./manager/ProcedureManager";
 import CCTools from "./tools/CCTools";
 import TelegramUtils from "./tools/TelegramUtils";
 import { ProcedureEnum } from "./define/EIDefine";
+import { ClubCache } from "./frame/data/club/ClubCache";
+import LoginSession from "./session/LoginSession";
 
 // ==================== SDK 动态加载 ====================
 
@@ -146,19 +149,76 @@ export function fillGameCache(payload: any): void {
 export function registerH5Listeners(): void {
     H5MsgMgr.Instance.on('enterTable', (payload) => {
         console.log('[H5Bridge] 收到 enterTable:', JSON.stringify(payload));
+        const { token, websocketPort, roomId, roomName } = payload;
 
-        const missing = validateEnterTableData(payload);
+        // === 1. H5 消息基本字段校验 ===
+        const missing: string[] = [];
+        if (!token) missing.push('token');
+        if (!websocketPort) missing.push('websocketPort');
+        if (!roomId) missing.push('roomId');
         if (missing.length > 0) {
-            console.error('[H5Bridge] enterTable 数据校验失败，缺少以下字段:');
-            missing.forEach(m => console.error(`  - ${m.key} (${m.label}): 期望 ${m.type}, 实际 ${m.actual}`));
+            console.error('[H5Bridge] enterTable 缺少必要字段:', missing.join(', '));
             return;
         }
 
-        fillGameCache(payload);
-        ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, {
-            game_enter_type: payload.game_enter_type,
-            isLookOn: payload.isLookOn,
-        });
+        // === 2. 从缓存查找房间详情（syncRoomsList 缓存的数据） ===
+        const roomIdNum = Number(roomId);
+        const cachedRooms = GC.data.lobby.roomList.getList(false);
+        const cachedClubRooms = GC.data.lobby.roomList.getList(true);
+        const targetItem = [...cachedRooms, ...cachedClubRooms].find(r => r.rid === roomIdNum);
+
+        if (!targetItem) {
+            console.error('[H5Bridge] enterTable 未在缓存房间列表中找到房间:', roomId, '请确认 syncRoomsList 已送达');
+            return;
+        }
+        // 原始房间数据 TRoomListItem
+        const roomData = (targetItem as any)._data;
+
+        // === 3. 进入牌桌所需数据完整性校验 ===
+        const requiredForEnter: { key: string; val: any }[] = [
+            { key: 'room_type', val: roomData.room_type },
+            { key: 'game_type', val: roomData.game_type },
+            { key: 'poker_type', val: roomData.poker_type },
+            { key: 'seat_count', val: roomData.seat_count },
+            { key: 'rid', val: roomData.rid },
+        ];
+        const incomplete = requiredForEnter.filter(f => f.val === undefined || f.val === null);
+        if (incomplete.length > 0) {
+            console.error('[H5Bridge] enterTable 房间缓存数据不完整，缺少:', incomplete.map(f => f.key).join(', '));
+            return;
+        }
+
+        // === 4. 设置 Token（WS 由 H5 层代理，CC 层不直接连接） ===
+        LoginSession.Token = token;
+
+        // === 5. 填充 GameCache（从缓存房间数据） ===
+        const gc = GameCache.Instance;
+        gc.room_id = roomIdNum;
+        gc.roomName = roomName || targetItem.name;
+        gc.room_type = roomData.room_type;
+        gc.game_type = roomData.game_type;
+        gc.poker_type = roomData.poker_type;
+        gc.bet_type = roomData.limit_bet_type;
+        gc.seat_count = roomData.seat_count;
+        gc.serviceId = roomData.service_id;
+        gc.straddle = roomData.straddle_on || 0;
+        gc.insurance = (roomData.insurance_on || 0) > 0;
+        gc.muck_switch = roomData.muck_on || 0;
+        gc.origin_type = roomData.origin_type || 0;
+        gc.share_table = roomData.share_table || 0;
+        gc.gold_type = roomData.gold_type || 0;
+        gc.ClubID = roomData.club_id || 0;
+        gc.TribeId = roomData.tribe_id || 0;
+        gc.match_id = 0;
+        gc.carry_small = roomData.limit_bring_in || 0;
+        gc.anti_cheat_type = roomData.anti_cheat_type || 0;
+        gc.enter_param = { game_enter_type: 0, isLookOn: false };
+
+        // === 6. 启动进入牌桌流程 ===
+        // EnterTexas → 加载资源 → Texas procedure → TexasGameUtils.EnterRoom()
+        // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
+        ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
+        console.log('[H5Bridge] enterTable 已启动进桌流程, room_id:', roomIdNum, 'room:', roomName);
     });
     H5MsgMgr.Instance.on('exitTable', (payload) => {
         console.log('[H5Bridge] 离开牌桌:', payload);
@@ -166,6 +226,55 @@ export function registerH5Listeners(): void {
     });
     H5MsgMgr.Instance.on('syncUser', (payload) => {
         console.log('[H5Bridge] 同步用户信息:', payload);
-        // TODO: 调用同步用户的逻辑
+        const userInfo = payload?.raw?.user;
+        if (!userInfo) {
+            console.error('[H5Bridge] syncUser 数据异常：缺少 payload.raw.user');
+            return;
+        }
+        // 仅写入本地缓存，不触发 UI 事件和网络请求
+        const gc = GameCache.Instance;
+        gc.nUserId = userInfo.un_id;
+        gc.userId = userInfo.p_u_id;
+        gc.strPhone = userInfo.phone;
+        gc.sex = userInfo.sex;
+        gc.nick = userInfo.nickname;
+        gc.headPic = userInfo.avatar;
+        gc.userType = userInfo.ut;
+        gc.isHadClub = userInfo.club_id > 0;
+        // 直接写入 UserInfoModel 内部数据，绕过 setter（不触发 myGoldChange 事件）
+        (GC.data.user.info as any)._msg = userInfo;
+        console.log('[H5Bridge] syncUser 缓存完成, user_id:', userInfo.user_id, 'nickname:', userInfo.nickname);
+    });
+    H5MsgMgr.Instance.on('syncUserClub', (payload) => {
+        console.log('[H5Bridge] 同步俱乐部信息:', payload);
+        const clubList = payload?.response?.data;
+        if (!clubList || !Array.isArray(clubList)) {
+            console.error('[H5Bridge] syncUserClub 数据异常：缺少 payload.response.data');
+            return;
+        }
+        // 仅写入本地缓存，不触发 UI 事件和网络请求
+        ClubCache._allCubData = clubList;
+        // 设置当前俱乐部（第一个），仅写 _msg 和 isHadClub，无事件广播
+        if (clubList.length > 0) {
+            ClubCache.setClubData(clubList[0]);
+        }
+        console.log('[H5Bridge] syncUserClub 缓存完成, 共', clubList.length, '个俱乐部');
+    });
+    H5MsgMgr.Instance.on('syncRoomsList', (payload) => {
+        console.log('[H5Bridge] 同步房间列表:', payload);
+        const records = payload?.response?.data?.records;
+        if (!records || !Array.isArray(records)) {
+            console.error('[H5Bridge] syncRoomsList 数据异常：缺少 payload.response.data.records');
+            return;
+        }
+        // 仅写入本地缓存，不触发 UI 事件和网络请求
+        const roomListModel = GC.data.lobby.roomList;
+        const list = records.map(r => new LobbyRoomListItem(r));
+        // 直接替换内部列表（不是追加）
+        (roomListModel as any)._list = list;
+        (roomListModel as any)._offset = list.length;
+        (roomListModel as any)._reqEnd = true;
+        (roomListModel as any)._reqing = false;
+        console.log('[H5Bridge] syncRoomsList 缓存完成, 共', records.length, '个房间');
     });
 }

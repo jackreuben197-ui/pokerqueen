@@ -108,6 +108,46 @@ export default class ProtocolAgency extends cc.Component {
         }
     }
 
+    /**
+     * 构造完整的二进制协议包（包头 + Protobuf Body），不通过 WS 发送，而是返回 ArrayBuffer。
+     * 用于 H5 桥接场景：CC 层构造好二进制包，交给 H5 层直接 ws.send()。
+     */
+    static BuildPacket(param: {
+        Code: number;
+        RoomID: number;
+        MatchID: number;
+        Body?: any;
+    }): ArrayBuffer | null {
+        let protocol_name = ProtocolCode[param.Code];
+        if (!protocol_name) {
+            console.warn('[ProtocolAgency] BuildPacket: code not found:', param.Code);
+            return null;
+        }
+        let client = ProtocolMap[param.Code]?.Client;
+        if (!client) {
+            console.warn('[ProtocolAgency] BuildPacket: protocol unregistered:', protocol_name);
+            return null;
+        }
+
+        let bodyBA: Uint8Array = ProtocolCommon.Instance.Request(param.Code, param.Body);
+        let bodyLength: number = bodyBA.byteLength;
+        let dataLength: number = PacketHead.FixHeadLength + bodyLength;
+        let bufferLength: number = PacketHead.Length + bodyLength;
+
+        let arrayBuffer: ArrayBuffer = new ArrayBuffer(bufferLength);
+        let dataView: DataView = new DataView(arrayBuffer);
+        this._writeUint32(dataView, PacketHead.FieldOffset.DataLength, dataLength);
+        this._writeUint8Array(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
+        this._writeUint16(dataView, PacketHead.FieldOffset.Code, param.Code);
+        this._writeString(dataView, PacketHead.FieldOffset.Token, LoginSession.Token);
+        this._writeUint64(dataView, PacketHead.FieldOffset.RoomID, param.RoomID);
+        this._writeUint64(dataView, PacketHead.FieldOffset.MatchID, param.MatchID);
+        this._writeUint8(dataView, PacketHead.FieldOffset.ProtoVersion, PacketHead.ProtoVersion.Protobuf);
+        this._writeUint8Array(dataView, PacketHead.Length, bodyBA);
+
+        return arrayBuffer;
+    }
+
     static _writeUint8(dataView: DataView, offset: number, num: number) {
         dataView.setUint8(offset, num);
     }

@@ -1,5 +1,4 @@
 {
-  "defaultMode": "acceptEdits",
   "permissions": {
     "allow": [
       "Edit",
@@ -30,7 +29,14 @@
       "Bash(npx -y asar extract \"E:/Cocos/editors/Creator/2.4.8/resources/app.asar\" ./_cocos-extracted)",
       "Bash(xxd)",
       "Bash(git checkout:*)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(where python *)",
+      "Bash(python *)",
+      "Bash(python3 *)",
+      "Bash(where python3 *)",
+      "Bash(powershell.exe *)",
+      "Bash(find . *)"
     ]
-  }
+  },
+  "defaultMode": "acceptEdits"
 }

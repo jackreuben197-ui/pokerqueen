@@ -202,7 +202,7 @@ export default class H5MsgMgr {
             if (msg.source === 'cc') return;
 
             const msgtype = msg.msgtype;
-            console.log(TAG, '收到消息:', msg.action, 'msgtype:', msgtype);
+            console.log(TAG, '收到消息:', msg.action, 'msgtype:', msgtype, "msgContent:" + rawData );
 
             // 分发给注册的监听器
             const fn = this._listeners[msg.action];
@@ -256,12 +256,12 @@ export default class H5MsgMgr {
 
     /**
      * 通过 postMessage 异步发送消息到 H5 层
-     * 直接发送 JSON 字符串，H5 现有的 string 监听即可接收
+     * 直接发送对象（走 structured clone），支持 Uint8Array 等二进制数据透传
+     * H5 侧收到的 event.data 就是 msg 对象本身，无需 JSON.parse
      */
     private static _post(msg: any): void {
-        const json = JSON.stringify(msg);
         setTimeout(() => {
-            window.postMessage(json, '*');
+            window.postMessage(msg, '*');
         }, 0);
     }
 

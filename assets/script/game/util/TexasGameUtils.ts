@@ -7,6 +7,7 @@ import ProcedureManager from "../../manager/ProcedureManager";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
+import H5MsgMgr from "../../H5MsgMgr";
 import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 import { ActionLimit, Def } from "../../protobuf/holdem/define_pb";
 import { ClientMessageAgreeSecondPcsActive } from "../../protobuf/holdem/req_th_agree_second_pcs_active_pb";
@@ -31,52 +32,59 @@ export default class TexasGameUtils {
 
     /**
      * 请求进入房间
+     * H5 模式：构造完整二进制包，通过 sendToH5 发给 H5 层直接 ws.send()
+     * 直连模式：走 ProtocolAgency.Send 通过 WebSocket 发送
      */
     public EnterRoom() {
 
         let roomType = GameCache.Instance.room_type;
+        let roomId = GameCache.Instance.room_id;
+        let matchId = GameCache.Instance.match_id;
+
+        let mttPartialBringIn = 0;
+        let observer = false;
 
         if (roomType >= RoomType.MTTTexasHoldemStandardNoLimit) {
             //MTT
-
             GameCache.Instance.match_id = UIMTTModel.Instance.MttInfo.mtt.match_id;
             GameCache.Instance.seat_count = UIMTTModel.Instance.MttInfo.mtt.seat_count;
             GameCache.Instance.mtt_Hunter_game = UIMTTModel.Instance.MttInfo.mtt.hunter_on > 0;
             GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(UIMTTModel.Instance.MttInfo.mtt.name);
-            //UILoginModel.mInstance.GetRoomNameByKey(UIMTTModel.Instance.MttInfo.mtt.name);
+            matchId = GameCache.Instance.match_id;
+            roomId = GameCache.Instance.room_id;
+            mttPartialBringIn = UIMTTModel.Instance.PartialBringIn;
+            observer = GameCache.Instance.CurGame.IsLookOn;
+        }
 
-            ProtocolAgency.Send<ClientMessageEnterRoom.AsObject>({
+        const body = {
+            room: { roomId: roomId, matchId: matchId },
+            gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
+            mttPartialBringIn: mttPartialBringIn,
+            observer: observer,
+            wantSeat: 0,
+        };
+
+        if (H5MsgMgr.Instance.handshakeDone) {
+            // H5 模式：构造二进制包 → Uint8Array 直接透传给 H5 → ws.send()
+            const packet = ProtocolAgency.BuildPacket({
                 Code: ProtocolCode.Protocol_Holdem_EnterRoom,
-                RoomID: GameCache.Instance.room_id,
-                MatchID: GameCache.Instance.match_id,
-                Body:
-                {
-                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                    gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
-                    mttPartialBringIn: UIMTTModel.Instance.PartialBringIn,
-                    observer: GameCache.Instance.CurGame.IsLookOn,
-                    wantSeat: 0,
-                },
+                RoomID: roomId,
+                MatchID: matchId,
+                Body: body,
             });
-
-            console.log(`EnterRoom : match_id - ${GameCache.Instance.match_id} room_id - ${GameCache.Instance.room_id}`);
-
+            if (packet) {
+                H5MsgMgr.sendToH5('clnEnterRoom', 0, new Uint8Array(packet));
+            }
         } else {
-            console.log(" ProtocolAgency.Send: ", GameCache.Instance.room_id, GameCache.Instance.match_id);
             ProtocolAgency.Send<ClientMessageEnterRoom.AsObject>({
                 Code: ProtocolCode.Protocol_Holdem_EnterRoom,
-                RoomID: GameCache.Instance.room_id,
-                MatchID: GameCache.Instance.match_id,
-                Body:
-                {
-                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                    gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
-                    mttPartialBringIn: 0,
-                    observer: false,
-                    wantSeat: 0,
-                },
+                RoomID: roomId,
+                MatchID: matchId,
+                Body: body as any,
             });
         }
+
+        console.log(`EnterRoom: room_id=${roomId}, match_id=${matchId}, H5=${H5MsgMgr.Instance.handshakeDone}`);
     }
     /**
      * 离开房间
