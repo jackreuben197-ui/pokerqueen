@@ -16,6 +16,8 @@ import TelegramUtils from "./tools/TelegramUtils";
 import { ProcedureEnum } from "./define/EIDefine";
 import { ClubCache } from "./frame/data/club/ClubCache";
 import LoginSession from "./session/LoginSession";
+import PacketHead from "./net/websocket/PacketHead";
+import ProtocolAgency from "./net/websocket/ProtocolAgency";
 
 // ==================== SDK 动态加载 ====================
 
@@ -143,10 +145,27 @@ export function fillGameCache(payload: any): void {
     console.log('[H5Bridge] GameCache 数据已写入, room_id:', gc.room_id, 'room_type:', gc.room_type);
 }
 
+// ==================== H5 桥接模式初始化 ====================
+
+/**
+ * H5 桥接模式所需的数据层初始化。
+ * 大厅流程中原本会顺带初始化这些模块，但 H5 桥接跳过了大厅，
+ * 所以需要在此统一执行。
+ *
+ * 所有 Init 方法都是幂等的（内部有 _initOnce 保护），多次调用无副作用。
+ * 不包含：WebSocket 连接、心跳组件、Token 刷新等网络相关初始化（由 H5 层代理）。
+ */
+function initH5BridgeDependencies(): void {
+    PacketHead.Init();       // 包头字段偏移量计算，BuildPacket 依赖
+    console.log('[H5Bridge] 数据层初始化完成 (PacketHead)');
+}
+
 // ==================== H5 消息监听注册 ====================
 
 /** 注册 H5 桥接消息（enterTable / exitTable / syncUser） */
 export function registerH5Listeners(): void {
+    // H5 桥接模式下，提前完成数据层初始化，避免跳过大厅导致懒初始化未执行
+    initH5BridgeDependencies();
     H5MsgMgr.Instance.on('enterTable', (payload) => {
         console.log('[H5Bridge] 收到 enterTable:', JSON.stringify(payload));
         const { token, websocketPort, roomId, roomName } = payload;
@@ -276,5 +295,54 @@ export function registerH5Listeners(): void {
         (roomListModel as any)._reqEnd = true;
         (roomListModel as any)._reqing = false;
         console.log('[H5Bridge] syncRoomsList 缓存完成, 共', records.length, '个房间');
+    });
+
+    // ─── 网络消息转发 ─────────────────────────────────
+
+    /**
+     * wsMessage: H5 层将服务器返回的二进制数据转发给 CC
+     * payload 格式: { dataType: 'binary', data: ArrayBuffer }
+     * structured clone 传递，data 已经是 ArrayBuffer，无需 base64 解码
+     */
+    H5MsgMgr.Instance.on('wsMessage', (payload) => {
+        if (!payload || payload.dataType !== 'binary' || !payload.data) {
+            console.warn('[H5Bridge] wsMessage 数据格式异常:', payload);
+            return;
+        }
+        try {
+            let buffer: ArrayBuffer;
+            if (payload.data instanceof ArrayBuffer) {
+                buffer = payload.data;
+            } else if (payload.data instanceof Uint8Array) {
+                buffer = payload.data.buffer;
+            } else {
+                console.warn('[H5Bridge] wsMessage data 类型异常:', typeof payload.data);
+                return;
+            }
+            ProtocolAgency.Receive(buffer);
+        } catch (e) {
+            console.error('[H5Bridge] wsMessage 处理失败:', e);
+        }
+    });
+
+    /**
+     * wsClosed: H5 层的 WebSocket 连接断开
+     * H5 桥接模式下：通知 H5 重连，而非 CC 自己连 WebSocket
+     */
+    H5MsgMgr.Instance.on('wsClosed', (payload) => {
+        console.warn('[H5Bridge] wsClosed:', payload);
+        // 通知 H5 层重新连接 WebSocket
+        H5MsgMgr.sendToH5('wsConnect', 1, {
+            port: GameCache.Instance.serviceId,
+            roomId: GameCache.Instance.room_id,
+            matchId: GameCache.Instance.match_id,
+        });
+    });
+
+    /**
+     * wsError: H5 层的 WebSocket 发生错误
+     */
+    H5MsgMgr.Instance.on('wsError', (payload) => {
+        console.warn('[H5Bridge] wsError:', payload);
     });
 }

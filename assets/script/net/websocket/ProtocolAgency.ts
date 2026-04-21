@@ -1,6 +1,7 @@
 import { LogStyle } from "../../config/GameConfig";
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
+import H5MsgMgr from "../../H5MsgMgr";
 import { ClientMessageLeave } from "../../protobuf/holdem/req_th_leave_pb";
 import LoginSession from "../../session/LoginSession";
 import OpCodeHelper from "./OpCodeHelper";
@@ -21,9 +22,62 @@ export default class ProtocolAgency extends cc.Component {
         MatchID: number;
         Body?: Client_AsObject;
     }) {
+        // H5 桥接模式：所有协议通过 H5 层转发
+        if (H5MsgMgr.Instance.handshakeDone) {
+            let protocol_name = ProtocolCode[param.Code];
+            if (!protocol_name) {
+                console.log(
+                    "%c%s:%s\n%s",
+                    LogStyle.ws_request,
+                    "code not in ProtocolCode",
+                    protocol_name,
+                    JSON.stringify(param),
+                );
+                return;
+            }
+            let client = ProtocolMap[param.Code]?.Client;
+            if (!client) {
+                console.log(
+                    "%c%s:%s\n%s",
+                    LogStyle.ws_request,
+                    "protocol unregistered in ProtocolMap",
+                    protocol_name,
+                    JSON.stringify(param),
+                );
+                return;
+            }
+            if (OpCodeHelper.NeedLog(param.Code)) {
+                console.log(
+                    "%c%s\n%s",
+                    LogStyle.ws_request,
+                    `>>>>> protocol send (H5): ${protocol_name}`,
+                    `RoomID:${param.RoomID},MatchID:${param.MatchID},body:${JSON.stringify(param.Body)}`,
+                );
+            }
+
+            PacketHead.Init();
+            let bodyBA = ProtocolCommon.Instance.Request(param.Code, param.Body);
+            let bodyLength: number = bodyBA.byteLength;
+            let dataLength: number = PacketHead.FixHeadLength + bodyLength;
+            let bufferLength: number = PacketHead.Length + bodyLength;
+            let arrayBuffer: ArrayBuffer = new ArrayBuffer(bufferLength);
+            let dataView: DataView = new DataView(arrayBuffer);
+            this._writeUint32(dataView, PacketHead.FieldOffset.DataLength, dataLength);
+            this._writeUint8Array(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
+            this._writeUint16(dataView, PacketHead.FieldOffset.Code, param.Code);
+            this._writeString(dataView, PacketHead.FieldOffset.Token, LoginSession.Token);
+            this._writeUint64(dataView, PacketHead.FieldOffset.RoomID, param.RoomID);
+            this._writeUint64(dataView, PacketHead.FieldOffset.MatchID, param.MatchID);
+            this._writeUint8(dataView, PacketHead.FieldOffset.ProtoVersion, PacketHead.ProtoVersion.Protobuf);
+            this._writeUint8Array(dataView, PacketHead.Length, bodyBA);
+            // 通过 H5 桥接转发二进制包
+            H5MsgMgr.sendToH5('wsSend', 0, new Uint8Array(arrayBuffer));
+
+            return;
+        }
+        // 直连模式（后备，H5 未握手时走旧路径）
         if (WebSocketClient.CheckOpen()) {
             let protocol_name = ProtocolCode[param.Code];
-            //this._getCodeByProtocolName(protocol.Name);
             if (!protocol_name) {
                 console.log(
                     "%c%s:%s\n%s",
@@ -61,10 +115,7 @@ export default class ProtocolAgency extends cc.Component {
             );
 
             let bodyLength: number = bodyBA.byteLength;
-            //param.Body.byteLength;
-            //数据长度(要写入前4个字节)
             let dataLength: number = PacketHead.FixHeadLength + bodyLength;
-            //总字节长度
             let bufferLength: number = PacketHead.Length + bodyLength;
             let arrayBuffer: ArrayBuffer = new ArrayBuffer(bufferLength);
             let dataView: DataView = new DataView(arrayBuffer);
@@ -118,6 +169,7 @@ export default class ProtocolAgency extends cc.Component {
         MatchID: number;
         Body?: any;
     }): ArrayBuffer | null {
+        PacketHead.Init();
         let protocol_name = ProtocolCode[param.Code];
         if (!protocol_name) {
             console.warn('[ProtocolAgency] BuildPacket: code not found:', param.Code);

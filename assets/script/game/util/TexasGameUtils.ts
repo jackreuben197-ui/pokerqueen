@@ -3,11 +3,11 @@ import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
+import H5MsgMgr from "../../H5MsgMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
-import H5MsgMgr from "../../H5MsgMgr";
 import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 import { ActionLimit, Def } from "../../protobuf/holdem/define_pb";
 import { ClientMessageAgreeSecondPcsActive } from "../../protobuf/holdem/req_th_agree_second_pcs_active_pb";
@@ -32,8 +32,7 @@ export default class TexasGameUtils {
 
     /**
      * 请求进入房间
-     * H5 模式：构造完整二进制包，通过 sendToH5 发给 H5 层直接 ws.send()
-     * 直连模式：走 ProtocolAgency.Send 通过 WebSocket 发送
+     * ProtocolAgency.Send 已统一处理 H5 桥接 / 直连路由，业务层无需关心
      */
     public EnterRoom() {
 
@@ -64,33 +63,20 @@ export default class TexasGameUtils {
             wantSeat: 0,
         };
 
-        if (H5MsgMgr.Instance.handshakeDone) {
-            // H5 模式：构造二进制包 → Uint8Array 直接透传给 H5 → ws.send()
-            const packet = ProtocolAgency.BuildPacket({
-                Code: ProtocolCode.Protocol_Holdem_EnterRoom,
-                RoomID: roomId,
-                MatchID: matchId,
-                Body: body,
-            });
-            if (packet) {
-                H5MsgMgr.sendToH5('clnEnterRoom', 0, new Uint8Array(packet));
-            }
-        } else {
-            ProtocolAgency.Send<ClientMessageEnterRoom.AsObject>({
-                Code: ProtocolCode.Protocol_Holdem_EnterRoom,
-                RoomID: roomId,
-                MatchID: matchId,
-                Body: body as any,
-            });
-        }
+        ProtocolAgency.Send<ClientMessageEnterRoom.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_EnterRoom,
+            RoomID: roomId,
+            MatchID: matchId,
+            Body: body as any,
+        });
 
-        console.log(`EnterRoom: room_id=${roomId}, match_id=${matchId}, H5=${H5MsgMgr.Instance.handshakeDone}`);
+        console.log(`EnterRoom: room_id=${roomId}, match_id=${matchId}`);
     }
     /**
      * 离开房间
      */
     public LeaveRoom() {
-        if (WebSocketClient.CheckOpen()) {
+        if (H5MsgMgr.Instance.handshakeDone || WebSocketClient.CheckOpen(true)) {
             ProtocolAgency.Send<ClientMessageLeave.AsObject>({
                 Code: ProtocolCode.Protocol_Holdem_Leave,
                 RoomID: GameCache.Instance.room_id,

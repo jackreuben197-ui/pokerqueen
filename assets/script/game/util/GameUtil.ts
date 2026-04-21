@@ -2,6 +2,7 @@ import { GameConfig } from "../../config/GameConfig";
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefineType } from "../../define/UIDefine";
 import { GM } from "../../gm/GMAPI";
+import H5MsgMgr from "../../H5MsgMgr";
 import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
@@ -448,7 +449,8 @@ export default class GameUtil {
     }
     //实例游戏类(从缓存Map中拿去)
     public static InstantiateTexasGame(roomType: RoomType) {
-        return this.GetGame(roomType, this.GameMap.get(roomType));;
+        this._SetGameMap();
+        return this.GetGame(roomType, this.GameMap.get(roomType));
     }
 
 
@@ -1044,7 +1046,7 @@ export default class GameUtil {
             UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
             return;
         }
-        if (WebSocketClient.CheckOpen()) {
+        if (WebSocketClient.CheckOpen() || H5MsgMgr.Instance.handshakeDone) {
             if (RoomType[room_type]) {
                 let response = await LobbySession.APIWebUserRoominsur(enter_room_info.rid).catch((e) => {
                     console.log(e);
@@ -1075,7 +1077,7 @@ export default class GameUtil {
             UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
             return;
         }
-        if (WebSocketClient.CheckOpen()) {
+        if (WebSocketClient.CheckOpen() || H5MsgMgr.Instance.handshakeDone) {
             if (RoomType[room_type]) {
                 ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, param);//[this.UIDefine, false, 0]
             }
