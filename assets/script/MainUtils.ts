@@ -238,6 +238,9 @@ export function registerH5Listeners(): void {
         // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
         ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
         console.log('[H5Bridge] enterTable 已启动进桌流程, room_id:', roomIdNum, 'room:', roomName);
+
+        // === 7. 通知 H5 层隐藏自身，让出 CC 层牌桌显示 ===
+        H5MsgMgr.sendToH5('h5Hide', 1);
     });
     H5MsgMgr.Instance.on('exitTable', (payload) => {
         console.log('[H5Bridge] 离开牌桌:', payload);

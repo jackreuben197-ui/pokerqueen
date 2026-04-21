@@ -31,7 +31,7 @@ export default class ProcedureConfig extends ProcedureBase {
                 i18nMgr.initLanguage();
                 console.log("config :: i18nMgr praseConfig");
                 //设置网络配置
-                this.setNetwork();
+                ProcedureConfig.setNetwork();
                 console.log("config :: GameConfig.Network : ", GameConfig.Network);
                 if (GameConfig.Network == null) {
                     console.warn("本地网络配置有误 GameConfig.BuildType:" + GameConfig.BuildType);
@@ -50,8 +50,8 @@ export default class ProcedureConfig extends ProcedureBase {
         super.Leave();
     }
 
-    //初始化网络配置
-    private setNetwork() {
+    //初始化网络配置（static 供其他 Procedure 在 H5 桥接模式下兜底调用）
+    static setNetwork() {
 
         switch (GameConfig.BuildType) {
             case 0:
