@@ -11,6 +11,7 @@ import AgoraManager from "./net/agora/AgoraManager";
 import H5MsgMgr from "./H5MsgMgr";
 import LobbyRoomListItem from "./frame/data/lobby/LobbyRoomListItem";
 import ProcedureManager from "./manager/ProcedureManager";
+import { ResManager, Bundle_Resources } from "./manager/ResManager";
 import CCTools from "./tools/CCTools";
 import TelegramUtils from "./tools/TelegramUtils";
 import { ProcedureEnum } from "./define/EIDefine";
@@ -160,6 +161,48 @@ function initH5BridgeDependencies(): void {
     console.log('[H5Bridge] 数据层初始化完成 (PacketHead)');
 }
 
+/**
+ * 预加载声音资源到 AssetContext.map。
+ * 正常流程由 ProcedureEnterLobby 加载 resources/ 全目录（含 sound/），
+ * H5 桥接模式跳过了大厅，需要单独补加载。
+ */
+let _soundLoaded = false;
+function loadSoundResources(): void {
+    if (_soundLoaded) return;
+    _soundLoaded = true;
+
+    cc.resources.loadDir('sound', (err, assets) => {
+        if (err) {
+            console.error('[H5Bridge] 声音资源加载失败:', err);
+            _soundLoaded = false;
+            return;
+        }
+        ResManager.AssetForeach(assets, Bundle_Resources);
+        console.log('[H5Bridge] 声音资源加载完成, 共', assets.length, '个资源');
+    });
+}
+
+/**
+ * 预加载牌桌所需的游戏资源（牌面纹理等）到 AssetContext.map。
+ * 正常流程由 ProcedureEnterLobby 加载 resources/ 全目录，
+ * H5 桥接模式跳过了大厅，需要单独补加载。
+ */
+let _gameResLoaded = false;
+function loadGameResources(): void {
+    if (_gameResLoaded) return;
+    _gameResLoaded = true;
+
+    cc.resources.loadDir('main/rc', (err, assets) => {
+        if (err) {
+            console.error('[H5Bridge] 游戏资源加载失败:', err);
+            _gameResLoaded = false;
+            return;
+        }
+        ResManager.AssetForeach(assets, Bundle_Resources);
+        console.log('[H5Bridge] 游戏资源加载完成, 共', assets.length, '个资源');
+    });
+}
+
 // ==================== H5 消息监听注册 ====================
 
 /** 注册 H5 桥接消息（enterTable / exitTable / syncUser） */
@@ -266,6 +309,10 @@ export function registerH5Listeners(): void {
         // 直接写入 UserInfoModel 内部数据，绕过 setter（不触发 myGoldChange 事件）
         (GC.data.user.info as any)._msg = userInfo;
         console.log('[H5Bridge] syncUser 缓存完成, user_id:', userInfo.user_id, 'nickname:', userInfo.nickname);
+
+        // 预加载声音和游戏资源（提前加载，避免 enterTable 时再加载影响进桌速度）
+        loadSoundResources();
+        loadGameResources();
     });
     H5MsgMgr.Instance.on('syncUserClub', (payload) => {
         console.log('[H5Bridge] 同步俱乐部信息:', payload);
