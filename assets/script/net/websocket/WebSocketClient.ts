@@ -75,7 +75,7 @@ export default class WebSocketClient {
         console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onclose Sanmi:" + WebSocketClient.Host_Port);
         console.log("close reason  Sanmi: > ", ev.code, ev.reason, ev.wasClean);
         //停止心跳
-        LobbySession.heartbeatComponent.active = false;
+        LobbySession.heartbeatComponent && (LobbySession.heartbeatComponent.active = false);
         WebSocketClient.CleanWS();
         //主动断开
         if (ev.code == 1005) {

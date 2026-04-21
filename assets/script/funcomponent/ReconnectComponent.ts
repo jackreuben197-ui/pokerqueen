@@ -1,5 +1,6 @@
 import { LogStyle } from "../config/GameConfig";
 import GC from "../frame/GameControl";
+import H5MsgMgr from "../H5MsgMgr";
 import TimeHelper from "../helper/TimeHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
 import Main from "../Main";
@@ -56,6 +57,9 @@ export default class ReconnectComponent {
     public TryReconnect() {
         // 离开屏幕 || 未连接socket
         if (!this.game_active || this.game_status == 0) return;
+
+        // H5 桥接模式下，WS 由 H5 层管理，CC 层不直连
+        if (H5MsgMgr.Instance.handshakeDone) return;
 
         if (WebSocketClient.CheckOpen(true)) return;
 
