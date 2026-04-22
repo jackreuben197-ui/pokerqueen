@@ -292,7 +292,7 @@ export default class ProtocolAgency extends cc.Component {
             PacketHead.FieldSize.MatchID,
         );
 
-        // RoomID or MatchID 和当前不匹配,请求离开房间
+        // RoomID or MatchID 和当前不匹配
         if (
             code != ProtocolCode.Protocol_Holdem_Leave &&
             code != ProtocolCode.Protocol_Holdem_EnterRoom
@@ -305,9 +305,21 @@ export default class ProtocolAgency extends cc.Component {
                     "%c%s",
                     LogStyle.ws_response,
                     `roomid or matchid is no match
-                cache:{RoomID:${GameCache.Instance.room_id},MatchID:${GameCache.Instance.match_id} 
-                receive:{RoomID:${roomid},MatchID:${matchid}`,
+                cache:{RoomID:${GameCache.Instance.room_id},MatchID:${GameCache.Instance.match_id}
+                receive:{RoomID:${roomid},MatchID:${matchid}}`,
                 );
+                // H5 桥接模式（CC 不直接连 WebSocket）：仅丢弃，不发 Leave。
+                // 原因：H5 的 WebSocket 可能收到多个房间的推送（观战、大厅等），
+                // 自动 Leave 会误退当前正在进行的牌桌。
+                if (!WebSocketClient.CheckOpen(true)) {
+                    console.log(
+                        "%c%s",
+                        LogStyle.ws_response,
+                        `[H5Bridge] 丢弃不匹配房间的消息，不发送 Leave`,
+                    );
+                    return;
+                }
+                // 正常模式（CC 直连 WebSocket）：主动 Leave 清理旧房间
                 ProtocolAgency.Send<ClientMessageLeave.AsObject>({
                     Code: ProtocolCode.Protocol_Holdem_Leave,
                     RoomID: roomid,
