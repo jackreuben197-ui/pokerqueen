@@ -118,7 +118,7 @@ export default class Main extends cc.Component {
 
         // 监听 H5 层（Vue/Vite）通过 bridge.js 发来的消息
         H5MsgMgr.Instance.init();
-        MainUtils.registerH5Listeners();
+        await MainUtils.registerH5Listeners();
 
         // 启动握手：设置 __CC_READY__，等待 H5 发来 h5Ready，回复 ccAck
         H5MsgMgr.Instance.startHandshake();

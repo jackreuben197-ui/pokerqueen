@@ -157,7 +157,8 @@ export class i18nMgr {
         GC.notify.post(EventName.switchLanguages)
     }
     /**
-     * 解析配置表
+     * 解析配置表：先用 cc.resources 读取内置词典，
+     * 再在 Web 环境下 fetch 外部同名 txt 文件进行补充/覆盖。
      */
     public static praseConfig() {
         this._praseConfig("en", cc.resources.get("config/USER_EN", cc.TextAsset));
@@ -179,6 +180,36 @@ export class i18nMgr {
                 }
             }
         }
+    }
+    /**
+     * 通过 fetch 从外部 txt 文件加载词典并刷新 UI。
+     * 返回 Promise，可用于 await 确保加载完成后再继续。
+     */
+    public static fetchAndRefreshConfig(): Promise<void> {
+        if (typeof window === 'undefined' || typeof fetch !== 'function') {
+            return Promise.resolve();
+        }
+        const tasks = [
+            this._fetchRemoteConfig("en", "assets/resources/config/USER_EN.txt"),
+            this._fetchRemoteConfig("pt", "assets/resources/config/USER_PT.txt"),
+            this._fetchRemoteConfig("zh", "assets/resources/config/USER_TW.txt"),
+            this._fetchRemoteConfig("cn", "assets/resources/config/USER_ZH.txt"),
+        ];
+        return Promise.all(tasks).then(() => {
+            // 所有语言加载完毕，刷新当前语言的引用和 UI
+            this.LanguageObject = LanguageAllObject[this.language];
+            this.refreshAllLabel();
+        });
+    }
+    private static _fetchRemoteConfig(language: string, url: string): Promise<void> {
+        return fetch(url)
+            .then(res => (res.ok ? res.text() : Promise.reject(res.status)))
+            .then(text => {
+                if (text) {
+                    i18nMgr._praseConfig(language, { text } as cc.TextAsset);
+                }
+            })
+            .catch(() => { /* 文件不存在或网络错误，静默忽略 */ });
     }
     public static get LanguageAllObject() {
         return LanguageAllObject;

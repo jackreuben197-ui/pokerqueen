@@ -19,6 +19,7 @@ import { ClubCache } from "./frame/data/club/ClubCache";
 import LoginSession from "./session/LoginSession";
 import PacketHead from "./net/websocket/PacketHead";
 import ProtocolAgency from "./net/websocket/ProtocolAgency";
+import { i18nMgr } from "./i18n/i18nMgr";
 
 // ==================== SDK 动态加载 ====================
 
@@ -156,9 +157,20 @@ export function fillGameCache(payload: any): void {
  * 所有 Init 方法都是幂等的（内部有 _initOnce 保护），多次调用无副作用。
  * 不包含：WebSocket 连接、心跳组件、Token 刷新等网络相关初始化（由 H5 层代理）。
  */
-function initH5BridgeDependencies(): void {
+async function initH5BridgeDependencies(): Promise<void> {
     PacketHead.Init();       // 包头字段偏移量计算，BuildPacket 依赖
-    console.log('[H5Bridge] 数据层初始化完成 (PacketHead)');
+
+    // i18n 初始化：正常流程由 ProcedureConfig 驱动（loadDir("config") + praseConfig），
+    // 但 H5 桥接模式和编辑器预览都跳过了 ProcedureConfig，
+    // 所以在这里先尝试 cc.resources.get（可能为 null），再 fetch 外部 txt 文件补充。
+    if (!i18nMgr.language) {
+        i18nMgr.praseConfig();          // cc.resources.get（可能拿到空词典）
+        i18nMgr.initLanguage();         // 设置 language 和 LanguageObject
+        await i18nMgr.fetchAndRefreshConfig(); // fetch 外部 txt 覆盖，等全部完成
+        console.log('[H5Bridge] i18n 初始化完成, language:', i18nMgr.language);
+    }
+
+    console.log('[H5Bridge] 数据层初始化完成 (PacketHead + i18n)');
 }
 
 /**
@@ -206,8 +218,9 @@ function loadGameResources(): void {
 // ==================== H5 消息监听注册 ====================
 
 /** 注册 H5 桥接消息（enterTable / exitTable / syncUser） */
-export function registerH5Listeners(): void {
-    // H5 桥接模式下，提前完成数据层初始化，避免跳过大厅导致懒初始化未执行
+export async function registerH5Listeners(): Promise<void> {
+    // H5 桥接模式下，提前完成数据层初始化（含 i18n），避免跳过大厅导致懒初始化未执行
+    await initH5BridgeDependencies();
     initH5BridgeDependencies();
     H5MsgMgr.Instance.on('enterTable', (payload) => {
         console.log('[H5Bridge] 收到 enterTable:', JSON.stringify(payload));
