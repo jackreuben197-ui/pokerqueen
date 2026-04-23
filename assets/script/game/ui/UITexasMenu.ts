@@ -38,6 +38,26 @@ export default class UITexasMenu extends UIBasePlus {
     textTotalBean: cc.Label = null;
     //Menu_Buttons: cc.Node = null;
 
+    @property(cc.Button)
+    public btnSetting : cc.Button = null;
+    @property(cc.Button)
+    public btnRules : cc.Button = null;
+    @property(cc.Button)
+    public btnInsure : cc.Button = null;
+    @property(cc.Button)
+    public btnBet : cc.Button = null;
+    @property(cc.Button)
+    public btnHalfLeave : cc.Button = null;
+    @property(cc.Button)
+    public btnShowBB : cc.Button = null;
+
+    @property(cc.Button)
+    public btnStand : cc.Button = null;
+    @property(cc.Button)
+    public btnLeaveGame : cc.Button = null;
+
+
+
     //按钮模板节点
     //Menu_Button: cc.Node = null;
 

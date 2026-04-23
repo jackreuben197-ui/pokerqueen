@@ -647,6 +647,8 @@ export default class UITexas extends BaseScene {
     }
 
     Click_Report_Btn() {
+        // WORK START:
+        //cc.tween(this.btn_report).to(0.1, { scale: 1.2 }).to(0.1, { scale: 1 }).start();
         this.game.onClickReport();
     }
 
