@@ -51,7 +51,7 @@ export default class TexasBusiness {
         isShow = !TexasBusiness.IsMttGameplay(GameCache.Instance.room_type);
 
         // 随机进入房间不可分享
-        if (GameCache.Instance.enterRoomType === EnterRoomType.Random) {
+        if (GameCache.Instance._enterRoomType === EnterRoomType.Random) {
             isShow = false;
         }
 

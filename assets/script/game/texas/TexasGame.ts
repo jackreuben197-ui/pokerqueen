@@ -27,7 +27,7 @@ import {
 //      API_CLUB_APPLY_LIST,
 //      Web_Org_Club_Search_By_Id,
 //      Web_RoomSitApplyRecords,
- 
+
 //      Web_User_Room,
 //      Web_User_Room_Bringin,
 //      WWW,
@@ -76,6 +76,8 @@ import { GameCache } from "./../GameCache";
 import { SeatEmpty, SeatIdle, SeatOperation } from "./../SeatStateHandler";
 
 import { TexasGameState } from "./../TexasGameState";
+import { TexasGameStatus } from "./constant/TexasGameStatus";
+import TexasBusiness from "./business/TexasBusiness";
 
 import TexasSMAgency from "./../TexasSMAgency";
 import UIOperationComponent, {
@@ -94,7 +96,7 @@ class SeatMoveStruct {
     public move_cp_count: number;
 
     //this func param id标记 id flag
-    public cacheFuncs: { a?; b?; c?; d? }[] = null;
+    public cacheFuncs: { a?; b?; c?; d?}[] = null;
 
     constructor() {
         this.reset();
@@ -587,7 +589,7 @@ export default class TexasGame {
         this.TexasGameProtocol = new TexasGameProtocol(this);
     }
 
-    Update(dt: number) {}
+    Update(dt: number) { }
 
     Enter() {
         this.listSeat = [];
@@ -717,11 +719,34 @@ export default class TexasGame {
         this.UpdateRoomCommon(obj);
     }
 
+    /**
+     * 隐藏等待一手开始提示
+     */
     protected HideWaitForStartTips() {
         if (this.uirc.Image_WaitForStartTips.activeInHierarchy) {
             this.uirc.Image_WaitForStartTips.active = false;
         }
     }
+
+    /**
+     * 显示等待一手开始提示
+     */
+    protected ShowWaitForStartTips() {
+        this.uirc.Image_WaitForStartTips.active = true;
+        this.UpdateShareBtnState();
+    }
+
+    /**
+     * 更新分享按钮状态
+     */
+    protected UpdateShareBtnState() {
+        let shareBtn = this.uirc?._buttonShare;
+        if (shareBtn) {
+            shareBtn.active = TexasBusiness.Instance.IsOpenRoomShare();
+        }
+        this.UpdateStartGameState();
+    }
+
     // protected HideSelectSeatTips() {
     //     if (this.uirc.Image_SelectSeatTips.activeInHierarchy) {
     //         this.uirc.Image_SelectSeatTips.active = false;
@@ -851,6 +876,7 @@ export default class TexasGame {
         this.autoChangeTable = this.autoChangeRoomLimitHand;
         this.jackpot = Number(roomInfoAny?.jackpot || 0);
         GameCache.Instance.jackPot_on = this.jackpot;
+        GameCache.Instance._enterRoomType = 1;
         GameCache.Instance.jackPot_id = Number(
             roomInfoAny?.jackpotId
             ?? roomInfoAny?.jackpot_id
@@ -979,7 +1005,15 @@ export default class TexasGame {
             //更新玩家离线状态
             mSeat.UpdateOnOrOffLine();
         }
-        this.uirc.Image_WaitForStartTips.active = this.gamestatus == 0;
+
+        if (this.gamestatus == TexasGameStatus.NOT_START) {
+            this.ShowWaitForStartTips();
+        }
+        else {
+            this.HideWaitForStartTips();
+        }
+
+
         this.UpdateAlreadAnte();
         this.UpdateRoomDes();
         this.UpdatePublicCardsNoAnim();
@@ -1678,7 +1712,7 @@ export default class TexasGame {
         let Operation_Pos = this.uirc.UIOperation_Con.convertToNodeSpaceAR(
             Seat0.uirc.Operation_Pos_Mark.parent.convertToWorldSpaceAR(Seat0.uirc.Operation_Pos_Mark.position)
         );
-        const operationPos2D = cc.v2(Operation_Pos.x, Operation_Pos.y+200);
+        const operationPos2D = cc.v2(Operation_Pos.x, Operation_Pos.y + 200);
         this.uirc.UIOperation_Com.SetUIPos(operationPos2D);
         this.uirc.UIAutoOperation_Com.SetUIPos(operationPos2D);
 
@@ -1954,7 +1988,7 @@ export default class TexasGame {
                     }
                 }
             },
-            (res) => {},
+            (res) => { },
         );
     }
 
@@ -2077,7 +2111,7 @@ export default class TexasGame {
                                             },
                                         );
                                     },
-                                    (res: any) => {},
+                                    (res: any) => { },
                                 );
                             },
 
@@ -2116,7 +2150,7 @@ export default class TexasGame {
                                             },
                                         );
                                     },
-                                    (res: any) => {},
+                                    (res: any) => { },
                                 );
                             },
                         },
@@ -2872,7 +2906,7 @@ export default class TexasGame {
                                 .to(0.4, {
                                     position:
                                         this.listDefaultSecondPublicCardsLPos[
-                                            i
+                                        i
                                         ],
                                 })
                                 .start();
@@ -2886,7 +2920,7 @@ export default class TexasGame {
                                 .to(0.4, {
                                     position:
                                         this.listDefaultSecondPublicCardsLPos[
-                                            i
+                                        i
                                         ],
                                 })
                                 .call(() => {
@@ -3769,10 +3803,10 @@ export default class TexasGame {
             PublicCardInfo.trans.active = false;
         }
     }
-     /**
-     * 代入前安全设置（Unity 对齐）
-     */
-     private OpenBringInWithSecurity(wallets: any): void {
+    /**
+    * 代入前安全设置（Unity 对齐）
+    */
+    private OpenBringInWithSecurity(wallets: any): void {
         const openBringIn = () => {
             if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
                 this.ShowAutoAddChips(wallets);
@@ -4338,19 +4372,19 @@ export default class TexasGame {
                                                     `${res.data.apply_bring_in}`;
                                             }
                                         },
-                                        () => {},
+                                        () => { },
                                     );
 
                                     /////////////////////////////////////////////////////
                                 }
                             },
-                            () => {},
+                            () => { },
                         );
                         ////////////////////////////////////////////
                     }
                 }
             },
-            () => {},
+            () => { },
         );
 
         menu.$node_coin.getChildByName("uc").active =
@@ -4359,8 +4393,8 @@ export default class TexasGame {
             GameCache.Instance.gold_type == 2;
         menu.$node_coin.getChildByName("add").active =
             menu.$node_coin.getChildByName("click").active =
-                GameCache.Instance.gold_type == 1 ||
-                GameCache.Instance.gold_type == 2;
+            GameCache.Instance.gold_type == 1 ||
+            GameCache.Instance.gold_type == 2;
         let chips = GameCache.Instance.CurGame.mainPlayer?.cacheStoreChips || 0;
         menu.$node_storage.active = chips > 0;
         //GameCache.Instance.FriendsTableLimitBringIn;
@@ -4448,7 +4482,7 @@ export default class TexasGame {
         node.getComponent(cc.Button).interactable = interactable;
     }
     //托管相关
-    public SendTrustAction(enable: boolean = false) {}
+    public SendTrustAction(enable: boolean = false) { }
 
     ///////////////////////////////////////////////////////////////////重构部分
     //多套公共牌
@@ -4770,7 +4804,7 @@ export default class TexasGame {
             numStr += GameCache.Instance.origin_type;
         } else if (
             GameCache.Instance.room_type >=
-                RoomType.MTTTexasHoldemStandardNoLimit &&
+            RoomType.MTTTexasHoldemStandardNoLimit &&
             GameCache.Instance.room_type <= RoomType.MTTOmaha6SixPlusFixedAof
         ) {
             return +(times + "001");
@@ -4790,7 +4824,7 @@ export default class TexasGame {
             numStr += "0";
         } else if (
             GameCache.Instance.room_type >=
-                RoomType.MTTTexasHoldemStandardNoLimit &&
+            RoomType.MTTTexasHoldemStandardNoLimit &&
             GameCache.Instance.room_type <= RoomType.MTTOmaha6SixPlusFixedAof
         ) {
             numStr += "1";
@@ -4885,9 +4919,9 @@ export default class TexasGame {
                     }
                 } else if (
                     GameCache.Instance.room_type >=
-                        RoomType.MTTTexasHoldemStandardNoLimit &&
+                    RoomType.MTTTexasHoldemStandardNoLimit &&
                     GameCache.Instance.room_type <=
-                        RoomType.MTTOmaha6SixPlusFixedAof
+                    RoomType.MTTOmaha6SixPlusFixedAof
                 ) {
                     if (diamondConfig.setting[0].discount_price == 0) {
                         this.uirc.setChildLabel(

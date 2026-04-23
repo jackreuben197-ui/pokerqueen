@@ -34,6 +34,7 @@ import UIOutChipsTipComponent from "./ui/UIOutChipsTipComponent";
 import UITexasMenu from "./ui/UITexasMenu";
 import GameUtil, { GameEnterType } from "./util/GameUtil";
 import Seat from "./seat/Seat";
+import ToastManager from "../manager/ToastManager";
 
 export class PlayerBarrageRecord {
     public name: string;
@@ -117,6 +118,11 @@ export default class UITexas extends BaseScene {
     callTimeArea: cc.Node = null;
     callTimeDes: cc.Label = null;
     StartGameButton: cc.Node = null;
+
+    /** 
+     * 牌桌上的分享按钮，在未开始牌局前显示
+     */
+    _buttonShare: cc.Node = null;
     JackpotButton: cc.Node = null;
     JackpotGoldLabel: cc.Label | cc.RichText = null;
     JackpotAnimRoot: cc.Node = null;
@@ -125,6 +131,9 @@ export default class UITexas extends BaseScene {
     buttonWaitBlind: cc.Node = null;
 
 
+    /**
+     * 等待开局提示
+     */
     Image_WaitForStartTips: cc.Node = null;
     Image_ReserveSeatTips: cc.Node = null;
     Image_InsuranceTips: cc.Node = null;
@@ -259,6 +268,7 @@ export default class UITexas extends BaseScene {
         this.textRoomInfo = this.getChildNodeOrComponent("Text_RoomInfo", cc.Label);
 
         this.Image_WaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
+        this._buttonShare = this.Image_WaitForStartTips.getChildByName("ShareButton");
         this.Image_ReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
         this.Image_InsuranceTips = this.getChildNodeOrComponent("Image_InsuranceTips");
 
@@ -471,6 +481,7 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.Button_SeeMorePublic, this.onClickSeeMorePublic);
         this.setButtonClick(this.buttonWaitBlind, this.onClickWaitBlind);
         this.setButtonClick(this.StartGameButton, this.onClickStartGame);
+        this.setButtonClick(this._buttonShare, this.OnButtonShareClick);
         this.setButtonClick(this.JackpotButton, this.onClickJackpot);
         this.setButtonClick(this.SquidSwitchClickNode, this.onClickJoinGame);
         this.setButtonClick(this.SquidStandUp, this.onClickSquidStandUp);
@@ -679,6 +690,16 @@ export default class UITexas extends BaseScene {
     }
     private onClickSquidStandUp() {
         this.game?.OnClickSquidStandUp();
+    }
+
+    /**
+     * 分享按钮点击回调
+     * 点击分享按钮，分享牌局信息
+     */
+    private OnButtonShareClick() {
+        console.log(`==>onButtonShareClick`);
+        // TODO: 实现分享逻辑
+        ToastManager.Instance.createToast("还未开发");
     }
 
     public async ShowInsuranceTipJieSuan(paynum: number) {

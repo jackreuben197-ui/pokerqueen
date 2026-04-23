@@ -36,6 +36,7 @@ export default class TexasGameUtils {
      */
     public EnterRoom() {
 
+        console.log(`TexasGameUtils, EnterRoom() room_id=${GameCache.Instance.room_id}, match_id=${GameCache.Instance.match_id}`);
         let roomType = GameCache.Instance.room_type;
         let roomId = GameCache.Instance.room_id;
         let matchId = GameCache.Instance.match_id;

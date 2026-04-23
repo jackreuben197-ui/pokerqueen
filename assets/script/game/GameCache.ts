@@ -178,6 +178,12 @@ export class GameCache {
     public room_min_players: number = 0;
     /** 大厅入口缓存：自动开局最小人数（0 表示手动开始） */
     public room_autostart_min_players: number = 0;
+
+    /** 
+     * 进入房间方式
+     */
+    public _enterRoomType: number = 0;
+
     /** 大厅入口缓存：是否房管/房主 */
     public room_is_manager: boolean = false;
     /// <summary>
@@ -445,6 +451,10 @@ export class GameCache {
     }
 
     InitEnterRoomInfo(room_info: EnterRoomInfo) {
+
+        
+        console.log(['${scriptName}] -> ${methodName}()');
+
         const subConfigs = room_info.sub_configs || [];
         const sub0 = (subConfigs && subConfigs.length > 0) ? subConfigs[0] : null;
         const roomAdminAny = (room_info as any).room_admin ?? (room_info as any).roomAdmin ?? null;
@@ -456,13 +466,13 @@ export class GameCache {
         GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(room_info.name);
         GameCache.Instance.room_squid_sub_base = sub0?.sqb || 0;
         GameCache.Instance.room_squid_base =
-        (room_info.squid_base || 0) > 0 ? room_info.squid_base : GameCache.Instance.room_squid_sub_base;
+            (room_info.squid_base || 0) > 0 ? room_info.squid_base : GameCache.Instance.room_squid_sub_base;
         GameCache.Instance.room_squid_mode = room_info.squid_mode || 0;
         GameCache.Instance.room_squid_head = room_info.squid_head || 0;
         GameCache.Instance.room_squid_tail = room_info.squid_tail || 0;
         GameCache.Instance.room_squid_max = room_info.squid_max || 0;
         GameCache.Instance.room_squid_on =
-        room_info.squid_on ?? ((GameCache.Instance.room_squid_base > 0 || GameCache.Instance.room_squid_sub_base > 0) ? 1 : 0);
+            room_info.squid_on ?? ((GameCache.Instance.room_squid_base > 0 || GameCache.Instance.room_squid_sub_base > 0) ? 1 : 0);
         GameCache.Instance.room_squid_open_number = sub0?.ppcl || room_info.squid_player_count || 2;
         GameCache.Instance.room_squid_extra_count = Number(room_info.squid_extra_count || 0);
         GameCache.Instance.room_squid_count_rate = (room_info.squid_count_rate || [])
@@ -472,11 +482,11 @@ export class GameCache {
         GameCache.Instance.room_mushroom_mode = room_info.mushroom_mode || 0;
         GameCache.Instance.room_mushroom_base = room_info.mushroom_base || 0;
         GameCache.Instance.room_critical_hit =
-        room_info.critical_hit ?? sub0?.critical_hit ?? sub0?.criticalHit ?? 0;
+            room_info.critical_hit ?? sub0?.critical_hit ?? sub0?.criticalHit ?? 0;
         GameCache.Instance.room_critical_hit_round =
-        room_info.rounds ?? 0;
+            room_info.rounds ?? 0;
         GameCache.Instance.room_critical_hit_ante =
-        sub0?.ante ?? sub0?.an ?? room_info.sub_game_play_ante ?? 0;
+            sub0?.ante ?? sub0?.an ?? room_info.sub_game_play_ante ?? 0;
         GameCache.Instance.room_call_time = Number(room_info.call_time || 0);
         GameCache.Instance.room_call_time_winline = Number(room_info.call_time_winline || 0);
         GameCache.Instance.room_call_time_count = Number(room_info.call_time_count || 0);
@@ -512,6 +522,7 @@ export class GameCache {
                 (creatorRandomId > 0 && creatorRandomId === Number(GameCache.Instance.nUserId || 0)) ||
                 (creatorId > 0 && creatorId === Number(GameCache.Instance.userId || 0));
         }
+        GameCache.Instance._enterRoomType = room_info.room_type;
         GameCache.Instance.room_type = room_info.room_type;
         GameCache.Instance.game_type = room_info.game_type;
         GameCache.Instance.poker_type = room_info.poker_type;
@@ -613,6 +624,6 @@ export interface EnterRoomInfo {
     jackpotGold?;
     jackpot_parent_gold?;
     jackpotParentGold?;
-    
+
 }
 (window as any).GameCache = GameCache;
