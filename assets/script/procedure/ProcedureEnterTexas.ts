@@ -50,7 +50,7 @@ export default class ProcedureEnterTexas extends ProcedureBase {
 
         // 取房间列表中的第一个房间记录
         if (rec.roomsList && rec.roomsList.length > 0) {
-            GameCache.Instance._roomRecord = rec.roomsList[0] as unknown as RoomRecord;
+            GameCache.Instance._roomRecord = rec.roomsList[0];
         }
         else {
             UIComponent.Instance.Toast(i18nMgr.Get("EnterForegroundFail"));
@@ -59,13 +59,13 @@ export default class ProcedureEnterTexas extends ProcedureBase {
         }
 
         // 查看房间数据是否合法
-        if (GameCache.Instance._roomRecord.getStatus() == 3) {
+        if (GameCache.Instance._roomRecord?.status == 3) {
             UIComponent.Instance.Toast(i18nMgr.Get("GameRoom_ForceCloseTips"));
             this.ReturnBackH5();
-            return
+            return;
         }
 
-        if (GameCache.Instance._roomRecord.getStatus() == 4) {
+        if (GameCache.Instance._roomRecord?.status == 4) {
             //TODO 暂时不处理
         }
 

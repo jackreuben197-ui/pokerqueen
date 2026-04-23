@@ -410,7 +410,7 @@ export class GameCache {
     /** 
      * 房间记录信息
      */
-    public _roomRecord: RoomRecord = null;
+    public _roomRecord: RoomRecord.AsObject = null;
 
     //存储bb开关的状态 room_id || match_id
     private bb_status_map = {};
