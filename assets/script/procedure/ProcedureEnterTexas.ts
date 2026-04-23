@@ -59,13 +59,13 @@ export default class ProcedureEnterTexas extends ProcedureBase {
         }
 
         // 查看房间数据是否合法
-        if (GameCache.Instance._roomRecord.getStatus() == 3) {
+        if (GameCache.Instance._roomRecord.status == 3) {
             UIComponent.Instance.Toast(i18nMgr.Get("GameRoom_ForceCloseTips"));
             this.ReturnBackH5();
             return
         }
 
-        if (GameCache.Instance._roomRecord.getStatus() == 4) {
+        if (GameCache.Instance._roomRecord.status == 4) {
             //TODO 暂时不处理
         }
 

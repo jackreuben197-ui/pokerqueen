@@ -59,9 +59,6 @@ export default class Main extends cc.Component {
         // 关闭左下角 FPS / DrawCall 统计信息
         cc.debug.setDisplayStats(false);
 
-        // 唤醒 cc.tween 系统，确保后续 Button 缩放动画等 tween 效果正常
-        cc.tween(this.node).to(0, { opacity: 255 }).start();
-
         // 初始化 Telegram WebApp SDK（必须在最开始）
         TelegramUtils.Instance;
 
@@ -128,6 +125,12 @@ export default class Main extends cc.Component {
 
         // 启动握手：设置 __CC_READY__，等待 H5 发来 h5Ready，回复 ccAck
         H5MsgMgr.Instance.startHandshake();
+
+        // 
+        setTimeout(() => {
+            // 唤醒 cc.tween 系统，确保后续 Button 缩放动画等 tween 效果正常
+            cc.tween(this.node).to(0.1, { opacity: 255 }).start();
+        }, 50);
     }
     protected update(dt: number): void {
         GC.uc.Update(dt);
@@ -139,7 +142,7 @@ export default class Main extends cc.Component {
 }
 
 // @ts-ignore
-BigInt.prototype.toJSON = function() {
+BigInt.prototype.toJSON = function () {
     return this.toString();
 };
 

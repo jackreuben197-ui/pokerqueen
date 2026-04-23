@@ -6,6 +6,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import H5MsgMgr from "../../H5MsgMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
+import ReconnectComponent from "../../funcomponent/ReconnectComponent";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
 import { UIMTTModel } from "../../new_mtt/UIMTTModel";
@@ -258,7 +259,17 @@ export default class TexasGameUtils {
     /// 退出房间
     /// </summary>
     public ExitRoom(): void {
-        // UIComponent.Instance.Remove(UIType.UITexas);
+        // H5 桥接模式：通知 H5 层恢复显示，不进入大厅流程
+        if (H5MsgMgr.Instance.handshakeDone) {
+            UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
+            ReconnectComponent.Instance.ChangeStatus(1);
+            ProcedureManager.StartProcedure(ProcedureEnum.Idel);
+            H5MsgMgr.sendToH5('h5Show', 1);
+        } else {
+            ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { mode: 1, game_enter_type: GameCache.Instance.enter_param.game_enter_type });
+        }
+
+        // 清理房间数据
         // UIComponent.Instance.Remove(UIType.UIInsurance);
         // UIComponent.Instance.Remove(UIType.UITexasHistory);
         // UIComponent.Instance.Remove(UIType.UITexasDanMuAndExpression);
@@ -272,7 +283,6 @@ export default class TexasGameUtils {
         // UIComponent.Instance.Remove(UIType.UITexasHumanYZ);
         // UIComponent.Instance.Remove(UIType.UIAgreeSecondPcs);
 
-        ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { mode: 1, game_enter_type: GameCache.Instance.enter_param.game_enter_type });
         //#region 关键属性最后置空
         GameCache.Instance.CurrentRoomID = 0;
         GameCache.Instance.room_id = 0;

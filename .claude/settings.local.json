@@ -51,7 +51,19 @@
       "Bash(grep -oP '.{0,100}\\(re\\\\\\(|WS_SEND|wsSend|dispatch|onMessage|handleAction\\).{0,100}' build-templates/web-mobile/assets/bridge-B1zlRcix.js)",
       "Bash(grep -E \"\\\\.\\(png|jpg|jpeg|plist|pvr|atlas\\)$\")",
       "Bash(cp \"E:/AiCode/pokerqueen/assets/resources/config/USER_ZH.txt\" \"E:/AiCode/pokerqueen/preview-templates/assets/resources/config/USER_ZH.txt\")",
-      "Bash(cp \"E:/AiCode/pokerqueen/assets/resources/config/USER_ZH.txt\" \"E:/AiCode/pokerqueen/build-templates/web-mobile/assets/resources/config/USER_ZH.txt\")"
+      "Bash(cp \"E:/AiCode/pokerqueen/assets/resources/config/USER_ZH.txt\" \"E:/AiCode/pokerqueen/build-templates/web-mobile/assets/resources/config/USER_ZH.txt\")",
+      "Bash(grep -oP '.{0,80}h5Hide.{0,80}' auth-By8fz66F.js)",
+      "Bash(grep -oP '.{0,150}H5_HIDE.{0,150}' auth-By8fz66F.js)",
+      "Bash(grep -oP '.{0,200}h5Hide[^,}]{0,200}' auth-By8fz66F.js)",
+      "Bash(grep -oP 'h5Hide.{0,300}' auth-By8fz66F.js)",
+      "Bash(grep -oP 'case.{0,30}H5_HIDE.{0,500}' auth-By8fz66F.js)",
+      "Bash(grep -oP '.{0,50}H5_HIDE.{0,300}' auth-By8fz66F.js)",
+      "Bash(grep -oP '.{0,30}h5Hide.{0,200}' index-DoNJDS2H.js)",
+      "Bash(grep -oP '.{0,30}H5_HIDE.{0,200}' index-DoNJDS2H.js)",
+      "Bash(grep -oP 'function T.{0,300}' index-DoNJDS2H.js)",
+      "Bash(grep -oP 'function w.{0,300}' index-DoNJDS2H.js)",
+      "Bash(grep -oP 'function A.{0,500}' index-DoNJDS2H.js)",
+      "Bash(grep -oP 'A\\\\\\(\\\\\\).{0,200}' index-DoNJDS2H.js)"
     ]
   },
   "defaultMode": "acceptEdits"

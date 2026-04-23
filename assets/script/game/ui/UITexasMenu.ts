@@ -225,6 +225,7 @@ export default class UITexasMenu extends UIBasePlus {
         super.regiterTouchEvents();
         this.setButtonClick(this.$black, this.click_black);
         this.setButtonClick(this.$node_coin, this.click_coin);
+        this.setButtonClick(this.btnLeaveGame.node, this.click_leave);
     }
 
     protected regiterDispatchEvent(): void {
@@ -472,6 +473,7 @@ export default class UITexasMenu extends UIBasePlus {
     }
     click_leave() {
         // this.post(EventName.updateFriendChessView)
+        console.log( "Click Exit Room Button...." );
         this.game.onClickExit();
     }
 
