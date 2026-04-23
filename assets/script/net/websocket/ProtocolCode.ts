@@ -20,6 +20,8 @@ export enum ProtocolCode {
     Protocol_Holdem_UserKickedFromClub = Code.MSG_S_USER_KICKED_FROM_CLUB, // Code: 106 用户被踢出俱乐部(个人)
     Protocol_Holdem_NotificationMttWillStart = Code.MSG_S_NOTIFICATION_MTT_WILL_START, // Code: 107 MTT即将开始(参赛人员)
     Protocol_Holdem_SystemMessage = Code.MSG_S_SYSTEM_MESSAGE, // Code: 108 系统发布通用消息(全体)
+    Protocol_Holdem_Rooms = Code.MSG_R_ROOMS, // Code: 202
+    
     /**
      * 房间相关(HEAD有roomid+matchid)
      */

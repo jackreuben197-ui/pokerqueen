@@ -1,6 +1,7 @@
 
 import GC from "../frame/GameControl";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_th_enter_room_pb";
+import { RoomRecord } from "../protobuf/holdem/define_pb";
 import TexasGame from "./texas/TexasGame";
 import GameUtil, { GameEnterType } from "./util/GameUtil";
 
@@ -406,10 +407,18 @@ export class GameCache {
     //存儲進入房間的參數
     enter_param: { game_enter_type: GameEnterType, isLookOn: boolean } = null;
 
+    /** 
+     * 房间记录信息
+     */
+    public _roomRecord: RoomRecord = null;
+
     //存储bb开关的状态 room_id || match_id
     private bb_status_map = {};
 
     public curSelectWalletType;//当前选择钱包类别，1 基金，2 玩家钱包
+
+
+
 
     public static get Instance(): GameCache {
         return (this as any).instance ??= new GameCache;
@@ -452,8 +461,8 @@ export class GameCache {
 
     InitEnterRoomInfo(room_info: EnterRoomInfo) {
 
-        
-        console.log(['${scriptName}] -> ${methodName}()');
+
+        console.log('GameCache -> InitEnterRoomInfo)');
 
         const subConfigs = room_info.sub_configs || [];
         const sub0 = (subConfigs && subConfigs.length > 0) ? subConfigs[0] : null;
