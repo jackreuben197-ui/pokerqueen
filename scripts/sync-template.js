@@ -17,7 +17,7 @@ const PREVIEW_DIR = path.join(ROOT, 'preview-templates')
 const BUILD_HTML = path.join(BUILD_DIR, 'index.html')
 const PREVIEW_HTML = path.join(PREVIEW_DIR, 'index.html')
 
-// ─── 步骤 1：同步 assets 目录 ───────────────────────────
+// ─── 工具函数 ─────────────────────────────────────────────
 function copyDirSync(src, dest) {
   if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true })
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
@@ -31,6 +31,34 @@ function copyDirSync(src, dest) {
   }
 }
 
+function copyFileSync(src, dest) {
+  const dir = path.dirname(dest)
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+  fs.copyFileSync(src, dest)
+}
+
+// ─── 步骤 1：同步 i18n 文件 assets/ → build-templates/ → preview-templates/
+const I18N_FILES = ['USER_ZH.txt', 'USER_EN.txt', 'USER_TW.txt', 'USER_PT.txt']
+const I18N_SRC_DIR = path.join(ROOT, 'assets', 'resources', 'config')
+const I18N_BUILD_DIR = path.join(BUILD_DIR, 'assets', 'resources', 'config')
+const I18N_PREVIEW_DIR = path.join(PREVIEW_DIR, 'assets', 'resources', 'config')
+
+let i18nSynced = 0
+for (const file of I18N_FILES) {
+  const src = path.join(I18N_SRC_DIR, file)
+  if (!fs.existsSync(src)) continue
+  const destBuild = path.join(I18N_BUILD_DIR, file)
+  const destPreview = path.join(I18N_PREVIEW_DIR, file)
+  copyFileSync(src, destBuild)
+  copyFileSync(src, destPreview)
+  i18nSynced++
+}
+if (i18nSynced) {
+  console.log(`同步 i18n: assets/resources/config/ → build-templates + preview-templates (${i18nSynced} 个文件)`)
+  console.log('  ✓ i18n 已同步')
+}
+
+// ─── 步骤 2：同步 build-templates/assets/ → preview-templates/assets/ ──
 const buildAssets = path.join(BUILD_DIR, 'assets')
 const previewAssets = path.join(PREVIEW_DIR, 'assets')
 if (fs.existsSync(buildAssets)) {
@@ -39,7 +67,7 @@ if (fs.existsSync(buildAssets)) {
   console.log('  ✓ assets 已同步')
 }
 
-// ─── 步骤 2：读取 build index.html ──────────────────────
+// ─── 步骤 3：读取 build index.html ──────────────────────
 const src = fs.readFileSync(BUILD_HTML, 'utf-8')
 
 // ─── 提取 H5 资源（正则宽松匹配，兼容 ./assets/ 和 ./assets/js/ 等子目录） ──

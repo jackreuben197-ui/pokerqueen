@@ -56,6 +56,9 @@ export default class Main extends cc.Component {
 
     async onLoad() {
 
+        // 关闭左下角 FPS / DrawCall 统计信息
+        cc.debug.setDisplayStats(false);
+
         // 初始化 Telegram WebApp SDK（必须在最开始）
         TelegramUtils.Instance;
 

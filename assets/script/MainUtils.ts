@@ -167,6 +167,8 @@ async function initH5BridgeDependencies(): Promise<void> {
         i18nMgr.praseConfig();          // cc.resources.get（可能拿到空词典）
         i18nMgr.initLanguage();         // 设置 language 和 LanguageObject
         await i18nMgr.fetchAndRefreshConfig(); // fetch 外部 txt 覆盖，等全部完成
+        // ATTENTION TO FIX: 强制使用中文，确保默认显示中文
+        i18nMgr.setLanguage("cn");             
         console.log('[H5Bridge] i18n 初始化完成, language:', i18nMgr.language);
     }
 
