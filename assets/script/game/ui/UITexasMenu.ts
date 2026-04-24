@@ -219,10 +219,21 @@ export default class UITexasMenu extends UIBasePlus {
         this.fadeOut(false);
         this.game = GameCache.Instance.CurGame;
         this.game.UpdateMenu();
+        this.centerMenuContent();
         this.fadeIn();
 
         //刷新bb
         this.refreshBB();
+    }
+    // 菜单内容垂直居中适配
+    centerMenuContent() {
+        let view_height = cc.view.getVisibleSize().height;
+        // bg 是 $panel 的第一个子节点，即菜单内容区
+        let bg = this.$panel.children[0];
+        if (bg) {
+            // 让 bg 的 y 坐标为可视高度的一半（取负值，因为 $panel 锚点在顶部）
+            bg.y = -view_height / 2;
+        }
     }
     refreshBB() {
         this.refreshBB_switch(GameCache.Instance.bb_on);
