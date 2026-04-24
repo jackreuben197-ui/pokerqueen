@@ -100,6 +100,9 @@ export default class UITexas extends BaseScene {
     //座位节点容器
     seats_content: cc.Node = null;
 
+    /**
+     * 牌桌信息
+     */
     textRoomInfo: cc.Label = null;
     RemainingSquidCount: cc.Node = null;
     RemainingSquidLabelCount: cc.Label = null;
@@ -491,6 +494,7 @@ export default class UITexas extends BaseScene {
         //this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
 
         this.setButtonClick(this.Button_CancelTrust, this.onClickCancelTrust);
+        this.setButtonClick(this.textRoomInfo?.node, this.onClickTextRoomInfo);
 
     }
 
@@ -629,6 +633,20 @@ export default class UITexas extends BaseScene {
             return;
         }
         this.game.SendTrustAction(false);
+    }
+
+    /**
+     * 点击房间信息文本
+     */
+    private onClickTextRoomInfo() {
+        // TODO: 实现房间信息点击逻辑
+        console.log("==>onClickTextRoomInfo");
+        UIComponent.open(UIDefine.UIGameplayTableSetting, {
+            isFromBringIn: false,
+            bringInAct: null,
+            roomPermissions: null,
+            noAnimation: true,
+        });
     }
 
 
