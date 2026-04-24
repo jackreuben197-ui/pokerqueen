@@ -178,6 +178,7 @@ export default class UITexasMenu extends UIBasePlus {
 
     public setOptionInteractable(index: number, boo: boolean) {
         let node: cc.Node = this.getOption(index).node;
+        if (!node) return;
         node.getChildByName("click").getComponent(cc.Button).interactable = boo;
         node.getChildByName("label").color = cc.Color.BLACK.fromHEX(
             boo ? TextColor.Color7 : TextColor.Color3,
@@ -186,7 +187,7 @@ export default class UITexasMenu extends UIBasePlus {
 
     public clearOptions() {
         this.options.forEach((item) => {
-            item.node.active = false;
+            if (item.node) item.node.active = false;
         });
     }
 
@@ -200,7 +201,7 @@ export default class UITexasMenu extends UIBasePlus {
         // this.outTipNode = this.getChildNodeOrComponent("outTipNode");
         // this.outGold = this.getChildNodeOrComponent("outGold", cc.Label);
         // this.gold_click = this.getChildNodeOrComponent("gold_click");
-        this.buildMenuButtons();
+        // this.buildMenuButtons(); // 动态菜单项已由 prefab 中独立按钮替代
         //this.reset();
     }
 
@@ -223,11 +224,11 @@ export default class UITexasMenu extends UIBasePlus {
         super.regiterTouchEvents();
         this.setButtonClick(this.$black, this.click_black);
         this.setButtonClick(this.$node_coin, this.click_coin);
-        this.setButtonClick(this.btnStand.node, this.click_stand_up);
-        this.setButtonClick(this.btnSetting.node, this.click_setting);
-        this.setButtonClick(this.btnRules.node, this.click_rule_tips);
-        this.setButtonClick(this.btnHalfLeave.node, this.click_leave_table);
-        this.setButtonClick(this.btnLeaveGame.node, this.click_leave);
+        this.setButtonClick(this.btnStand?.node, this.click_stand_up);
+        this.setButtonClick(this.btnSetting?.node, this.click_setting);
+        this.setButtonClick(this.btnRules?.node, this.click_rule_tips);
+        this.setButtonClick(this.btnHalfLeave?.node, this.click_leave_table);
+        this.setButtonClick(this.btnLeaveGame?.node, this.click_leave);
     }
 
     protected regiterDispatchEvent(): void {
@@ -335,6 +336,7 @@ export default class UITexasMenu extends UIBasePlus {
     click_rebuy() {}
     click_ower_fund() {}
     click_setting() {
+        console.log("点击了设置按钮!");
         this.click_black();
         UIComponent.open(UIDefine.UITexasSettingComponent, null, {
             parentUI: this.game.uirc.Common_Con,

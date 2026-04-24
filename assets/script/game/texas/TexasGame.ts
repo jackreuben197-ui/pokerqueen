@@ -4472,7 +4472,7 @@ export default class TexasGame {
         }
         show.forEach((index) => {
             let option = menu.getOption(index);
-            option.node.active = true;
+            if (option.node) option.node.active = true;
         });
     }
     protected __MenuButtonInteractable(node: cc.Node, interactable: boolean) {
