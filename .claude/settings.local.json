@@ -57,7 +57,8 @@
       "Bash(GIT_EDITOR=true git rebase *)",
       "Bash(git show *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(grep -n '\"_name\":.*\\\\$black\\\\|\"_name\":.*\\\\$block\\\\|\"_name\":.*black\\\\|\"_name\":.*block' assets/bundles/texas/purple_prefab/ui/UITexasMenu.prefab)"
     ]
   },
   "defaultMode": "acceptEdits"

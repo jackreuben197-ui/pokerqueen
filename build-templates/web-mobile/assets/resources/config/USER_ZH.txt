@@ -1577,6 +1577,7 @@ UITexas_RuleTips=规则
 UITexas_RuleOfTips=规则提示
 UITexas_Setting=个性设置
 UITexas_TrustGame=托管牌局
+UITexas_InsureRules=保险规则
 UITexas_Leave=离开房间
 UITexas_Trust=托管中
 UITexas_Holding=等待

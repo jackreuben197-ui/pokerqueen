@@ -232,12 +232,17 @@ export default class UITexasMenu extends UIBasePlus {
     regiterTouchEvents() {
         super.regiterTouchEvents();
         this.setButtonClick(this.$black, this.click_black);
+        // $block 没有 cc.Button 组件，需要用 node.on 直接注册触摸关闭
+        if (this.$block) {
+            this.$block.on(cc.Node.EventType.TOUCH_END, this.click_black, this);
+        }
         this.setButtonClick(this.$node_coin, this.click_coin);
         this.setButtonClick(this.btnStand?.node, this.click_stand_up);
         this.setButtonClick(this.btnSetting?.node, this.click_setting);
         this.setButtonClick(this.btnRules?.node, this.click_rule_tips);
         this.setButtonClick(this.btnHalfLeave?.node, this.click_leave_table);
         this.setButtonClick(this.btnBet?.node, this.click_bringin);
+        this.setButtonClick(this.btnInsure?.node, this.click_insurance);
         this.setButtonClick(this.btnLeaveGame?.node, this.click_leave);
         this.setButtonClick(this.btnShowBB?.node, this.click_bb);
     }
@@ -346,6 +351,10 @@ export default class UITexasMenu extends UIBasePlus {
     }
     click_rebuy() {}
     click_ower_fund() {}
+    click_insurance() {
+        this.click_black();
+        UIComponent.open(UIDefine.UIInsurance);
+    }
     click_setting() {
         this.click_black();
         UIComponent.open(UIDefine.UITexasSettingComponent, null, {
