@@ -54,7 +54,8 @@
       "Bash(cp \"E:/AiCode/pokerqueen/assets/resources/config/USER_ZH.txt\" \"E:/AiCode/pokerqueen/build-templates/web-mobile/assets/resources/config/USER_ZH.txt\")",
       "Bash(git add *)",
       "Bash(git rebase *)",
-      "Bash(GIT_EDITOR=true git rebase *)"
+      "Bash(GIT_EDITOR=true git rebase *)",
+      "Bash(git show *)"
     ]
   },
   "defaultMode": "acceptEdits"
