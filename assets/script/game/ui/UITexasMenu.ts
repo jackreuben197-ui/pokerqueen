@@ -56,6 +56,15 @@ export default class UITexasMenu extends UIBasePlus {
     @property(cc.Button)
     public btnLeaveGame : cc.Button = null;
 
+    // BB 开关图片
+    @property(cc.SpriteFrame)
+    public sfUnchecked : cc.SpriteFrame = null;
+    @property(cc.SpriteFrame)
+    public sfChecked : cc.SpriteFrame = null;
+    // BB 开关图片节点
+    @property(cc.Node)
+    public checkNode : cc.Node = null;
+
     //按钮模板节点
     //Menu_Button: cc.Node = null;
 
@@ -228,7 +237,9 @@ export default class UITexasMenu extends UIBasePlus {
         this.setButtonClick(this.btnSetting?.node, this.click_setting);
         this.setButtonClick(this.btnRules?.node, this.click_rule_tips);
         this.setButtonClick(this.btnHalfLeave?.node, this.click_leave_table);
+        this.setButtonClick(this.btnBet?.node, this.click_bringin);
         this.setButtonClick(this.btnLeaveGame?.node, this.click_leave);
+        this.setButtonClick(this.btnShowBB?.node, this.click_bb);
     }
 
     protected regiterDispatchEvent(): void {
@@ -336,7 +347,6 @@ export default class UITexasMenu extends UIBasePlus {
     click_rebuy() {}
     click_ower_fund() {}
     click_setting() {
-        console.log("点击了设置按钮!");
         this.click_black();
         UIComponent.open(UIDefine.UITexasSettingComponent, null, {
             parentUI: this.game.uirc.Common_Con,
@@ -498,5 +508,11 @@ export default class UITexasMenu extends UIBasePlus {
     refreshBB_switch(boo: boolean) {
         this.setChildVisible(this.$option_bb, "switch/on", boo);
         this.setChildVisible(this.$option_bb, "switch/off", !boo);
+        if (this.checkNode) {
+            let sprite = this.checkNode.getComponent(cc.Sprite);
+            if (sprite) {
+                sprite.spriteFrame = boo ? this.sfChecked : this.sfUnchecked;
+            }
+        }
     }
 }
