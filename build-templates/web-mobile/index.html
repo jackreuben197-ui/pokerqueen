@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
   <head>
-    <script type="module" crossorigin src="./assets/js/polyfills-VCt7vfE4.js"></script>
+    <script type="module" crossorigin src="./assets/js/polyfills-DuJHGBp6.js"></script>
 
     <meta charset="UTF-8" />
     <title>PokerQueen H5 Host</title>
@@ -22,9 +22,6 @@
     <meta name="360-fullscreen" content="true" />
     <meta name="x5-page-mode" content="app" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-
-    <!-- Telegram Web App SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <style>
       html,
@@ -66,20 +63,22 @@
         display: none;
       }
     </style>
-    <script type="module" crossorigin src="./assets/js/index-DoNJDS2H.js"></script>
+    <script type="module" crossorigin src="./assets/js/index-Dp-hsf7C.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/js/_plugin-vue_export-helper-qnqsa0oc.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/vendor-misc-C8CKPjOC.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/vendor-vue-core-JjlVK8KU.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/userInfo-5vzKBQIJ.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/vendor-misc-CN-Qc1cn.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/vendor-vue-core-7I09SSOz.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/userInfo-ClybAPMI.js">
     <link rel="modulepreload" crossorigin href="./assets/js/rolldown-runtime-C6DSFE5D.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/vendor-vant-gDXhAQff.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/vendor-vant-hLEkM2AJ.js">
     <link rel="modulepreload" crossorigin href="./assets/js/vendor-utils-C9Aq55-N.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/auth-By8fz66F.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/core-CZX2Suxn.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/ws-CqXSj80x.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/loginSession-BS5c0x2C.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/http-DtCDwrXy.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/auth-Ck7h7BOn.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/core-DNCeJBUt.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/i18n-Cl7mNTv6.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/ws-WxLlBF2x.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/loginSession-CyOSWOQN.js">
     <link rel="stylesheet" crossorigin href="./assets/css/vendor-vant-Vfr7xNh9.css">
-    <link rel="stylesheet" crossorigin href="./assets/css/index-DECgKxGW.css">
+    <link rel="stylesheet" crossorigin href="./assets/css/index-CRhpSQIx.css">
     <script type="module">import'data:text/javascript,if(!import.meta.resolve)throw Error("import.meta.resolve not supported")';import.meta.url;import("_").catch(()=>1);(async function*(){})().next();window.__vite_is_modern_browser=true</script>
     <script type="module">!function(){if(window.__vite_is_modern_browser)return;console.warn("vite: loading legacy chunks, syntax error above and the same error below should be ignored");var e=document.getElementById("vite-legacy-polyfill"),n=document.createElement("script");n.src=e.src,n.onload=function(){System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))},document.body.appendChild(n)}();</script>
   </head>
@@ -136,22 +135,41 @@
       })()
     </script>
 
-    <!-- Telegram 初始化 -->
+    <!-- Telegram 初始化（异步按需加载，网络不可达时不阻塞页面） -->
     <script>
       ;(function () {
-        if (window.Telegram && window.Telegram.WebApp) {
+        function initTelegramWebApp() {
+          if (!window.Telegram || !window.Telegram.WebApp) {
+            return
+          }
           var tg = window.Telegram.WebApp
           tg.ready()
           if (typeof tg.expand === 'function') {
             tg.expand()
           }
         }
+
+        // 先尝试直接初始化（例如容器已注入 Telegram 对象）。
+        initTelegramWebApp()
+
+        // 再异步加载官方 SDK，避免 head 同步脚本在弱网/不可达场景卡住首屏。
+        var script = document.createElement('script')
+        script.src = 'https://telegram.org/js/telegram-web-app.js'
+        script.async = true
+        script.defer = true
+        script.crossOrigin = 'anonymous'
+        script.referrerPolicy = 'no-referrer'
+        script.onload = initTelegramWebApp
+        script.onerror = function () {
+          console.warn('[telegram] sdk load failed, continue without telegram bridge')
+        }
+        document.head.appendChild(script)
       })()
     </script>
 
-    <!-- H5 独立入口：可被 Cocos 统一模板复用 -->
+    <!-- H5 独立入口：可被 Cocos 统一模板复用 -->
     <script nomodule>!function(){var e=document,t=e.createElement("script");if(!("noModule"in t)&&"onbeforeload"in t){var n=!1;e.addEventListener("beforeload",(function(e){if(e.target===t)n=!0;else if(!e.target.hasAttribute("nomodule")||!n)return;e.preventDefault()}),!0),t.type="module",t.src=".",e.head.appendChild(t),t.remove()}}();</script>
-    <script nomodule crossorigin id="vite-legacy-polyfill" src="./assets/js/polyfills-legacy-Qh-sWKHJ.js"></script>
-    <script nomodule crossorigin id="vite-legacy-entry" data-src="./assets/js/index-legacy-DpAgcE1i.js">System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))</script>
+    <script nomodule crossorigin id="vite-legacy-polyfill" src="./assets/js/polyfills-legacy-DoBj2OJA.js"></script>
+    <script nomodule crossorigin id="vite-legacy-entry" data-src="./assets/js/index-legacy-eeGsTOuQ.js">System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))</script>
   </body>
 </html>

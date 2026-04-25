@@ -1,0 +1,1 @@
+import{P as e,g as t,p as n}from"./vendor-misc-CN-Qc1cn.js";import{t as r}from"./_plugin-vue_export-helper-qnqsa0oc.js";var i={},a={class:`module-card`};function o(r,i){return e(),t(`div`,a,[...i[0]||(i[0]=[n(`h2`,{class:`module-title`},`朋友桌模块`,-1),n(`p`,{class:`module-desc`},`朋友桌入口`,-1)])])}var s=r(i,[[`render`,o],[`__scopeId`,`data-v-8951eaea`]]);export{s as default};

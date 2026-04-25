@@ -162,11 +162,10 @@ async function initH5BridgeDependencies(): Promise<void> {
 
     // i18n 初始化：正常流程由 ProcedureConfig 驱动（loadDir("config") + praseConfig），
     // 但 H5 桥接模式和编辑器预览都跳过了 ProcedureConfig，
-    // 所以在这里先尝试 cc.resources.get（可能为 null），再 fetch 外部 txt 文件补充。
+    // 所以在这里通过 cc.resources.load 加载词典（走 Cocos 管道，自动享受 md5Cache）。
     if (!i18nMgr.language) {
-        i18nMgr.praseConfig();          // cc.resources.get（可能拿到空词典）
-        i18nMgr.initLanguage();         // 设置 language 和 LanguageObject
-        await i18nMgr.fetchAndRefreshConfig(); // fetch 外部 txt 覆盖，等全部完成
+        i18nMgr.initLanguage();
+        await i18nMgr.loadAndRefreshConfig();
         // ATTENTION TO FIX: 强制使用中文，确保默认显示中文
         i18nMgr.setLanguage("cn");             
         console.log('[H5Bridge] i18n 初始化完成, language:', i18nMgr.language);

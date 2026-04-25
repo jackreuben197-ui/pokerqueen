@@ -182,34 +182,30 @@ export class i18nMgr {
         }
     }
     /**
-     * 通过 fetch 从外部 txt 文件加载词典并刷新 UI。
-     * 返回 Promise，可用于 await 确保加载完成后再继续。
+     * 通过 cc.resources.load 加载词典资源并刷新 UI。
+     * 走 Cocos 资源管道，自动享受 md5Cache 缓存刷新。
      */
-    public static fetchAndRefreshConfig(): Promise<void> {
-        if (typeof window === 'undefined' || typeof fetch !== 'function') {
-            return Promise.resolve();
-        }
+    public static loadAndRefreshConfig(): Promise<void> {
         const tasks = [
-            this._fetchRemoteConfig("en", "assets/resources/config/USER_EN.txt"),
-            this._fetchRemoteConfig("pt", "assets/resources/config/USER_PT.txt"),
-            this._fetchRemoteConfig("zh", "assets/resources/config/USER_TW.txt"),
-            this._fetchRemoteConfig("cn", "assets/resources/config/USER_ZH.txt"),
+            this._loadConfig("en", "config/USER_EN"),
+            this._loadConfig("pt", "config/USER_PT"),
+            this._loadConfig("zh", "config/USER_TW"),
+            this._loadConfig("cn", "config/USER_ZH"),
         ];
         return Promise.all(tasks).then(() => {
-            // 所有语言加载完毕，刷新当前语言的引用和 UI
             this.LanguageObject = LanguageAllObject[this.language];
             this.refreshAllLabel();
         });
     }
-    private static _fetchRemoteConfig(language: string, url: string): Promise<void> {
-        return fetch(url)
-            .then(res => (res.ok ? res.text() : Promise.reject(res.status)))
-            .then(text => {
-                if (text) {
-                    i18nMgr._praseConfig(language, { text } as cc.TextAsset);
+    private static _loadConfig(language: string, path: string): Promise<void> {
+        return new Promise((resolve) => {
+            cc.resources.load(path, cc.TextAsset, (err, asset: cc.TextAsset) => {
+                if (!err && asset) {
+                    i18nMgr._praseConfig(language, asset);
                 }
-            })
-            .catch(() => { /* 文件不存在或网络错误，静默忽略 */ });
+                resolve();
+            });
+        });
     }
     public static get LanguageAllObject() {
         return LanguageAllObject;
