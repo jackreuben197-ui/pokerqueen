@@ -115,7 +115,11 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
         this.Button_Close && (this.Button_Close.active = !!data.isActiveCloseBtn);
         this.Image_Frame0 && (this.Image_Frame0.active = !!data.showTitleBg);
 
-        this.setText(this.Text_Title, data.title || "");
+        const titleText = data.title || "";
+        this.setText(this.Text_Title, titleText);
+        if (this.Text_Title?.node) {
+            this.Text_Title.node.active = !!titleText;
+        }
         this.setText(this.Text_Commit, data.contentCommit || "Commit");
         this.setText(this.Text_Cancel, data.contentCancel || "Cancel");
         this.setContentText(data.content || "", !!data.isCenter);

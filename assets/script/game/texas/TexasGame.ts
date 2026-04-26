@@ -1494,6 +1494,8 @@ export default class TexasGame {
             return;
         }
 
+        console.log(　"房间信息：" + JSON.stringify( rec ) );
+
         const roomInfoAny = rec.roomInfo as any;
         const handInfoAny = rec.handInfo as any;
         const entryAny = GameCache.Instance as any;
@@ -1561,7 +1563,7 @@ export default class TexasGame {
 
             UIComponent.open(UIDefine.UIDialogContentSizeLimit, {
                 type: UIDialogContentSizeLimit.DialogType.Commit,
-                title: "",
+                title: i18nMgr.Get("UIHitGameTitle"),
                 showTitleBg: false,
                 contentCommit: i18nMgr.Get("adaptation10012"),
                 content: popupContent,
@@ -1587,6 +1589,7 @@ export default class TexasGame {
             ]);
             UIComponent.open(UIDefine.UIDialogContentSizeLimit, {
                 type: UIDialogContentSizeLimit.DialogType.Commit,
+                title: i18nMgr.Get("UIMushroomGameTitle"),
                 showTitleBg: false,
                 contentCommit: i18nMgr.Get("adaptation10012"),
                 content: content,
