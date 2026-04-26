@@ -38,6 +38,7 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
     Text_Content_Rich: cc.RichText = null;
     Text_Content_Label: cc.Label = null;
     Image_Frame0: cc.Node = null;
+    ImageNode: cc.Node = null;
     NoToggle: cc.Toggle = null;
 
     private _actionCommit: ((noPrompt: boolean) => void) = null;
@@ -69,6 +70,7 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
         this.Text_Cancel = cancelNode?.getComponent(cc.Label) || cancelNode?.getComponent(cc.RichText) || null;
         this.Text_Title = this.getChildNodeOrComponent("Text_Title", cc.Label);
         this.Image_Frame0 = this.getChildNodeOrComponent("Image_Frame0");
+        this.ImageNode = this.getChildNodeOrComponent("ImageNode");
         this.NoToggle = this.getChildNodeOrComponent("NoToggle", cc.Toggle);
 
         const contentNode = this.getChildNodeOrComponent("Text_Content");
@@ -121,6 +123,15 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
         if (this.NoToggle) {
             this.NoToggle.node.active = !!data.promptKey;
             this.NoToggle.isChecked = true;
+        }
+
+        if (this.ImageNode) {
+            const promptKey = data.promptKey || "";
+            const mushroom = this.ImageNode.getChildByName("mushroom");
+            const criticalhit = this.ImageNode.getChildByName("criticalhit");
+            if (mushroom) mushroom.active = promptKey === "Mushroom";
+            if (criticalhit) criticalhit.active = promptKey === "CriticalHit";
+            this.ImageNode.active = !!promptKey;
         }
 
         this._actionCommit = data.actionCommit || null;
