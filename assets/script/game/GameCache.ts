@@ -4,6 +4,7 @@ import { ServerMessageEnterRoom } from "../protobuf/holdem/req_th_enter_room_pb"
 import { RoomRecord } from "../protobuf/holdem/define_pb";
 import TexasGame from "./texas/TexasGame";
 import GameUtil, { GameEnterType } from "./util/GameUtil";
+import TexasGameplayData from "../crazyPoker/gameplay/texas/data/TexasGameplayData";
 
 export class GameCache {
 
@@ -411,6 +412,11 @@ export class GameCache {
      * 房间记录信息
      */
     public _roomRecord: RoomRecord.AsObject = null;
+
+    /**
+     * 德州玩法数据
+     */
+    public _texasData: TexasGameplayData = new TexasGameplayData();
 
     //存储bb开关的状态 room_id || match_id
     private bb_status_map = {};

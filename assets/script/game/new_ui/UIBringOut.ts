@@ -9,11 +9,75 @@ import { GameCache } from "../GameCache";
 
 const { ccclass, menu } = cc._decorator;
 
+/**
+ * 带出筹码数据
+ */
 export type OutClipsData = {
-    currentMinRate: number,// 当前最小倍数
-    tableChips: number// 玩家剩余记分牌
-}
+    /**
+     * 当前最小倍数
+     */
+    currentMinRate: number,
 
+    /**
+     * 玩家剩余记分牌
+     */
+    tableChips: number,
+};
+
+/**
+ * 带入筹码数据
+ */
+export type AddClipsDataOut = {
+    /**
+     * 大盲注金额
+     */
+    bigBlind: number;
+
+    /**
+     * 小盲注金额
+     */
+    smallBlind: number;
+
+    /**
+     * 最小带入倍数（相对于大盲）
+     */
+    currentMinRate: number;
+
+    /**
+     * 最大带入倍数（相对于大盲）
+     */
+    currentMaxRate: number;
+
+    /**
+     * 玩家持有总金豆
+     */
+    totalCoin?: number;
+
+    /**
+     * 当前桌面积分牌
+     */
+    tableChips: number;
+
+    /**
+     * 藏钱记分牌
+     */
+    storeChips: number;
+
+    /**
+     * 是否来自设置界面
+     */
+    isFromSetting?: boolean;
+
+    /**
+     * 指定最小带入额（含押金），单位同 bigBlind
+     */
+    minBringIn?: number;
+
+    /**
+     * 钱包列表
+     */
+    wallets?: any;
+};
 
 @ccclass
 @menu('脚本分组/game/new_ui/UIBringOut')
@@ -34,11 +98,11 @@ export default class UIBringOut extends UIBasePlus {
     $commit: cc.Node = null;
     $enable: cc.Node = null;
 
-    $close:cc.Node = null;
+    $close: cc.Node = null;
 
     MaxRate: number = 0;
-    CurMinOutBeans:number = 0;
-    Curmultiple:number = 0;//当前倍数
+    CurMinOutBeans: number = 0;
+    Curmultiple: number = 0;//当前倍数
 
     sendCoin: number = 0;//发送货币值
     ownCoin: number = 0;//拥有的货币值
@@ -62,7 +126,7 @@ export default class UIBringOut extends UIBasePlus {
 
     onShow(data: OutClipsData): void {
         super.onShow(data);
-        
+
         if (null != data) {
 
             //textCoin.text = $"{GameCache.Instance.carry_small* addClipsData.currentMinRate}";
@@ -119,26 +183,22 @@ export default class UIBringOut extends UIBasePlus {
 
     onSliderChange(rate: number) {
 
-        if (this.MaxRate== rate && this.MaxRate>0)
-        {
-            this.cc_Label$coin.string = `${StringHelper.GetLongString(this._param.tableChips/100*100 - this.CurMinOutBeans) }`;
+        if (this.MaxRate == rate && this.MaxRate > 0) {
+            this.cc_Label$coin.string = `${StringHelper.GetLongString(this._param.tableChips / 100 * 100 - this.CurMinOutBeans)}`;
         }
-        else if(this._param.tableChips > this.CurMinOutBeans * 2)
-        {
-            if ((rate) * this.Curmultiple > this.CurMinOutBeans)
-            {
-                this.cc_Label$coin.string = `${StringHelper.GetLongString(rate * this.Curmultiple*100)}`;
+        else if (this._param.tableChips > this.CurMinOutBeans * 2) {
+            if ((rate) * this.Curmult
+            iple > this.CurMinOutBeans) {
+                this.cc_Label$coin.string = `${StringHelper.GetLongString(rate * this.Curmultiple * 100)}`;
             }
-            else
-            {
-                this.cc_Label$coin.string = `${ StringHelper.GetLongString(this.CurMinOutBeans + rate * this.Curmultiple*100)}`;
+            else {
+                this.cc_Label$coin.string = `${StringHelper.GetLongString(this.CurMinOutBeans + rate * this.Curmultiple * 100)}`;
             }
         }
-        else if (  this._param.tableChips <=this.CurMinOutBeans * 2&& this._param.tableChips> this.CurMinOutBeans)
-        {
-            this.cc_Label$coin.string= `${ StringHelper.GetLongString(this._param.tableChips/100*100 - this.CurMinOutBeans)}`;
+        else if (this._param.tableChips <= this.CurMinOutBeans * 2 && this._param.tableChips > this.CurMinOutBeans) {
+            this.cc_Label$coin.string = `${StringHelper.GetLongString(this._param.tableChips / 100 * 100 - this.CurMinOutBeans)}`;
         }
-        
+
     }
 
     hideUI() {
@@ -147,7 +207,7 @@ export default class UIBringOut extends UIBasePlus {
 
     //打开钱包列表
     goWalletList() {
-    
+
         UIComponent.open(UIDefine.UIClubWalletList, {
             data: this.wallet,
             selected_wallet: this.selected_wallet,

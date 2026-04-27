@@ -18,17 +18,46 @@ import UIClubWalletList from "./UIClubWalletList";
 
 const { ccclass, menu } = cc._decorator;
 
+/**
+ * 带入筹码数据
+ */
 export type AddClipsData = {
-    bigBlind: number; // 大盲
-    smallBlind: number; // 小盲
-    currentMinRate: number; // 当前最小带入倍数
-    currentMaxRate: number; // 当前最大带入倍数
-    totalCoin?: number; // 总金豆
-    tableChips: number; // 玩家剩余记分牌
-    wallets?: any; //钱包列表
+    /**
+     * 大盲注金额
+     */
+    bigBlind: number;
+    /**
+     * 小盲注金额
+     */
+    smallBlind: number;
+    /**
+     * 最小带入倍数（相对于大盲）
+     */
+    currentMinRate: number;
+    /**
+     * 最大带入倍数（相对于大盲）
+     */
+    currentMaxRate: number;
+    /**
+     * 玩家持有总金豆
+     */
+    totalCoin?: number;
+    /**
+     * 当前桌面积分牌
+     */
+    tableChips: number;
+    /**
+     * 钱包列表
+     */
+    wallets?: any;
+    /**
+     * 是否从菜单进入
+     */
     fromMenu?: boolean;
-    /** 直接指定最小带入（已含蘑菇押金），单位与 bigBlind 一致 */
-    minBringIn?: number,
+    /**
+     * 指定最小带入额（含押金），单位同 bigBlind
+     */
+    minBringIn?: number;
 };
 
 @ccclass

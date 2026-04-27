@@ -85,6 +85,7 @@ import UIOperationComponent, {
 } from "./../ui/UIOperationComponent";
 import UITexas, { PotInfo, PublicCardInfo } from "./../UITexas";
 import { UITexasModel } from "./../UITexasModel";
+import { AddClipsDataOut } from "../new_ui/UIBringOut";
 //const PBTypes = Def.Types;
 
 class SeatMoveStruct {
@@ -716,7 +717,11 @@ export default class TexasGame {
     }
     //更新房间数据
     public UpdateRoom(obj: ServerMessageEnterRoom.AsObject) {
+
         this.UpdateRoomCommon(obj);
+
+        GameCache.Instance._texasData._isCriticalHitOpen = obj.handInfo.criticalHitOpen;
+        GameCache.Instance._texasData._curCriticalHitRound = obj.handInfo.conRounds;
     }
 
     /**
@@ -1485,6 +1490,7 @@ export default class TexasGame {
     }
 
     private UpdateCriticalHitConfig(rec: ServerMessageEnterRoom.AsObject): void {
+
         if (this.squidEnabled) {
             this.subGamePlayAnte = 0;
             this.criticalHitEnabled = false;
@@ -1494,7 +1500,7 @@ export default class TexasGame {
             return;
         }
 
-        console.log(　"房间信息：" + JSON.stringify( rec ) );
+        console.log("房间信息：" + JSON.stringify(rec));
 
         const roomInfoAny = rec.roomInfo as any;
         const handInfoAny = rec.handInfo as any;
@@ -3866,8 +3872,13 @@ export default class TexasGame {
             }
         )
     }
-    public ShowAutoAddChips(wallets) {
-        UIComponent.Instance.ShowUI(
+
+    /**
+     * 显示自动带入界面
+     * @param wallets 钱包信息数组
+     */
+    public ShowAutoAddChips(wallets: any[]): void {
+        UIComponent.Instance.ShowUI<AddClipsDataOut>(
 
             PrefabUI.UIAutoBringIn,
             {

@@ -1990,6 +1990,25 @@ export default class TexasGameProtocol {
             }
             this.game.UpdateRoomDes();
         }
+
+        //todo 以后已该逻辑为准
+        if (GameCache.Instance._texasData._isSquidEnable) {
+            if (GameCache.Instance._texasData._squidMode == 1) {
+                GameCache.Instance._texasData._squidMaxNum = rec.squidTotalLimit;
+            }
+            else {
+                GameCache.Instance._texasData._isGameInSquidRoundReal = false;
+            }
+        } else {
+
+            if (GameCache.Instance._texasData._isCriticalHitEnable) {
+                GameCache.Instance._texasData._isCriticalHitOpen = rec.criticalHitOpen;
+                if (rec.criticalHitOpen) {
+
+                }
+            }
+        }
+
     }
 
 
