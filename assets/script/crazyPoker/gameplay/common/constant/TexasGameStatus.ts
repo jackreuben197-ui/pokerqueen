@@ -6,7 +6,7 @@
 /**
  * 牌局游戏状态
  */
-export enum TexasGameStatus {
+export enum GameState {
     /**
      * 未开始
      */

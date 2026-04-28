@@ -418,6 +418,291 @@ export class GameCache {
      */
     public _texasData: TexasGameplayData = new TexasGameplayData();
 
+    /**
+     * 房间持续时间（秒）
+     */
+    public _roomDurationTime: number = 0;
+
+    /**
+     * 房间开始时间（Unix时间戳）
+     */
+    public _roomStartTime: number = 0;
+
+    /**
+     * 房间结束时间（Unix时间戳）
+     */
+    public _roomEndTime: number = 0;
+
+    /**
+     * 服务ID
+     */
+    public _serviceId: string = "";
+
+    /**
+     * Straddle最大值
+     */
+    public _straddleMax: number = 0;
+
+    /**
+     * 二副牌开关
+     */
+    public _secondPcsOn: boolean = false;
+
+    /**
+     * 已选择的outs
+     */
+    public _selectedOuts: number = 0;
+
+    /**
+     * 带入限制类型
+     */
+    public _bringInLimitType: number = 0;
+
+    /**
+     * 弃牌开关
+     */
+    public _muck: number = 0;
+
+    /**
+     * 是否显示剩余时间
+     */
+    public _isShowLeftTime: boolean = false;
+
+    /**
+     * 桌布标签
+     */
+    public _tableSkin: string = "";
+
+    /**
+     * 共享桌类型
+     */
+    public _shareTableType: number = 0;
+
+    /**
+     * 来源类型
+     */
+    public _originType: number = 0;
+
+    /**
+     * 朋友桌邀请码
+     */
+    public _friendsTableCode: string = "";
+
+    /**
+     * 朋友桌带入限制
+     */
+    public _friendsTableLimitBringIn: boolean = false;
+
+    /**
+     * 聊天类型
+     */
+    public _chatType: number = 0;
+
+    /**
+     * 自动充值
+     */
+    public _autoRecharge: number = 0;
+
+    /**
+     * 当前房间ID
+     */
+    public _currentRoomID: number = 0;
+
+    /**
+     * 是否是房管
+     */
+    public _isRoomManager: boolean = false;
+
+    /**
+     * 是否有解散房间权限
+     */
+    public _isHasDisbandRoomPrivileges: boolean = false;
+
+    /**
+     * 是否有离开权限
+     */
+    public _isHasUseLeavePrivileges: boolean = false;
+
+    /**
+     * 是否有站起权限
+     */
+    public _isHasUserStandUpPrivileges: boolean = false;
+
+    /**
+     * 是否有查看视频权限
+     */
+    public _isHasViewVideoPrivileges: boolean = false;
+
+    /**
+     * 创建者ID
+     */
+    public _creatorId: number = 0;
+
+    /**
+     * 结算类型
+     */
+    public _settlementType: number = 0;
+
+    /**
+     * 抽水比例开关
+     */
+    public _poolRateSwitch: number = 0;
+
+    /**
+     * 抽水比例
+     */
+    public _poolRate: number = 0;
+
+    /**
+     * 总手数开关
+     */
+    public _totalHandSwitch: number = 0;
+
+    /**
+     * 总手数
+     */
+    public _totalHand: number = 0;
+
+    /**
+     * 随机座位
+     */
+    public _randomSeat: number = 0;
+
+    /**
+     * 强制亮牌
+     */
+    public _forceShowCard: number = 0;
+
+    /**
+     * 鱿鱼强制亮牌
+     */
+    public _squidForceShowCard: number = 0;
+
+    /**
+     * 仅iOS
+     */
+    public _onlyIOS: number = 0;
+
+    /**
+     * 游戏手数限制
+     */
+    public _playHandsLimit: number = 0;
+
+    /**
+     * 余额不足关闭时长
+     */
+    public _notEnoughCloseDuration: number = 0;
+
+    /**
+     * 游戏时长类型
+     */
+    public _playDurationType: number = 0;
+
+    /**
+     * 延迟限制次数
+     */
+    public _limitDelayTimes: number = 0;
+
+    /**
+     * 查看手牌
+     */
+    public _lookHandCard: number = 0;
+
+    /**
+     * 区块链类型
+     */
+    public _blockchainType: number = 0;
+
+    /**
+     * 带入等于庄家
+     */
+    public _bringinEqualLeader: number = 0;
+
+    /**
+     * 最小玩家筹码比例
+     */
+    public _minPlayerChipRate: number = 0;
+
+    /**
+     * 最大带入总比例
+     */
+    public _maxBringinTotalRate: number = 0;
+
+    /**
+     * Jackpot ID
+     */
+    public _jackpotId: number = 0;
+
+    /**
+     * 自动开始最小玩家数
+     */
+    public _autoStartMinPlayer: number = 0;
+
+    /**
+     * 最小玩家数
+     */
+    public _minPlayer: number = 0;
+
+    /**
+     * 操作持续时间
+     */
+    public _opDuration: number = 0;
+
+    /**
+     * 轮盘模板ID
+     */
+    public _wheelTemplateId: number = 0;
+
+    /**
+     * 反作弊类型
+     */
+    public _antiCheatType: number = 0;
+
+    /**
+     * 视频模式
+     */
+    public _videoModel: number = 0;
+
+    /**
+     * 普通反作弊顺序类型
+     */
+    public _normalAntiCheatOrderType: number = 0;
+
+    /**
+     * 普通反作弊麦克风类型
+     */
+    public _normalAntiCheatOrderMicType: number = 0;
+
+    /**
+     * 反作弊时间限制
+     */
+    public _antiCheatTimeLimit: number = 0;
+
+    /**
+     * 视频效果类型
+     */
+    public _videoEffectType: number = 0;
+
+    /**
+     * 视频省电模式
+     */
+    public _videoPowerSaving: number = 0;
+
+    /**
+     * 视频验证类型
+     */
+    public _videoVerifyType: number = 0;
+
+    /**
+     * 白名单
+     */
+    public _isWhiteList: boolean = false;
+
+    /**
+     * 多语言
+     */
+    public _multiLanguage: any = null;
+
     //存储bb开关的状态 room_id || match_id
     private bb_status_map = {};
 
