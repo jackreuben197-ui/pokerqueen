@@ -97,6 +97,12 @@ export default class UITexas extends BaseScene {
     btn_msg: cc.Node = null;
     btn_report: cc.Node = null;
     btn_poker: cc.Node = null;
+    // main_menu 按钮
+    btn_emoji: cc.Node = null;
+    btn_effect: cc.Node = null;
+    btn_audio: cc.Node = null;
+    btn_camera: cc.Node = null;
+    chatBtn: cc.Node = null;
     //座位节点容器
     seats_content: cc.Node = null;
 
@@ -264,6 +270,13 @@ export default class UITexas extends BaseScene {
         this.btn_msg = this.getChildNodeOrComponent("btn_msg");
         this.btn_report = this.getChildNodeOrComponent("btn_report");
         this.btn_poker = this.getChildNodeOrComponent("btn_poker");
+
+        // main_menu 按钮（main_menu 在 side_btns 下，load_all_object 已递归索引）
+        this.btn_emoji = this.getChildNodeOrComponent("btn_emoji");
+        this.btn_effect = this.getChildNodeOrComponent("btn_effect");
+        this.btn_audio = this.getChildNodeOrComponent("btn_audio");
+        this.btn_camera = this.getChildNodeOrComponent("btn_camera");
+        this.chatBtn = this.getChildNodeOrComponent("chatBtn");
 
         this.seats_content = this.getChildNodeOrComponent("seats_content");
 
@@ -478,6 +491,13 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.btn_msg, this.click_side_button);
         this.setButtonClick(this.btn_report, this.click_side_button);
         this.setButtonClick(this.btn_poker, this.click_side_button);
+
+        // main_menu 按钮
+        this.setButtonClick(this.btn_emoji, this.click_btn_emoji);
+        this.setButtonClick(this.btn_effect, this.click_btn_effect);
+        this.setButtonClick(this.btn_audio, this.click_btn_audio);
+        this.setButtonClick(this.btn_camera, this.click_btn_camera);
+        this.setButtonClick(this.chatBtn, this.click_chatBtn);
         ///////////////////////////
 
         this.setButtonClick(this.Button_Delay, this.onClickDelay);
@@ -753,5 +773,22 @@ export default class UITexas extends BaseScene {
                 this.Click_Cursituation_btn();
                 break;
         }
+    }
+
+    // main_menu 按钮点击
+    private click_btn_emoji() {
+        UIComponent.open(UIDefine.UIBlank_dialog, { title: "表情" });
+    }
+    private click_btn_effect() {
+        UIComponent.open(UIDefine.UIBlank_dialog, { title: "特效" });
+    }
+    private click_btn_audio() {
+        UIComponent.open(UIDefine.UIBlank_dialog, { title: "语音" });
+    }
+    private click_btn_camera() {
+        UIComponent.open(UIDefine.UIBlank_dialog, { title: "摄像头" });
+    }
+    private click_chatBtn() {
+        UIComponent.open(UIDefine.UIBlank_dialog, { title: "聊天" });
     }
 }

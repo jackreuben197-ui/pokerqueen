@@ -1,0 +1,1 @@
+function e(e){return e===`founder`||e===`admin`||e===`agent`||e===`player`?e:`player`}function t(e){return e?Array.isArray(e)?e[0]||``:e:``}function n(n){return{memberId:t(n.params.memberId)||`0`,identity:e(t(n.query.identity)),isBoundAgent:t(n.query.bound)===`1`,name:t(n.query.name)||`成员`,uid:t(n.query.uid)||`--`}}export{n as t};

@@ -1198,6 +1198,13 @@ export const UIDefine = {
         Name: "UITexasHistory",
         Bundle: 'texas',
         Path: "prefab/widgetLayer/UITexasHistory",
+    },
+    UIBlank_dialog: {
+        UIType: UIType.CommonUI,
+        Name: "UIBlank_dialog",
+        Bundle: 'texas',
+        Path: "prefab/widgetLayer/Blank_Dialog",
+        DisAdaptScreen: true,
     }
 
 
