@@ -13,6 +13,7 @@ import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import ProcedureBase from "./ProcedureBase";
 import { i18nMgr } from "../i18n/i18nMgr";
 import ReconnectComponent from "../funcomponent/ReconnectComponent";
+import TexasGameplayEntrance from "../crazyPoker/gameplayMisc/entrance/TexasGameplayEntrance";
 
 /**
  * 进入牌桌进程
@@ -21,12 +22,26 @@ export default class ProcedureEnterTexas extends ProcedureBase {
 
     Name: string = "ProcedureEnterTexas";
 
+    /**
+     * 德州玩法入口实例
+     */
+    private _entrance: TexasGameplayEntrance = null;
+
     lateEnter(param?: any) {
         super.lateEnter(param);
 
         GC.notify.register(ProtocolCode.Protocol_Holdem_Rooms, this.OnMsgHoldemRooms, this);
         //显示房间进入loading
         UIComponent.Instance.ShowUI(PrefabUI.UIPreloading, { pre_define: Pre_Texas_Define, complete: this.onComplete.bind(this), error: this.errorHandler.bind(this) });
+
+        // 创建德州玩法入口
+        const entrance = new TexasGameplayEntrance(
+            GameCache.Instance.room_type,
+            GameCache.Instance.match_id,
+            GameCache.Instance.room_id
+        );
+        this._entrance = entrance;
+
 
     }
 
@@ -37,6 +52,7 @@ export default class ProcedureEnterTexas extends ProcedureBase {
 
         if (rec == null) {
             UIComponent.Instance.Toast(i18nMgr.Get("EnterForegroundFail"));
+            this._entrance._roomInfoReject(new Error("room info is null"));
             this.ReturnBackH5();
             return;
         }
@@ -44,6 +60,7 @@ export default class ProcedureEnterTexas extends ProcedureBase {
         if (rec.status != 0) {
             //TODO toast无法生效，返回H5应该是把cc卸载掉了
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
+            this._entrance._roomInfoReject(new Error(`status=${rec.status}`));
             this.ReturnBackH5();
             return;
         }
@@ -54,6 +71,7 @@ export default class ProcedureEnterTexas extends ProcedureBase {
         }
         else {
             UIComponent.Instance.Toast(i18nMgr.Get("EnterForegroundFail"));
+            this._entrance._roomInfoReject(new Error("roomsList is empty"));
             this.ReturnBackH5();
             return;
         }
@@ -61,6 +79,7 @@ export default class ProcedureEnterTexas extends ProcedureBase {
         // 查看房间数据是否合法
         if (GameCache.Instance._roomRecord?.status == 3) {
             UIComponent.Instance.Toast(i18nMgr.Get("GameRoom_ForceCloseTips"));
+            this._entrance._roomInfoReject(new Error("room status=3"));
             this.ReturnBackH5();
             return;
         }
@@ -69,7 +88,12 @@ export default class ProcedureEnterTexas extends ProcedureBase {
             //TODO 暂时不处理
         }
 
+        // 设置房间信息并 resolve Promise
+        this._entrance._roomInfo = GameCache.Instance._roomRecord;
+        this._entrance._roomInfoResolve(GameCache.Instance._roomRecord);
+
         GameCache.Instance.enter_param = this.param;
+
         ProcedureManager.StartProcedure(ProcedureEnum.Texas, this.param);
     }
 
@@ -95,30 +119,13 @@ export default class ProcedureEnterTexas extends ProcedureBase {
     }
 
     onComplete() {
-        this.RequestRoomInfo();
+        // this.RequestRoomInfo();
+        // 开始进入前台
+        this._entrance.enterForegroundAsync();
     }
     errorHandler() {
         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
         ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { mode: 1, game_enter_type: 0 });
     }
 
-    /**
-     * 请求房间信息
-     */
-    RequestRoomInfo() {
-
-        let send_obj = {
-            Code: ProtocolCode.Protocol_Holdem_Rooms,
-            RoomID: 0,
-            MatchID: 0,
-            Body: {
-                roomIdList: [GameCache.Instance.room_id],
-                // roomIdList: [12],
-                rpcId: 1,
-            },
-        }
-
-        ProtocolAgency.Send<ClientMessageRooms.AsObject>(send_obj);
-
-    }
 }
