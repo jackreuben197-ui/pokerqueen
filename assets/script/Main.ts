@@ -23,7 +23,7 @@ import UIComponent, { PrefabUI } from "./ui/UIComponent";
 import H5MsgMgr from "./H5MsgMgr";
 import * as MainUtils from "./MainUtils";
 ///////////////////////////////////////////////
-cc.macro.ENABLE_TRANSPARENT_CANVAS = true;
+cc.macro.ENABLE_TRANSPARENT_CANVAS = false;
 const { ccclass, property } = cc._decorator;
 
 @ccclass
