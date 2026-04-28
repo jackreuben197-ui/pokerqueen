@@ -19,6 +19,7 @@ import { ClubCache } from "./frame/data/club/ClubCache";
 import LoginSession from "./session/LoginSession";
 import PacketHead from "./net/websocket/PacketHead";
 import ProtocolAgency from "./net/websocket/ProtocolAgency";
+import { ProtocolCode } from "./net/websocket/ProtocolCode";
 import { i18nMgr } from "./i18n/i18nMgr";
 
 // ==================== SDK 动态加载 ====================
@@ -362,6 +363,46 @@ export async function registerH5Listeners(): Promise<void> {
         (roomListModel as any)._reqing = false;
         console.log('[H5Bridge] syncRoomsList 缓存完成, 共', records.length, '个房间');
     });
+
+    // 监听服务器推送的房间变更通知（code 140），实时更新缓存
+    GC.notify.register(
+        ProtocolCode.Protocol_Holdem_RoomChangeNotify,
+        (rec: { room?: any; changeType: number; roomChange?: any }) => {
+            if (!rec || !rec.room) return;
+
+            const roomListModel = GC.data.lobby.roomList;
+            const list = (roomListModel as any)._list as LobbyRoomListItem[];
+            if (!list) return;
+
+            const rid = rec.room.rid;
+            const existIndex = list.findIndex((r) => r.rid === rid);
+
+            if (rec.changeType === 1) {
+                // 新增房间
+                if (existIndex === -1) {
+                    list.push(new LobbyRoomListItem(rec.room));
+                    console.log('[H5Bridge] RoomChangeNotify 新增房间:', rid);
+                }
+            } else if (rec.changeType === 2) {
+                // 更新房间
+                if (rec.room.status === 5) {
+                    // 房间已结束，从缓存中移除
+                    if (existIndex !== -1) {
+                        list.splice(existIndex, 1);
+                        console.log('[H5Bridge] RoomChangeNotify 房间已结束，移除:', rid);
+                    }
+                } else if (existIndex !== -1) {
+                    list[existIndex] = new LobbyRoomListItem(rec.room);
+                    console.log('[H5Bridge] RoomChangeNotify 更新房间:', rid);
+                } else {
+                    // 缓存中不存在，按新增处理
+                    list.push(new LobbyRoomListItem(rec.room));
+                    console.log('[H5Bridge] RoomChangeNotify 更新时缓存未命中，已补入:', rid);
+                }
+            }
+        },
+        null,
+    );
 
     // ─── 网络消息转发 ─────────────────────────────────
 
