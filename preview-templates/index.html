@@ -36,7 +36,7 @@
     <!-- H5 层样式 -->
     <link rel="stylesheet" crossorigin href="./assets/css/vendor-vant-Vfr7xNh9.css">
     <link rel="stylesheet" crossorigin href="./assets/css/sync-QJZdmb-s.css">
-    <link rel="stylesheet" crossorigin href="./assets/css/index-ClCF23OJ.css">
+    <link rel="stylesheet" crossorigin href="./assets/css/index-Bb3FFxVt.css">
 
     <!-- H5 层：Vite 模块预加载 -->
     <link rel="modulepreload" crossorigin href="./assets/js/_plugin-vue_export-helper-qnqsa0oc.js">
@@ -49,14 +49,14 @@
     <link rel="modulepreload" crossorigin href="./assets/js/i18n-xioFIr7p.js">
     <link rel="modulepreload" crossorigin href="./assets/js/userInfo-Bli7eP5_.js">
     <link rel="modulepreload" crossorigin href="./assets/js/game-BIwMPP1l.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/sync-Ba03A1T0.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/core-CG-eTYkE.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/ws-CIW4klQD.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/user-e8brQC_x.js">
-    <link rel="modulepreload" crossorigin href="./assets/js/loginSession-B3_u1LsY.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/sync-D4T0fLnv.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/core-CyZlp-yy.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/ws-a9cTf65H.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/user-CfKGUUCG.js">
+    <link rel="modulepreload" crossorigin href="./assets/js/loginSession-CNXx51k8.js">
 
     <!-- H5 层：Vite 主入口 -->
-    <script type="module" crossorigin src="./assets/js/index-0AvMEzUG.js"></script>
+    <script type="module" crossorigin src="./assets/js/index-Cu2b4db3.js"></script>
 
     <style>
         #app {
@@ -69,6 +69,22 @@
             display: none;
         }
     </style>
+
+    <!-- CC 编辑器预览：拦截 H5 的 i18n fetch，绕过 Cocos 资源管线 -->
+    <script>
+    (function () {
+        var origFetch = window.fetch;
+        window.fetch = function (input, init) {
+            var url = typeof input === 'string' ? input : input instanceof Request ? input.url : String(input);
+            if (/assets\/resources\/config\/USER_\w+\.txt/.test(url)) {
+                var m = url.match(/USER_\w+\.txt/);
+                if (m) url = './h5-i18n/' + m[0];
+                input = typeof input === 'string' ? url : new Request(url, input);
+            }
+            return origFetch.call(this, input, init);
+        };
+    })();
+    </script>
 </head>
 
 <body>
@@ -172,7 +188,7 @@
     <!-- H5 层：旧版浏览器兼容 -->
     <script nomodule>!function(){var e=document,t=e.createElement("script");if(!("noModule"in t)&&"onbeforeload"in t){var n=!1,e.addEventListener("beforeload",(function(e){if(e.target===t)n=!0;else if(!e.target.hasAttribute("nomodule")||!n)return;e.preventDefault()}),!0),t.type="module",t.src=".",e.head.appendChild(t),t.remove()}}();</script>
     <script nomodule crossorigin id="vite-legacy-polyfill" src="./assets/js/polyfills-legacy-CfY2WXdA.js"></script>
-    <script nomodule crossorigin id="vite-legacy-entry" data-src="./assets/js/index-legacy-DIhI8YO0.js">System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))</script>
+    <script nomodule crossorigin id="vite-legacy-entry" data-src="./assets/js/index-legacy-uNZjG_Mw.js">System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))</script>
 </body>
 
 </html>

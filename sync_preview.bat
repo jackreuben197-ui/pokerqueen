@@ -1,7 +1,7 @@
 @echo off
 
 echo ============================================
-echo [1/4] Git pull ..\h5-game
+echo [1/5] Git pull ..\h5-game
 echo ============================================
 pushd "..\h5-game"
 if %errorlevel% neq 0 (
@@ -14,7 +14,7 @@ git reset --hard origin/master
 echo.
 
 echo ============================================
-echo [2/4] Build h5-game
+echo [2/5] Build h5-game
 echo ============================================
 call pnpm build
 if %errorlevel% neq 0 (
@@ -27,7 +27,7 @@ popd
 echo.
 
 echo ============================================
-echo [3/4] Copy dist to build-templates\web-mobile\
+echo [3/5] Copy dist to build-templates\web-mobile\
 echo ============================================
 xcopy /E /Y /Q "..\h5-game\dist\*" "build-templates\web-mobile\"
 if %errorlevel% neq 0 (
@@ -38,9 +38,15 @@ if %errorlevel% neq 0 (
 echo.
 
 echo ============================================
-echo [4/4] Run sync:template
+echo [4/5] Run sync:template
 echo ============================================
 call npm run sync:template
+echo.
+
+echo ============================================
+echo [5/5] Merge i18n files
+echo ============================================
+call npm run merge:i18n
 echo.
 
 echo ============================================

@@ -364,7 +364,7 @@ export default class UITexasMenu extends UIBasePlus {
     click_ower_fund() {}
     click_insurance() {
         this.click_black();
-        UIComponent.open(UIDefine.UIInsurance);
+        UIComponent.open(UIDefine.UIInsurance, { type: 1, roomData: { room_id: GameCache.Instance.room_id, match_id: GameCache.Instance.match_id } });
     }
     click_setting() {
         this.click_black();

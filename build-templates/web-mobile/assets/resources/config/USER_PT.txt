@@ -1,5 +1,4 @@
 A=Português
-（葡语）
 4=Erro de conexão, favor tentar novamente. 
 error0=Sucesso
 error995=Solicitação inválida
@@ -117,7 +116,6 @@ roomError6_5=Você está fazendo login em um novo aparelho, por favor valide seu
 roomError6_6=Outros erros
 roomError6_7=Sua conta foi desabilitada
 roomError6_8=Erro na conta, não foi possível efetuar o login
-
 roomError12_1=O jogo foi finalizado
 roomError12_2=A sala foi desabilitada
 roomError12_3=Sala cheia, tente novamente mais tarde
@@ -129,7 +127,6 @@ roomError18_4=Limite de crédito insuficiente
 roomError18_5=Não é permitido se levantar durante um jogo
 roomError18_6=Erro desconhecido
 roomError18_7=Jogadores com localização similar
-
 roomError18_12=Não conseguiu sentar e saiu da mesa mais cedo
 roomError18_13=Sua conta foi bloqueada
 roomError19_1=A operação falhou, abra novamente a caixa de operação
@@ -162,7 +159,7 @@ roomError171_8=Pedido de re-buy falho
 roomError171_9=Time não possui crédito suficiente no clube
 roomError171_10=Não foi possível realizar o re-buy, mesa em divisão
 roomError175_22=Notificação de janela de re-buy
-roomError236_1=Erro
+roomError236_1=Falha
 roomError236_2=UC insuficientes
 roomError12_5=Você está no meio do jogo, não pode assistir partidas
 roomError28_1=UC insuficientes
@@ -171,7 +168,6 @@ roomError28_9=A sala está prestes a encerrar, não é possível realizar o buy-
 roomError28_15=Erro na conta, não foi possível entrar no jogo, por favor entre em contato com o administrador
 roomError28_16=Clube do jogador expulso pela união
 roomError28_17=Não é possível efetuar o buy-in quando clubes e/ou uniões quando elas estão desligadas
-roomError300_2=Carteira bloqueada
 roomError300_2=UC insuficientes para ativar o bate papo 
 roomError28_18=Sua carteira foi desabilitada, por favor entre em contato com nossa central
 Text_TopRemind=Quantidade de UC
@@ -1522,7 +1518,6 @@ adaptation20060=Resgatar##
 adaptation20061=Reserva ## segundos
 adaptation20062=Adquirindo ##s
 adaptation20063=Distribuir valor para ##
-
 adaptation20064=O aplicativo será fechado, por favor reinicie para iniciar o upgrade
 adaptation20065=Duração do jogo:
 adaptation20066=Ganhos do jogo ##
@@ -1779,7 +1774,6 @@ WalletTranschipsBindingCard_rightNowAdd=Adicione agora
 UIData_ShowProblem_zIwG=Dados básicos
 UIData_ShowProblem_eZys=Dados avançados de membros VIP
 UIData_ShowProblem_SM0y=
-Total de mãos: As mãos que jogadores usam em ALLIN.\n\nTotal de jogos: todos os jogos que entrou em ALLIN.\n\nVPIP: A proporção de jogos em que o jogador raises ou call antes do flop em todas as suas mãos. \n\nVitórias: Quantidade de partidas que o jogador ganhou após raise ou call antes do flop.\n\nResultado médio: O resultado médio de todos os jogos disputados.\n\nAvg buy-in: O buy-in médio de todos os jogos jogados.
 UIData_ShowProblem_3xqp=VPIP: A proporção de jogadores que colocam UC ativamente no pool de apostas antes do flop. A taxa de entrada no pool de apostas reflete como um jogador joga na mão (jogo solto ou preso) {\n}- Pré-Flop Raise (PFR): A taxa de pré-flop aumenta para dentro do pool. Calculado pelo número de aumentos de pré-flop / o número de entradas de pré-flop (3Bet): a taxa de aumento de pré-flop depois que alguém aposta e aumenta. O cálculo é o número de reavaliações/número de vezes no pool de apostas contínuas (CBet): Um jogador que aposta ou aumenta ativamente na rodada anterior e depois volta a apostar ativamente na rodada atual. O cálculo é o número de apostas sustentadas/número de apostas ativas ou aumentos na rodada anterior. \Agressividade (AF): Quanto maior for este valor, mais agressivo será o jogador, e mais inclinado a apostar/aumentar. É calculado como {(número de apostas + número de aumentos)/número de aumentos}/50 (a divisão por 50 é para converter para uma porcentagem, que sela o valor em 100%, ou seja, o valor máximo original de 50) \n Taxa de Showdown (WTSD): ou seja, a taxa de showdown, que é a porcentagem de vezes que um jogador vê uma rodada flopada e joga para um showdown. É calculado como o número de mãos no showdown/o número de mãos no flop. \All-in ganha (ALL-wins): Uma estatística da taxa de ganho da mão de um jogador depois de ter feito all-in. Um valor mais alto significa que o jogador raramente cambaleia e basicamente ganha ao fazer all-in. \Ganham no pool (Ganha): A proporção de jogadores que ganham nas mãos que estão no pool.
 UIMatchFilter_4Rj47D=Limpar
 UIMatchFilter_DPY5kR=Jogo
@@ -1998,11 +1992,6 @@ UITexasRule_title116=Introdução e Regras do Texas
 UITexasRule_title117=Como jogar
 UITexasRule_title118=Regras do Short Deck
 UITexasRule_detail19=1.Existem quatro rodadas de jogos no Texas Hold’em;
-2.Pre-flop: Cada jogador receberá 2 cartas e então iniciará a primeira rodada de jogos;
-3:Flop: Após as três cartas comunitárias serem distribuídas, os jogadores restantes da primeira rodada de jogo iniciarão a segunda rodada;
-4.Turn: A terceira rodada de jogos após a distribuição da 4ª carta comunitária;
-5.River: A quarta rodada de jogos após a distribuição da 5ª carta comunitária; 
-6.Depois que as quatro rodadas terminarem, todos os jogadores restantes devem mostrar suas cartas e o jogador com a mão mais alta ganha o pote.
 UITexasRule_detail20=O Texas Hold'em, que começou no Texas, nos Estados Unidos, no início do século 20, é o jogo de pôquer público mais popular na Europa e nos Estados Unidos, com uma história de centenas de anos. Texas Hold'em se tornou um jogo de pôquer preferido por entusiastas de xadrez e cartas de todo o mundo devido às suas características de ser fácil de aprender e difícil de dominar.
 UITexasRule_detail21=1. O Omaha é uma variante do Texas Hold'em. As regras básicas são as mesmas do Texas Hold'em, com apenas algumas diferenças. \n \n 2. O Omaha dá cinco ou seis cartas para cada jogador, enquanto o Texas Hold'em dá apenas duas; \n \n 3. Omaha deve usar 2 das 5 ou 6 cartas da mão para formar a melhor mão com 3 cartas da mesa; \n \n 4. Omaha é dividido em Omaha com limite de pool e Omaha sem limite, usamos as apostas com limite de pool em Omaha; \n \n 5.Pot Limit Omaha: Cada vez que um jogador aumenta, ele não pode exceder 1 vez o pool \n Fórmula de cálculo: Limite de aumento = valor empatado + valor empatado + pool atual, ou seja, o jogador precisa empatar o valor da aposta primeiro e, em seguida, coloque 1 vezes o pool após o empate.
 UITexasRule_detail22=Regras AOF: No estágio pré-flop, você só pode escolher ALL-in ou FOLD. \ n Após todos os jogadores agirem, os jogadores ALL-in irão comparar as cartas; \n \n Restrição de exibição de mãos: Depois que as cartas são distribuídas, eles não mostram imediatamente suas mãos. Você só pode ver sua mão quando for a vez do jogador agir.
@@ -2198,7 +2187,7 @@ MsgInfo_1003=Administrador do clube emitiu {0} para {1}
 MsgInfo_1004={1} O administrador do clube emitiu {0} para você, acesse [Minha mochila] para verificar
 MsgInfo_1005=A união emitiu {0} para seu clube, acesse [Minha Mochila] para verificar
 MsgInfo_1006=Você usa {0}*{1}
-MsgInfo_1007=Você registrou {2} com sucesso com {0}*{1}
+MsgInfo_1007=[Pedido de torneio] {0} Solicitar inscrição {2} {1}
 MsgInfo_10011001=Você ganhou {0} UC
 Cowboy_MsgInfo_2002=Jogadas encerradas
 MsgInfo_20032003=Erro na operação, você não está na sala. 
@@ -2351,8 +2340,6 @@ MTT-Rebuy rebuy server error=Erro no servidor
 MTT-Rebuy rebuy no more allow=Nao ha permissao para rebuy, rebuy cancelado
 MTT-Rebuy rebuy rejected=Rebuy rejeitado
 MTT-Rebuy rebuy is distributing=Redistribuindo mesa, aguarde para recompra
-roomError236_1=Falha
-roomError236_2=UC insuficientes
 roomError236_4=Não pode mais estender o tempo dessa jogada
 MTT_Official=MTT OFICIAL
 UIMatchMTTDetailList=Status^Jogadores^Premiação ^Mesas^Blinds
@@ -2428,7 +2415,6 @@ Tips_Withdraw_Confirm=Tem certeza que quer sacar {0} UC?
 Tips_UIClub_FundTake_OrderConfirm=Você concorda com a solicitação do usuário {0}(ID:{1}) de sacar {2} UC?
 MsgInfo_2003=[Pedido de recarga] {0} O jogador está solicitando a recarga de {1} UC
 MsgInfo_2004=[Pedido de saque] {0} O jogador está solicitando o saque de {1} UC
-MsgInfo_1007=[Pedido de torneio] {0} Solicitar inscrição {2} {1}
 MsgInfo_3003=Solicitação de inscrição no torneio {2} {1} efetuada, ingresse no horário informado
 MsgInfo_3004=Receba {2} de parcela de taxa de serviço de mesas regular agente{0}
 MsgInfo_3005=Receba {2} de parcela do seguro de jogo agente {0}
@@ -2548,7 +2534,6 @@ UINiuZaiInsurance_titleOne=Área de Jogos [acertar para obter recompensas corres
 UINiuZaiXiaZhuQu_content01=1. A zona de vitórias e derrotas: O cowboy vence, empate, o touro vence;
 UINiuZaiXiaZhuQu_content02=2. Área de cartas de qualquer jogadores: flush / straight / straight flush, par A
 UINiuZaiXiaZhuQu_content03=3. Área das cartas vencedoras: carta alta / um par, dois pares, three of a kind / straight, flush, full house, four of a kind / straight flush
-
 UINiuZai_high_one=carta alta / um par
 UINiuZaiXiaZhuQu_content04=Royal Flush
 UINiuZaiInsurance_titleTwo=Tamanho das cartas [ Independente de naipe ]
@@ -3152,13 +3137,8 @@ UIPayWithdrawBtn02=Verifique o histórico
 UIWithdrawTips001=Aguardando revisão do saque de UC, se você tiver alguma dúvida, copie o número do pedido e entre em contato com o atendimento ao cliente.
 UITexasRule_Introduce=<b><size=50>Introdução</size></b>\nO Texas Hold 'em, que começou no início do século 20, no Texas, é um jogo de poker muito popular na Europa e na América, com uma história de centenas de anos.\nTexas Hold 'em é um jogo de poker favorito pelos amantes de xadrez e cartas de todo o mundo.\n\n<b><size=50>Jogabilidade</size></b>\n1.Existem quatro rodadas de jogos no Texas Hold’em;\n2.Pre-flop: Cada jogador receberá 2 cartas e então iniciará a primeira rodada de jogos;\n3.Flop: Após as três cartas comunitárias serem distribuídas, os jogadores restantes da primeira rodada de jogo iniciarão a segunda rodada;\n4.Turn: A terceira rodada de jogos após a distribuição da 4ª carta comunitária;\n5.River: A quarta rodada de jogos após a distribuição da 5ª carta comunitária;\n6. Depois que as quatro rodadas terminarem, todos os jogadores restantes devem mostrar suas cartas e o jogador com a mão mais alta ganha o pote.\n\n<b><size=50>Ranking da mão de poker: </size></b>\nRoyal Flush > Straight Flush > Quadra > Full House > Flush > Straight > Trinca > Dois pares > Par > carta alta\n<b><size=50>Classificação do cartão:</size></b>\nA>K>O>J>10>9>8>7>6>5>4>3>2, independentemente do naípe.\n\n
 UIPlO4Rule_Introduce=<b><size=50>Introdução:</size></b>\n\nOmaha é muito semelhante ao Texas Hold’em, com um fator de mudança de jogo. Em vez de duas cartas de mçao, cada jogador recebe quatro a seis cartas.\nNo Omaha, os jogadores devem fazer a melhor mão possível com uma combinação de duas cartas da mão e três cartas comunitárias.\n\n<b><size=50>PLO4</size></b>\nNo Pot limit Omaha(mais conhecido como Omaha Poker), o máximo que um jogador pode apostar é o mesmo valor do pote. ¨4¨significa que quatro cartas serão distribuidas para cada jogador.\n<b><size=50>Jogabilidade:</size></b>\n1.Há quatro rodadas de jogos no Omaha 4 cartas;\n2.Pré-flop: Cada jogador receberá 4 cartas e então iniciará a primeira rodada de jogos;\n3.Flop:  Após as três cartas comunitárias serem distribuídas, os jogadores restantes da primeira rodada de jogo iniciarão a segunda rodada;\n4.Turn: A terceira rodada de jogos após a distribuição da 4ª carta comunitária;\n5.River: A quarta rodada de jogos após a distribuição da 5ª carta comunitária;\n6.Depois que as quatro rodadas terminarem, todos os jogadores restantes devem mostrar suas cartas e o jogador com a mão mais alta ganha o pote.\n<b><size=50>Ranking da mão:</size></b>\nRoyal Flush>Straight Flush>Quadra>Full House>Flush>Straight>Trinca>Dois pares>Par>carta alta\n<b><size=50>Classificação da carta</size></b>\nA>K>O>J>10>9>8>7>6>5>4>3>2, independentemente do naípe.\n\n
-
-
-
-
 UIPlO5Rule_Introduce=<b><size=50>Introdução</size></b>\nOmaha é muito semelhante ao Texas Hold’em, com um fator de mudança de jogo. Em vez de duas cartas de mçao, cada jogador recebe quatro a seis cartas.\nNo Omaha, os jogadores devem fazer a melhor mão possível com uma combinação de duas cartas da mão e três cartas comunitárias.\n\n<b><size=50>PLO5</size></b>\nNo Pot limit Omaha(mais conhecido como Omaha Poker), o máximo que um jogador pode apostar é o mesmo valor do pote. ¨5¨significa que cinco cartas serão distribuidas para cada jogador.\n\n<b><size=50>Jogabilidade</size></b>\n1.Há quatro rodadas de jogos no Omaha 5 cartas;\n2.Pré-flop: Cada jogador receberá 5 cartas e então iniciará a primeira rodada de jogos;\n3.Flop:  Após as três cartas comunitárias serem distribuídas, os jogadores restantes da primeira rodada de jogo iniciarão a segunda rodada;\n4.Turn: A terceira rodada de jogos após a distribuição da 4ª carta comunitária;\n5.River: A quarta rodada de jogos após a distribuição da 5ª carta comunitária;\n6.Depois que as quatro rodadas terminarem, todos os jogadores restantes devem mostrar suas cartas e o jogador com a mão mais alta ganha o pote.\nRanking da mão:\nRoyal Flush>Straight Flush>Quadra>Full House>Flush>Straight>Trinca>Dois pares>Par>carta alta\n<b><size=50>Classificação da carta</size></b>\nA>K>O>J>10>9>8>7>6>5>4>3>2, independentemente do naípe.\n\n
 UIPlO6Rule_Introduce=<b><size=46>Introdução:</size></b>\nOmaha é muito semelhante ao Texas Hold’em, com um fator de mudança de jogo. Em vez de duas cartas de mçao, cada jogador recebe quatro a seis cartas.\nNo Omaha, os jogadores devem fazer a melhor mão possível com uma combinação de duas cartas da mão e três cartas comunitárias.\n\n<b><size=46>PLO6</size></b>\nNo Pot limit Omaha(mais conhecido como Omaha Poker), o máximo que um jogador pode apostar é o mesmo valor do pote. ¨6¨significa que seis cartas serão distribuidas para cada jogador.\n\n<b><size=46>Jogabilidade:</size></b>\n1.Há quatro rodadas de jogos no Omaha 6 cartas;\n2.Pré-flop: Cada jogador receberá 5 cartas e então iniciará a primeira rodada de jogos;\n3.Flop:  Após as três cartas comunitárias serem distribuídas, os jogadores restantes da primeira rodada de jogo iniciarão a segunda rodada;\n4.Turn: A terceira rodada de jogos após a distribuição da 4ª carta comunitária;\n5.River: A quarta rodada de jogos após a distribuição da 5ª carta comunitária;\n6.Depois que as quatro rodadas terminarem, todos os jogadores restantes devem mostrar suas cartas e o jogador com a mão mais alta ganha o pote.\n<b><size=46>Ranking da mão:</size></b>\nRoyal Flush> Straight Flush>Quadra>Full House>Flush>Straight>Trinca>Dois pares>Par>carta alta\n<b><size=46>Classificação da carta:</size></b>\nA>K>O>J>10>9>8>7>6>5>4>3>2, independentemente do naípe.\n\n
-
 UI6Plus_Introduce=<b><size=46>6+ Hold'em</size></b>\n6+ Hold’em é um jogo de poker de “Baralho-Curto” que segue principalmente as mesmas regras do Texas Hold’em, mas com diferenças interessantes:\n1.Todas as cartas inferiores a 6 são removidas do baralho.\n2.Todos colocam uma quantia em jogo e só o botão coloca um blind - conhecido como “Botão Blind”.\n3.Flush vence de Full-House e A, 6, 7, 8, 9 é classificado como a sequência mais baixa.\nDisponível exclusivamente no NEW POKER, 6+ Hold’em dá a você a chance de jogar uma modalidade cheia de ação, adorada por jogadores de alto risco em todo o mundo.\n\n
 UIRecharge_Input=Quantidade de recarga das UC
 UIWithdraw_Input=Retirar o valor das UC
@@ -3279,7 +3259,6 @@ UIHappyShop_Return=Voltar
 UIHappyShop_AllNumber=Todos os números
 UIHappyShop_VirtualGoodExchangeCode=Código de troca do item virtual
 UIHappyShop_InputNumAnd=Após inserir seu número de telefone, o SAC entrará em contato
-
 UIHappyShop_InputYourNumP=Insira seu número de telefone
 UIHappyShop_HasReceived=Recebido 
 UICommon_SeatNobody=Sente-se por favor
@@ -3320,7 +3299,6 @@ UIMine_Backpack_ChipsVoucherDescriptions=Nota: \nDepois de usar sua conta, adici
 UIMine_Backpack_OneShopVoucherDescriptions=Nota: \nAdicione diretamente um cupom à conta da Compra da Sorte após o uso e 1 cupom real pode ser usado para participar de uma atividade real
 UIMine_Backpack_PropVoucherDescriptions=Nota: \nCada voucher pode substituir qualquer item gratuitamente e sem consumir UC.
 UIMine_Backpack_FreeServiceVoucher=
-Voucher de taxa de serviço gratuito da MTT
 UIMine_Backpack_RechargeVoucher={0} Voucher de recarga real
 UIMine_Backpack_ChipsVoucher={0} Voucher de UC
 UIMine_Backpack_OneShopVoucher=1 real compra da sorte voucher
@@ -3511,8 +3489,6 @@ UIClub_CreateRoom8=Automático
 UIClub_CreateRoom9=Manual
 UIClub_CreateRoom10=Taxa de serviço (%):
 UIClub_CreateRoom11=Por mão
-
-
 UIClub_CreateRoom12=Por mesa
 UIClub_CreateRoom13=SB/BB
 UIClub_CreateRoom14=Buy-in
@@ -3523,10 +3499,6 @@ UIClub_CreateRoom18=Duração do jogo (h)：
 UIClub_CreateRoom19=Buy-in:
 UIClub_CreateRoom20=VPIP Limit(%)
 UIClub_CreateRoom21=Fichas mín. reservadas
-
-
-
-
 UIClub_CreateRoom22=Limite Mãos
 UIClub_CreateRoom23=Não limitado
 UIClub_CreateRoom24=Tempo de reflexão：
@@ -3568,11 +3540,11 @@ UIGuild_FilterButtonAll=Todos
 UIGuild_FilterButtonManager=Admin
 UIGuild_FilterButtonVip=Agente 
 UIGuild_FilterButtonMember=Membro
-UIGuild_MemberNumber=Número total de pessoas
+UIGuild_MemberNumber=Número de membros
 UIGuid_Founder=Fundador
 UIGuid_Level=Classificação do Clube
 UIGuild_ShowContactDetail=Mostrar contato
-UIGuild_ContactInfo=Contato do clube
+UIGuild_ContactInfo=Informações de Contato
 UIGuild_ExchangeRateSettings=Configurações de tarifas
 UIGuild_ShareGameManager=Gerenciamento de jogo compartilhado
 UIGuild_AllowSearch=Pesquisável por ID do clube
@@ -3633,7 +3605,6 @@ UIGuildFund_RtTips003=Confirmar o saque de {1} UC da união {0}?
 UIGuildFund_RtTips004=Confirmar o saque de {1} GC da união {0}?
 UIGuildFund_RtTips005=Pedido para recarga aprovado!\n Se você tiver alguma dúvida, entre em contato com o SAC em {0}.
 UIGuildFund_RtTips006=Solicitação de saque aprovada!
-Se você tiver alguma dúvida, entre em contato com o SAC em {0}.
 UIGuild_MemberDetails_title=Informações detalhadas
 UIGuilFundRecordTopTIps=Pedido em andamento^Confirmar^Rejeitar^Cancelar pedido
 UIGuild_PloType=Variações do jogo
@@ -3644,7 +3615,7 @@ UIGuildExchange=Câmbio
 UIGuild_MemberDetailsName=Nome:
 UIGuild_MemberDetailsRemarks=Comentários:
 UIGuild_CreateDes=Criar
-UIFriendsTable_CreateRoomTips=Inicie o jogo e convide seus amigos para participar também
+UIFriendsTable_CreateRoomTips=Comece uma partida e convide seus amigos para se reunirem!
 UIGuild_MemberDetails_UpLine=Agente online
 UIGuild_MemberDetails_Nothing=Não
 UIGuild_MemberDetails_BindVip=Vincular Agente
@@ -3690,9 +3661,8 @@ UIGuildTableBottomBtns005=Mensagem
 UIGuild_MemberOffLineList=Membro Sucessor
 UIGuild_MemberOffLineListSearch=Digite o nome ou ID do membro
 UIGuild_PrivateGame=Jogo privado
-UIGuild_PassworldLimit=Senha de 4-8 caracteres
-UIFriendsTable_JoinRoomNumberWrong=O número da sala {0} que você inseriu não foi encontrado
 UIGuild_PassworldLimit=Aguardando análise do admin da sala
+UIFriendsTable_JoinRoomNumberWrong=O número da sala {0} que você inseriu não foi encontrado
 UIGuild_JoinUnionTips={0} Confirme o pedido de admissão {1}
 UIGuildFund_RechargeText=Recarga
 UIGuildFund_WithdrawalText=Saque
@@ -3706,7 +3676,7 @@ UIloginEmail_Registertext=Email
 UIGuild_MemberBindVipDone=Vinculado
 UIGuild_MemberUnBindVipDone=Desvinculado
 UIClub_IntroGuildDatail=Apresente o clube!
-UIGuild_NoticeNoShow=Não lembrar mais
+UIGuild_NoticeNoShow=Não mostrar novamente
 UIloginPhone_forgettext=Use o telefone para redefinir a senha
 UIloginEmail_forgettext=Use e-mail para redefinir a senha
 UIGuild_QuitTips=Depois de sair, você não poderá mais participar do jogo, confirmar operação?
@@ -3761,7 +3731,6 @@ UIMTT_Listbonus2=Prêmio:
 UILogin_EmailHasRegist=Este e-mail já foi registrado
 UIMine_DeleteUser=Apagar conta
 UIMine_DeleteUserContent=A exclusão de conta funciona entra vigor imediatamente. Todos os dados serão apagados e não poderão ser recuperados. Você tem certeza de que deseja apagar sua conta?
-UIGuild_NoticeNoShow=Não mostrar novamente
 UIMine_DiamondsNotEnough=Seu saldo de diamantes é insuficiente, por favor recarregue primeiramente
 UIMine_ChangeDefaultHeadIcon=Clique para alternar aleatoriamente o avatar padrão
 UIMine_SetHeadIcon=Definir avatar
@@ -3831,7 +3800,6 @@ UIFACEDELECTION_TIPSSUC=Validado!
 UIFriendsTable_Create_6P=Short Deck
 UIFriendsTable_Create_NLH=Texas Hold'em
 UIFriendsTable_Create_PLO=Pot Limit Omaha
-UIFriendsTable_CreateRoomTips=Comece uma partida e convide seus amigos para se reunirem!
 UIFriendsTable_DataTimeError_30day=Você pode consultar dados por até 30 dias
 UIFriendsTable_fee=Taxa de Serviço
 UIFriendsTable_playercount=Número Total de Jogadores
@@ -3841,9 +3809,7 @@ UIGuild_CancelShare=Cancelar o compartilhamento
 UIGuild_CoinType1=Ficha
 UIGuild_CoinType2=UC
 UIGuild_CoinType3=GC
-UIGuild_ContactInfo=Informações de Contato
 UIGuild_JoinUnionContactTips=Insira aqui as informações de contacto
-UIGuild_MemberNumber=Número de membros
 UIGuild_NoDescTips=Sem descrição da clube
 UIGuild_NoUnion=A União não existe
 UIGuild_RecordBtn=Solicitações
@@ -3863,7 +3829,7 @@ UIRoom_LimitTimeFreeFace=Gratuito por um tempo limitado
 UITexas_FaceRecogDaoJiShi=Contagem regressiva: Você pode tentar novamente após {0}
 UITexas_FaceRecogSuccess=Validado!
 UITexas_FaceRecogTip1=O número de vezes que você começou a autenticação nesta sala é 0, e você não pode recomeçar a autenticação.
-UITexas_FaceRecogTip10={0} não foi aprovado no reconhecimento facial
+UITexas_FaceRecogTip10=Tentar novamente
 UITexas_FaceRecogTip11={0} foi autenticado
 UITexas_FaceRecogTip12=Validação de identidade em andamento {0}s
 UITexas_FaceRecogTip13=Verificação aprovada
@@ -3887,7 +3853,6 @@ UIClub_DJTip6=Confirma-se que o jogador {0}{1} está congelado e o jogador não 
 UIClub_DJTip7=Certifique-se de descongelar o jogador {0}{1}
 UIGuild_MemberEditTitle=Editar offline
 UIGuild_MemberEditHide=Esconder o leitor offline actual
-UIData_Today=Hoje
 UIData_7day=7 Dias
 UIData_14day=14 Dias
 UIData_game=Jogos
@@ -3898,7 +3863,6 @@ UIData_BtnRecord=Conquistas
 UIClub_CreateTips=Crie um clube e convide amigos para jogar juntos
 UIClub_CreateGuild=Create Club
 UIGame_Type6p=6+
-UITexas_FaceRecogTip10=Tentar novamente
 UIMessage_Default=Home Games
 UIMessage_Default2=Sistema
 UIMessage_Default3=União
@@ -4168,7 +4132,7 @@ UIGuild_MemberDetails_ProxySetting=Configurações de ganhos do agente
 UIGuildMemberProxyRevenueSettings_Text1=Parcela da taxa de serviço
 UIGuildMemberProxyRevenueSettings_Text2=Parcela do seguro
 UIGuildMemberProxyRevenueSettings_Text3=Parcela do MTT
-OpCodeString_DIAMONDTRIBETOUSER=Emitido pela União
+OpCodeString_DIAMONDTRIBETOUSER=União distribui para os jogadores
 MsgInfo_3029=União {0} emitirá {1} diamante(s) para você
 ServerErrorCode_20048=Código de verificação incorreto, favor digitar novamente
 UIGuildDownloadFightData=Download de resultados
@@ -4370,7 +4334,6 @@ UIData_30day=30 dias
 UIGuild_MemberManagerDetailRake=Ancinho
 UIGuild_MemberManagerDetailVariable=montante mudar
 MttVideoModePermission=Ative as permissões de câmera e microfone para entrar no jogo
-
 UIMSG_Recharge=Aplicação de recarga
 UIMSG_JoinClub=Formulário de inscrição no clube
 UIMSG_Delay=Aplicação de extensão
@@ -4403,7 +4366,6 @@ OpCodeString_TRIBEKOCLUBUOUT=União expulsa clube
 OpCodeString_TRIBEKOCLUBCIN=União expulsa clube
 OpCodeString_TRIBEKOCLUBCOUT=União expulsa clube
 OpCodeString_TRIBEKOCLUBTIN=União expulsa clube
-
 ServerErrorCode_20064={0} ainda em jogo, não pode ser expulso
 OpCodeString_MTTQUIT=Reembolso da taxa de inscrição
 UILogin_EmaliNoRegister=Este e-mail não está registrado
@@ -4412,7 +4374,6 @@ MsgInfo_5014=O clube {0} foi expulso da união {1}
 MsgInfo_2021=Você saiu do clube {0}
 ServerErrorCode_20040=Clubes podem se inscrever em até 5 Uniões, você excedeu o limite
 UIMTTRank_Tips="Jogadores que venceram {0}.
- <size=43>Distância para o círculo de recompensa {1} lugares</size>"
 UIGuildCreateDeskDialogTip=Por favor, selecione um clube para criar mesas ao mesmo tempo
 UIGuildCreateDeskDialogErrorTip=Por favor, selecione um sub-clube
 UIGuildCreateDeskDialogChooseTip=Criar mesas apenas para [sub-clube]
@@ -4460,8 +4421,6 @@ UIGuildMemberOperationRealTimeTip=Em tempo real
 UIGuildMemberOperationRegularText=Periódico
 UIGuildMemberOperationGiveTypeText=Tipo de emissão
 UIGuildMemberOperationGiveTypeTip=Os horários são baseados em UTC+0. \n1. escolha emitir diariamente, a cada x dias emita um reembolso (preencha o intervalo de 1-30), defina para o dia seguinte às 0:00.
-\n2. escolha emitir semanalmente, a cada x semanas emita um reembolso (preencha o intervalo de 1-30), defina para o dia seguinte após as 0:00. O horário de emissão é toda segunda-feira.
-\n3. após modificar a configuração do ciclo, o dia seguinte às 0:00 começa a executar o novo ciclo, e a parte anteriormente não emitida será emitida ao jogador.
 UIGuildMemberOperationWeekText=Semanalmente
 UIMine_BillClubReturnRatioText=Reembolso do clube
 MsgInfo_2022=Você recebeu um reembolso da taxa de serviço {1} de {0}
@@ -4886,7 +4845,6 @@ OpCodeString_DIAMONDTRANSTOU=Transferência de Indivíduos da Comunidade de Bata
 OpCodeString_CREATETRIBETABLE=Taxa de Criação de Mesa
 OpCodeString_CLOSETRIBETABLE=Reembolso da Taxa de Criação de Mesa
 OpCodeString_DIAMONDPLATTOTRIBE=Plataforma distribui para a União
-OpCodeString_DIAMONDTRIBETOUSER=União distribui para os jogadores
 OpCodeString_PLATRECOVETRIBE=Reivindicações da plataforma
 OpCodeString_TRIBEGOLDBUY=Comprar UC
 UIMTT_wuxianzhi=Ilimitado
@@ -5176,18 +5134,14 @@ UIBlockchainTips1=Baseado na tecnologia de criptografia blockchain, suporta sist
 UIPlayerInfo_TablePoolRate=Taxa de aposta desta mesa
 UIPlayerInfo_TablePoolRateTips=VPIP desta mesa
 UICreateTalble_winType=De acordo
-
 UICreateTalble_anBili=Pot%
 UICreateTalble_gudingShoufei=Fixa
 UICreateTable_winPlayerRate=Proporção de vencedores
 UICreateTable_preFlopEndFree=Preflop grátis
-
 UICreateTable_poolDownFree=Pote Grátis
 UICreateTable_WinSplit=Valor crítico
 UICreateTable_lessThanWin=Abaixo do valor
-
 UICreateTable_moreThanWin=Igual ou acima
-
 UICreateTable_preFlopEndFreeTips=Fim da mão antes do PreFlop é livre de taxas de serviço
 UICreateTable_threeFreeTips=Quando o número de jogadores na mão é igual ou inferior a três, a taxa de serviço será 50% menor
 UICreateTable_poolDownFreeTips=Quando o pote é menor que o valor estabelecido, a taxa de serviço será isenta
@@ -5532,12 +5486,6 @@ UIJackpotRewardDescription_Instructions=O Jackpot geralmente se refere a um sist
 UIJackpotRewardDescription_Instructions2=Os jogadores normalmente precisam optar por participar do jogo do Jackpot, onde, de acordo com as regras, o vencedor de cada rodada precisa contribuir com uma taxa adicional para o pool do jackpot, conhecida como "Contribuição para o Jackpot" (queda do Jackpot).
 UIJackpotRewardDescription_Instructions3=As condições de ativação do Jackpot geralmente são baseadas em tipos específicos de cartas de alto valor. Os mais comuns são Royal Flush, Flush, Four of a Kind, etc. Quando um jogador possui esse tipo de carta em uma mão, ele pode receber o bônus do Jackpot.
 UIJackpotRewardDescription_Instructions4=Condições adicionais que precisam ser atendidas para o Jackpot:
-1. O tipo de carta vencedora deve ser composto por duas cartas hole e cartas comunitárias;
-2. O jogo especial exige que o jogador nesta mão invista no pote para atingir o ponto de "investir no pote para acionar a recompensa do Jackpot", podendo receber o Jackpot;
-3. Jogadores que deixam a mesa antes da liquidação do Jackpot não são contabilizados no Jackpot;
-4. Se houver múltiplas cartas distribuídas, apenas a primeira vez que as cartas são distribuídas pode aproveitar o Jackpot, e o maior tipo de carta é considerado;
-5. Jogadores que abandonam as cartas não podem acionar recompensas, e elas precisam ser reveladas na fase de cartas;
-6. Jogadores devem ganhar cartas para acionar recompensas do Jackpot;
 Mahjong_Name=Mahjong
 UIMahjong_CareerRecord=Registros de Mahjong
 UIDialogJackpotWin_CongratsTip=Parabéns
@@ -5548,7 +5496,7 @@ OpCodeString_JACKPOTAWD=Recompensa do Jackpot
 MsgInfo_3032=Você ganhou {1} UC da recompensa do Jackpot {0}
 UISquidDetail=Cada jogador que ganhar o pote receberá uma marca de lula. O último jogador sem uma marca de lula encerra a rodada. Os perdedores devem pagar pontos de penalidade aos outros jogadores. Sair do jogo da lula no meio é considerado uma desistência, então, por favor, tenha cuidado.
 UICreateClubRoomEntrance_JackpotNoData=Não há modelo correspondente de pool de Jackpot
-UISquidOpen=Ativar Jogo da Lula
+UISquidOpen=Abertura de lula
 UISquidOpenCondition=Condições para ativar o Jogo da Lula
 UISquidGameRounds=Gatilho
 UISquidPenaltyPoints=Pontos de Penalidade
@@ -5600,7 +5548,6 @@ IMNotification=Push de mensagens IM
 IMNotificationTip=Quando ativado, todas as mensagens pendentes do clube serão enviadas para a lista de mensagens do hoverbox IM.
 BoundOtherTip=Esta conta do jogo foi vinculada a outras contas IM. Após abrir, esta conta IM não receberá mensagens. Tem certeza de que deseja abrir?
 UISquidQuitRoomTips=Você ainda não obteve a marca da lula no jogo atual e precisa pagar o valor da penalidade ao sair da mesa.
-UISquidOpen=Abertura de lula
 UISquidDeposit=Depósito de lula
 UISquidRule=<size=46>Regras do jogo da lula</size>\n\n1. O jogo da lula é ativado quando as condições de ativação do jogo da lula são atendidas. \n2. Cada jogador (na rodada atual do jogo da lula) receberá uma marca da lula após vencer o pote pela primeira vez, que será exibida no avatar na mesa. Um empate não gerará uma marca da lula. \n3. Quando um jogador recebe a "marca da lula" e resta apenas um jogador sem a "marca da lula", esta rodada do jogo da lula termina, e o último jogador precisa pagar pontos de penalidade para os outros jogadores. \n4. Se o jogador não tiver saldo suficiente para pagar o valor da penalidade, o valor correspondente será deduzido do depósito, e o jogador ficará em estado de espera. O jogador pode trazer mais saldo e sentar-se novamente.\n5. Esta rodada do jogo da lula termina, todos os estados são redefinidos e uma nova rodada está pronta. Sair do modo lula no meio do jogo será considerado como desistência e será necessário compensar. Por favor, tenha cuidado. \n\n<size=46>Regras de Saída e Penalidade</size>\n\n1. Jogadores que saírem ativamente, passivamente ou desconectarem temporariamente são considerados "em estado de saída". \n2. Se você não estiver no modo lula, sairá normalmente da mesa e todo o depósito será devolvido diretamente ao sair; caso contrário, será necessário deduzir o valor da penalidade do número de pessoas que obtiveram a "marca da lula + 1" no estado de saída. \n3. Jogadores que estão "em estado de saída" e têm uma "marca da lula" sairão da mesa após a liquidação, e o depósito será devolvido sem deduções adicionais. \n 4. Jogadores que estão "em estado de saída" e não têm uma "marca da lula" pagarão o valor da penalidade a cada jogador que tem uma "marca da lula" e depois sairão da mesa após a liquidação. Se o valor não for suficiente, será deduzido do depósito. \n5. O jogador pode continuar e manter o mesmo status se reconectar com sucesso dentro da contagem regressiva e a liquidação do jogo da lula não for ativada durante o período. \n6. O valor da penalidade por sair no meio do jogo será colocado no pool da lula e será dividido igualmente entre os jogadores que têm a marca da lula após o término desta rodada da lula.
 UICreateRoom_MaxLimitRate=Limitado {0} vezes
@@ -5776,7 +5723,6 @@ UIClub_UserLevelAgent=AGENTE
 UIClub_UserLevelAdmin=ADMIN
 UIClub_UserLevelOwner=PROPRIETÁRIO
 UICreateLimitSeeHandTips=Limite o número de mãos que um jogador pode assistir na mesa.
-
 UICreateLimitSeeHand=Limitar espectador
 UILimitSeeHandTips=Esta mesa limita o tempo de espectador, você será expulso da mesa após {0} mãos, por favor, ocupe o seu lugar o mais rápido possível.
 ServerErrorCode_20120=Se você for expulso devido a muito tempo de espectador, não poderá entrar na sala novamente.
@@ -5980,8 +5926,6 @@ Mahjong_ResultRateAdd=Ganhar + {0} vezes
 Mahjong_EyesSevenPairs=Sete pares
 Cowboy_Recenthandrecords=Registros recentes de 100 mãos
 Account_Cancel_Code=Reembolso de desativação de conta
- 
-         
 ServerErrorCode_20121=O dono do clube não pode desativar contas
 UICreateRoomOptions1=Número de assentos
 UICreateRoomOptions2=Jogadores Automáticos
@@ -6127,7 +6071,6 @@ UICreateRoomCallTimeInput2=1-999
 UICreateRoomCallTimeLabel1=Valor do Lucro
 UICreateRoomCallTimeLabel2=Limite de Mão
 UICreateRoomOpenSquid=Igual ou acima
-
 UICreateRoomSaveMode=Salvar modelo
 UIMineMallUSDTShopDiamondWholesalerTip=Notificação de solicitação de atacadista de diamantes
 UIMineMallUSDTShopDiamondWholesalerContent=1、A taxa de solicitação é de {0} diamantes, reembolsada se rejeitada;\n2、Após a aprovação, os diamantes exclusivos devem ser comprados em 60 dias, ou a qualificação expira;\n3、Solicitações expiradas ou rejeitadas exigem uma nova solicitação com uma taxa de {1} diamantes;\n4、Entraremos em contato com você por mensagem do sistema. Por favor, verifique.
@@ -6341,11 +6284,7 @@ UICreateTable_QuickChangeRoom=Troca Rápida de Mesa
 UICreateTable_QuickChangeRoomTips=Troca Rápida de Mesa: Após o término de uma mão, os jogadores podem trocar para mesas do mesmo nível.
 UIMahjong_QuickChangeRoom=Iniciar Troca de Mesa
 UICreateTableSquidSingleTips=Um jogador pode obter apenas um squid. Quando apenas um jogador não tiver obtido um squid nesta rodada, o jogo de squid termina, e o jogador sem o símbolo de squid faz o pagamento.
-Bônus de Squid = Valor do Squid Definido
-Valor do Pagamento = Número de Squids nesta Rodada * Valor por Squid
 UICreateTableSquidMubleTips=Um jogador pode obter vários squids. Quando a rodada atinge o "limite de squids" ou "apenas um jogador não tiver obtido um squid", a rodada termina. Os jogadores sem squids fazem pagamentos individuais, e os jogadores com mais squids recebem maiores recompensas.
-Bônus de Squid = Número de Squids Possuídos * Valor por Squid * Número de Jogadores Sem Squids
-Valor do Pagamento por Pessoa = Número de Squids Gerados Nesta Rodada * Valor por Squid
 UICreateTableSquidCoinTips=Valor por Squid
 UICreateTableSquidNumTips=Número Total de Squids: Os jogadores podem obter um squid cada vez que vencem. O número total de squids é limitado e será liquidado quando esgotado.
 UICreateTableSquidClassicTips=Um jogador pode obter apenas um squid. Quando apenas um jogador não tiver obtido um squid nesta rodada, o jogo de squid termina.
@@ -6517,11 +6456,7 @@ UIEVInsuranceTips6=Resgatar EV {0}
 UIClub_InsertSuperLink=Inserir hiperlink
 UIGuildFundRecordTip=Registro
 ServerErrorCode_20047=Falha na solicitação de buy-in, entre em contato com o suporte do seu clube
-UIEVInsuranceRuler=Explicação da Jogabilidade do Seguro EV: Vantagens e Jogadores Alvo. Lucro Garantido: O seguro EV bloqueia parte da sua equidade quando está all-in, equilibrando um jogo agressivo e estável, e reduzindo a variância causada por bad beats. Recomendado para: Jogadores em jogos de alto risco que buscam equilibrar risco e recompensa através de uma estratégia racional, permitindo um lucro constante enquanto mantêm a agressividade.
-Condições de Elegibilidade. Após ir all-in, uma vez que o flop é distribuído e todos os jogadores revelam suas cartas, se você estiver à frente e sua equidade no pote for ≥60%, será oferecida a opção de comprar o seguro EV. Jogos aplicáveis incluem Texas Hold'em, Omaha e Short Deck (6+). Cálculo do Pagamento do Seguro. Fórmula: Pagamento do Seguro EV = [(Pote – Taxa de Serviço – Contribuição para o Jackpot) × Taxa de Vitória] × 99%. Garante um pagamento justo baseado na taxa de vitória, com apenas uma taxa de 1% cobrada. Detalhes de Seleção e Pagamento. Momento do Pagamento: O seguro é pago após a mão, independentemente do, resultado. Seleção: Se nenhuma decisão for tomada dentro do prazo, será tratado como recusado. Mecanismo de Saída: Uma vez que o seguro é aceito, você sai do pote e não pode ganhá-lo. Potes com Múltiplos Jogadores: Apenas o jogador líder com a maior equidade e que atende aos critérios pode comprar o seguro EV. Guia de Jogabilidade do Seguro de Baixo Prêmio:
 UILowWaterInsuranceRuler=Deve ser comprado integralmente; a seleção parcial de outs não é suportada.
-Processo de Acompanhamento: Se o seguro for comprado no turn e não resultar em pagamento, mas ainda houver chance de reviravolta no river, o seguro deve ser comprado novamente no river, transportando o montante segurado do turn.
-Regra Automática: O sistema só oferece opções de seguro com odds superiores a 0,1; se as condições não forem atendidas, o seguro não pode ser comprado.
 UIUpBlindTips=As blinds aumentarão após esta mão
 UINumberShopOne=Número de 1 dígito
 UINumberShopTwo=Número de 2 dígitos
@@ -6579,7 +6514,7 @@ UIAutoChangeTable3=A mesa atual será reorganizada após participar de {0} mãos
 UIAutoChangeTable4=Mudança Automática de Mesa
 UIAutoChangeTable5=Mudará automaticamente para uma nova mesa após esta mão terminar.
 UIEgg_TwoRate=Taxa de Segundo Colocado
-UIEgg_AddRate=Média de Duplicações por Jogo
+UIEgg_AddRate=Dobrar
 UIEgg_PressRate=Média de Supressões por Jogo
 UIEgg_HeadRate=Taxa de Primeiro Colocado
 UIEgg_TwoRateTips=Cooperativo: Porcentagem de todas as mãos em que o jogador termina em segundo.
@@ -6624,7 +6559,6 @@ UIEgg_ThrowCard=Jogar carta
 UIEgg_CantAfford=Não pode vencer
 UIEgg_Tribute=Tributo
 UIEgg_NotTribute=Recusar tributo
-UIEgg_AddRate=Dobrar
 UIEgg_NotAddRate=Não dobrar
 UIClub_InputPlayerID2=Apelido/ID
 UIClubMemberOperationFreezeRecycle=Jogadores congelados não podem recuperar fichas
@@ -7224,872 +7158,88 @@ UICreateMahjongMttAutoHost=
 UICreateMahjongMttTips19=
 UIMatchProgress=
 Spinner_Tip=
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+UITabbarHome=
+UIHomeMahjongArea=
+UIHomeMahjongAreaTip=
+UIHomePokerArea=
+UIHomeMttArea=
+UIHomeMttPokerTip=
+UIHomeMttMahjongTip=
+UIHomeMttAreaTip=
+UIHomeMinigameArea=
+UIHomeComingSoon=
+UIMTTLatestRegister=
+PageMessageApplyForCreditLimit=
+PageMessageApplyForUC=
+PageMineClubCareer=
+PageMineFriendTableCareer=
+PageMineMessageBoard=
+Wallet_Title=Carteira
+Wallet_Deposit=Depósito
+Wallet_Withdraw=Saque
+Wallet_Records=Registros
+Wallet_Details=Detalhes
+Wallet_Balance=Saldo UC
+Wallet_BalanceLabel=Saldo
+Wallet_PayNow=Pagar {0} Agora
+Wallet_PaySuffix=Pagar
+Wallet_MethodCard=Cartão Bancário
+Wallet_CustomAmount=Valor Personalizado
+Wallet_AppBarRecharge=Recarregar
+Wallet_AppBarSupport=Suporte
+Wallet_AvailableUc=UC Disponível
+Wallet_Cancel=Cancelar
+Wallet_Confirm=Confirmar
+Wallet_InputPlaceholder=Insira o valor
+Wallet_KeypadPlaceholder=Insira
+Wallet_Rate=Taxa
+Wallet_ApplyTime=Hora do Pedido
+Wallet_OrderPayAmount=Valor do Pagamento
+Wallet_OrderStatus=Status do Pedido
+Wallet_RecipientLabel=Destinatário
+Wallet_RemarkLabel=Observação
+Wallet_SubmitWithdraw=Enviar
+Wallet_OrdersTitle=Registros
+Wallet_OrdersDeposit=Registros de Depósito
+Wallet_OrdersWithdraw=Registros de Saque
+Wallet_OrderAmountDeposit=UC Depositado
+Wallet_OrderAmountWithdraw=UC Sacado
+Wallet_StatusCancelled=Cancelado
+Wallet_OrderTitle=Detalhes do Pedido
+Wallet_OrderId=Nº do Pedido
+Wallet_OrderAmount=UC Depositado
+Wallet_OrderFee=Taxa
+Wallet_OrderPayAddr=Endereço de Pagamento
+Wallet_OrderRecvName=Nome do Destinatário
+Wallet_OrderRecvAddr=Endereço do Destinatário
+Wallet_OrderTime=Hora da Recarga
+Wallet_StatusPending=Pendente
+UIMatchPokerTournament=Torneio de Pôquer
+UIMatchMahjongTournament=Torneio de Mahjong
+UIMatchNoTournaments=Nenhum torneio disponível
+UIMatchBlindLevelCount=Níveis de Blind
+UIMatchRankBoard=Ranking
+UIMatchHunterBoard=Quadro de Caçador
+UIMatchRemainingPlayersCount=Jogadores Restantes
+UIMatchSignupCount=Inscrições
+UIMatchRebuyCount=Rebuys
+UIMatchAddonCount=Add-ons
+UIMatchChampion=Campeão
+UIMatchNextLevelPrize=Prêmio do Próximo Nível
+UIMatchNextBreak=Próxima Pausa -
+UIMatchName=Nome do Torneio
+UIMatchGuaranteedPool=Pool Garantido
+UIMatchEstimatedDuration=Duração Est.
+UIMatchBlindInterval=Intervalo de Blind
+UIMatchMinMaxPlayers=Min/Máx Jogadores
+UIMatchStartCondition=Condição de Início
+UIMatchBreakTime=Pausa
+UIMatchPerTableCount=Por Mesa
+UIMatchTotalTables=Total de Mesas
+UIMatchGuaranteedTag=Garantido
+ <size=43>Distância para o círculo de recompensa {1} lugares</size>"
+Bônus de Squid = Número de Squids Possuídos * Valor por Squid * Número de Jogadores Sem Squids
+Valor do Pagamento = Número de Squids nesta Rodada * Valor por Squid
+Valor do Pagamento por Pessoa = Número de Squids Gerados Nesta Rodada * Valor por Squid
+UIEVInsuranceRuler=Explicação da Jogabilidade do Seguro EV: Vantagens e Jogadores Alvo. Lucro Garantido: O seguro EV bloqueia parte da sua equidade quando está all-in, equilibrando um jogo agressivo e estável, e reduzindo a variância causada por bad beats. Recomendado para: Jogadores em jogos de alto risco que buscam equilibrar risco e recompensa através de uma estratégia racional, permitindo um lucro constante enquanto mantêm a agressividade.
+Condições de Elegibilidade. Após ir all-in, uma vez que o flop é distribuído e todos os jogadores revelam suas cartas, se você estiver à frente e sua equidade no pote for ≥60%, será oferecida a opção de comprar o seguro EV. Jogos aplicáveis incluem Texas Hold'em, Omaha e Short Deck (6+). Cálculo do Pagamento do Seguro. Fórmula: Pagamento do Seguro EV = [(Pote – Taxa de Serviço – Contribuição para o Jackpot) × Taxa de Vitória] × 99%. Garante um pagamento justo baseado na taxa de vitória, com apenas uma taxa de 1% cobrada. Detalhes de Seleção e Pagamento. Momento do Pagamento: O seguro é pago após a mão, independentemente do, resultado. Seleção: Se nenhuma decisão for tomada dentro do prazo, será tratado como recusado. Mecanismo de Saída: Uma vez que o seguro é aceito, você sai do pote e não pode ganhá-lo. Potes com Múltiplos Jogadores: Apenas o jogador líder com a maior equidade e que atende aos critérios pode comprar o seguro EV. Guia de Jogabilidade do Seguro de Baixo Prêmio:
