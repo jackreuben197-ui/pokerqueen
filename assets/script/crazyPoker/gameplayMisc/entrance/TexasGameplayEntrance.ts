@@ -2,6 +2,7 @@ import { GameCache } from "../../../game/GameCache";
 import ProtocolAgency from "../../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../../net/websocket/ProtocolCode";
 import { ClientMessageRooms } from "../../../protobuf/holdem/req_rpc_rooms_pb";
+import { AntiCheatType } from "../../gameplay/common/constant/AntiCheatType";
 import AGameplayEntrance, { LoadIndicator } from "./AGameplayEntrance";
 
 /**
@@ -265,9 +266,7 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         }
 
         GameCache.Instance._antiCheatType = isClear ? 0 : this._roomInfo.antiCheatType;
-        // TODO: 需要AntiCheatType枚举定义，4 = VIDEO
-        const AntiCheatType_VIDEO = 4;
-        if (GameCache.Instance._antiCheatType == AntiCheatType_VIDEO) {
+        if (GameCache.Instance._antiCheatType == AntiCheatType.VIDEO) {
             GameCache.Instance._videoModel = this._roomInfo.antiCheatVideoType;
         }
         else {

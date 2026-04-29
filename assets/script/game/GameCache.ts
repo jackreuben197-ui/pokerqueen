@@ -5,6 +5,8 @@ import { RoomRecord } from "../protobuf/holdem/define_pb";
 import TexasGame from "./texas/TexasGame";
 import GameUtil, { GameEnterType } from "./util/GameUtil";
 import TexasGameplayData from "../crazyPoker/gameplay/texas/data/TexasGameplayData";
+import { AntiCheatType } from "../crazyPoker/gameplay/common/constant/AntiCheatType";
+import { VideoModel } from "../crazyPoker/gameplay/common/constant/VideoModel";
 
 export class GameCache {
 
@@ -656,12 +658,12 @@ export class GameCache {
     /**
      * 反作弊类型
      */
-    public _antiCheatType: number = 0;
+    public _antiCheatType: AntiCheatType = AntiCheatType.UNKNOWN;
 
     /**
      * 视频模式
      */
-    public _videoModel: number = 0;
+    public _videoModel: VideoModel = VideoModel.NONE;
 
     /**
      * 普通反作弊顺序类型
