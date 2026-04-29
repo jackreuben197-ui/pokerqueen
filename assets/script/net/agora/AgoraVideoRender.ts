@@ -46,6 +46,7 @@ export default class AgoraVideoRender extends cc.Component {
     private _sprite: cc.Sprite = null;
     private _stream: MediaStream = null;
     private _isRendering: boolean = false;
+    private _isCancelled: boolean = false;
     private _defaultFrame: cc.SpriteFrame = null;
     private _originalScaleX: number = 1;
     private _gl: WebGLRenderingContext = null;
@@ -72,21 +73,6 @@ export default class AgoraVideoRender extends cc.Component {
         this._originalScaleX = this.node.scaleX;
         this._gl = (cc.game as any)._renderContext;
         this._frameInterval = 1 / this.targetFps;
-
-        this.node.on(cc.Node.EventType.TOUCH_END, this._onTap, this);
-    }
-
-    /** 点击触发 */
-    private _onTap(): void {
-        if (this._isRendering) {
-            this.stopRender();
-            return;
-        }
-        if (this.renderTarget === 'local') {
-            this.renderLocalCamera();
-        } else if (this.renderTarget === 'remote') {
-            this.renderRemoteUser(this.remoteUid);
-        }
     }
 
     /** 渲染本地摄像头 */
@@ -104,8 +90,12 @@ export default class AgoraVideoRender extends cc.Component {
 
     /** 渲染远端用户视频 */
     public async renderRemoteUser(uid: number): Promise<boolean> {
+        console.log('[AgoraVideoRender] renderRemoteUser, uid:', uid);
         const track = AgoraManager.Instance.getRemoteVideoTrack(uid);
-        if (!track) return false;
+        if (!track) {
+            console.warn('[AgoraVideoRender] 远端视频Track为空, uid:', uid);
+            return false;
+        }
         const stream = new MediaStream([track]);
         return this._startWithStream(stream);
     }
@@ -114,7 +104,9 @@ export default class AgoraVideoRender extends cc.Component {
      * 初始化: video + canvas + 首帧纹理
      */
     private async _startWithStream(stream: MediaStream): Promise<boolean> {
+        console.log('[AgoraVideoRender] _startWithStream 开始, stream tracks:', stream.getTracks().length);
         this.stopRender();
+        this._isCancelled = false;
         this._stream = stream;
         this._useFastPath = false;
         this._glTextureID = null;
@@ -137,22 +129,36 @@ export default class AgoraVideoRender extends cc.Component {
         this._video.srcObject = stream;
 
         try {
-            await this._video.play();
-        } catch (e) {
-            console.error('[AgoraVideoRender] 播放失败:', e);
+            await Promise.race([
+                this._video.play(),
+                new Promise<void>((_, reject) => setTimeout(() => reject(new Error('play timeout')), 5000)),
+            ]);
+            console.log('[AgoraVideoRender] play() 成功');
+        } catch (e: any) {
+            if (this._isCancelled) { console.log('[AgoraVideoRender] play后已取消'); return false; }
+            console.warn('[AgoraVideoRender] play失败或超时:', e?.message || e);
             this.stopRender();
             return false;
         }
 
-        await new Promise<void>(resolve => {
+        if (this._isCancelled) { console.log('[AgoraVideoRender] play后检查已取消'); this._cleanupOnly(); return false; }
+
+        await new Promise<void>((resolve) => {
             if (this._video.readyState >= 1) {
                 resolve();
             } else {
-                this._video.addEventListener('loadedmetadata', () => resolve(), { once: true });
+                const onMeta = () => { resolve(); };
+                this._video.addEventListener('loadedmetadata', onMeta, { once: true });
+                setTimeout(() => { this._video.removeEventListener('loadedmetadata', onMeta); resolve(); }, 3000);
             }
         });
+        console.log('[AgoraVideoRender] metadata 就绪, readyState:', this._video.readyState, 'videoSize:', this._video.videoWidth, 'x', this._video.videoHeight);
+
+        if (this._isCancelled) { console.log('[AgoraVideoRender] metadata后已取消'); this._cleanupOnly(); return false; }
 
         await new Promise<void>(resolve => setTimeout(resolve, 100));
+
+        if (this._isCancelled) { console.log('[AgoraVideoRender] 100ms后已取消'); this._cleanupOnly(); return false; }
 
         const vw = this._video.videoWidth;
         const vh = this._video.videoHeight;
@@ -226,6 +232,7 @@ export default class AgoraVideoRender extends cc.Component {
 
     /** 停止渲染 */
     public stopRender(): void {
+        this._isCancelled = true;
         if (this._video) {
             this._video.pause();
             if (this._video.parentNode) {
@@ -251,6 +258,33 @@ export default class AgoraVideoRender extends cc.Component {
         }
         this.node.scaleX = this._originalScaleX;
         console.log('[AgoraVideoRender] 已停止渲染');
+    }
+
+    /** 仅清理资源（取消后内部使用，不重置 _isCancelled） */
+    private _cleanupOnly(): void {
+        if (this._video) {
+            this._video.pause();
+            if (this._video.parentNode) {
+                this._video.parentNode.removeChild(this._video);
+            }
+            this._video.srcObject = null;
+            this._video = null;
+        }
+        if (this._stream) {
+            this._stream.getTracks().forEach(t => t.stop());
+            this._stream = null;
+        }
+        this._canvas = null;
+        this._ctx = null;
+        this._texture = null;
+        this._spriteFrame = null;
+        this._isRendering = false;
+        this._useFastPath = false;
+        this._glTextureID = null;
+        if (this._sprite && this._defaultFrame) {
+            this._sprite.spriteFrame = this._defaultFrame;
+        }
+        this.node.scaleX = this._originalScaleX;
     }
 
     /**
@@ -319,7 +353,6 @@ export default class AgoraVideoRender extends cc.Component {
     }
 
     onDestroy() {
-        this.node.off(cc.Node.EventType.TOUCH_END, this._onTap, this);
         this.stopRender();
     }
 }

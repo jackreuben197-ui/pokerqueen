@@ -267,6 +267,7 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
 
         GameCache.Instance._antiCheatType = isClear ? 0 : this._roomInfo.antiCheatType;
         if (GameCache.Instance._antiCheatType == AntiCheatType.VIDEO) {
+            console.log('-------------------客户端已进入视频房间-------------------');
             GameCache.Instance._videoModel = this._roomInfo.antiCheatVideoType;
         }
         else {

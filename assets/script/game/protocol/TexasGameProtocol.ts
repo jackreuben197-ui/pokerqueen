@@ -57,6 +57,9 @@ import { InsuranceData, WrapTriggedInsuranceData } from "../new_ui/UIInsurancePa
 import SceneManager from "../../manager/SceneManager";
 import UIBase from "../../ui/UIBase";
 import UIFriendMatch from "../../lobby/new_club/createMatch/UIFriendMatch";
+import AgoraManager from "../../net/agora/AgoraManager";
+import AgoraVideoRender from "../../net/agora/AgoraVideoRender";
+import { VideoModel } from "../../crazyPoker/gameplay/common/constant/VideoModel";
 
 
 
@@ -70,6 +73,9 @@ export default class TexasGameProtocol {
     public RegisterMsgHandler(): void {
 
         console.log(`TexasGame : RegisterMsgHandler`);
+
+        // 进入房间时加入视频频道（不依赖坐下）
+        this.JoinVideoChannelIfNeed();
 
         GC.notify.register(ProtocolCode.Protocol_Holdem_Seated, this.HANDLER_REQ_GAME_SEND_MY_SEAT, this);//自己坐下
         GC.notify.register(ProtocolCode.Protocol_Holdem_SeatedOthers, this.HANDLER_REQ_GAME_RECV_SEAT_DOWN, this);  // 别人坐下
@@ -104,6 +110,8 @@ export default class TexasGameProtocol {
     }
     public RemoveMsgHandler(): void {
         console.log(`TexasGame : RemoveMsgHandler`);
+        // 离开房间时退出视频频道
+        this.LeaveVideoChannel();
         GC.notify.remove(ProtocolCode.Protocol_Holdem_Seated, this.HANDLER_REQ_GAME_SEND_MY_SEAT, this);//自己坐下
         GC.notify.remove(ProtocolCode.Protocol_Holdem_SeatedOthers, this.HANDLER_REQ_GAME_RECV_SEAT_DOWN, this);  // 别人坐下
         GC.notify.remove(ProtocolCode.Protocol_Holdem_Action, this.HANDLER_REQ_GAME_SEND_ACTION, this);  // 自己牌桌操作
@@ -178,6 +186,8 @@ export default class TexasGameProtocol {
             this.game.UpdateRoomDes();
         }
         this.game.UpdateStartGameState();
+        // 视频房间：检查该玩家是否已有远端视频流
+        this.TryRenderRemoteVideoForSeat(mSeat);
     }
     /// <summary>
     /// 自己坐下
@@ -265,7 +275,10 @@ export default class TexasGameProtocol {
         if (GameCache.Instance.Vip == 1) {
             //ShowVipSeatDownTips(GameCache.Instance.nick);
         }
-        //JudgeOnAudioVideoAndJoinChannel();
+        // 视频房间：坐下后渲染本地摄像头到自己的头像
+        if (GameCache.Instance._videoModel !== VideoModel.NONE) {
+            this._renderLocalVideoOnMySeat();
+        }
 
         //房间坐下时时添加firebase事件触发
         // Dictionary < string, string > paramMap = new Dictionary<string, string>();
@@ -2217,5 +2230,201 @@ export default class TexasGameProtocol {
         if (rec.status != 0) {
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
         }
+    }
+
+    // ==================== 视频房间相关 ====================
+
+    /**
+     * 进入房间时加入 Agora 视频频道
+     * 注册远端回调，可以立即看到已坐下的其他玩家视频
+     */
+    private async JoinVideoChannelIfNeed(): Promise<void> {
+        const videoModel = GameCache.Instance._videoModel;
+
+        if (videoModel === VideoModel.NONE) {
+            console.log('[VideoRoom] 非视频房间，跳过');
+            return;
+        }
+
+        console.log('[VideoRoom] 视频房间，videoModel:', videoModel, '，开始加入频道');
+
+        const agora = AgoraManager.Instance;
+
+        if (!agora.isSDKReady) {
+            console.warn('[VideoRoom] Agora SDK 未加载，跳过');
+            return;
+        }
+
+        agora.init();
+
+        const roomId = GameCache.Instance._currentRoomID || GameCache.Instance.room_id;
+        const channelName = 'rtc_d_1-0-' + roomId;
+        const uid = GameCache.Instance.nUserId || GameCache.Instance.userId || 0;
+
+        console.log('[VideoRoom] 加入频道:', channelName, 'uid:', uid);
+
+        const joined = await agora.join(channelName, undefined, uid);
+        if (!joined) {
+            console.error('[VideoRoom] 加入频道失败');
+            return;
+        }
+
+        // 注册远端视频回调
+        agora.onRemoteVideo = this._onRemoteVideo.bind(this);
+        agora.onUserLeft = this._onRemoteUserLeft.bind(this);
+
+        // 渲染已在座位上的远端玩家视频
+        this._renderAllExistingRemoteVideos();
+
+        console.log('[VideoRoom] 频道就绪，等待远端视频');
+    }
+
+    /**
+     * 离开房间时退出 Agora 频道
+     */
+    private async LeaveVideoChannel(): Promise<void> {
+        const agora = AgoraManager.Instance;
+        if (!agora.isJoined) return;
+
+        // 停止所有座位的视频渲染
+        if (this.game.listSeat) {
+            this.game.listSeat.forEach((seat: Seat) => {
+                if (seat.uirc?.Raw_Head) {
+                    const vr = seat.uirc.Raw_Head.node.getComponent(AgoraVideoRender);
+                    if (vr) vr.stopRender();
+                }
+            });
+        }
+
+        // 清除回调
+        agora.onRemoteVideo = null;
+        agora.onUserLeft = null;
+
+        await agora.leave();
+        console.log('[VideoRoom] 已离开视频频道');
+    }
+
+    /**
+     * 自己坐下后渲染本地摄像头到自己的头像
+     */
+    private async _renderLocalVideoOnMySeat(): Promise<void> {
+        const agora = AgoraManager.Instance;
+        if (!agora.isJoined) return;
+
+        // 开启本地摄像头并发布视频
+        const cameraOk = await agora.enableCamera();
+        if (!cameraOk) {
+            console.error('[VideoRoom] 开启摄像头失败');
+            return;
+        }
+
+        const mySeat = this.game.listSeat.find((s: Seat) => s.IsMySeat);
+        if (!mySeat || !mySeat.uirc?.Raw_Head) {
+            console.warn('[VideoRoom] 未找到自己的座位或头像节点');
+            return;
+        }
+
+        const headNode = mySeat.uirc.Raw_Head.node;
+        let videoRender = headNode.getComponent(AgoraVideoRender);
+        if (!videoRender) {
+            videoRender = headNode.addComponent(AgoraVideoRender);
+            videoRender.renderTarget = 'local';
+            videoRender.mirror = true;
+            videoRender.targetFps = 15;
+        }
+
+        const rendered = await videoRender.renderLocalCamera();
+        console.log('[VideoRoom] 本地视频渲染:', rendered ? '成功' : '失败');
+    }
+
+    /**
+     * 渲染当前已坐下的远端玩家视频（进入房间时可能已有玩家在座位上）
+     */
+    private _renderAllExistingRemoteVideos(): void {
+        const agora = AgoraManager.Instance;
+        if (!agora.isJoined) return;
+
+        const remoteUsers = agora.getRemoteUsers();
+        if (remoteUsers.length === 0) return;
+
+        this.game.listSeat.forEach((seat: Seat) => {
+            if (!seat?.Player || !seat.uirc?.Raw_Head) return;
+            const uid = seat.Player.userID;
+            const remoteUser = remoteUsers.find(u => u.uid === uid && u.hasVideo);
+            if (remoteUser) {
+                console.log('[VideoRoom] 发现已坐下的远端玩家, uid:', uid);
+                this._renderRemoteVideoOnSeat(uid);
+            }
+        });
+    }
+
+    /**
+     * 远端用户发布视频回调
+     */
+    private _onRemoteVideo(uid: number, track: any): void {
+        console.log('[VideoRoom] 收到远端视频, uid:', uid);
+        this._renderRemoteVideoOnSeat(uid);
+    }
+
+    /**
+     * 将远端视频渲染到对应 uid 的座位头像上
+     */
+    private _renderRemoteVideoOnSeat(uid: number): void {
+        const seat = this.game.listSeat.find((s: Seat) => s.Player && s.Player.userID === uid);
+        if (!seat) {
+            console.warn('[VideoRoom] 未找到 uid:', uid, '对应的座位，等待玩家坐下后渲染');
+            return;
+        }
+        if (!seat.uirc?.Raw_Head) {
+            console.warn('[VideoRoom] 座位头像节点不存在, uid:', uid);
+            return;
+        }
+
+        const headNode = seat.uirc.Raw_Head.node;
+        let videoRender = headNode.getComponent(AgoraVideoRender);
+        if (!videoRender) {
+            videoRender = headNode.addComponent(AgoraVideoRender);
+            videoRender.renderTarget = 'remote';
+            videoRender.remoteUid = uid;
+            videoRender.targetFps = 15;
+        }
+
+        videoRender.renderRemoteUser(uid).then(ok => {
+            console.log('[VideoRoom] 远端视频渲染 uid:', uid, ok ? '成功' : '失败');
+        });
+    }
+
+    /**
+     * 远端用户离开频道回调
+     */
+    private _onRemoteUserLeft(uid: number): void {
+        console.log('[VideoRoom] 远端用户离开, uid:', uid);
+        const seat = this.game.listSeat.find((s: Seat) => s.Player && s.Player.userID === uid);
+        if (!seat?.uirc?.Raw_Head) return;
+
+        const videoRender = seat.uirc.Raw_Head.node.getComponent(AgoraVideoRender);
+        if (videoRender) {
+            videoRender.stopRender();
+            console.log('[VideoRoom] 已停止远端视频渲染, uid:', uid);
+        }
+    }
+
+    /**
+     * 其他玩家坐下时检查是否需要渲染远端视频（视频先到、玩家后坐下的时序）
+     */
+    private TryRenderRemoteVideoForSeat(seat: Seat): void {
+        if (GameCache.Instance._videoModel === VideoModel.NONE) return;
+        if (!seat?.Player || !seat.uirc?.Raw_Head) return;
+
+        const uid = seat.Player.userID;
+        const agora = AgoraManager.Instance;
+        if (!agora.isJoined) return;
+
+        const remoteUsers = agora.getRemoteUsers();
+        const remoteUser = remoteUsers.find(u => u.uid === uid && u.hasVideo);
+        if (!remoteUser) return;
+
+        console.log('[VideoRoom] 玩家坐下后发现已有视频, uid:', uid);
+        this._renderRemoteVideoOnSeat(uid);
     }
 }

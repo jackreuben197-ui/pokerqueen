@@ -2,6 +2,9 @@
  * 声网 Agora RTC 管理器
  * 封装 Agora Web SDK，提供音视频通话能力
  */
+import { WebMiscAgoraToken } from "../https/web_request/WebRequestMisc";
+import { WWW } from "../https/WebRequestBase";
+
 export default class AgoraManager {
 
     private static _instance: AgoraManager = null;
@@ -12,13 +15,9 @@ export default class AgoraManager {
         return this._instance;
     }
 
-    // ==================== 配置项（请填写） ====================
+    // ==================== 配置项 ====================
     /** 声网 App ID */
     public appId: string = 'da91afd18fa84618bee90c5468b06a5f';
-    /** 声网 App Certificate（仅用于服务端生成 token，客户端留空） */
-    public appCertificate: string = '569bd27e2ef74ff4b29xxxxxxxxxx';
-    /** Token 服务地址（本地测试用，生产环境替换为正式后端地址） */
-    public tokenServerUrl: string = 'http://localhost:3333';
     // =========================================================
 
     private _client: any = null;
@@ -80,29 +79,36 @@ export default class AgoraManager {
             return;
         }
         const AgoraRTC = (window as any).AgoraRTC;
-        this._client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
+        this._client = AgoraRTC.createClient({ mode: 'rtc', codec: 'h264' });
         this._registerEvents();
         console.log('[AgoraManager] Client 初始化完成');
         this.checkAppId();
     }
 
     /**
-     * 从本地 Token 服务获取 Token
+     * 从服务器 API 获取 Agora Token
      * @param channel 频道名
      * @param uid 用户 ID
      */
     public async fetchToken(channel: string, uid: number = 0): Promise<string | null> {
         try {
-            const url = `${this.tokenServerUrl}/token?channel=${encodeURIComponent(channel)}&uid=${uid}`;
-            const resp = await fetch(url);
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            const data = await resp.json();
-            if (data.error) throw new Error(data.error);
-            console.log('[AgoraManager] Token 获取成功, channel:', data.channel, 'uid:', data.uid);
-            return data.token;
+            const response = await WWW.Instance.CommonAPI({
+                web_class: WebMiscAgoraToken,
+                body: {
+                    channel_name: channel,
+                    role: 1, // 1=发布者
+                    uid: uid,
+                },
+            });
+            const token = response?.data;
+            if (!token) {
+                console.error('[AgoraManager] Token 响应数据为空:', response);
+                return null;
+            }
+            console.log('[AgoraManager] Token 获取成功, channel:', channel, 'uid:', uid);
+            return token;
         } catch (e: any) {
-            console.error('[AgoraManager] Token 获取失败:', e.message);
-            console.error('[AgoraManager] 请确认已启动本地Token服务: node scripts/agora-token-server.js');
+            console.error('[AgoraManager] Token 获取失败:', e?.message || e);
             return null;
         }
     }
@@ -122,7 +128,7 @@ export default class AgoraManager {
         }
 
         const testChannel = '__appid_test_' + Date.now();
-        const testClient = (window as any).AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
+        const testClient = (window as any).AgoraRTC.createClient({ mode: 'rtc', codec: 'h264' });
 
         // 第1步：从本地服务获取 Token
         console.log('[AgoraManager] 第1步: 请求本地Token服务...');
@@ -233,6 +239,8 @@ export default class AgoraManager {
             actualToken = await this.fetchToken(channel, uid || 0);
             if (!actualToken) return false;
         }
+
+        console.log('[AgoraManager] 准备加入频道, appId:', this.appId, 'channel:', channel, 'uid:', uid, 'token长度:', actualToken?.length, 'token前20字符:', actualToken?.substring(0, 20));
 
         try {
             this._uid = await this._client.join(this.appId, channel, actualToken, uid || 0);

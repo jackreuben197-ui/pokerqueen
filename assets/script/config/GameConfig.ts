@@ -34,7 +34,7 @@ export class GameConfig {
     //是否使用代理
     static useProxy: boolean = false;
     //是否启用声网 Agora（false 则跳过 SDK 加载、初始化等全部流程）
-    static enableAgora: boolean = false;
+    static enableAgora: boolean = true;
     //是否使用新域名
     //static IsNewArea: boolean = false;
     //设计分辨率
