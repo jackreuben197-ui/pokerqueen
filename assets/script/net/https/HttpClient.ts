@@ -51,10 +51,10 @@ export default class HttpClient {
         }
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http post - request : ", url, body);
         needJuhua && UIComponent.open(UIDefine.UIPromptComponent as any);
-        let response: string = <string>await this.__request(url, false, body, headers, isJson);
+        let response: string = <string>await HttpClient.__request(url, false, body, headers, isJson);
         needJuhua && UIComponent.close(UIDefine.UIPromptComponent as any);
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http post - response : ", url, response);
-        this.__response(response, onFailure, onSuccess, api);
+        HttpClient.__response(response, onFailure, onSuccess, api);
     }
     /**
      * get 请求
@@ -73,10 +73,10 @@ export default class HttpClient {
         body = JSON.stringify(body);
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, body);
         needJuhua && UIComponent.open(UIDefine.UIPromptComponent as any);
-        let response: string = <string>await this.__request(url, true, body, headers, isJson);
+        let response: string = <string>await HttpClient.__request(url, true, body, headers, isJson);
         needJuhua && UIComponent.close(UIDefine.UIPromptComponent as any);
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http get - response : ", url, response);
-        this.__response(response, onFailure, onSuccess, api);
+        HttpClient.__response(response, onFailure, onSuccess, api);
     }
 
     static __response(

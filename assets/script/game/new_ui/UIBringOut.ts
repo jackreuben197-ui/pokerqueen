@@ -187,8 +187,7 @@ export default class UIBringOut extends UIBasePlus {
             this.cc_Label$coin.string = `${StringHelper.GetLongString(this._param.tableChips / 100 * 100 - this.CurMinOutBeans)}`;
         }
         else if (this._param.tableChips > this.CurMinOutBeans * 2) {
-            if ((rate) * this.Curmult
-            iple > this.CurMinOutBeans) {
+            if (rate * this.Curmultiple > this.CurMinOutBeans) {
                 this.cc_Label$coin.string = `${StringHelper.GetLongString(rate * this.Curmultiple * 100)}`;
             }
             else {

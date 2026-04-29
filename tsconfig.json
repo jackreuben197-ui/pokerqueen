@@ -6,7 +6,9 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "outDir": "temp/vscode-dist",
-    "forceConsistentCasingInFileNames": true
+    "rootDir": "./assets/script",
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": false
   },
   "exclude": [
     "back_script",
