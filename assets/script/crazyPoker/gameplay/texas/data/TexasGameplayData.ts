@@ -1,9 +1,10 @@
 import { RoomJackpotConfig, SquidCountRateConfig } from "../../../../protobuf/holdem/define_pb";
+import BaseGameplayData from "../../common/core/BaseGameplayData";
 
 /**
  * 德州：核心玩法数据
  */
-export default class TexasGameplayData {
+export default class TexasGameplayData extends BaseGameplayData {
     /**
      * 是否开启保险
      */
@@ -369,17 +370,4 @@ export default class TexasGameplayData {
      * 德州即时战况
      */
     public _situation: any = null;
-
-    /**
-     * 大盲注
-     */
-    private _bigBlind: number = 0;
-
-    public set bigBlind(value: number) {
-        this._bigBlind = value;
-    }
-
-    public get bigBlind(): number {
-        return this._bigBlind;
-    }
 }

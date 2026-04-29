@@ -54,6 +54,7 @@ import { ClientMessagePlayerJackpotSummary, ServerMessagePlayerJackpotSummary } 
 import { ServerMessageJackpotGoldChange } from "../../protobuf/holdem/recv_th_jackpot_gold_change_pb";
 import { ServerMessageJackpotAward } from "../../protobuf/holdem/recv_th_jackpot_award_pb";
 import { ClientMessageRooms, ServerMessageRooms } from "../../protobuf/holdem/req_rpc_rooms_pb";
+import { ServerMessageRoomChangeNotify } from "../../protobuf/holdem/recv_g_room_change_notify_pb";
 
 export class ProtocolCommon {
 
@@ -394,5 +395,8 @@ export const ProtocolMap = {
     [ProtocolCode.Protocol_Holdem_Rooms]: {
         Client: ClientMessageRooms,
         Server: ServerMessageRooms,
+    },
+    [ProtocolCode.Protocol_Holdem_RoomChangeNotify]: {
+        Server: ServerMessageRoomChangeNotify,
     }
 }

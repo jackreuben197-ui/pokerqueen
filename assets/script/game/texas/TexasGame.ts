@@ -76,7 +76,7 @@ import { GameCache } from "./../GameCache";
 import { SeatEmpty, SeatIdle, SeatOperation } from "./../SeatStateHandler";
 
 import { TexasGameState } from "./../TexasGameState";
-import { TexasGameStatus } from "./constant/TexasGameStatus";
+import { GameState } from "../../crazyPoker/gameplay/common/constant/TexasGameStatus";
 import TexasBusiness from "./business/TexasBusiness";
 
 import TexasSMAgency from "./../TexasSMAgency";
@@ -1011,7 +1011,7 @@ export default class TexasGame {
             mSeat.UpdateOnOrOffLine();
         }
 
-        if (this.gamestatus == TexasGameStatus.NOT_START) {
+        if (this.gamestatus == GameState.NOT_START) {
             this.ShowWaitForStartTips();
         }
         else {

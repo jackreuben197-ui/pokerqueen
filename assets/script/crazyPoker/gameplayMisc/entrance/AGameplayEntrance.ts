@@ -264,7 +264,7 @@ export default abstract class AGameplayEntrance {
      * @remarks 非虚接口, 不可覆盖, 在固定的流程下来实现逻辑
      */
     public async enterForegroundAsync(): Promise<boolean> {
-        cc.log(`${this.constructor.name}: EnterForegroundAsync: ${this.tableId}`);
+        console.log(`${this.constructor.name}: EnterForegroundAsync: ${this.tableId}`);
 
         try {
             // 等待通信层进入成功
@@ -295,7 +295,7 @@ export default abstract class AGameplayEntrance {
             return true;
         }
         catch (ex) {
-            cc.error(`${this.constructor.name}: EnterForegroundAsync: ${ex}`);
+            console.error(`${this.constructor.name}: EnterForegroundAsync: ${ex}`);
 
             this.cacheGlobalDataBeforeLoad(true);
             this.cacheGlobalDataAfterLoad(true);

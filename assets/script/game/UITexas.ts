@@ -97,6 +97,8 @@ export default class UITexas extends BaseScene {
     btn_msg: cc.Node = null;
     btn_report: cc.Node = null;
     btn_poker: cc.Node = null;
+    btn_im: cc.Node = null;
+    table_add_chip: cc.Node = null;
     // main_menu 按钮
     btn_emoji: cc.Node = null;
     btn_effect: cc.Node = null;
@@ -270,6 +272,8 @@ export default class UITexas extends BaseScene {
         this.btn_msg = this.getChildNodeOrComponent("btn_msg");
         this.btn_report = this.getChildNodeOrComponent("btn_report");
         this.btn_poker = this.getChildNodeOrComponent("btn_poker");
+        this.btn_im = this.getChildNodeOrComponent("btn_im");
+        this.table_add_chip = this.getChildNodeOrComponent("table_add_chip");
 
         // main_menu 按钮（main_menu 在 side_btns 下，load_all_object 已递归索引）
         this.btn_emoji = this.getChildNodeOrComponent("btn_emoji");
@@ -491,6 +495,10 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.btn_msg, this.click_side_button);
         this.setButtonClick(this.btn_report, this.click_side_button);
         this.setButtonClick(this.btn_poker, this.click_side_button);
+        this.setButtonClick(this.btn_im, this.click_btn_im);
+        if (this.table_add_chip) {
+            this.table_add_chip.on(cc.Node.EventType.TOUCH_END, this.click_table_add_chip, this);
+        }
 
         // main_menu 按钮
         this.setButtonClick(this.btn_emoji, this.click_btn_emoji);
@@ -790,5 +798,11 @@ export default class UITexas extends BaseScene {
     }
     private click_chatBtn() {
         UIComponent.open(UIDefine.UIBlank_dialog, { title: "聊天" });
+    }
+    private click_btn_im() {
+        UIComponent.open(UIDefine.UIBlank_dialog, { title: "客服界面" });
+    }
+    private click_table_add_chip() {
+        UIComponent.open(UIDefine.UIBlank_dialog, { title: "增加筹码" });
     }
 }

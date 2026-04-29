@@ -116,7 +116,6 @@ roomError6_5=You are logging in to a new device, please verify your account secu
 roomError6_6=Other Errors
 roomError6_7=Your account has been disabled
 roomError6_8=Account error, can't be logged in
-
 roomError12_1=The game is over
 roomError12_2=The table has been dismissed.
 roomError12_3=Entry failed due to the high volume of viewers in the table, please try again later
@@ -128,7 +127,6 @@ roomError18_4=Insufficient credit
 roomError18_5=Can't sit out while playing
 roomError18_6=Unknown Error
 roomError18_7=Same GPS player on table
-
 roomError18_12=Failed to sit down. Left the table early
 roomError18_13=You're frozen
 roomError19_1=Failed, relink operation box
@@ -162,7 +160,7 @@ roomError171_9=Teams with insufficient credit in the Club
 roomError171_10=Splitting table, cannot re-buy at the moment
 roomError175_22=Pop-up re-buy prompt box
 roomError236_1=Failure
-roomError236_2=Insufficient UC 
+roomError236_2=UC Insufficiency
 roomError12_5=You're in the game so you can't watch another table.
 roomError28_1=Insufficient UC 
 roomError28_3=Exceeds the maximum amount of stacks that can be brought in
@@ -170,7 +168,6 @@ roomError28_9=Unable to buy-in, the table is being dismissed
 roomError28_15=Account error, unable to play, please contact the administrator.
 roomError28_16=The player's Club is kicked out by the Union 
 roomError28_17=Not allowed to buy-in when your Club or Union is closed
-roomError300_2=Wallet locked
 roomError300_2=Not enough UC to put comments
 roomError28_18=Your wallet has been frozen, please contact customer service
 Text_TopRemind=UC Amount
@@ -2190,7 +2187,7 @@ MsgInfo_1003=Club administrator issued {1} to {0}
 MsgInfo_1004={1} Club administrator issued {0} to you, please go to [My Backpack] to check
 MsgInfo_1005=Union issued {0} to your Club, please go to [My Items] to check
 MsgInfo_1006=You use {0}
-MsgInfo_1007=You registered with {0}{1}
+MsgInfo_1007=[Tournament Request] {0} Request Registration {2} {1}
 MsgInfo_10011001=You got {0} UC
 Cowboy_MsgInfo_2002=Placing stopped
 MsgInfo_20032003=Operation error, you're not in the table
@@ -2343,8 +2340,6 @@ MTT-Rebuy rebuy server error=Server Error...
 MTT-Rebuy rebuy no more allow=No more rebuy allow, rebuy canceled
 MTT-Rebuy rebuy rejected=Rebuy rejected
 MTT-Rebuy rebuy is distributing=Distributing, can’t rebuy...
-roomError236_1=Failure
-roomError236_2=UC Insufficiency
 roomError236_4=The hand has no overtime chance
 MTT_Official=OFFICIAL MTT
 UIMatchMTTDetailList=Status^Player^Rewards^Table^Blind
@@ -2420,7 +2415,6 @@ Tips_Withdraw_Confirm=Do you want to submit an order to withdraw {0} UC?
 Tips_UIClub_FundTake_OrderConfirm=Do you agree with user {0}(ID:{1})'s request to withdraw {2} UC ?
 MsgInfo_2003=[Recharge request] The player {0} is requesting to recharge {1} UC
 MsgInfo_2004=[Withdrawal request] The player {0} is requesting to withdraw {1} UC
-MsgInfo_1007=[Tournament Request] {0} Request Registration {2} {1}
 MsgInfo_3003=Request for registration {2} {1} Completed, please join the game on time
 MsgInfo_3004=Collect {0} Agent regular table service fee {2}profit share {2}
 MsgInfo_3005=Collect {0} Agent game insurance {2} profit share
@@ -3546,11 +3540,11 @@ UIGuild_FilterButtonAll=All
 UIGuild_FilterButtonManager=Admin
 UIGuild_FilterButtonVip=Agent
 UIGuild_FilterButtonMember=Member
-UIGuild_MemberNumber=Total number of people
+UIGuild_MemberNumber=Number of members
 UIGuid_Founder=Founder
 UIGuid_Level=Club Rank
 UIGuild_ShowContactDetail=Show Contact
-UIGuild_ContactInfo=Club Contact
+UIGuild_ContactInfo=Contact information
 UIGuild_ExchangeRateSettings=Rate settings
 UIGuild_ShareGameManager=Shared game management
 UIGuild_AllowSearch=Searchable by club ID
@@ -3611,7 +3605,6 @@ UIGuildFund_RtTips003=Confirm to withdraw {1} UC from {0} Union ?
 UIGuildFund_RtTips004=Confirm to withdraw {1} GC to {0} Union ?
 UIGuildFund_RtTips005=Recharge request submitted.\n If you have any questions contact customer service at {0}
 UIGuildFund_RtTips006=Withdrawal request submitted
-If you have any questions contact customer service at {0}"
 UIGuild_MemberDetails_title=Detailed information
 UIGuilFundRecordTopTIps=Applying^Agree^Reject^Cancel request
 UIGuild_PloType=Game variations
@@ -3622,7 +3615,7 @@ UIGuildExchange=Exchange
 UIGuild_MemberDetailsName=Name:
 UIGuild_MemberDetailsRemarks=Comments:
 UIGuild_CreateDes=Create
-UIFriendsTable_CreateRoomTips=Start the game and invite friends to join in
+UIFriendsTable_CreateRoomTips=Create your private table and invite friends to join
 UIGuild_MemberDetails_UpLine=Agent
 UIGuild_MemberDetails_Nothing=No
 UIGuild_MemberDetails_BindVip=Bind Agent
@@ -3639,7 +3632,6 @@ UIGuild_MemberDetails_UnBindVipTips=Do you wish to cancel this Agent binding?
 UIGuild_MemberDetails_Delete=Confirm to delete {0}?
 UIGuild_MemberDetails_Frozen=Confirm to freeze {0}?
 UIGuild_MemberDetails_VipOffLine=Subordinate members
-
 UIGuild_MemberDetails_OffLineEdit=Edit subordinate
 UIGuild_Level=Current Club Level
 UIGuild_LevelUp=Confirm to spend {0} diamonds to buy Level {1} ({2} days)?
@@ -3669,9 +3661,8 @@ UIGuildTableBottomBtns005=Message
 UIGuild_MemberOffLineList=Subordinate 
 UIGuild_MemberOffLineListSearch=Please enter member name or ID
 UIGuild_PrivateGame=Private game
-UIGuild_PassworldLimit=4-8 character password
-UIFriendsTable_JoinRoomNumberWrong=The table number {0} you entered can not be found
 UIGuild_PassworldLimit=Waiting for table admin to approve
+UIFriendsTable_JoinRoomNumberWrong=The table number {0} you entered can not be found
 UIGuild_JoinUnionTips={0} Confirm application to join {1}
 UIGuildFund_RechargeText=Recharge
 UIGuildFund_WithdrawalText=Withdraw
@@ -3685,7 +3676,7 @@ UIloginEmail_Registertext=Email
 UIGuild_MemberBindVipDone=Bonded
 UIGuild_MemberUnBindVipDone=Unbound
 UIClub_IntroGuildDatail=Introduce the Club!
-UIGuild_NoticeNoShow=Do not remind anymore
+UIGuild_NoticeNoShow=Do not remind me again
 UIloginPhone_forgettext=Using mobile number to reset password 
 UIloginEmail_forgettext=Using e-mail to reset password
 UIGuild_QuitTips=After exiting, you will not be able to participate in the game anymore, do you still wish to exit?
@@ -3740,7 +3731,6 @@ UIMTT_Listbonus2=Prize Pool:
 UILogin_EmailHasRegist=This e-mail has been registered
 UIMine_DeleteUser=Delete account
 UIMine_DeleteUserContent=Account deletion works effective immediately. All data will be erased and cannot be recovered. Are you sure you want to delete your account?
-UIGuild_NoticeNoShow=Do not remind me again
 UIMine_DiamondsNotEnough=Your diamond balance is insufficient, please recharge first
 UIMine_ChangeDefaultHeadIcon=Click to randomly switch the default avatar
 UIMine_SetHeadIcon=Set Avatar
@@ -3810,7 +3800,6 @@ UIFACEDELECTION_TIPSSUC=Verified!
 UIFriendsTable_Create_6P=Short Deck
 UIFriendsTable_Create_NLH=Texas Hold'em
 UIFriendsTable_Create_PLO=Pot Limit Omaha
-UIFriendsTable_CreateRoomTips=Create your private table and invite friends to join
 UIFriendsTable_DataTimeError_30day=The data can only be researched for a period of 30 days at most.
 UIFriendsTable_fee=Service Fee
 UIFriendsTable_playercount=Total Number of Players
@@ -3820,9 +3809,7 @@ UIGuild_CancelShare=Cancel sharing
 UIGuild_CoinType1=Chip
 UIGuild_CoinType2=UC
 UIGuild_CoinType3=GC
-UIGuild_ContactInfo=Contact information
 UIGuild_JoinUnionContactTips=Fill in your contact information here
-UIGuild_MemberNumber=Number of members
 UIGuild_NoDescTips=No club description yet
 UIGuild_NoUnion=Union does not exist
 UIGuild_RecordBtn=Requirements
@@ -3842,7 +3829,7 @@ UIRoom_LimitTimeFreeFace=Free for a limited time
 UITexas_FaceRecogDaoJiShi=Countdown: You can try again after {0}
 UITexas_FaceRecogSuccess=Verified!
 UITexas_FaceRecogTip1=The number of times you have started authentication in this table is 0, and you may not start authenticating again.
-UITexas_FaceRecogTip10={0} hasn't been approved in face recognition
+UITexas_FaceRecogTip10=Try again
 UITexas_FaceRecogTip11={0} has been face recognition
 UITexas_FaceRecogTip12=Identity authentication in progress {0}s
 UITexas_FaceRecogTip13=Verification passed
@@ -3866,7 +3853,6 @@ UIClub_DJTip6=It is confirmed that the player {0}{1} is frozen and the player ca
 UIClub_DJTip7=Make sure to unfreeze player {0}{1}
 UIGuild_MemberEditTitle=Edit subordinate 
 UIGuild_MemberEditHide=Hide the current subordinate 
-UIData_Today=Today
 UIData_7day=7 Days
 UIData_14day=14 Days
 UIData_game=Games
@@ -3877,7 +3863,6 @@ UIData_BtnRecord=Achievements
 UIClub_CreateTips=Create a club and invite friends to play together
 UIClub_CreateGuild=Create Club
 UIGame_Type6p=6+
-UITexas_FaceRecogTip10=Try again
 UIMessage_Default=Home Games
 UIMessage_Default2=System
 UIMessage_Default3=Union
@@ -4147,7 +4132,7 @@ UIGuild_MemberDetails_ProxySetting=Agent earnings settings
 UIGuildMemberProxyRevenueSettings_Text1=Service fee share
 UIGuildMemberProxyRevenueSettings_Text2=Insurance share
 UIGuildMemberProxyRevenueSettings_Text3=MTT share
-OpCodeString_DIAMONDTRIBETOUSER=Union Issued
+OpCodeString_DIAMONDTRIBETOUSER=Union distributes to players
 MsgInfo_3029=Union {0} issued {1} diamond(s) to you
 ServerErrorCode_20048=Incorrect verification code, please re-enter
 UIGuildDownloadFightData=Download Results
@@ -4349,7 +4334,6 @@ UIData_30day=30 days
 UIGuild_MemberManagerDetailRake=Rake
 UIGuild_MemberManagerDetailVariable=change amount
 MttVideoModePermission=Enable camera and microphone permissions to enter the game
-
 UIMSG_Recharge=Recharge application
 UIMSG_JoinClub=Join Club Application
 UIMSG_Delay=Extension application
@@ -4382,7 +4366,6 @@ OpCodeString_TRIBEKOCLUBUOUT=Union kicks out club
 OpCodeString_TRIBEKOCLUBCIN=Union kicks out club
 OpCodeString_TRIBEKOCLUBCOUT=Union kicks out club
 OpCodeString_TRIBEKOCLUBTIN=Union kicks out club
-
 ServerErrorCode_20064={0} still in game, can't be kicked
 OpCodeString_MTTQUIT=Registration fee refund
 UILogin_EmaliNoRegister=This email is not registered
@@ -4862,7 +4845,6 @@ OpCodeString_DIAMONDTRANSTOU=Transferring Individuals from Battle Community
 OpCodeString_CREATETRIBETABLE=Table Creation Fee
 OpCodeString_CLOSETRIBETABLE=Table Creation Fee Refund
 OpCodeString_DIAMONDPLATTOTRIBE=Platform distributes to Union
-OpCodeString_DIAMONDTRIBETOUSER=Union distributes to players
 OpCodeString_PLATRECOVETRIBE=Platform reclaims
 OpCodeString_TRIBEGOLDBUY=Buy UC 
 UIMTT_wuxianzhi=Unlimited
@@ -5046,7 +5028,6 @@ UIGuildVIPCreateTableEquity=Table Creation Rights
 UIGuildVIPAntiCheatingFreeTip=Anti-cheating free times
 UIGuildVIPChatFreeTip= Number of free chats
 UIGuildVIPGameLimitTip=Game Restrictions
-
 UIGuildVIPEmptyTableCloseTip=Auto-close
 UIGuildVIPStraddleTip=Straddle
 UIGuildVIPTwoDeckTip=Run it twice
@@ -5097,7 +5078,6 @@ UITexasUnSendChat=Only players at the table can join in the conversation
 UIMTT_Cancelbaoming=Cancel registration
 UIMTT_CancelbaomingTips=Registration for MTT has been canceled
 UITexasRule_Introduce_Safe=<b><size=50>Introduction of Safe Room</size></b>\nThe Safe Room has an anti-cheat feature that protects the player's privacy status. Not seated players with spectator status can not view table information, only avaiable until seated.
-
 UIMatchChooseTableType=Game Type Selection
 UIMatchSafeSheet=Select Options (multiple)
 UICommunityManager_Totalbalance=Total balance
@@ -5516,7 +5496,7 @@ OpCodeString_JACKPOTAWD=Jackpot Reward
 MsgInfo_3032=You have won {1} UC from {0} Jackpot reward
 UISquidDetail=Each player who wins the pot will receive a squid mark. The last player without a squid mark ends the round. The losers must pay penalty points to other players. Leaving the squid game midway is considered a forfeit, so please be careful.
 UICreateClubRoomEntrance_JackpotNoData=No corresponding Jackpot pool template
-UISquidOpen=Activate Squid Game
+UISquidOpen=Squid opening
 UISquidOpenCondition=Conditions to activate Squid Game
 UISquidGameRounds=Trigger Round
 UISquidPenaltyPoints=Penalty Points
@@ -5568,7 +5548,6 @@ IMNotification=IM message push
 IMNotificationTip=When enabled, all pending messages from the club will be pushed to the IM hoverbox message list.
 BoundOtherTip=This game account has been bound to other IM accounts. After opening, this IM account won’t receive messages. Are you sure to open?
 UISquidQuitRoomTips=You have not got the squid mark yet in currently squid game, and you need to pay the penalty amount when leaving the table
-UISquidOpen=Squid opening
 UISquidDeposit=Squid deposit
 UISquidRule=<size=46>Squid game rules</size>\n\n1. The squid game is triggered when meet the squid game triggering conditions. \n2. Each player (in current round of squid game) will get a squid mark after winning the pot for the first time, which will be displayed on the avatar on the table. A draw will not generate a squid mark. \n3. When a player gets the "squid mark" and there is only one player left without the "squid mark", this round of squid game ends, and the last player needs to pay penalty points to other players. \n4. If the player does not have enough balance to pay the penalty amount, the corresponding amount will be deducted from the deposit, and the player will be in a standing state. The player can bring in and sit down again\n5. This round of squid game ends, all states are reset, and a new round is ready. Exiting the squid mode midway will be regarded as surrender and compensation will be required. Please be careful. \n\n<size=46>Exit and Penalty Rules</size>\n\n1. Players who leave actively, leave passively, or temporarily disconnect are all considered "leaving state". \n2. If you are not in the squid mode, you will leave the table normally and entire deposit will be directly return when you leave; otherwise, you will need to deduct the penalty amount of the number of people who have obtained the "squid mark + 1" in the leaving state. \n3. Players who are in the "leave state" and have a "squid mark" will leave the table after settlement, and the deposit will be returned without additional deductions. \n 4. Players who are in the "leave state" and do not have a "squid mark" will pay the penalty amount to each player who has a "squid mark" and then leave the table after settlement. If the amount is not enough, it will be deducted from the deposit. \n5. Player can continue and keep the same status If reconnects successfully within the countdown, and the squid game settlement is not triggered during the period. \n6. The penalty amount for quitting midway will be put into the squid pool and will be divided equally among the players who have the squid mark after the end of this round of squid.
 UICreateRoom_MaxLimitRate=Capped {0} times
@@ -5744,7 +5723,6 @@ UIClub_UserLevelAgent=AGENT
 UIClub_UserLevelAdmin=ADMIN
 UIClub_UserLevelOwner=OWNER
 UICreateLimitSeeHandTips=Limit the number of hands a player can spectate at the table.
-
 UICreateLimitSeeHand=Spectator Restrictions
 UILimitSeeHandTips=This table limits the spectating time, you will be kicked out of the table after {0} hands, please take your seat asap.
 ServerErrorCode_20120=If you are kicked out due to long time spectating, you can't enter the room again.
@@ -5948,8 +5926,6 @@ Mahjong_ResultRateAdd=Winning + {0} times
 Mahjong_EyesSevenPairs=Seven pairs
 Cowboy_Recenthandrecords=Recent 100 Hands Records
 Account_Cancel_Code=Account Deactivation Refund
- 
-         
 ServerErrorCode_20121=Club owner cannot deactivate accounts
 UICreateRoomOptions1=Seats
 UICreateRoomOptions2=Auto-Start Players
@@ -6482,7 +6458,6 @@ UIGuildFundRecordTip=Record
 ServerErrorCode_20047=Buy-in request failed, please contact your club's CS
 UIEVInsuranceRuler=Selection & Payment Details.\n- Payment timing: Insurance is paid after the hand regardless of outcome..\n- Selection: If no decision is made within the time limit, it is treated as declined..\n- Exit mechanism: Once insurance is accepted, you exit the pot and cannot win it..\n- Multi-way pots: Only the leading player with the highest equity and meeting criteria can buy EV insurance.
 UILowWaterInsuranceRuler=It must be purchased in full—partial Outs selection is not supported.\n-Follow-up Handling: If insurance is purchased on the turn and does not result in a payout, but a comeback is still possible on the river, insurance must be purchased again on the river, and the insured amount from the turn will be carried over.
-\n-Auto Rule: The system only offers insurance options with odds greater than 0.1; if the conditions are not met, insurance cannot be purchased.
 UIUpBlindTips=Blinds will increase after this hand
 UINumberShopOne=1-digit
 UINumberShopTwo=2-digit
@@ -6540,7 +6515,7 @@ UIAutoChangeTable3=Current table will reshuffle after participating in {0} hands
 UIAutoChangeTable4=Auto Table Change
 UIAutoChangeTable5=Will automatically switch to a new table after this hand ends.
 UIEgg_TwoRate=Second Finisher Rate
-UIEgg_AddRate=Average Doubles per Game
+UIEgg_AddRate=Double
 UIEgg_PressRate=Average Suppression per Game
 UIEgg_HeadRate=First Finisher Rate
 UIEgg_TwoRateTips=Cooperation: Percentage of all hands in which the player finishes second.
@@ -6585,7 +6560,6 @@ UIEgg_ThrowCard=Play card
 UIEgg_CantAfford=Can’t beat
 UIEgg_Tribute=Tribute
 UIEgg_NotTribute=Refuse tribute
-UIEgg_AddRate=Double
 UIEgg_NotAddRate=Don’t double
 UIClub_InputPlayerID2=Nickname/ID
 UIClubMemberOperationFreezeRecycle=Frozen players cannot reclaim chips
@@ -7185,872 +7159,82 @@ UICreateMahjongMttAutoHost=
 UICreateMahjongMttTips19=
 UIMatchProgress=
 Spinner_Tip=Syncing cloud data...
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+UITabbarHome=
+UIHomeMahjongArea=
+UIHomeMahjongAreaTip=
+UIHomePokerArea=
+UIHomeMttArea=
+UIHomeMttPokerTip=
+UIHomeMttMahjongTip=
+UIHomeMttAreaTip=
+UIHomeMinigameArea=
+UIHomeComingSoon=
+UIMTTLatestRegister=
+PageMessageApplyForCreditLimit=
+PageMessageApplyForUC=
+PageMineClubCareer=
+PageMineFriendTableCareer=
+PageMineMessageBoard=
+Wallet_Title=Wallet
+Wallet_Deposit=Deposit
+Wallet_Withdraw=Withdraw
+Wallet_Records=Records
+Wallet_Details=Details
+Wallet_Balance=UC Balance
+Wallet_BalanceLabel=Balance
+Wallet_PayNow=Pay {0} Now
+Wallet_PaySuffix=Pay
+Wallet_MethodCard=Bank Card
+Wallet_CustomAmount=Custom Amount
+Wallet_AppBarRecharge=Recharge
+Wallet_AppBarSupport=Support
+Wallet_AvailableUc=Available UC
+Wallet_Cancel=Cancel
+Wallet_Confirm=Confirm
+Wallet_InputPlaceholder=Enter amount
+Wallet_KeypadPlaceholder=Enter
+Wallet_Rate=Rate
+Wallet_ApplyTime=Apply Time
+Wallet_OrderPayAmount=Pay Amount
+Wallet_OrderStatus=Order Status
+Wallet_RecipientLabel=Recipient
+Wallet_RemarkLabel=Remark
+Wallet_SubmitWithdraw=Submit
+Wallet_OrdersTitle=Records
+Wallet_OrdersDeposit=Deposit Records
+Wallet_OrdersWithdraw=Withdraw Records
+Wallet_OrderAmountDeposit=Deposit UC
+Wallet_OrderAmountWithdraw=Withdraw UC
+Wallet_StatusCancelled=Cancelled
+Wallet_OrderTitle=Order Details
+Wallet_OrderId=Order ID
+Wallet_OrderAmount=Deposit UC
+Wallet_OrderFee=Fee
+Wallet_OrderPayAddr=Payment Address
+Wallet_OrderRecvName=Recipient Name
+Wallet_OrderRecvAddr=Recipient Address
+Wallet_OrderTime=Recharge Time
+Wallet_StatusPending=Pending
+UIMatchPokerTournament=Poker Tournament
+UIMatchMahjongTournament=Mahjong Tournament
+UIMatchNoTournaments=No tournaments available
+UIMatchBlindLevelCount=Blind Levels
+UIMatchRankBoard=Rankings
+UIMatchHunterBoard=Hunter Board
+UIMatchRemainingPlayersCount=Remaining Players
+UIMatchSignupCount=Sign-ups
+UIMatchRebuyCount=Rebuys
+UIMatchAddonCount=Add-ons
+UIMatchChampion=Champion
+UIMatchNextLevelPrize=Next Level Prize
+UIMatchNextBreak=Next Break -
+UIMatchName=Tournament Name
+UIMatchGuaranteedPool=Guaranteed Pool
+UIMatchEstimatedDuration=Est. Duration
+UIMatchBlindInterval=Blind Interval
+UIMatchMinMaxPlayers=Min/Max Players
+UIMatchStartCondition=Start Condition
+UIMatchBreakTime=Break Time
+UIMatchPerTableCount=Per Table
+UIMatchTotalTables=Total Tables
+UIMatchGuaranteedTag=Guaranteed

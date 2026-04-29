@@ -7,7 +7,8 @@
     "cocos:build:web:release": "node ./scripts/cocos_cli.js build \"platform=web-mobile;debug=false;md5Cache=true\"",
     "verify:code": "npm run check:ts && npm run cocos:build:web",
     "agora:token": "node scripts/agora-token-server.js",
-    "sync:template": "node scripts/sync-template.js"
+    "sync:template": "node scripts/sync-template.js",
+    "merge:i18n": "node scripts/merge-i18n.js"
   },
   "dependencies": {
     "@types/gapi": "^0.0.43",

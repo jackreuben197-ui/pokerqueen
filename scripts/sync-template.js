@@ -167,6 +167,22 @@ const out = `<!--
             display: none;
         }
     </style>
+
+    <!-- CC 编辑器预览：拦截 H5 的 i18n fetch，绕过 Cocos 资源管线 -->
+    <script>
+    (function () {
+        var origFetch = window.fetch;
+        window.fetch = function (input, init) {
+            var url = typeof input === 'string' ? input : input instanceof Request ? input.url : String(input);
+            if (/assets\\/resources\\/config\\/USER_\\w+\\.txt/.test(url)) {
+                var m = url.match(/USER_\\w+\\.txt/);
+                if (m) url = './h5-i18n/' + m[0];
+                input = typeof input === 'string' ? url : new Request(url, input);
+            }
+            return origFetch.call(this, input, init);
+        };
+    })();
+    </script>
 </head>
 
 <body>
