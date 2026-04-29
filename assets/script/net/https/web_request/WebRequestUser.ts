@@ -56,12 +56,12 @@ export class WebRefreshToken extends WebCommon {
     //接口地址
     static API: string = "/api/user/refresh";
     //字段声明
-    static RequestParams: {} = null;
+    static RequestParams: {} | null = null;
 
     static ResponseData: {
         token?: string; // 手机号
         expire_at?: number; // 密码MD5
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebRefreshToken.RequestParams) {
         this.RequestParams = param;
@@ -82,9 +82,9 @@ export class WebUserCheckPhone extends WebCommon {
         phone?: string; // 手机号码
         area?: string; // 国家代号
         email?: string; // 邮箱
-    } = null;
+    } | null = null;
 
-    static ResponseData: {} = null;
+    static ResponseData: {} | null = null;
 
     static Request(param: typeof WebUserCheckPhone.RequestParams) {
         this.RequestParams = param;
@@ -104,9 +104,9 @@ export class WebUserSendCode extends WebCommon {
     static RequestParams: {
         phone?: string; // 手机号码
         area?: string; // 国家代号
-    } = null;
+    } | null = null;
 
-    static ResponseData: {} = null;
+    static ResponseData: {} | null = null;
 
     static Request(param: typeof WebUserSendCode.RequestParams) {
         this.RequestParams = param;
@@ -129,12 +129,12 @@ export class WebUserModifyPassword extends WebCommon {
         password?: string; // 密码
         area?: string; // 国家代号
         code?: string; // 验证码
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         user_id?: number;
-        s;
-    } = null;
+        s?: any;
+    } | null = null;
 
     static Request(param: typeof WebUserModifyPassword.RequestParams) {
         this.RequestParams = param;
@@ -155,12 +155,12 @@ export class WebUserModifyUserInfo extends WebCommon {
         sex?: number; // 性别
         nick_name?: string; // 名字
         avatar?: string; // 头像
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserModifyUserInfo.Data;
-    } = null;
-    static Data: {} = null;
+    } | null = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserModifyUserInfo.RequestParams) {
         this.RequestParams = param;
@@ -179,12 +179,12 @@ export class WebUserCheckNickname extends WebCommon {
     //字段声明
     static RequestParams: {
         nickname?: string; // 名字
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserModifyUserInfo.Data;
-    } = null;
-    static Data: {} = null;
+    } | null = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserCheckNickname.RequestParams) {
         this.RequestParams = param;
@@ -208,11 +208,11 @@ export class WebUserRegister extends WebCommon {
         code?: string; // 验证码
         email?: string;
         platform?: number; //平台(platform):1-IOS 2-Android 3-Windows 4-OSX 5-Web 6-MiniWeb 7-Linux
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         userId: number; // 用户id
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserRegister.RequestParams) {
         this.RequestParams = param;
@@ -233,9 +233,9 @@ export class WebOtherUserInfo extends WebCommon {
     static CacheDataTTL: number = 24 * 60 * 60 * 1000;
 
     //字段声明
-    static RequestParams: {} = null;
+    static RequestParams: {} | null = null;
 
-    static ResponseData: {} = null;
+    static ResponseData: {} | null = null;
 
     static Request(param: typeof WebOtherUserInfo.RequestParams) {
         this.RequestParams = param;
@@ -251,10 +251,10 @@ export class WebOtherUserInfo extends WebCommon {
 export class WebUserInfo extends WebCommon {
     //接口地址
     static API: string = "/api/user/info";
-    static RequestParams: {} = null;
+    static RequestParams: {} | null = null;
     static ResponseData: {
         user?: typeof WebUserInfo.UserInfo; // 用户信息
-    } = null;
+    } | null = null;
     static UserInfo: {
         area?: string; //手机号地区 例子：+86
         phone?: string; //手机号
@@ -278,7 +278,7 @@ export class WebUserInfo extends WebCommon {
         user_id?: number;
         club_id?: number;
         p_u_id?: number;
-    } = null;
+    } | null = null;
     static Request(param: typeof WebLogin.RequestParams) {
         this.RequestParams = param;
         return param;
@@ -294,11 +294,11 @@ export class WebChannel extends WebCommon {
     //接口地址
     static API: string = "/api/user/channel";
     //字段声明
-    static RequestParams: {} = null;
+    static RequestParams: {} | null = null;
 
     static ResponseData: {
         port?: number; // socket port
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebLogin.RequestParams) {
         this.RequestParams = param;
@@ -315,11 +315,11 @@ export class WebWs extends WebCommon {
     //接口地址
     static API: string = "/api/user/ws";
     //字段声明
-    static RequestParams: {} = null;
+    static RequestParams: {} | null = null;
 
     static ResponseData: {
         port?: number; // websocket port
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebWs.RequestParams) {
         this.RequestParams = param;
@@ -398,7 +398,7 @@ export class WebUserRoomSettleDetail extends WebCommon {
     //         user_hand_num: number,//手数
     //         bring_in: number,//带入
     //         bring_out: number,//带出
-    //     } = null;
+    //     } | null = null;
     // static UsersInfo:
     //     {
     //         user_random_id: number,//user id
@@ -485,15 +485,15 @@ export class WebUserDelete extends WebCommon {
 export class WebUserActionRemaind extends WebCommon {
     static API: string = "/api/user/action/remaind";
 
-    static RequestParams: {} = null;
+    static RequestParams: {} | null = null;
 
     static ResponseData: {
         data?: typeof WebUserActionRemaind.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         addtime_free_count?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserActionRemaind.RequestParams) {
         this.RequestParams = param;
@@ -512,13 +512,13 @@ export class WebUserAgentDiamondsGrant extends WebCommon {
     static RequestParams: {
         amount?: number;
         user_id?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserAgentDiamondsGrant.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserAgentDiamondsGrant.RequestParams) {
         this.RequestParams = param;
@@ -539,11 +539,11 @@ export class WebUserAgentGoldGrant extends WebCommon {
         amount?: number;
         op_type?: number;
         legal_tender?: number;
-    } = null;
+    } | null = null;
 
-    static ResponseData: {} = null;
+    static ResponseData: {} | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserAgentGoldGrant.RequestParams) {
         this.RequestParams = param;
@@ -562,13 +562,13 @@ export class WebUserBuysubScriptIon extends WebCommon {
     static RequestParams: {
         subscription_id?: number;
         price_type?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserBuysubScriptIon.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserBuysubScriptIon.RequestParams) {
         this.RequestParams = param;
@@ -587,13 +587,13 @@ export class WebUserClubCreaTorGrant extends WebCommon {
     static RequestParams: {
         amount?: number;
         user_ids?: number[];
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserClubCreaTorGrant.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserClubCreaTorGrant.RequestParams) {
         this.RequestParams = param;
@@ -611,13 +611,13 @@ export class WebUserDelayRoomAuditSwitchUpdate extends WebCommon {
 
     static RequestParams: {
         delay_room_audit_switch?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserDelayRoomAuditSwitchUpdate.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(
         param: typeof WebUserDelayRoomAuditSwitchUpdate.RequestParams,
@@ -638,22 +638,22 @@ export class WebUserDiamondRelation extends WebCommon {
     static RequestParams: {
         limit?: number;
         offset?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserDiamondRelation.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         list?: (typeof WebUserDiamondRelation.GiveData)[];
-    } = null;
+    } | null = null;
 
     static GiveData: {
         nick_name?: string;
         remark_name?: string;
         avatar?: string;
         random_num?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserDiamondRelation.RequestParams) {
         this.RequestParams = param;
@@ -673,13 +673,13 @@ export class WebUserDiamondSend extends WebCommon {
         target_user_id?: number;
         send_type?: number;
         amount?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserDiamondSend.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserDiamondSend.RequestParams) {
         this.RequestParams = param;
@@ -698,9 +698,9 @@ export class WebUserExtraStatusUpdate extends WebCommon {
     static RequestParams: {
         key?: string;
         value?: number;
-    } = null;
+    } | null = null;
 
-    static ResponseData: {} = null;
+    static ResponseData: {} | null = null;
 
     static Request(param: typeof WebUserExtraStatusUpdate.RequestParams) {
         this.RequestParams = param;
@@ -719,24 +719,24 @@ export class WebUserFreeZePublicList extends WebCommon {
     static RequestParams: {
         limit?: number;
         offset?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserFreeZePublicList.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         limit?: number;
         offset?: number;
         list?: (typeof WebUserFreeZePublicList.Record)[];
-    } = null;
+    } | null = null;
 
     static Record: {
         create_time?: string;
         user_random_id?: number;
         user_nick_name?: string;
         user_avatar?: string;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserFreeZePublicList.RequestParams) {
         this.RequestParams = param;
@@ -754,20 +754,20 @@ export class WebUserGetaVatars extends WebCommon {
 
     static RequestParams: {
         sex?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserGetaVatars.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         list?: (typeof WebUserGetaVatars.Avatar)[];
-    } = null;
+    } | null = null;
 
     static Avatar: {
         url?: string;
         avatar_type?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserGetaVatars.RequestParams) {
         this.RequestParams = param;
@@ -785,11 +785,11 @@ export class WebUserGradeDetail extends WebCommon {
 
     static RequestParams: {
         user_id?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserGradeDetail.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         online_time_chart_data?: typeof WebUserGradeDetail.OnlineTimeChartData;
@@ -797,53 +797,53 @@ export class WebUserGradeDetail extends WebCommon {
         recharge_amount_chart_data?: typeof WebUserGradeDetail.RechargeAmountChartData;
         game_type_pie_chart?: (typeof WebUserGradeDetail.GameTypeData)[];
         online_time_hourly_chart?: (typeof WebUserGradeDetail.OnlineTimeHourlyData)[];
-    } = null;
+    } | null = null;
 
     static OnlineTimeChartData: {
         user_data?: (typeof WebUserGradeDetail.OnlineTimeData)[];
         club_average_data?: (typeof WebUserGradeDetail.OnlineTimeData)[];
-    } = null;
+    } | null = null;
 
     static OnlineTimeData: {
         date?: string;
         online_time_daily?: number;
-    } = null;
+    } | null = null;
 
     static HandNumberChartData: {
         user_data?: (typeof WebUserGradeDetail.HandNumberData)[];
         club_average_data?: (typeof WebUserGradeDetail.HandNumberData)[];
-    } = null;
+    } | null = null;
 
     static HandNumberData: {
         date?: string;
         hand_number_daily?: number;
-    } = null;
+    } | null = null;
 
     static RechargeAmountChartData: {
         user_data?: (typeof WebUserGradeDetail.RechargeAmountData)[];
         club_average_data?: (typeof WebUserGradeDetail.RechargeAmountData)[];
-    } = null;
+    } | null = null;
 
     static RechargeAmountData: {
         date?: string;
         recharge_amount_daily?: number;
-    } = null;
+    } | null = null;
 
     static GameTypeData: {
         game_name?: string;
         hand_count?: number;
         blind_levels?: (typeof WebUserGradeDetail.BlindLevels)[];
-    } = null;
+    } | null = null;
 
     static BlindLevels: {
         blind_level?: number;
         hand_count?: number;
-    } = null;
+    } | null = null;
 
     static OnlineTimeHourlyData: {
         hour?: number;
         online_time?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserGradeDetail.RequestParams) {
         this.RequestParams = param;
@@ -859,9 +859,9 @@ export class WebUserGradeDetail extends WebCommon {
 export class WebUserGs extends WebCommon {
     static API: string = "/api/user/gs";
 
-    static RequestParams: {} = null;
+    static RequestParams: {} | null = null;
 
-    static ResponseData: {} = null;
+    static ResponseData: {} | null = null;
 
     static Request(param: typeof WebUserGs.RequestParams) {
         this.RequestParams = param;
@@ -891,13 +891,13 @@ export class WebUserGuestLogin2 extends WebCommon {
         system_version?: string;
         user_device_no?: string;
         is_simulator?: boolean;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserGuestLogin2.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserGuestLogin2.RequestParams) {
         this.RequestParams = param;
@@ -913,15 +913,15 @@ export class WebUserGuestLogin2 extends WebCommon {
 export class WebUserLoginSyncInfo extends WebCommon {
     static API: string = "/api/user/login_sync_info";
 
-    static RequestParams: {} = null;
+    static RequestParams: {} | null = null;
 
     static ResponseData: {
         data?: typeof WebUserLoginSyncInfo.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         port?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserLoginSyncInfo.RequestParams) {
         this.RequestParams = param;
@@ -961,17 +961,17 @@ export class WebUserLogin2 extends WebCommon {
         pass_token?: string;
         gen_time?: string;
         check_captcha?: boolean;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserLogin2.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         token?: string;
         expire_at?: number;
         login_country?: string;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserLogin2.RequestParams) {
         this.RequestParams = param;
@@ -991,13 +991,13 @@ export class WebUserModifyBringinPasswordSwitch extends WebCommon {
         bringin_pwd_switch?: number;
         bringin_pwd_type?: number;
         bringin_pwd_verify_type?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserModifyBringinPasswordSwitch.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(
         param: typeof WebUserModifyBringinPasswordSwitch.RequestParams,
@@ -1018,13 +1018,13 @@ export class WebUserModifyQuickLoginSwitch extends WebCommon {
     static RequestParams: {
         quick_login_switch?: number;
         quick_login_type?: string;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserModifyQuickLoginSwitch.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserModifyQuickLoginSwitch.RequestParams) {
         this.RequestParams = param;
@@ -1045,22 +1045,22 @@ export class WebUserMute extends WebCommon {
         tribe_id?: number;
         user_id?: number;
         mute?: boolean;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserMute.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         list?: (typeof WebUserMute.MuteInfo)[];
-    } = null;
+    } | null = null;
 
     static MuteInfo: {
         user_id?: number;
         user_random_id?: number;
         club_id?: number;
         tribe_id?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserMute.RequestParams) {
         this.RequestParams = param;
@@ -1080,15 +1080,15 @@ export class WebUserMuteList extends WebCommon {
         club_id?: number;
         tribe_id?: number;
         user_ids?: number[];
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserMuteList.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         ids?: number[];
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserMuteList.RequestParams) {
         this.RequestParams = param;
@@ -1107,21 +1107,21 @@ export class WebUserMyWalletS extends WebCommon {
     static RequestParams: {
         gold_type?: number;
         origin_type?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserMyWalletS.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         amount?: number;
         wallet?: (typeof WebUserMyWalletS.Wallet)[];
-    } = null;
+    } | null = null;
 
     static Wallet: {
         gold?: number;
         club_name?: string;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserMyWalletS.RequestParams) {
         this.RequestParams = param;
@@ -1140,16 +1140,16 @@ export class WebUserPublicInfo extends WebCommon {
     static RequestParams: {
         randomId?: string;
         userId?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         status?: number;
         data?: typeof WebUserPublicInfo.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         nickName?: string;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserPublicInfo.RequestParams) {
         this.RequestParams = param;
@@ -1169,13 +1169,13 @@ export class WebUserQuickPasswordModify extends WebCommon {
         user_pwd_type?: number;
         switch_status?: number;
         password?: string;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserQuickPasswordModify.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserQuickPasswordModify.RequestParams) {
         this.RequestParams = param;
@@ -1194,16 +1194,16 @@ export class WebUserQuickPasswordVerify extends WebCommon {
     static RequestParams: {
         user_pwd_type?: number;
         password?: string;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserQuickPasswordVerify.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         verify?: boolean;
         failed_count?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserQuickPasswordVerify.RequestParams) {
         this.RequestParams = param;
@@ -1219,15 +1219,15 @@ export class WebUserQuickPasswordVerify extends WebCommon {
 export class WebUserRemaRks extends WebCommon {
     static API: string = "/api/user/remarks";
 
-    static RequestParams: {} = null;
+    static RequestParams: {} | null = null;
 
     static ResponseData: {
         data?: typeof WebUserRemaRks.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         list?: (typeof WebUserRemaRks.LabelData)[];
-    } = null;
+    } | null = null;
 
     static LabelData: {
         user_id?: number;
@@ -1236,7 +1236,7 @@ export class WebUserRemaRks extends WebCommon {
         remark_desc?: string;
         tag_id?: number;
         tag_custom?: string;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserRemaRks.RequestParams) {
         this.RequestParams = param;
@@ -1267,13 +1267,13 @@ export class WebUserSendInfo extends WebCommon {
         match_id?: number;
         room_id?: number;
         extra_data?: string;
-    } = null;
+    } | null = null;
 
-    static ResponseData: {} = null;
+    static ResponseData: {} | null = null;
 
     static ExtraData: {
         gyro?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserSendInfo.RequestParams) {
         this.RequestParams = param;
@@ -1294,13 +1294,13 @@ export class WebUserSendVerifyCode extends WebCommon {
         phone?: string;
         email?: string;
         lang?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserSendVerifyCode.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserSendVerifyCode.RequestParams) {
         this.RequestParams = param;
@@ -1318,13 +1318,13 @@ export class WebUserSetLuckyNum extends WebCommon {
 
     static RequestParams: {
         lucky_num?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserSetLuckyNum.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserSetLuckyNum.RequestParams) {
         this.RequestParams = param;
@@ -1342,9 +1342,9 @@ export class WebUserSetVideoMask extends WebCommon {
 
     static RequestParams: {
         video_mask_id?: number;
-    } = null;
+    } | null = null;
 
-    static ResponseData: {} = null;
+    static ResponseData: {} | null = null;
 
     static Request(param: typeof WebUserSetVideoMask.RequestParams) {
         this.RequestParams = param;
@@ -1360,15 +1360,15 @@ export class WebUserSetVideoMask extends WebCommon {
 export class WebUserTraderApply extends WebCommon {
     static API: string = "/api/user/trader/apply";
 
-    static RequestParams: {} = null;
+    static RequestParams: {} | null = null;
 
     static ResponseData: {
         data?: typeof WebUserTraderApply.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         data?: unknown[];
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserTraderApply.RequestParams) {
         this.RequestParams = param;
@@ -1386,15 +1386,15 @@ export class WebUserTraderApplyList extends WebCommon {
 
     static RequestParams: {
         status?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserTraderApplyList.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         list?: (typeof WebUserTraderApplyList.ApplyInfo)[];
-    } = null;
+    } | null = null;
 
     static ApplyInfo: {
         order_no?: string;
@@ -1404,7 +1404,7 @@ export class WebUserTraderApplyList extends WebCommon {
         audit_time?: string;
         update_time?: string;
         create_time?: string;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserTraderApplyList.RequestParams) {
         this.RequestParams = param;
@@ -1422,13 +1422,13 @@ export class WebUserTraderApplyRead extends WebCommon {
 
     static RequestParams: {
         order_nos?: string[];
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserTraderApplyRead.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserTraderApplyRead.RequestParams) {
         this.RequestParams = param;
@@ -1448,15 +1448,15 @@ export class WebUserUserSubscrIptionConfig extends WebCommon {
         subscription_id?: number;
         subscription_status?: number;
         equity_comparison?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserUserSubscrIptionConfig.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         list?: (typeof WebUserUserSubscrIptionConfig.VIPEquityData)[];
-    } = null;
+    } | null = null;
 
     static VIPEquityData: {
         id?: number;
@@ -1484,13 +1484,13 @@ export class WebUserUserSubscrIptionConfig extends WebCommon {
         free_static_table_theme_hour?: number;
         free_avatar_hour?: number;
         display_benefits?: string;
-    } = null;
+    } | null = null;
 
     static PriceConfigs: {
         price_type?: number;
         raw_price?: number;
         pay_price?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserUserSubscrIptionConfig.RequestParams) {
         this.RequestParams = param;
@@ -1511,13 +1511,13 @@ export class WebUserVerifyCodeVerify extends WebCommon {
         phone?: string;
         email?: string;
         code?: string;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserVerifyCodeVerify.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebUserVerifyCodeVerify.RequestParams) {
         this.RequestParams = param;
@@ -1545,11 +1545,11 @@ export class WebUserWalletSlog extends WebCommon {
         start_time?: number;
         end_time?: number;
         club_id?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebUserWalletSlog.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         limit?: number;
@@ -1557,7 +1557,7 @@ export class WebUserWalletSlog extends WebCommon {
         total?: number;
         list?: (typeof WebUserWalletSlog.Wallet)[];
         total_info?: typeof WebUserWalletSlog.TotalInfo;
-    } = null;
+    } | null = null;
 
     static TotalInfo: {
         grant_amount?: number;
@@ -1565,7 +1565,7 @@ export class WebUserWalletSlog extends WebCommon {
         bring_amount?: number;
         self_profit_amount?: number;
         change_amount?: number;
-    } = null;
+    } | null = null;
 
     static Wallet: {
         gold_change?: number;
@@ -1591,7 +1591,7 @@ export class WebUserWalletSlog extends WebCommon {
         match_tribe_name?: string;
         src_nick_name?: string;
         src_random_id?: number;
-    } = null;
+    } | null = null;
 
     static Room_info: {
         club_name?: string;
@@ -1605,19 +1605,19 @@ export class WebUserWalletSlog extends WebCommon {
         game_type?: number;
         ante?: number;
         poker_type?: number;
-    } = null;
+    } | null = null;
 
     static Record: {
         gold_change?: number;
         op_code?: string;
         create_time?: string;
-    } = null;
+    } | null = null;
 
     static Member: {
         nick_name?: string;
         gold_change?: number;
         create_time?: string;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebUserWalletSlog.RequestParams) {
         this.RequestParams = param;

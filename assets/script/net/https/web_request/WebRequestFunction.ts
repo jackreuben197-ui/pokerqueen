@@ -18,17 +18,17 @@ type ResponseDataOf<T extends { ResponseData?: unknown }> = T extends {
 export class WebFunctionQueryFunctionOpen extends WebCommon {
   static API: string = "/api/function/query_function_open";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: (typeof WebFunctionQueryFunctionOpen.DataElement)[];
-  } = null;
+  } | null = null;
 
   static DataElement: {
     functionCode?: number;
     open?: boolean;
     value?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebFunctionQueryFunctionOpen.RequestParams,

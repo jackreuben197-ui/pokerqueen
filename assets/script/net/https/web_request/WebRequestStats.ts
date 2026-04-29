@@ -23,7 +23,7 @@ export class WebStatsUserStats extends WebCommon {
         time_type?: number; //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
         time_long?: number; //客户端时间戳
         room_Type?: number;
-    } = null;
+    } | null = null;
 
     static MTTRoomData: {
         user_id: string;
@@ -32,7 +32,7 @@ export class WebStatsUserStats extends WebCommon {
         frist_times: number; //第一名次数
         second_times: string; //第二名次数
         third_times: number; //第三名次数
-    } = null;
+    } | null = null;
 
     static RoomData: {
         id: string;
@@ -52,16 +52,16 @@ export class WebStatsUserStats extends WebCommon {
         cbet: number; //4Flop持续下注率
         wtsd: number; //摊牌胜率
         allinWins: number; //全下胜率
-    } = null;
+    } | null = null;
 
     static Data: {
         mtt_room_data: typeof WebStatsUserStats.MTTRoomData;
         room_data: typeof WebStatsUserStats.RoomData;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsUserStats.Data;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsUserStats.RequestParams) {
         this.RequestParams = param;
@@ -110,7 +110,7 @@ export class WebStatsRoomDetail extends WebCommon {
     static RequestParams: {
         limit?: number; //条目
         offset?: number; //开始下标。例子（offset=0，limit=10，0-9。）
-    } = null;
+    } | null = null;
 
     static UserInfo: {
         is_current_user: boolean; //是否当前用户
@@ -128,7 +128,7 @@ export class WebStatsRoomDetail extends WebCommon {
         insurance_profit: number; //保险收入
         insurance_sum: number; //保险合计
         insurance_original: number; //原始保险
-    } = null;
+    } | null = null;
 
     static RoomData: {
         limit: number;
@@ -146,15 +146,15 @@ export class WebStatsRoomDetail extends WebCommon {
         insurance_total: number; //牌局保险总计
         end_time: string; //结束时间
         user_list: typeof WebStatsRoomDetail.UserInfo; //玩家列表
-    } = null;
+    } | null = null;
 
     static Data: {
         room_data: typeof WebStatsRoomDetail.RoomData;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsRoomDetail.Data;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsRoomDetail.RequestParams) {
         this.RequestParams = param;
@@ -174,14 +174,14 @@ export class WebStatsMttRoomDetail extends WebCommon {
     static RequestParams: {
         limit?: number; //条目
         offset?: number; //开始下标。例子（offset=0，limit=10，0-9。）
-    } = null;
+    } | null = null;
 
     static Goods: {
         i: number; //道具id
         na: string; //道具名称
         v: number; //价值等价货币
         n: number; //数量
-    } = null;
+    } | null = null;
 
     static UserInfo: {
         is_current_user: boolean; //是否当前用户
@@ -196,7 +196,7 @@ export class WebStatsMttRoomDetail extends WebCommon {
         hunter_award: number; //金豆扣减
         buy_in_times: number; //最终战绩
         goods_awrd: typeof WebStatsMttRoomDetail.Goods; //保险买入
-    } = null;
+    } | null = null;
 
     static RoomData: {
         game_type: number; //牌局类型(玩法) 游戏类型： 0-常规桌，1-OMAHA4，2-OMAHA5，3-OMAHA6
@@ -210,15 +210,15 @@ export class WebStatsMttRoomDetail extends WebCommon {
         offset: number;
         total: string; //总条数
         user_list: typeof WebStatsMttRoomDetail.UserInfo; //玩家列表
-    } = null;
+    } | null = null;
 
     static Data: {
         room_data: typeof WebStatsMttRoomDetail.RoomData;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsMttRoomDetail.Data;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsMttRoomDetail.RequestParams) {
         this.RequestParams = param;
@@ -237,10 +237,10 @@ export class WebStatsOtherUserStats extends WebCommon {
     static CacheEnabled: boolean = true;
     static CacheNoRequestTTL: number = 60 * 1000;
     static CacheDataTTL: number = 24 * 60 * 60 * 1000;
-    static RequestParams: {} = null;
+    static RequestParams: {} | null = null;
     static ResponseData: {
         data?: typeof WebStatsOtherUserStats.Data; // 用户信息
-    } = null;
+    } | null = null;
     static MTTRoomData: {
         user_id?: number;
         play_times?: number; //参赛次数
@@ -248,7 +248,7 @@ export class WebStatsOtherUserStats extends WebCommon {
         frist_times?: number; //第一名次数
         second_times?: number; //第二名次数
         third_times?: number; //第三名次数
-    } = null;
+    } | null = null;
     static RoomData: {
         id?: number;
         user_id?: number;
@@ -267,11 +267,11 @@ export class WebStatsOtherUserStats extends WebCommon {
         cbet?: number; //4Flop持续下注率
         wtsd?: number; //摊牌胜率
         allinWins?: number; //全下胜率
-    } = null;
+    } | null = null;
     static Data: {
         mtt_room_data?: (typeof WebStatsOtherUserStats.MTTRoomData)[]; //mtt数据
         room_data?: (typeof WebStatsOtherUserStats.RoomData)[]; //普通牌局数据
-    } = null;
+    } | null = null;
     static Request(param: typeof WebStatsOtherUserStats.RequestParams) {
         this.RequestParams = param;
         return param;
@@ -401,15 +401,15 @@ export class WebStatsClientClickLog extends WebCommon {
         system_version?: string;
         user_device_no?: string;
         records?: (typeof WebStatsClientClickLog.RecordData)[];
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsClientClickLog.Data;
-    } = null;
+    } | null = null;
 
-    static RecordData: {} = null;
+    static RecordData: {} | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebStatsClientClickLog.RequestParams) {
         this.RequestParams = param;
@@ -433,16 +433,16 @@ export class WebStatsClubDataStatsDataDetailDownLoad extends WebCommon {
         end_time_unix?: number;
         lang?: string;
         time_zone?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsClubDataStatsDataDetailDownLoad.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         log_id?: number;
         url?: string;
-    } = null;
+    } | null = null;
 
     static Request(
         param: typeof WebStatsClubDataStatsDataDetailDownLoad.RequestParams,
@@ -468,18 +468,18 @@ export class WebStatsClubDataStatsUserDetail extends WebCommon {
         user_id?: number;
         filter_type?: number;
         time_zone?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsClubDataStatsUserDetail.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         stats_all?: typeof WebStatsClubDataStatsUserDetail.TotalData;
         stats_nlh?: typeof WebStatsClubDataStatsUserDetail.TotalData;
         stats_plo?: typeof WebStatsClubDataStatsUserDetail.TotalData;
         stats_6?: typeof WebStatsClubDataStatsUserDetail.TotalData;
-    } = null;
+    } | null = null;
 
     static TotalData: {
         game_num?: number;
@@ -493,7 +493,7 @@ export class WebStatsClubDataStatsUserDetail extends WebCommon {
         agent_fee?: number;
         insurance?: number;
         agent_insurance?: number;
-    } = null;
+    } | null = null;
 
     static Request(
         param: typeof WebStatsClubDataStatsUserDetail.RequestParams,
@@ -513,21 +513,21 @@ export class WebStatsClubDataStatsVipUser extends WebCommon {
 
     static RequestParams: {
         vip_user_id?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsClubDataStatsVipUser.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         info?: typeof WebStatsClubDataStatsVipUser.TotalData;
-    } = null;
+    } | null = null;
 
     static TotalData: {
         user_count?: number;
         user_gold_tribe_total?: number;
         user_gold_usdt_total?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsClubDataStatsVipUser.RequestParams) {
         this.RequestParams = param;
@@ -545,16 +545,16 @@ export class WebStatsClubDataStatsWeeklyReport extends WebCommon {
 
     static RequestParams: {
         time_zone?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsClubDataStatsWeeklyReport.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         list?: (typeof WebStatsClubDataStatsWeeklyReport.LableData)[];
         total_info?: typeof WebStatsClubDataStatsWeeklyReport.TotalInfo;
-    } = null;
+    } | null = null;
 
     static TotalInfo: {
         deposits?: number;
@@ -567,7 +567,7 @@ export class WebStatsClubDataStatsWeeklyReport extends WebCommon {
         crb?: number;
         start_time?: number;
         end_time?: number;
-    } = null;
+    } | null = null;
 
     static LableData: {
         name?: string;
@@ -578,7 +578,7 @@ export class WebStatsClubDataStatsWeeklyReport extends WebCommon {
         ins?: number;
         prb?: number;
         crb?: number;
-    } = null;
+    } | null = null;
 
     static Request(
         param: typeof WebStatsClubDataStatsWeeklyReport.RequestParams,
@@ -600,16 +600,16 @@ export class WebStatsCowboyHistoryRoomDetail extends WebCommon {
         room_id?: number;
         limit?: number;
         offset?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsCowboyHistoryRoomDetail.DataObj;
-    } = null;
+    } | null = null;
 
     static DataObj: {
         records?: (typeof WebStatsCowboyHistoryRoomDetail.PlayerEndDetail)[];
         uroom?: typeof WebStatsCowboyHistoryRoomDetail.PlayerEndRoomInfo;
-    } = null;
+    } | null = null;
 
     static PlayerEndDetail: {
         user_win?: number;
@@ -618,12 +618,12 @@ export class WebStatsCowboyHistoryRoomDetail extends WebCommon {
         user_nick_name?: string;
         user_avatar?: string;
         cb_bet?: number;
-    } = null;
+    } | null = null;
 
     static PlayerEndRoomInfo: {
         user_win?: number;
         game_num?: number;
-    } = null;
+    } | null = null;
 
     static Request(
         param: typeof WebStatsCowboyHistoryRoomDetail.RequestParams,
@@ -644,16 +644,16 @@ export class WebStatsFriendRoomStatsUserRoomDetailList extends WebCommon {
     static RequestParams: {
         _roomIds?: number[];
         _matchIds?: number[];
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         _data?: typeof WebStatsFriendRoomStatsUserRoomDetailList.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         _rooms?: unknown[];
         _matches?: unknown[];
-    } = null;
+    } | null = null;
 
     static Request(
         param: typeof WebStatsFriendRoomStatsUserRoomDetailList.RequestParams,
@@ -674,16 +674,16 @@ export class WebStatsFriendRoomStatsUserRoomIdList extends WebCommon {
     static RequestParams: {
         start_time?: number;
         end_time?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         _data?: typeof WebStatsFriendRoomStatsUserRoomIdList.IdListData;
-    } = null;
+    } | null = null;
 
     static IdListData: {
         _roomIds?: number[];
         _matchIds?: number[];
-    } = null;
+    } | null = null;
 
     static Request(
         param: typeof WebStatsFriendRoomStatsUserRoomIdList.RequestParams,
@@ -704,16 +704,16 @@ export class WebStatsFriendRoomStatsUserRoomStatsList extends WebCommon {
     static RequestParams: {
         _roomIds?: number[];
         _matchIds?: number[];
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         _data?: typeof WebStatsFriendRoomStatsUserRoomStatsList.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         _rooms?: unknown[];
         _matches?: unknown[];
-    } = null;
+    } | null = null;
 
     static Request(
         param: typeof WebStatsFriendRoomStatsUserRoomStatsList.RequestParams,
@@ -738,30 +738,30 @@ export class WebStatsFriendStatsData extends WebCommon {
         poker_types?: number[];
         offset?: number;
         limit?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsFriendStatsData.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         offset?: number;
         list?: (typeof WebStatsFriendStatsData.MemberInfo)[];
         info?: typeof WebStatsFriendStatsData.Info;
-    } = null;
+    } | null = null;
 
     static MemberInfo: {
         user_random_id?: number;
         user_name?: string;
         user_avatar?: string;
         final_result?: number;
-    } = null;
+    } | null = null;
 
     static Info: {
         user_num?: number;
         table_num?: number;
         profit?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsFriendStatsData.RequestParams) {
         this.RequestParams = param;
@@ -787,18 +787,18 @@ export class WebStatsJackpotAwardLogs extends WebCommon {
         end_time?: number;
         limit?: number;
         offset?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsJackpotAwardLogs.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         limit?: number;
         offset?: number;
         items?: (typeof WebStatsJackpotAwardLogs.JackpotConfig)[];
         top_cards_type_data?: typeof WebStatsJackpotAwardLogs.JackpotConfig;
-    } = null;
+    } | null = null;
 
     static JackpotConfig: {
         gold_change?: number;
@@ -820,7 +820,7 @@ export class WebStatsJackpotAwardLogs extends WebCommon {
         ante?: number;
         user_avatar?: string;
         mars_earth?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsJackpotAwardLogs.RequestParams) {
         this.RequestParams = param;
@@ -841,17 +841,17 @@ export class WebStatsJackpotGoldChangeLogs extends WebCommon {
         op_codes?: string[];
         limit?: number;
         offset?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsJackpotGoldChangeLogs.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         limit?: number;
         offset?: number;
         items?: unknown[];
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsJackpotGoldChangeLogs.RequestParams) {
         this.RequestParams = param;
@@ -874,13 +874,13 @@ export class WebStatsMttHistoryList extends WebCommon {
         limit?: number;
         offset?: number;
         time_zone?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsMttHistoryList.Data;
-    } = null;
+    } | null = null;
 
-    static Data: {} = null;
+    static Data: {} | null = null;
 
     static Request(param: typeof WebStatsMttHistoryList.RequestParams) {
         this.RequestParams = param;
@@ -907,24 +907,24 @@ export class WebStatsProfitDataStatsDataByDate extends WebCommon {
         only_master?: boolean;
         game_types?: number[];
         poker_types?: number[];
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsProfitDataStatsDataByDate.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         date_total?: (typeof WebStatsProfitDataStatsDataByDate.DateTotal)[];
         limit?: number;
         offset?: number;
         total?: number;
-    } = null;
+    } | null = null;
 
     static DateTotal: {
         date?: string;
         list?: (typeof WebStatsProfitDataStatsDataByDate.Record)[];
         total_profit?: number;
-    } = null;
+    } | null = null;
 
     static Record: {
         game_type?: number;
@@ -938,7 +938,7 @@ export class WebStatsProfitDataStatsDataByDate extends WebCommon {
         squid_on?: number;
         jackpot_profit?: number;
         mini_profit?: number;
-    } = null;
+    } | null = null;
 
     static Request(
         param: typeof WebStatsProfitDataStatsDataByDate.RequestParams,
@@ -965,15 +965,15 @@ export class WebStatsProfitDataStatsDataInfo extends WebCommon {
         only_master?: boolean;
         game_types?: number[];
         poker_types?: number[];
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsProfitDataStatsDataInfo.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         info?: typeof WebStatsProfitDataStatsDataInfo.TotalData;
-    } = null;
+    } | null = null;
 
     static TotalData: {
         total_profit?: number;
@@ -981,7 +981,7 @@ export class WebStatsProfitDataStatsDataInfo extends WebCommon {
         insurence?: number;
         jackpot?: number;
         mini_game?: number;
-    } = null;
+    } | null = null;
 
     static Request(
         param: typeof WebStatsProfitDataStatsDataInfo.RequestParams,
@@ -1011,24 +1011,24 @@ export class WebStatsProfitDataStatsUserByDate extends WebCommon {
         game_types?: number[];
         poker_types?: number[];
         time_zone?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsProfitDataStatsUserByDate.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         date_total?: (typeof WebStatsProfitDataStatsUserByDate.DateTotal)[];
         limit?: number;
         offset?: number;
         total?: number;
-    } = null;
+    } | null = null;
 
     static DateTotal: {
         date?: string;
         list?: (typeof WebStatsProfitDataStatsUserByDate.Record)[];
         total_profit?: number;
-    } = null;
+    } | null = null;
 
     static Record: {
         user_random_id?: number;
@@ -1038,7 +1038,7 @@ export class WebStatsProfitDataStatsUserByDate extends WebCommon {
         insurance?: number;
         jackpot_profit?: number;
         mini_profit?: number;
-    } = null;
+    } | null = null;
 
     static Request(
         param: typeof WebStatsProfitDataStatsUserByDate.RequestParams,
@@ -1060,17 +1060,17 @@ export class WebStatsRoomInsuranceData extends WebCommon {
         room_id?: number;
         limit?: number;
         offset?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsRoomInsuranceData.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         limit?: number;
         offset?: number;
         list?: (typeof WebStatsRoomInsuranceData.Record)[];
-    } = null;
+    } | null = null;
 
     static Record: {
         nick_name?: string;
@@ -1079,7 +1079,7 @@ export class WebStatsRoomInsuranceData extends WebCommon {
         insur_bet?: number;
         insur_win?: number;
         create_time?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsRoomInsuranceData.RequestParams) {
         this.RequestParams = param;
@@ -1097,11 +1097,11 @@ export class WebStatsTribeStatsCurrent extends WebCommon {
 
     static RequestParams: {
         time_zone?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsTribeStatsCurrent.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         yesterday_balance?: number;
@@ -1117,12 +1117,12 @@ export class WebStatsTribeStatsCurrent extends WebCommon {
         seven_day_active_user?: (typeof WebStatsTribeStatsCurrent.SevenDataCurve)[];
         seven_day_hand_num?: (typeof WebStatsTribeStatsCurrent.SevenDataCurve)[];
         apply_count?: number;
-    } = null;
+    } | null = null;
 
     static SevenDataCurve: {
         x?: string;
         y?: string;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsTribeStatsCurrent.RequestParams) {
         this.RequestParams = param;
@@ -1148,23 +1148,23 @@ export class WebStatsTribeStatsDataByDate extends WebCommon {
         club_id?: number;
         game_types?: number[];
         time_zone?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsTribeStatsDataByDate.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         date_total?: (typeof WebStatsTribeStatsDataByDate.DateTotal)[];
         offset?: number;
-    } = null;
+    } | null = null;
 
     static DateTotal: {
         date?: string;
         list?: (typeof WebStatsTribeStatsDataByDate.Record)[];
         tribe_service_profit_total?: number;
         tribe_insurance_profit_total?: number;
-    } = null;
+    } | null = null;
 
     static Record: {
         room_id?: number;
@@ -1187,7 +1187,7 @@ export class WebStatsTribeStatsDataByDate extends WebCommon {
         club_name?: string;
         club_remark_name?: string;
         club_remark_color?: string;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsTribeStatsDataByDate.RequestParams) {
         this.RequestParams = param;
@@ -1209,16 +1209,16 @@ export class WebStatsTribeStatsDataDetail extends WebCommon {
         match_id?: number;
         limit?: number;
         offset?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsTribeStatsDataDetail.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         list?: unknown[];
         offset?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsTribeStatsDataDetail.RequestParams) {
         this.RequestParams = param;
@@ -1238,15 +1238,15 @@ export class WebStatsTribeStatsDataDetailInfo extends WebCommon {
         club_id?: number;
         room_id?: number;
         match_id?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsTribeStatsDataDetailInfo.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         info?: unknown;
-    } = null;
+    } | null = null;
 
     static Request(
         param: typeof WebStatsTribeStatsDataDetailInfo.RequestParams,
@@ -1272,22 +1272,22 @@ export class WebStatsTribeStatsDataInfo extends WebCommon {
         club_id?: number;
         game_types?: number[];
         time_zone?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsTribeStatsDataInfo.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         info?: typeof WebStatsTribeStatsDataInfo.TotalData;
-    } = null;
+    } | null = null;
 
     static TotalData: {
         game_num?: number;
         hand_num?: number;
         tribe_service_profit_total?: number;
         tribe_insurance_profit_total?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsTribeStatsDataInfo.RequestParams) {
         this.RequestParams = param;
@@ -1311,15 +1311,15 @@ export class WebStatsTribeStatsDownLoad extends WebCommon {
         end_time_unix?: number;
         lang?: string;
         time_zone?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsTribeStatsDownLoad.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         url?: string;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsTribeStatsDownLoad.RequestParams) {
         this.RequestParams = param;
@@ -1343,15 +1343,15 @@ export class WebStatsUserStatsAllin extends WebCommon {
         club_id?: number;
         game_types?: number[];
         poker_types?: number[];
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsUserStatsAllin.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         stats?: typeof WebStatsUserStatsAllin.Stats;
-    } = null;
+    } | null = null;
 
     static Stats: {
         hand_count?: number;
@@ -1366,7 +1366,7 @@ export class WebStatsUserStatsAllin extends WebCommon {
         passive_profit_count?: number;
         ahead_profit_count?: number;
         behind_profit_count?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsUserStatsAllin.RequestParams) {
         this.RequestParams = param;
@@ -1393,18 +1393,18 @@ export class WebStatsUserStatsCardType extends WebCommon {
         offset?: number;
         game_types?: number[];
         poker_types?: number[];
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsUserStatsCardType.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         total?: number;
         limit?: number;
         offset?: number;
         records?: (typeof WebStatsUserStatsCardType.Record)[];
-    } = null;
+    } | null = null;
 
     static Record: {
         hand_card_type?: string;
@@ -1413,7 +1413,7 @@ export class WebStatsUserStatsCardType extends WebCommon {
         profit_count?: number;
         profit_total?: number;
         profit_ratio?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsUserStatsCardType.RequestParams) {
         this.RequestParams = param;
@@ -1437,18 +1437,18 @@ export class WebStatsUserStatsRivalRoomStats extends WebCommon {
         club_id?: number;
         limit?: number;
         offset?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsUserStatsRivalRoomStats.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         total?: number;
         limit?: number;
         offset?: number;
         records?: (typeof WebStatsUserStatsRivalRoomStats.Record)[];
-    } = null;
+    } | null = null;
 
     static Record: {
         user_id?: number;
@@ -1458,7 +1458,7 @@ export class WebStatsUserStatsRivalRoomStats extends WebCommon {
         loss_count?: number;
         profit_count?: number;
         profit_total?: number;
-    } = null;
+    } | null = null;
 
     static Request(
         param: typeof WebStatsUserStatsRivalRoomStats.RequestParams,
@@ -1487,24 +1487,24 @@ export class WebStatsUserGameRecordList extends WebCommon {
         poker_types?: number[];
         start_time?: number;
         time_zone?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         data?: typeof WebStatsUserGameRecordList.Data;
-    } = null;
+    } | null = null;
 
     static Data: {
         total?: number;
         limit?: number;
         offset?: number;
         records?: (typeof WebStatsUserGameRecordList.Map)[];
-    } = null;
+    } | null = null;
 
     static Map: {
         total?: number;
         room_record?: typeof WebStatsUserGameRecordList.Room_record;
         user_game_records?: (typeof WebStatsUserGameRecordList.Record)[];
-    } = null;
+    } | null = null;
 
     static Room_record: {
         name?: string;
@@ -1514,7 +1514,7 @@ export class WebStatsUserGameRecordList extends WebCommon {
         poker_type?: number;
         gold_type?: number;
         random_ante?: string;
-    } = null;
+    } | null = null;
 
     static Record: {
         id?: number;
@@ -1535,7 +1535,7 @@ export class WebStatsUserGameRecordList extends WebCommon {
         encrypt_cards?: unknown;
         gold_type?: number;
         jackpot_award?: number;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsUserGameRecordList.RequestParams) {
         this.RequestParams = param;
@@ -1554,16 +1554,16 @@ export class WebStatsUserRoomMatchIdList extends WebCommon {
     static RequestParams: {
         start_time?: number;
         end_time?: number;
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         _data?: typeof WebStatsUserRoomMatchIdList.IdListData;
-    } = null;
+    } | null = null;
 
     static IdListData: {
         _matchIds?: number[];
         _roomIds?: number[];
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsUserRoomMatchIdList.RequestParams) {
         this.RequestParams = param;
@@ -1582,11 +1582,11 @@ export class WebStatsUserRoomMatchList extends WebCommon {
     static RequestParams: {
         _roomIds?: number[];
         _matchIds?: number[];
-    } = null;
+    } | null = null;
 
     static ResponseData: {
         _recordData?: unknown;
-    } = null;
+    } | null = null;
 
     static Request(param: typeof WebStatsUserRoomMatchList.RequestParams) {
         this.RequestParams = param;

@@ -22,15 +22,15 @@ export class WebPayAppleOrderRecharge extends WebCommon {
     product_id?: string;
     amount?: number;
     gold_num?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPayAppleOrderRecharge.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     recharge_data?: typeof WebPayAppleOrderRecharge.RechargeData;
-  } = null;
+  } | null = null;
 
   static RechargeData: {
     product_id?: string;
@@ -39,7 +39,7 @@ export class WebPayAppleOrderRecharge extends WebCommon {
     pay_amount?: number;
     receipt_md5?: string;
     transaction_no?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPayAppleOrderRecharge.RequestParams,

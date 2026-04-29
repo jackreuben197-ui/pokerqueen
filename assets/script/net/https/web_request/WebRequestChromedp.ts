@@ -21,15 +21,15 @@ export class WebChromedpQrCodeVideoFile extends WebCommon {
   static RequestParams: {
     room_id?: number;
     qr_code_content?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebChromedpQrCodeVideoFile.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     video_url?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebChromedpQrCodeVideoFile.RequestParams,

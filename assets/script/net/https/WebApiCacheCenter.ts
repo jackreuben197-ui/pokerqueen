@@ -113,7 +113,7 @@ export default class WebApiCacheCenter {
             return value.map((item) => this.sortValue(item));
         }
         if (value && typeof value === "object") {
-            const output = {};
+            const output: Record<string, any> = {};
             Object.keys(value)
                 .sort()
                 .forEach((key) => {

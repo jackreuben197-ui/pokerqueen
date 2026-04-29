@@ -9,6 +9,22 @@ import UIComponent from "../../ui/UIComponent";
 import WebHelper from "./WebHelper";
 import { WebOrgFriendBringIn, WebClubApplyList, WebClubFundAudit, WebGuildGiveRecyCle } from "./WebRequest";
 
+type HttpCallback = Function | null;
+
+type HttpHeaders = Array<[string, string]> | any[] | null;
+
+type HttpSendParams = {
+    url?: string;
+    body?: any;
+    onFailure?: HttpCallback;
+    onSuccess?: HttpCallback;
+    headers?: HttpHeaders;
+    needJuhua?: boolean;
+    isJson?: boolean;
+    needConsole?: boolean;
+    api?: string;
+};
+
 /**
  * Http端
  */
@@ -19,31 +35,56 @@ export default class HttpClient {
      * post 请求
      * headers 头文件 格式 [["name1","value"],["name2","value"]];
      */
-    static async post({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true, needConsole = true, api = null }) {
+    static async post({
+        url = "",
+        body = {},
+        onFailure = null,
+        onSuccess = null,
+        headers = null,
+        needJuhua = true,
+        isJson = true,
+        needConsole = true,
+        api = "",
+    }: HttpSendParams) {
         if (isJson) {
             body = JSON.stringify(body);
         }
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http post - request : ", url, body);
-        needJuhua && UIComponent.open(UIDefine.UIPromptComponent);
+        needJuhua && UIComponent.open(UIDefine.UIPromptComponent as any);
         let response: string = <string>await this.__request(url, false, body, headers, isJson);
-        needJuhua && UIComponent.close(UIDefine.UIPromptComponent);
+        needJuhua && UIComponent.close(UIDefine.UIPromptComponent as any);
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http post - response : ", url, response);
         this.__response(response, onFailure, onSuccess, api);
     }
     /**
      * get 请求
      */
-    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true, needConsole = true, api = null }) {
+    static async get({
+        url = "",
+        body = {},
+        onFailure = null,
+        onSuccess = null,
+        headers = null,
+        needJuhua = true,
+        isJson = true,
+        needConsole = true,
+        api = "",
+    }: HttpSendParams) {
         body = JSON.stringify(body);
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, body);
-        needJuhua && UIComponent.open(UIDefine.UIPromptComponent);
+        needJuhua && UIComponent.open(UIDefine.UIPromptComponent as any);
         let response: string = <string>await this.__request(url, true, body, headers, isJson);
-        needJuhua && UIComponent.close(UIDefine.UIPromptComponent);
+        needJuhua && UIComponent.close(UIDefine.UIPromptComponent as any);
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http get - response : ", url, response);
         this.__response(response, onFailure, onSuccess, api);
     }
 
-    static __response(response, onFailure, onSuccess, api) {
+    static __response(
+        response: string,
+        onFailure: HttpCallback,
+        onSuccess: HttpCallback,
+        api: string,
+    ) {
         switch (response) {
             case "timeout":
                 ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10126));
@@ -75,7 +116,13 @@ export default class HttpClient {
         }
     }
 
-    static async __request(url, isGet = false, body = null, headers = null, isJson = true) {
+    static async __request(
+        url: string,
+        isGet: boolean = false,
+        body: any = null,
+        headers: HttpHeaders = null,
+        isJson: boolean = true,
+    ): Promise<string> {
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
             var isTimeout = false;//是否超时
@@ -94,7 +141,7 @@ export default class HttpClient {
                     resolve(response);
                 }
             };
-            xhr.onerror = function (err) {
+            xhr.onerror = function () {
 
                 if (isTimeout) return;//请求已经超时，忽略
                 clearTimeout(timer);//取消等待的超时d
@@ -127,7 +174,7 @@ export default class HttpClient {
         })
     }
 
-    static xhrToCurl(xhrConfig) {
+    static xhrToCurl(xhrConfig: any) {
         // 假设 xhrConfig 是你发送请求时的配置对象
         const { method, url, headers, data } = xhrConfig;
 

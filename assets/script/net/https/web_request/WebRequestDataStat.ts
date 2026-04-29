@@ -24,7 +24,7 @@ export class WebWeb2DataStatPerson extends WebCommon {
     breakUserId?: number; //条目
     roomPath?: number; //开始下标。例子（offset=0，limit=10，0-9。）
     timeType?: number; //游戏类型，对应客户端 枚举 GameType
-  } = null;
+  } | null = null;
 
   static Data: {
     breakPrice: string; // 破隐需要的金豆数
@@ -51,13 +51,13 @@ export class WebWeb2DataStatPerson extends WebCommon {
     secondTimes: number; // sng mtt特有参数.第二名次数
     playTimes: number; // sng mtt特有参数.参赛次数
     Wins: number; // omaha,普通局特有参数.入池胜率 如20%返回20即可
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     status: number;
     msg: string;
     data?: typeof WebWeb2DataStatPerson.Data;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebWeb2DataStatPerson.RequestParams) {
     this.RequestParams = param;

@@ -25,14 +25,14 @@ export class WebMiscBannerList extends WebCommon {
     type?: number; //1-大厅Banner,2-发现页(公会)Banner
     limit?: number; //条目
     offset?: number; //开始下标。例子（offset=0，limit=10，0-9。）
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     limit: number; //条目
     offset: number; //开始下标。例子（offset=0，limit=10，0-9。）
     total: number; //总条数
     list: (typeof WebMiscBannerList.BannerInfo)[]; // Banner列表
-  } = null;
+  } | null = null;
   static BannerInfo: {
     id: number; //banner id
     lang: string; //语言
@@ -40,7 +40,7 @@ export class WebMiscBannerList extends WebCommon {
     image_url: string; //Banner图片连接
     redirect_url: string; //跳转连接
     description: string; //描述
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebMiscBannerList.RequestParams) {
     this.RequestParams = param;
@@ -123,11 +123,11 @@ export class WebMiscAgoraToken extends WebCommon {
   static RequestParams: {
     channel_name?: string;
     role?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: string;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebMiscAgoraToken.RequestParams) {
     this.RequestParams = param;
@@ -146,24 +146,24 @@ export class WebMiscArtiCleId extends WebCommon {
   static RequestParams: {
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebMiscArtiCleId.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     article?: typeof WebMiscArtiCleId.Record;
-  } = null;
+  } | null = null;
 
   static Record: {
     content_ex?: (typeof WebMiscArtiCleId.ContentData)[];
-  } = null;
+  } | null = null;
 
   static ContentData: {
     type?: string;
     value?: string;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebMiscArtiCleId.RequestParams) {
     this.RequestParams = param;
@@ -182,23 +182,23 @@ export class WebMiscArtiCleInfo extends WebCommon {
   static RequestParams: {
     lang?: string;
     type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebMiscArtiCleInfo.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     article?: typeof WebMiscArtiCleInfo.Article;
-  } = null;
+  } | null = null;
 
   static Article: {
     content_ex?: (typeof WebMiscArtiCleInfo.ContentData)[];
-  } = null;
+  } | null = null;
 
   static ContentData: {
     value?: string;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebMiscArtiCleInfo.RequestParams) {
     this.RequestParams = param;
@@ -219,18 +219,18 @@ export class WebMiscArtiCleList extends WebCommon {
     limit?: number;
     offset?: number;
     lang?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebMiscArtiCleList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     total?: number;
     list?: (typeof WebMiscArtiCleList.Record)[];
-  } = null;
+  } | null = null;
 
   static Record: {
     id?: number;
@@ -246,12 +246,12 @@ export class WebMiscArtiCleList extends WebCommon {
     author_url?: string;
     images_url?: string;
     content?: string;
-  } = null;
+  } | null = null;
 
   static ContentData: {
     type?: string;
     value?: string;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebMiscArtiCleList.RequestParams) {
     this.RequestParams = param;
@@ -272,9 +272,9 @@ export class WebMiscArtiClenumSet extends WebCommon {
     read_num?: number;
     repost_num?: number;
     like_num?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebMiscArtiClenumSet.RequestParams,
@@ -297,23 +297,23 @@ export class WebMiscArtiClePushList extends WebCommon {
     limit?: number;
     offset?: number;
     lang?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebMiscArtiClePushList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     total?: number;
     list?: (typeof WebMiscArtiClePushList.Record)[];
-  } = null;
+  } | null = null;
 
   static Record: {
     publish_time?: string;
     article_list?: (typeof WebMiscArtiClePushList.ContentData)[];
-  } = null;
+  } | null = null;
 
   static ContentData: {
     id?: number;
@@ -324,7 +324,7 @@ export class WebMiscArtiClePushList extends WebCommon {
     location?: string;
     award?: string;
     match_status?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMiscArtiClePushList.RequestParams,
@@ -344,22 +344,22 @@ export class WebMiscBannerLobby extends WebCommon {
 
   static RequestParams: {
     lang?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebMiscBannerLobby.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     lobby?: typeof WebMiscBannerLobby.BannerInfo;
-  } = null;
+  } | null = null;
 
   static BannerInfo: {
     resource_type?: number;
     image_url?: string;
     video_url?: string;
     video_cover_url?: string;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebMiscBannerLobby.RequestParams) {
     this.RequestParams = param;
@@ -377,17 +377,17 @@ export class WebMiscCurrencyDescriptionInfo extends WebCommon {
 
   static RequestParams: {
     lang?: string;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Data: {
     currency_description?: typeof WebMiscCurrencyDescriptionInfo.ContentDetails;
-  } = null;
+  } | null = null;
 
   static ContentDetails: {
     status?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMiscCurrencyDescriptionInfo.RequestParams,
@@ -408,15 +408,15 @@ export class WebMiscCurrencyExchAgeRate extends WebCommon {
   static RequestParams: {
     from?: string;
     amount?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebMiscCurrencyExchAgeRate.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     amount?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMiscCurrencyExchAgeRate.RequestParams,
@@ -438,21 +438,21 @@ export class WebMiscCurrencyExchAgeRateList extends WebCommon {
     from?: string;
     to?: string;
     amount?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebMiscCurrencyExchAgeRateList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     from_currency?: string;
     exchange_list?: (typeof WebMiscCurrencyExchAgeRateList.Currencies)[];
-  } = null;
+  } | null = null;
 
   static Currencies: {
     quotecurrency?: string;
     mid?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMiscCurrencyExchAgeRateList.RequestParams,
@@ -470,14 +470,14 @@ export class WebMiscCurrencyExchAgeRateList extends WebCommon {
 export class WebMiscFaceDetect extends WebCommon {
   static API: string = "/api/misc/face/detect";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Data: {
     detect_code?: number;
     liveness_type?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebMiscFaceDetect.RequestParams) {
     this.RequestParams = param;
@@ -493,13 +493,13 @@ export class WebMiscFaceDetect extends WebCommon {
 export class WebMiscFaceLivenessMultiPhoto extends WebCommon {
   static API: string = "/api/misc/face/liveness/multi_photo";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Data: {
     liveness?: boolean;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMiscFaceLivenessMultiPhoto.RequestParams,
@@ -520,13 +520,13 @@ export class WebMiscFaceRecog extends WebCommon {
   static RequestParams: {
     room_id?: number;
     recog_id?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Data: {
     recog?: boolean;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebMiscFaceRecog.RequestParams) {
     this.RequestParams = param;
@@ -545,9 +545,9 @@ export class WebMiscFaceRecogCheck extends WebCommon {
   static RequestParams: {
     room_id?: number;
     recog_user_id?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Data: {
     can_request?: boolean;
@@ -555,7 +555,7 @@ export class WebMiscFaceRecogCheck extends WebCommon {
     last_status?: number;
     last_time?: number;
     success_total?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMiscFaceRecogCheck.RequestParams,
@@ -576,9 +576,9 @@ export class WebMiscFaceRecogConfirm extends WebCommon {
   static RequestParams: {
     recog_id?: number;
     confirm?: boolean;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebMiscFaceRecogConfirm.RequestParams,
@@ -599,11 +599,11 @@ export class WebMiscFaceRecogRequest extends WebCommon {
   static RequestParams: {
     room_id?: number;
     recog_user_id?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebMiscFaceRecogRequest.RequestParams,
@@ -625,13 +625,13 @@ export class WebMiscFaceRecogResult extends WebCommon {
     room_id?: number;
     recog_id?: number;
     recog?: boolean;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Data: {
     recog?: boolean;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMiscFaceRecogResult.RequestParams,
@@ -653,11 +653,11 @@ export class WebMiscFaceRecogRoomLast extends WebCommon {
     room_type?: number;
     match_id?: number;
     room_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: (typeof WebMiscFaceRecogRoomLast.Data)[];
-  } = null;
+  } | null = null;
 
   static Data: {
     id?: number;
@@ -670,7 +670,7 @@ export class WebMiscFaceRecogRoomLast extends WebCommon {
     request_user_name?: string;
     recog_user_name?: string;
     timeout_stamp?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMiscFaceRecogRoomLast.RequestParams,
@@ -688,9 +688,9 @@ export class WebMiscFaceRecogRoomLast extends WebCommon {
 export class WebMiscFaceSave extends WebCommon {
   static API: string = "/api/misc/face/save";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(param: typeof WebMiscFaceSave.RequestParams) {
     this.RequestParams = param;
@@ -706,16 +706,16 @@ export class WebMiscFaceSave extends WebCommon {
 export class WebMiscFaceSaveLimit extends WebCommon {
   static API: string = "/api/misc/face/save/limit";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebMiscFaceSaveLimit.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     global_limit?: number;
     user_used?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMiscFaceSaveLimit.RequestParams,
@@ -735,11 +735,11 @@ export class WebMiscFaceSeatCancelRecog extends WebCommon {
 
   static RequestParams: {
     room_id?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebMiscFaceSeatCancelRecog.RequestParams,
@@ -759,13 +759,13 @@ export class WebMiscFaceSeatRecog extends WebCommon {
 
   static RequestParams: {
     room_id?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Data: {
     recog?: boolean;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMiscFaceSeatRecog.RequestParams,
@@ -790,18 +790,18 @@ export class WebMiscGameRoundListDataByRoom extends WebCommon {
     offset?: number;
     game_types?: number[];
     poker_types?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebMiscGameRoundListDataByRoom.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     total?: number;
     list?: (typeof WebMiscGameRoundListDataByRoom.Record)[];
-  } = null;
+  } | null = null;
 
   static RoomRecord: {
     small_blind?: number;
@@ -811,7 +811,7 @@ export class WebMiscGameRoundListDataByRoom extends WebCommon {
     game_type?: number;
     poker_type?: number;
     random_ante?: string;
-  } = null;
+  } | null = null;
 
   static UserGameRecord: {
     id?: number;
@@ -833,13 +833,13 @@ export class WebMiscGameRoundListDataByRoom extends WebCommon {
     encrypt_cards?: unknown;
     gold_type?: number;
     jackpot_award?: number;
-  } = null;
+  } | null = null;
 
   static Record: {
     room_record?: typeof WebMiscGameRoundListDataByRoom.RoomRecord;
     user_game_records?: (typeof WebMiscGameRoundListDataByRoom.UserGameRecord)[];
     total?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMiscGameRoundListDataByRoom.RequestParams,
@@ -860,13 +860,13 @@ export class WebMiscTranslate extends WebCommon {
   static RequestParams: {
     text?: string;
     target?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: string;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(param: typeof WebMiscTranslate.RequestParams) {
     this.RequestParams = param;

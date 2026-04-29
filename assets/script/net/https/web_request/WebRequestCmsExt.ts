@@ -136,11 +136,11 @@ export class WebCmsExtActivityClubAdd extends WebCommon {
     start_time?: number;
     end_time?: number;
     sort?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtActivityClubAdd.RequestParams,
@@ -158,15 +158,15 @@ export class WebCmsExtActivityClubAdd extends WebCommon {
 export class WebCmsExtActivityClubAdminList extends WebCommon {
   static API: string = "/api/cmsext/activity/club/admin_list";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtActivityClubAdminList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebCmsExtActivityClubAdminList.Info)[];
-  } = null;
+  } | null = null;
 
   static Info: {
     img_url?: string;
@@ -176,7 +176,7 @@ export class WebCmsExtActivityClubAdminList extends WebCommon {
     home_img_url?: string;
     sort?: number;
     audit_status?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtActivityClubAdminList.RequestParams,
@@ -194,15 +194,15 @@ export class WebCmsExtActivityClubAdminList extends WebCommon {
 export class WebCmsExtActivityClubMyList extends WebCommon {
   static API: string = "/api/cmsext/activity/club/my_list";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtActivityClubMyList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebCmsExtActivityClubMyList.Info)[];
-  } = null;
+  } | null = null;
 
   static Info: {
     description?: string;
@@ -213,7 +213,7 @@ export class WebCmsExtActivityClubMyList extends WebCommon {
     home_img_url?: string;
     sort?: number;
     audit_status?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtActivityClubMyList.RequestParams,
@@ -234,18 +234,18 @@ export class WebCmsExtClubShare0List extends WebCommon {
   static RequestParams: {
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtClubShare0List.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     data?: (typeof WebCmsExtClubShare0List.ShareTableData)[];
     limit?: number;
     offset?: number;
     total?: number;
-  } = null;
+  } | null = null;
 
   static ShareTableData: {
     id?: number;
@@ -264,7 +264,7 @@ export class WebCmsExtClubShare0List extends WebCommon {
     poker_type?: number;
     squid_base?: number;
     mushroom_base?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtClubShare0List.RequestParams,
@@ -284,16 +284,16 @@ export class WebCmsExtHotUpdateTemplateList extends WebCommon {
 
   static RequestParams: {
     last_update_time?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtHotUpdateTemplateList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     data?: unknown[];
     last_update_time?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtHotUpdateTemplateList.RequestParams,
@@ -315,15 +315,15 @@ export class WebCmsExtImServiceLink extends WebCommon {
     im_service_no?: string;
     language?: string;
     im_service_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtImServiceLink.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     im_link?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtImServiceLink.RequestParams,
@@ -343,17 +343,17 @@ export class WebCmsExtImServiceList extends WebCommon {
 
   static RequestParams: {
     im_service_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: (typeof WebCmsExtImServiceList.Data)[];
-  } = null;
+  } | null = null;
 
   static Data: {
     im_service_no?: string;
     service_begin_time?: number;
     service_end_time?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtImServiceList.RequestParams,
@@ -374,13 +374,13 @@ export class WebCmsExtMiniGameClubConfigCreate extends WebCommon {
   static RequestParams: {
     name?: string;
     room_config?: unknown;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtMiniGameClubConfigCreate.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtMiniGameClubConfigCreate.RequestParams,
@@ -401,16 +401,16 @@ export class WebCmsExtMiniGameConfigCreate extends WebCommon {
   static RequestParams: {
     name?: string;
     room_config?: unknown;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtMiniGameConfigCreate.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     room_id?: number;
     room_config?: unknown;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtMiniGameConfigCreate.RequestParams,
@@ -431,13 +431,13 @@ export class WebCmsExtMiniGameTribeConfigCreate extends WebCommon {
   static RequestParams: {
     name?: string;
     room_config?: unknown;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtMiniGameTribeConfigCreate.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtMiniGameTribeConfigCreate.RequestParams,
@@ -461,9 +461,9 @@ export class WebCmsExtMttConfigCreate extends WebCommon {
     start_time?: number;
     apply_time?: number;
     create_mtt?: boolean;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtMttConfigCreate.RequestParams,
@@ -486,11 +486,11 @@ export class WebCmsExtMttCreate extends WebCommon {
     enter_before?: number;
     start_time?: number;
     apply_time?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(param: typeof WebCmsExtMttCreate.RequestParams) {
     this.RequestParams = param;
@@ -512,9 +512,9 @@ export class WebCmsExtMttTemplateCreate extends WebCommon {
     start_time?: number;
     apply_time?: number;
     create_mtt?: boolean;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtMttTemplateCreate.RequestParams,
@@ -532,9 +532,9 @@ export class WebCmsExtMttTemplateCreate extends WebCommon {
 export class WebCmsExtMttTemplateDeleteId extends WebCommon {
   static API: string = "/api/cmsext/mtt/template/delete/{id}";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtMttTemplateDeleteId.RequestParams,
@@ -560,18 +560,18 @@ export class WebCmsExtMttTemplateList extends WebCommon {
     origin_type?: number;
     search?: string;
     week_switch?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtMttTemplateList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     total?: number;
     templates?: unknown[];
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtMttTemplateList.RequestParams,
@@ -595,9 +595,9 @@ export class WebCmsExtMttTemplateUpdate extends WebCommon {
     start_time?: number;
     apply_time?: number;
     create_mtt?: boolean;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtMttTemplateUpdate.RequestParams,
@@ -618,9 +618,9 @@ export class WebCmsExtMttTemplateWeekSwitchUpdate extends WebCommon {
   static RequestParams: {
     template_id?: number;
     week_switch?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtMttTemplateWeekSwitchUpdate.RequestParams,
@@ -638,16 +638,16 @@ export class WebCmsExtMttTemplateWeekSwitchUpdate extends WebCommon {
 export class WebCmsExtRoomSmallBlindAnte extends WebCommon {
   static API: string = "/api/cmsext/room/small_blind/ante";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: (typeof WebCmsExtRoomSmallBlindAnte.Data)[];
-  } = null;
+  } | null = null;
 
   static Data: {
     key?: number;
     value?: number[];
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtRoomSmallBlindAnte.RequestParams,
@@ -665,15 +665,15 @@ export class WebCmsExtRoomSmallBlindAnte extends WebCommon {
 export class WebCmsExtRoomTemplate0 extends WebCommon {
   static API: string = "/api/cmsext/room/template/{0}";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtRoomTemplate0.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     data?: unknown;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtRoomTemplate0.RequestParams,
@@ -694,13 +694,13 @@ export class WebCmsExtRoomTemplateStatus extends WebCommon {
   static RequestParams: {
     id?: number;
     status?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtRoomTemplateStatus.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtRoomTemplateStatus.RequestParams,
@@ -721,16 +721,16 @@ export class WebCmsExtRoomTribeConfigCreate extends WebCommon {
   static RequestParams: {
     name?: string;
     room_config?: unknown;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtRoomTribeConfigCreate.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     room_id?: number;
     room_config?: unknown;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtRoomTribeConfigCreate.RequestParams,
@@ -748,16 +748,16 @@ export class WebCmsExtRoomTribeConfigCreate extends WebCommon {
 export class WebCmsExtRoomUserBatchCreate extends WebCommon {
   static API: string = "/api/cmsext/room/user/batch/create";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: number;
-  } = null;
+  } | null = null;
 
   static Info: {
     template_id?: number;
     count?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtRoomUserBatchCreate.RequestParams,
@@ -782,13 +782,13 @@ export class WebCmsExtRoomUserTemplateList extends WebCommon {
     bombpot?: number[];
     game_type_arr?: number[];
     poker_type?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtRoomUserTemplateList.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtRoomUserTemplateList.RequestParams,
@@ -806,9 +806,9 @@ export class WebCmsExtRoomUserTemplateList extends WebCommon {
 export class WebCmsExtSngClubConfigCreate extends WebCommon {
   static API: string = "/api/cmsext/sng/club/config/create";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtSngClubConfigCreate.RequestParams,
@@ -856,20 +856,20 @@ export class WebCmsExtSngConfigCreate extends WebCommon {
     blind_level_delay_time_table?: unknown[];
     delay_time_type?: number;
     max_delay_times?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtSngConfigCreate.Data;
-  } = null;
+  } | null = null;
 
   static Prize: {
     award_ratio?: number;
     rank_max?: number;
     rank_min?: number;
     award?: number;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtSngConfigCreate.RequestParams,
@@ -887,9 +887,9 @@ export class WebCmsExtSngConfigCreate extends WebCommon {
 export class WebCmsExtSngTribeConfigCreate extends WebCommon {
   static API: string = "/api/cmsext/sng/tribe/config/create";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtSngTribeConfigCreate.RequestParams,
@@ -915,13 +915,13 @@ export class WebCmsExtUserComplaIntReport extends WebCommon {
     room_unique_id?: string;
     content?: string;
     user_game_record_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtUserComplaIntReport.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebCmsExtUserComplaIntReport.RequestParams,
@@ -948,18 +948,18 @@ export class WebCmsExtWheelTemplateList extends WebCommon {
     tribe_id?: number;
     all_room_template?: number;
     all_manual_room?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebCmsExtWheelTemplateList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     data?: unknown[];
     limit?: number;
     offset?: number;
     total?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebCmsExtWheelTemplateList.RequestParams,

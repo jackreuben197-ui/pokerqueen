@@ -21,7 +21,7 @@ type RequestCtx = {
   api: string;
   request: any;
   headers: any[];
-  onSuccess: Function;
+  onSuccess: Function | null;
 };
 
 export default class HotUpdateConfigCache {
@@ -271,7 +271,7 @@ export default class HotUpdateConfigCache {
         needJuhua: false,
         needConsole: false,
         api: url,
-        onSuccess: (res) => resolve(res),
+        onSuccess: (res: any) => resolve(res),
         onFailure: () => resolve(null),
       });
     });

@@ -12,7 +12,7 @@ import HttpRequest from "./HttpRequest";
 
 
 export class HttpLink {
-    private static _instance: HttpLink = null;
+    private static _instance: HttpLink | null = null;
     public static get instance() {
         if (!HttpLink._instance) {
             HttpLink._instance = new HttpLink();
@@ -27,9 +27,12 @@ export class HttpLink {
     checkQueue = () => {
         if (this._sendQueue.length) {
 
-            let sendInfo = this._sendQueue.shift();
+            const sendInfo = this._sendQueue.shift();
+            if (!sendInfo) {
+                return;
+            }
 
-            console.log("sendInfo ==>",sendInfo);
+            console.log("sendInfo ==>", sendInfo);
 
             HttpRequest.Send({
                 api: sendInfo.api,

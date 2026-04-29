@@ -20,15 +20,15 @@ export class WebMttRoomMttApplyConfirm extends WebCommon {
 
   static RequestParams: {
     msgId?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     status?: number;
     msg?: string;
     data?: typeof WebMttRoomMttApplyConfirm.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebMttRoomMttApplyConfirm.RequestParams,

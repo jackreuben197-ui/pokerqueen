@@ -20,15 +20,15 @@ export class WebUserTaskFinishTaskApp extends WebCommon {
 
   static RequestParams: {
     action?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     status?: number;
     msg?: string;
     data?: typeof WebUserTaskFinishTaskApp.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebUserTaskFinishTaskApp.RequestParams,

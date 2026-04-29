@@ -20,9 +20,9 @@ export class WebRechargeGold extends WebCommon {
   static API: string = "/api/order/user/recharge";
 
   //字段声明
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
   static Request(param: { amount: number }) {
     this.RequestParams = param;
     return param;
@@ -106,18 +106,18 @@ export class WebOrderTribeOrderList extends WebCommon {
   static RequestParams: {
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrderTribeOrderList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     total?: number;
     list?: (typeof WebOrderTribeOrderList.ClubInfo)[];
-  } = null;
+  } | null = null;
 
   static ClubInfo: {
     club_name?: string;
@@ -129,7 +129,7 @@ export class WebOrderTribeOrderList extends WebCommon {
     club_logo?: string;
     tribe_logo?: string;
     club_subscription_id?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrderTribeOrderList.RequestParams,
@@ -151,13 +151,13 @@ export class WebOrderTribeOrderAudit extends WebCommon {
     order_no?: string;
     audit_op?: number;
     description?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrderTribeOrderAudit.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrderTribeOrderAudit.RequestParams,
@@ -180,11 +180,11 @@ export class WebOrderTribeRecharge extends WebCommon {
     amount?: number;
     gold_type?: number;
     legal_tender?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrderTribeRecharge.RequestParams,
@@ -204,13 +204,13 @@ export class WebOrderTribeRechargeGold extends WebCommon {
 
   static RequestParams: {
     price_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrderTribeRechargeGold.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrderTribeRechargeGold.RequestParams,
@@ -230,13 +230,13 @@ export class WebOrderTribeTransFerDiamondToTribe extends WebCommon {
 
   static RequestParams: {
     amount?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrderTribeTransFerDiamondToTribe.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrderTribeTransFerDiamondToTribe.RequestParams,
@@ -256,13 +256,13 @@ export class WebOrderTribeTransFerDiamondToUser extends WebCommon {
 
   static RequestParams: {
     amount?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrderTribeTransFerDiamondToUser.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrderTribeTransFerDiamondToUser.RequestParams,
@@ -285,11 +285,11 @@ export class WebOrderTribeWithdraw extends WebCommon {
     amount?: number;
     gold_type?: number;
     legal_tender?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrderTribeWithdraw.RequestParams,
@@ -309,9 +309,9 @@ export class WebOrderUserClubOrderCancel extends WebCommon {
 
   static RequestParams: {
     order_no?: string;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebOrderUserClubOrderCancel.RequestParams,
@@ -332,17 +332,17 @@ export class WebOrderUserRechargeNo extends WebCommon {
   static RequestParams: {
     amount?: number;
     pay_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrderUserRechargeNo.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     amount?: number;
     used?: boolean;
     price_id?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrderUserRechargeNo.RequestParams,
@@ -362,23 +362,23 @@ export class WebOrderUserUsdtOrderList extends WebCommon {
 
   static RequestParams: {
     order_no?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrderUserUsdtOrderList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebOrderUserUsdtOrderList.OrderData)[];
-  } = null;
+  } | null = null;
 
   static OrderData: {
     order?: typeof WebOrderUserUsdtOrderList.OrderInfo;
-  } = null;
+  } | null = null;
 
   static OrderInfo: {
     status?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrderUserUsdtOrderList.RequestParams,
@@ -401,28 +401,28 @@ export class WebOrderUserUsdtRecharge extends WebCommon {
     pay_price?: number;
     pay_id?: number;
     gold_count?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrderUserUsdtRecharge.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     order?: typeof WebOrderUserUsdtRecharge.OrderInfo;
     usdt_address?: typeof WebOrderUserUsdtRecharge.PayInfo;
-  } = null;
+  } | null = null;
 
   static PayInfo: {
     address_type?: string;
     address?: string;
     qr_code?: string;
-  } = null;
+  } | null = null;
 
   static OrderInfo: {
     gold_num?: number;
     order_no?: string;
     amount?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrderUserUsdtRecharge.RequestParams,

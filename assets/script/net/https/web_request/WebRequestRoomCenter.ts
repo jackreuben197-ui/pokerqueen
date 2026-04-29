@@ -63,7 +63,7 @@ export class WebRoomCenterHistorySquid extends WebCommon {
 
   static RequestParams: {
       round?: number,
-  } = null;
+  } | null = null;
 
   static Record: {
       name?: string,
@@ -72,7 +72,7 @@ export class WebRoomCenterHistorySquid extends WebCommon {
       out_num?: number,
       out_amount?: number,
       user_random_id?: number,
-  } = null;
+  } | null = null;
 
   static ResponseData: {
       round?: number,
@@ -80,7 +80,7 @@ export class WebRoomCenterHistorySquid extends WebCommon {
       end_hand?: number,
       total?: number,
       records?: Array<typeof WebRoomCenterHistorySquid.Record>,
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebRoomCenterHistorySquid.RequestParams) {
       this.RequestParams = param;
@@ -97,7 +97,7 @@ export class WebRoomCenterHistoryMushroom extends WebCommon {
 
   static RequestParams: {
       round?: number,
-  } = null;
+  } | null = null;
 
   static Record: {
       name?: string,
@@ -106,7 +106,7 @@ export class WebRoomCenterHistoryMushroom extends WebCommon {
       out_num?: number,
       out_amount?: number,
       user_random_id?: number,
-  } = null;
+  } | null = null;
 
   static ResponseData: {
       round?: number,
@@ -114,7 +114,7 @@ export class WebRoomCenterHistoryMushroom extends WebCommon {
       end_hand?: number,
       total?: number,
       records?: Array<typeof WebRoomCenterHistoryMushroom.Record>,
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebRoomCenterHistoryMushroom.RequestParams) {
       this.RequestParams = param;
@@ -162,9 +162,9 @@ export class WebClubApplyList extends WebCommon {
   static API: string = "/api/roomcenter/club/room/apply/list";
 
   //字段声明
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(param: typeof WebClubApplyList.RequestParams) {
     this.RequestParams = param;
@@ -187,21 +187,21 @@ export class WebRoomCenterGroups extends WebCommon {
   static API: string = "/api/roomcenter/groups";
 
   //字段声明
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     game_type: number; //游戏类型，0 德州，1奥马哈四张，2 奥马哈五张，3 奥马哈六张
     count: number; //房间数量
     player_count: number; //人数
     sub_group: (typeof WebRoomCenterGroups.DataGroupOne)[];
-  } = null;
+  } | null = null;
   static DataGroupOne: {
     game_type: number; //游戏类型，0 德州，1奥马哈四张，2 奥马哈五张，3 奥马哈六张
     count: number; //房间数量
     poker_type: number; //牌类型 0 长牌，1 短牌
     player_count: number; //人数
     sub_group: (typeof WebRoomCenterGroups.DataGroupTwo)[];
-  } = null;
+  } | null = null;
 
   static DataGroupTwo: {
     game_type: number; //游戏类型，0 德州，1奥马哈四张，2 奥马哈五张，3 奥马哈六张
@@ -209,7 +209,7 @@ export class WebRoomCenterGroups extends WebCommon {
     limit_bet_type: number; //下注限制 0 不限制，1 底池限注，2 AOF
     count: number; //房间数量
     player_count: number; //人数
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebRoomCenterGroups.RequestParams) {
     this.RequestParams = param;
@@ -230,16 +230,16 @@ export class WebRoomCenterRoomsBlinds extends WebCommon {
   static RequestParams: {
     game_type: number; //游戏类型
     poker_type: number; //牌类型
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     records: (typeof WebRoomCenterRoomsBlinds.DataElement)[];
-  } = null;
+  } | null = null;
 
   static DataElement: {
     sb: number; //小盲
     cnt: number; //该条件房间数
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebRoomCenterRoomsBlinds.RequestParams) {
     this.RequestParams = param;
@@ -270,14 +270,14 @@ export class WebRoomCenterRooms extends WebCommon {
     poker_type?: number[]; //牌类型
     limit_bet_type?: number[]; //下注类型
     order?: string[]; //排序//oneof=id_asc id_desc start_asc start_desc enter_asc enter_desc eseat_asc eseat_desc seat_asc seat_desc sb_asc sb_desc"
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     total: number;
     limit: number;
     offset: number;
     records: (typeof WebRoomCenterRooms.DataElement)[];
-  } = null;
+  } | null = null;
 
   static DataElement: {
     rid: number; //房间id
@@ -337,7 +337,7 @@ export class WebRoomCenterRooms extends WebCommon {
     voiceprint_verify_duration: number; //被验证倒计时
     voiceprint_verify_interval_duration: number; //被验证间隔时间
     participation_status: number; //参与状态:0 未参与 1: 参与中
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebRoomCenterRooms.RequestParams) {
     this.RequestParams = param;
@@ -380,7 +380,7 @@ export class WebRoomCenterMttDetailS extends WebCommon {
     state: typeof WebRoomCenterMttDetailS.PlayerState; //玩家筹码状态信息
     more: typeof WebRoomCenterMttDetailS.More; //盲注等级和奖励池
     top: number; //最大记分牌
-  } = null;
+  } | null = null;
 
   static PlayerState: {
     left_rebuy_times: number; //剩余重购次数
@@ -388,7 +388,7 @@ export class WebRoomCenterMttDetailS extends WebCommon {
     store: number; //存储记分牌
     init_score: number; //初始化记分牌
     partial_enable: boolean; //是否允许部分带入
-  } = null;
+  } | null = null;
 
   static MttDetails: {
     match_id: number; // 比赛id
@@ -468,7 +468,7 @@ export class WebRoomCenterMttDetailS extends WebCommon {
     rebuy_free_incl_svr: number; //重购限免是否包含服务费，0不包含，1包含
     multi_ratio_free_incl_svr: number; //多倍率限免是否包含服务费，0不包含，1包含
     addon_free_incl_svr: number; //增购限免是否包含服务费，0不包含，1包含
-  } = null;
+  } | null = null;
 
   static More: {
     ante: number; //当前前注
@@ -478,7 +478,7 @@ export class WebRoomCenterMttDetailS extends WebCommon {
     sb: number; //当前小盲
     nsb: number; //下一小盲
     prize_pool: number; //奖池
-  } = null;
+  } | null = null;
 
   // static Request(param: typeof WebRoomCenterMttDetailS.RequestParams) {
   //     this.RequestParams = param;
@@ -622,7 +622,7 @@ export class WebRoomCenterHistoryReplay extends WebCommon {
     d: number[]; //自己手牌
     s: typeof WebRoomCenterHistoryReplay.S;
     u: number; //自己用户随机ID
-  } = null;
+  } | null = null;
 
   //字段声明
   // static RequestParams: {
@@ -654,7 +654,7 @@ export class WebRoomCenterHistoryReplay extends WebCommon {
     mid: number; //比赛id
     unique: string; //唯一id
     procedure: typeof WebRoomCenterHistoryReplay.Procedure;
-  } = null;
+  } | null = null;
 
   public static Result: {
     sn: number; //座位号
@@ -668,12 +668,12 @@ export class WebRoomCenterHistoryReplay extends WebCommon {
     maxcard_idx2: number[]; //第二套牌，最大牌型数组下标
     card_type2: number; //最大牌型
     sp_detail: (typeof WebRoomCenterHistoryReplay.SpDetail)[]; //第二套牌赢牌详情
-  } = null;
+  } | null = null;
 
   public static SpDetail: {
     win: number; //赢得筹码
     is_winner: boolean; //是否赢牌
-  } = null;
+  } | null = null;
 
   public static Table: {
     ante: number; //前注
@@ -683,7 +683,7 @@ export class WebRoomCenterHistoryReplay extends WebCommon {
     straddle: boolean; //强制盲注
     btn: number; //庄位
     seatcount: number; //最大座位号
-  } = null;
+  } | null = null;
   public static Procedure: {
     ante: typeof WebRoomCenterHistoryReplay.Ante;
     preflop: typeof WebRoomCenterHistoryReplay.Preflop;
@@ -826,7 +826,7 @@ export class WebRoomCenterMttList extends WebCommon {
   //         alive: number,//存活人数
   //         is_buy_in: boolean,//是否已经买入
   //         prop_buy_type: number,// 道具使用类型 1: 只能道具 2: 混合 0: 不支持道具
-  //     } = null;
+  //     } | null = null;
 }
 
 export class WebOrgiNvitatIonRoom extends WebCommon {
@@ -938,15 +938,15 @@ export class WebRoomCenterMttRanks extends WebCommon {
 export class WebRoomCenterAutoChageRoom extends WebCommon {
   static API: string = "/api/roomcenter/auto_chage_room";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterAutoChageRoom.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     record?: typeof WebRoomCenterAutoChageRoom.Record;
-  } = null;
+  } | null = null;
 
   static Record: {
     room_id?: number;
@@ -954,7 +954,7 @@ export class WebRoomCenterAutoChageRoom extends WebCommon {
     anti_cheat_type?: number;
     anti_cheat_video_type?: number;
     bombpot?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterAutoChageRoom.RequestParams,
@@ -975,11 +975,11 @@ export class WebRoomCenterClubRoomApplyDelayAllList extends WebCommon {
   static RequestParams: {
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterClubRoomApplyDelayAllList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
@@ -988,7 +988,7 @@ export class WebRoomCenterClubRoomApplyDelayAllList extends WebCommon {
     unaudited?: number;
     data?: unknown[];
     delay_room_audit_switch?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterClubRoomApplyDelayAllList.RequestParams,
@@ -1009,13 +1009,13 @@ export class WebRoomCenterClubRoomApplyDelayAudit extends WebCommon {
   static RequestParams: {
     apply_id?: number;
     audit_op?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterClubRoomApplyDelayAudit.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterClubRoomApplyDelayAudit.RequestParams,
@@ -1036,15 +1036,15 @@ export class WebRoomCenterDelayTimeBlindLevelQuery extends WebCommon {
   static RequestParams: {
     blindtable_type?: number;
     match_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterDelayTimeBlindLevelQuery.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     record?: typeof WebRoomCenterDelayTimeBlindLevelQuery.BlindData;
-  } = null;
+  } | null = null;
 
   static BlindData: {
     blindtable_type?: number;
@@ -1052,14 +1052,14 @@ export class WebRoomCenterDelayTimeBlindLevelQuery extends WebCommon {
     blind_level_delay_time_table?: (typeof WebRoomCenterDelayTimeBlindLevelQuery.BlindLevel)[];
     max_delay_times?: number;
     auto_delay_time?: number;
-  } = null;
+  } | null = null;
 
   static BlindLevel: {
     level?: number;
     small_blind?: number;
     ante?: number;
     delay_times?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterDelayTimeBlindLevelQuery.RequestParams,
@@ -1083,13 +1083,13 @@ export class WebRoomCenterDelayTimeBlindLevelSave extends WebCommon {
     max_delay_times?: number;
     auto_delay_time?: number;
     blind_level_delay_time_table?: unknown[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterDelayTimeBlindLevelSave.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterDelayTimeBlindLevelSave.RequestParams,
@@ -1110,9 +1110,9 @@ export class WebRoomCenterFriendRoomApplyDelayAudit extends WebCommon {
   static RequestParams: {
     apply_id?: number;
     audit_op?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterFriendRoomApplyDelayAudit.RequestParams,
@@ -1133,11 +1133,11 @@ export class WebRoomCenterFriendRoomApplyDelayList extends WebCommon {
   static RequestParams: {
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterFriendRoomApplyDelayList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
@@ -1146,7 +1146,7 @@ export class WebRoomCenterFriendRoomApplyDelayList extends WebCommon {
     unaudited?: number;
     data?: unknown[];
     delay_room_audit_switch?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterFriendRoomApplyDelayList.RequestParams,
@@ -1169,11 +1169,11 @@ export class WebRoomCenterGameWatch extends WebCommon {
     room_unique_id?: string;
     hand_num?: number;
     be_watched_user_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: unknown;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterGameWatch.RequestParams,
@@ -1191,15 +1191,15 @@ export class WebRoomCenterGameWatch extends WebCommon {
 export class WebRoomCenterGameWatchNum extends WebCommon {
   static API: string = "/api/roomcenter/game/watch/num";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterGameWatchNum.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     pay_times?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterGameWatchNum.RequestParams,
@@ -1217,15 +1217,15 @@ export class WebRoomCenterGameWatchNum extends WebCommon {
 export class WebRoomCenterGameWatchUnreadList extends WebCommon {
   static API: string = "/api/roomcenter/game/watch/unread/list";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterGameWatchUnreadList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     records?: (typeof WebRoomCenterGameWatchUnreadList.Record)[];
-  } = null;
+  } | null = null;
 
   static Record: {
     room_id?: number;
@@ -1233,7 +1233,7 @@ export class WebRoomCenterGameWatchUnreadList extends WebCommon {
     diamonds_change?: number;
     hand_num?: number;
     watch_user_name?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterGameWatchUnreadList.RequestParams,
@@ -1253,11 +1253,11 @@ export class WebRoomCenterHistory0Squid extends WebCommon {
 
   static RequestParams: {
     round?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterHistory0Squid.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     round?: number;
@@ -1265,7 +1265,7 @@ export class WebRoomCenterHistory0Squid extends WebCommon {
     total?: number;
     end_hand?: number;
     records?: (typeof WebRoomCenterHistory0Squid.SquidInfo)[];
-  } = null;
+  } | null = null;
 
   static SquidInfo: {
     name?: string;
@@ -1274,7 +1274,7 @@ export class WebRoomCenterHistory0Squid extends WebCommon {
     out_num?: number;
     out_amount?: number;
     user_random_id?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterHistory0Squid.RequestParams,
@@ -1300,16 +1300,16 @@ export class WebRoomCenterHistoryReplayVideoId extends WebCommon {
     room_id?: number;
     macht_id?: number;
     hand_num?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterHistoryReplayVideoId.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     h5_url?: string;
     video_url?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterHistoryReplayVideoId.RequestParams,
@@ -1331,16 +1331,16 @@ export class WebRoomCenterHistoryViewPublicCards extends WebCommon {
     room_id?: number;
     hand_num?: number;
     round?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterHistoryViewPublicCards.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     pub_cards?: string;
     pub_cards2?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterHistoryViewPublicCards.RequestParams,
@@ -1358,15 +1358,15 @@ export class WebRoomCenterHistoryViewPublicCards extends WebCommon {
 export class WebRoomCenterHistoryViewPublicCardsFreeCount extends WebCommon {
   static API: string = "/api/roomcenter/history/view_public_cards/free_count";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterHistoryViewPublicCardsFreeCount.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     free_count?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterHistoryViewPublicCardsFreeCount.RequestParams,
@@ -1387,11 +1387,11 @@ export class WebRoomCenterMttIdAwards extends WebCommon {
   static RequestParams: {
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterMttIdAwards.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
@@ -1399,7 +1399,7 @@ export class WebRoomCenterMttIdAwards extends WebCommon {
     records?: (typeof WebRoomCenterMttIdAwards.Record)[];
     total?: number;
     gold_type?: number;
-  } = null;
+  } | null = null;
 
   static Record: {
     uid?: number;
@@ -1408,14 +1408,14 @@ export class WebRoomCenterMttIdAwards extends WebCommon {
     award_goods?: (typeof WebRoomCenterMttIdAwards.AwardGoods)[];
     username?: string;
     avatar?: string;
-  } = null;
+  } | null = null;
 
   static AwardGoods: {
     i?: number;
     na?: string;
     n?: number;
     v?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterMttIdAwards.RequestParams,
@@ -1433,9 +1433,9 @@ export class WebRoomCenterMttIdAwards extends WebCommon {
 export class WebRoomCenterMttIdClose extends WebCommon {
   static API: string = "/api/roomcenter/mtt/{id}/close";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterMttIdClose.RequestParams,
@@ -1453,11 +1453,11 @@ export class WebRoomCenterMttIdClose extends WebCommon {
 export class WebRoomCenterMttIdDetail extends WebCommon {
   static API: string = "/api/roomcenter/mtt/{id}/detail";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterMttIdDetail.Data;
-  } = null;
+  } | null = null;
 
   static More: {
     nu?: number;
@@ -1471,7 +1471,7 @@ export class WebRoomCenterMttIdDetail extends WebCommon {
     min_chip?: number;
     avg_chip?: number;
     max_chip?: number;
-  } = null;
+  } | null = null;
 
   static Mtt: {
     match_id?: number;
@@ -1580,16 +1580,16 @@ export class WebRoomCenterMttIdDetail extends WebCommon {
     force_close_time?: number;
     blind_level_delay_time_table?: unknown[];
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static Prize: {
     award?: number;
     goods?: (typeof WebRoomCenterMttIdDetail.Goods)[];
-  } = null;
+  } | null = null;
 
   static Goods: {
     na?: string;
-  } = null;
+  } | null = null;
 
   static Real_prize: {
     award?: number;
@@ -1597,7 +1597,7 @@ export class WebRoomCenterMttIdDetail extends WebCommon {
     participants?: number;
     prizes?: (typeof WebRoomCenterMttIdDetail.Prize)[];
     award_type?: number;
-  } = null;
+  } | null = null;
 
   static Data: {
     alive?: number;
@@ -1607,7 +1607,7 @@ export class WebRoomCenterMttIdDetail extends WebCommon {
     real_prize?: typeof WebRoomCenterMttIdDetail.Real_prize;
     state?: typeof WebRoomCenterMttIdDetail.State;
     state_code?: number;
-  } = null;
+  } | null = null;
 
   static State: {
     left_rebuy_times?: number;
@@ -1615,7 +1615,7 @@ export class WebRoomCenterMttIdDetail extends WebCommon {
     store?: number;
     init_score?: number;
     partial_enable?: boolean;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterMttIdDetail.RequestParams,
@@ -1633,13 +1633,13 @@ export class WebRoomCenterMttIdDetail extends WebCommon {
 export class WebRoomCenterMttIdFreeRemain extends WebCommon {
   static API: string = "/api/roomcenter/mtt/{id}/free_remain";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterMttIdFreeRemain.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterMttIdFreeRemain.RequestParams,
@@ -1657,13 +1657,13 @@ export class WebRoomCenterMttIdFreeRemain extends WebCommon {
 export class WebRoomCenterMttIdQuit extends WebCommon {
   static API: string = "/api/roomcenter/mtt/{id}/quit";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterMttIdQuit.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterMttIdQuit.RequestParams,
@@ -1683,9 +1683,9 @@ export class WebRoomCenterMttIdUpdateTop extends WebCommon {
 
   static RequestParams: {
     is_top?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterMttIdUpdateTop.RequestParams,
@@ -1708,15 +1708,15 @@ export class WebRoomCenterMttAllserIes extends WebCommon {
     ratio?: number;
     use_free?: boolean;
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterMttAllserIes.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     tribe_name?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterMttAllserIes.RequestParams,
@@ -1743,18 +1743,18 @@ export class WebRoomCenterMttFriendList extends WebCommon {
     result_type?: number;
     game_type?: number[];
     poker_type?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterMttFriendList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     total?: number;
     records?: unknown[];
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterMttFriendList.RequestParams,
@@ -1775,15 +1775,15 @@ export class WebRoomCenterPatrolClubRoomBlinds extends WebCommon {
   static RequestParams: {
     game_type?: number[];
     poker_type?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterPatrolClubRoomBlinds.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     records?: unknown[];
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterPatrolClubRoomBlinds.RequestParams,
@@ -1811,24 +1811,24 @@ export class WebRoomCenterPatrolClubRooms extends WebCommon {
     poker_type?: number[];
     order?: string[];
     enter_room_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterPatrolClubRooms.Data;
-  } = null;
+  } | null = null;
 
   static SbFilters: {
     game_type?: number;
     poker_type?: number;
     small_blind?: number;
     bombpot?: number;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     records?: unknown[];
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterPatrolClubRooms.RequestParams,
@@ -1850,17 +1850,17 @@ export class WebRoomCenterPatrolClubUsers extends WebCommon {
     limit?: number;
     offset?: number;
     search?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterPatrolClubUsers.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     records?: (typeof WebRoomCenterPatrolClubUsers.Record)[];
-  } = null;
+  } | null = null;
 
   static Record: {
     user_id?: number;
@@ -1868,7 +1868,7 @@ export class WebRoomCenterPatrolClubUsers extends WebCommon {
     user_name?: string;
     avatar?: string;
     rooms?: (typeof WebRoomCenterPatrolClubUsers.TableRoomInfo)[];
-  } = null;
+  } | null = null;
 
   static TableRoomInfo: {
     rid?: number;
@@ -1895,7 +1895,7 @@ export class WebRoomCenterPatrolClubUsers extends WebCommon {
     critical_hit?: number;
     call_time?: number;
     is_patrol?: boolean;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterPatrolClubUsers.RequestParams,
@@ -1917,13 +1917,13 @@ export class WebRoomCenterPatrolRoom extends WebCommon {
     room_id?: number;
     club_id?: number;
     tribe_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterPatrolRoom.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterPatrolRoom.RequestParams,
@@ -1963,15 +1963,15 @@ export class WebRoomCenterRandomEnter extends WebCommon {
     limit_gps_on?: number[];
     jackpot?: number[];
     tribe_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterRandomEnter.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     records?: (typeof WebRoomCenterRandomEnter.Records)[];
-  } = null;
+  } | null = null;
 
   static Records: {
     room_id?: number;
@@ -1979,7 +1979,7 @@ export class WebRoomCenterRandomEnter extends WebCommon {
     anti_cheat_type?: number;
     anti_cheat_video_type?: number;
     bombpot?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterRandomEnter.RequestParams,
@@ -1997,20 +1997,20 @@ export class WebRoomCenterRandomEnter extends WebCommon {
 export class WebRoomCenterRandomRoomTotal extends WebCommon {
   static API: string = "/api/roomcenter/random_room/total";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterRandomRoomTotal.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     total_info?: typeof WebRoomCenterRandomRoomTotal.RoomTotalInfo;
-  } = null;
+  } | null = null;
 
   static RoomTotalInfo: {
     RoomCount?: number;
     PlayerCount?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterRandomRoomTotal.RequestParams,
@@ -2031,13 +2031,13 @@ export class WebRoomCenterRoomApplyDelay extends WebCommon {
   static RequestParams: {
     room_id?: number;
     hands?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterRoomApplyDelay.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterRoomApplyDelay.RequestParams,
@@ -2059,13 +2059,13 @@ export class WebRoomCenterRoomDelay extends WebCommon {
     room_id?: number;
     duration?: number;
     hands?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterRoomDelay.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterRoomDelay.RequestParams,
@@ -2085,13 +2085,13 @@ export class WebRoomCenterRoomDisbAnd extends WebCommon {
 
   static RequestParams: {
     room_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterRoomDisbAnd.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterRoomDisbAnd.RequestParams,
@@ -2111,15 +2111,15 @@ export class WebRoomCenterRoomIsRoomAdmin extends WebCommon {
 
   static RequestParams: {
     room_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterRoomIsRoomAdmin.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     is_admin?: boolean;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterRoomIsRoomAdmin.RequestParams,
@@ -2139,13 +2139,13 @@ export class WebRoomCenterRoomStart extends WebCommon {
 
   static RequestParams: {
     room_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterRoomStart.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterRoomStart.RequestParams,
@@ -2166,13 +2166,13 @@ export class WebRoomCenterRoomUserLeave extends WebCommon {
   static RequestParams: {
     room_id?: number;
     user_random_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterRoomUserLeave.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterRoomUserLeave.RequestParams,
@@ -2193,13 +2193,13 @@ export class WebRoomCenterRoomUserStandUp extends WebCommon {
   static RequestParams: {
     room_id?: number;
     user_random_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterRoomUserStandUp.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterRoomUserStandUp.RequestParams,
@@ -2221,18 +2221,18 @@ export class WebRoomCenterRoomUserGeetEstList extends WebCommon {
     room_id?: number;
     offset?: number;
     limit?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterRoomUserGeetEstList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     total?: number;
     records?: (typeof WebRoomCenterRoomUserGeetEstList.GeeInfo)[];
-  } = null;
+  } | null = null;
 
   static GeeInfo: {
     id?: number;
@@ -2246,14 +2246,14 @@ export class WebRoomCenterRoomUserGeetEstList extends WebCommon {
     geetest_risk_list?: (typeof WebRoomCenterRoomUserGeetEstList.GeeData)[];
     device_model?: string;
     min_distance?: number;
-  } = null;
+  } | null = null;
 
   static GeeData: {
     id?: number;
     name?: string;
     pass_status?: number;
     risk_code_list?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterRoomUserGeetEstList.RequestParams,
@@ -2274,15 +2274,15 @@ export class WebRoomCenterRoomsAndMttList extends WebCommon {
   static RequestParams: {
     room_ids?: number[];
     match_ids?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterRoomsAndMttList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     records?: (typeof WebRoomCenterRoomsAndMttList.Record)[];
-  } = null;
+  } | null = null;
 
   static Record: {
     room_id?: number;
@@ -2296,7 +2296,7 @@ export class WebRoomCenterRoomsAndMttList extends WebCommon {
     apply_fee_pool?: number;
     apply_fee_service?: number;
     apply_fee_hunter?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterRoomsAndMttList.RequestParams,
@@ -2317,15 +2317,15 @@ export class WebRoomCenterSngIdBuyin extends WebCommon {
   static RequestParams: {
     club_id?: number;
     ratio?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterSngIdBuyin.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     mtt?: unknown;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterSngIdBuyin.RequestParams,
@@ -2345,9 +2345,9 @@ export class WebRoomCenterSngIdClose extends WebCommon {
 
   static RequestParams: {
     sng_id?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterSngIdClose.RequestParams,
@@ -2367,11 +2367,11 @@ export class WebRoomCenterSngIdDetail extends WebCommon {
 
   static RequestParams: {
     sng_id?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static SngData: {
     anti_cheat_type?: number;
@@ -2394,7 +2394,7 @@ export class WebRoomCenterSngIdDetail extends WebCommon {
     upblind_interval?: number;
     prizes?: unknown[];
     is_admin?: boolean;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterSngIdDetail.RequestParams,
@@ -2414,28 +2414,28 @@ export class WebRoomCenterSngIdMttList extends WebCommon {
 
   static RequestParams: {
     id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterSngIdMttList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     records?: (typeof WebRoomCenterSngIdMttList.Record)[];
-  } = null;
+  } | null = null;
 
   static Record: {
     match_id?: number;
     name?: string;
     alive?: number;
     ranks?: (typeof WebRoomCenterSngIdMttList.Rank)[];
-  } = null;
+  } | null = null;
 
   static Rank: {
     name?: string;
     rank?: number;
     chip?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterSngIdMttList.RequestParams,
@@ -2455,13 +2455,13 @@ export class WebRoomCenterSngIdQuit extends WebCommon {
 
   static RequestParams: {
     sng_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterSngIdQuit.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterSngIdQuit.RequestParams,
@@ -2481,15 +2481,15 @@ export class WebRoomCenterSngIdUserWallet extends WebCommon {
 
   static RequestParams: {
     sng_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterSngIdUserWallet.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     wallet?: (typeof WebRoomCenterSngIdUserWallet.Wallet)[];
-  } = null;
+  } | null = null;
 
   static Wallet: {
     club_id?: number;
@@ -2498,7 +2498,7 @@ export class WebRoomCenterSngIdUserWallet extends WebCommon {
     club_name?: string;
     club_random_id?: number;
     club_logo?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterSngIdUserWallet.RequestParams,
@@ -2522,19 +2522,19 @@ export class WebRoomCenterSngApplyFees extends WebCommon {
     tribe_id?: number;
     game_type?: number[];
     poker_type?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterSngApplyFees.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     records?: (typeof WebRoomCenterSngApplyFees.RecordData)[];
-  } = null;
+  } | null = null;
 
   static RecordData: {
     apply_fee?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterSngApplyFees.RequestParams,
@@ -2556,18 +2556,18 @@ export class WebRoomCenterSngFriendList extends WebCommon {
     limit?: number;
     offset?: number;
     status?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterSngFriendList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     records?: (typeof WebRoomCenterSngFriendList.RecordData)[];
     total?: number;
-  } = null;
+  } | null = null;
 
   static RecordData: {
     anti_cheat_type?: number;
@@ -2584,7 +2584,7 @@ export class WebRoomCenterSngFriendList extends WebCommon {
     poker_type?: number;
     sng_id?: number;
     currency?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterSngFriendList.RequestParams,
@@ -2613,9 +2613,9 @@ export class WebRoomCenterSngList extends WebCommon {
     poker_type?: number[];
     apply_fee?: number[];
     only_club_room?: boolean;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(param: typeof WebRoomCenterSngList.RequestParams) {
     this.RequestParams = param;
@@ -2636,15 +2636,15 @@ export class WebRoomCenterTribeRoomBlinds extends WebCommon {
     poker_type?: number[];
     status?: number[];
     hide_full?: boolean;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterTribeRoomBlinds.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     records?: unknown[];
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterTribeRoomBlinds.RequestParams,
@@ -2683,9 +2683,9 @@ export class WebRoomCenterTribeRooms extends WebCommon {
     sb_filters?: unknown[];
     enter_room_type?: number;
     order?: string[];
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterTribeRooms.RequestParams,
@@ -2703,31 +2703,31 @@ export class WebRoomCenterTribeRooms extends WebCommon {
 export class WebRoomCenterUserAllMttSngIds extends WebCommon {
   static API: string = "/api/roomcenter/user/all/mtt/sng/ids";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterUserAllMttSngIds.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     mtt_id_list?: (typeof WebRoomCenterUserAllMttSngIds.MttIdInfo)[];
     sng_id_list?: (typeof WebRoomCenterUserAllMttSngIds.SngIdInfo)[];
     mtt_series_list?: unknown[];
-  } = null;
+  } | null = null;
 
   static MttIdInfo: {
     match_id?: number;
     origin_type?: number;
     relate_club_ids?: number[];
     relate_tribe_club_list?: unknown[];
-  } = null;
+  } | null = null;
 
   static SngIdInfo: {
     sng_id?: number;
     origin_type?: number;
     relate_club_ids?: number[];
     relate_tribe_club_list?: unknown[];
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterUserAllMttSngIds.RequestParams,
@@ -2745,22 +2745,22 @@ export class WebRoomCenterUserAllMttSngIds extends WebCommon {
 export class WebRoomCenterUserAllRoomIds extends WebCommon {
   static API: string = "/api/roomcenter/user/all/room/ids";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterUserAllRoomIds.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     records?: (typeof WebRoomCenterUserAllRoomIds.RecordItem)[];
-  } = null;
+  } | null = null;
 
   static RecordItem: {
     rid?: number;
     origin_type?: number;
     relate_club_ids?: number[];
     relate_tribe_club_list?: unknown[];
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterUserAllRoomIds.RequestParams,
@@ -2778,9 +2778,9 @@ export class WebRoomCenterUserAllRoomIds extends WebCommon {
 export class WebRoomCenterUserAllRooms extends WebCommon {
   static API: string = "/api/roomcenter/user/all/rooms";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterUserAllRooms.RequestParams,
@@ -2801,11 +2801,11 @@ export class WebRoomCenterUserApplyDelayList extends WebCommon {
   static RequestParams: {
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterUserApplyDelayList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
@@ -2813,7 +2813,7 @@ export class WebRoomCenterUserApplyDelayList extends WebCommon {
     total?: number;
     unaudited?: number;
     data?: unknown[];
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterUserApplyDelayList.RequestParams,
@@ -2831,16 +2831,16 @@ export class WebRoomCenterUserApplyDelayList extends WebCommon {
 export class WebRoomCenterUserContrAstRooms extends WebCommon {
   static API: string = "/api/roomcenter/user/contrast/rooms";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterUserContrAstRooms.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     records?: unknown[];
     contrast_rooms?: (typeof WebRoomCenterUserContrAstRooms.ContrastRoomInfo)[];
-  } = null;
+  } | null = null;
 
   static ContrastRoomInfo: {
     rid?: number;
@@ -2850,7 +2850,7 @@ export class WebRoomCenterUserContrAstRooms extends WebCommon {
     users?: unknown[];
     relate_club_ids?: number[];
     relate_tribe_club_list?: unknown[];
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterUserContrAstRooms.RequestParams,
@@ -2868,18 +2868,18 @@ export class WebRoomCenterUserContrAstRooms extends WebCommon {
 export class WebRoomCenterUserMttSngRoomsList extends WebCommon {
   static API: string = "/api/roomcenter/user/mtt/sng/rooms/list";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebRoomCenterUserMttSngRoomsList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     mtt_change_list?: (typeof WebRoomCenterUserMttSngRoomsList.ContrastMttInfo)[];
     sng_change_list?: (typeof WebRoomCenterUserMttSngRoomsList.ContrastSngInfo)[];
     mtt_list?: (typeof WebRoomCenterUserMttSngRoomsList.MttInfo)[];
     sng_list?: (typeof WebRoomCenterUserMttSngRoomsList.SngInfo)[];
-  } = null;
+  } | null = null;
 
   static SngInfo: {
     anti_cheat_type?: number;
@@ -2911,7 +2911,7 @@ export class WebRoomCenterUserMttSngRoomsList extends WebCommon {
     tribe_id?: number;
     type?: number;
     upblind_interval?: number;
-  } = null;
+  } | null = null;
 
   static MttInfo: {
     origin_type?: number;
@@ -2976,14 +2976,14 @@ export class WebRoomCenterUserMttSngRoomsList extends WebCommon {
     stage_blind_level?: number;
     stage_remain_rate?: number;
     stage_final_score_type?: number;
-  } = null;
+  } | null = null;
 
   static Prize: {
     award_ratio?: number;
     rank_max?: number;
     rank_min?: number;
     award?: number;
-  } = null;
+  } | null = null;
 
   static ContrastMttInfo: {
     match_id?: number;
@@ -2992,13 +2992,13 @@ export class WebRoomCenterUserMttSngRoomsList extends WebCommon {
     status?: number;
     participants?: number;
     state_code?: number;
-  } = null;
+  } | null = null;
 
   static ContrastSngInfo: {
     sng_id?: number;
     buy_status?: number;
     status?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRoomCenterUserMttSngRoomsList.RequestParams,
@@ -3016,9 +3016,9 @@ export class WebRoomCenterUserMttSngRoomsList extends WebCommon {
 export class WebRoomCenterUserRoomsList extends WebCommon {
   static API: string = "/api/roomcenter/user/rooms/list";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebRoomCenterUserRoomsList.RequestParams,

@@ -21,19 +21,19 @@ export class WebGcCowboyRoomList extends WebCommon {
   static RequestParams: {
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebGcCowboyRoomList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     records?: (typeof WebGcCowboyRoomList.RoomInfo)[];
-  } = null;
+  } | null = null;
 
   static RoomInfo: {
     room_id?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebGcCowboyRoomList.RequestParams) {
     this.RequestParams = param;

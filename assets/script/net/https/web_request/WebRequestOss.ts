@@ -23,9 +23,9 @@ export class WebOrgClubUploadIcon extends WebCommon {
 export class WebOssUploadAudio extends WebCommon {
   static API: string = "/api/oss/upload/audio";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(param: typeof WebOssUploadAudio.RequestParams) {
     this.RequestParams = param;
@@ -41,9 +41,9 @@ export class WebOssUploadAudio extends WebCommon {
 export class WebOssUploadChatAudio extends WebCommon {
   static API: string = "/api/oss/upload/chat_audio";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebOssUploadChatAudio.RequestParams,
@@ -61,9 +61,9 @@ export class WebOssUploadChatAudio extends WebCommon {
 export class WebOssUploadImage extends WebCommon {
   static API: string = "/api/oss/upload/image";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(param: typeof WebOssUploadImage.RequestParams) {
     this.RequestParams = param;
@@ -79,9 +79,9 @@ export class WebOssUploadImage extends WebCommon {
 export class WebOssUploadLog extends WebCommon {
   static API: string = "/api/oss/upload/log";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(param: typeof WebOssUploadLog.RequestParams) {
     this.RequestParams = param;

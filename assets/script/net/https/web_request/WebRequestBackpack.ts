@@ -22,13 +22,13 @@ export class WebBackpackGoodsChange extends WebCommon {
     gamebagId?: number;
     status?: number;
     toRandomNum?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     status?: number;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebBackpackGoodsChange.RequestParams,

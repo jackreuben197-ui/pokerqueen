@@ -21,15 +21,15 @@ export class WebUserProxyImAuthUserToken extends WebCommon {
   static RequestParams: {
     platform?: number;
     operatio_id?: string;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Data: {
     userID?: string;
     token?: string;
     expiredTime?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebUserProxyImAuthUserToken.RequestParams,

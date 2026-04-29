@@ -20,18 +20,18 @@ export class WebRoomMttUseProp extends WebCommon {
 
   static RequestParams: {
     propId?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     status?: number;
     data?: typeof WebRoomMttUseProp.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     matchId?: number;
     name?: string;
     startTime?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebRoomMttUseProp.RequestParams) {
     this.RequestParams = param;

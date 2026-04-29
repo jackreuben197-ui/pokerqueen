@@ -244,11 +244,11 @@ export class WebMiscCombine extends WebCommon {
       typeof WebOrgTribeBlackUserList
     >;
     user_club_info_req?: RequestParamsOf<typeof WebOrgClubSearchById>;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebMiscCombine.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     popup?: ResponseDataOf<typeof WebMiscPopupNewer>;
@@ -327,11 +327,11 @@ export class WebMiscCombine extends WebCommon {
     >;
     user_club_info_resp?: ResponseDataOf<typeof WebOrgClubSearchById>;
     user_club_admin_resp?: unknown;
-  } = null;
+  } | null = null;
 
   static UserWhiteListInfoResp: {
     data?: ResponseDataOf<typeof WebConfigUserWhitelistInfo>;
-  } = null;
+  } | null = null;
 
   static MTTData: {
     match_count?: number;
@@ -339,19 +339,19 @@ export class WebMiscCombine extends WebCommon {
     sign_up_count?: number;
     alive?: number;
     prize_base_pool?: number;
-  } = null;
+  } | null = null;
 
   static MsgTodoNumResp: {
     todo_num_list?: unknown[];
-  } = null;
+  } | null = null;
 
   static BroadcastNumResp: {
     broadcast_num_list?: unknown[];
-  } = null;
+  } | null = null;
 
   static MsgUnreadResp: {
     unreade_list?: ResponseDataOf<typeof WebMsgMessageUnread>[];
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebMiscCombine.RequestParams) {
     this.RequestParams = param;

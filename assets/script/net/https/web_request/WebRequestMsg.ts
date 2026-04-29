@@ -20,7 +20,7 @@ export class WebMsgMessageUnread extends WebCommon {
   static API: string = "/api/msg/message/unread";
 
   //字段声明
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     msg_main_type: number; //消息类型:1-bag,2-club,3-money,4-system,5-tribe,6-带入
@@ -30,7 +30,7 @@ export class WebMsgMessageUnread extends WebCommon {
     remark: string;
     msg_type: number; //消息类型 MessageSubType
     create_time: string; //创建时间
-  } = null;
+  } | null = null;
   static Request(param: typeof WebMsgMessageUnread.RequestParams) {
     this.RequestParams = param;
     return param;
@@ -46,10 +46,10 @@ export class WebMsgMessageUnreadClear extends WebCommon {
   //接口地址
   static API: string = "/api/msg/message/clear_unread";
   //字段声明
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
-  static Request(param) {
+  static ResponseData: {} | null = null;
+  static Request(param?: any) {
     this.RequestParams = param;
     return param;
   }
@@ -100,13 +100,13 @@ export class WebMsgMessageRead extends WebCommon {
   static RequestParams: {
     id?: number;
     msg_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebMsgMessageRead.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(param: typeof WebMsgMessageRead.RequestParams) {
     this.RequestParams = param;
@@ -122,17 +122,17 @@ export class WebMsgMessageRead extends WebCommon {
 export class WebMsgMessageSystemBroadcastNum extends WebCommon {
   static API: string = "/api/msg/message/system/broadcast/num";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: (typeof WebMsgMessageSystemBroadcastNum.MsgInfo)[];
-  } = null;
+  } | null = null;
 
   static MsgInfo: {
     msg_main_type?: number;
     num?: number;
     msg_type?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMsgMessageSystemBroadcastNum.RequestParams,
@@ -150,16 +150,16 @@ export class WebMsgMessageSystemBroadcastNum extends WebCommon {
 export class WebMsgMessageTodo extends WebCommon {
   static API: string = "/api/msg/message/todo";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: (typeof WebMsgMessageTodo.Data)[];
-  } = null;
+  } | null = null;
 
   static Data: {
     num?: number;
     type?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebMsgMessageTodo.RequestParams) {
     this.RequestParams = param;
@@ -177,11 +177,11 @@ export class WebMsgMessageTodoAllInfo extends WebCommon {
 
   static RequestParams: {
     todo_types?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebMsgMessageTodoAllInfo.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     num_map?: (typeof WebMsgMessageTodoAllInfo.DataElement)[];
@@ -193,12 +193,12 @@ export class WebMsgMessageTodoAllInfo extends WebCommon {
     club_join_tribe_list?: unknown[];
     club_order_list?: unknown[];
     unread_msg_list?: unknown[];
-  } = null;
+  } | null = null;
 
   static DataElement: {
     num?: number;
     type?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebMsgMessageTodoAllInfo.RequestParams,

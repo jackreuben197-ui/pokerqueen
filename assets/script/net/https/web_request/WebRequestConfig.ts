@@ -21,7 +21,7 @@ export class WebConfigGlobalConfig extends WebCommon {
   static API: string = "/api/config/global/config";
 
   //字段声明
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     operating_model?: number; //运营模式 1 直营模式 2 公会联盟模式
@@ -40,7 +40,7 @@ export class WebConfigGlobalConfig extends WebCommon {
     scoreboard_club_price?: string;
     scoreboard_friend_price?: string;
     user_modify_name_price?: string;
-  } = null;
+  } | null = null;
   static Request(param: typeof WebLogin.RequestParams) {
     this.RequestParams = param;
     return param;
@@ -57,14 +57,14 @@ export class WebConfigMultiLanguageTemplate extends WebCommon {
   static API: string = "/api/config/multi_language/template";
 
   //字段声明
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     template_id: string; //对应房间key
     cn_name: string; //中
     us_name: string; //英
     br_name: string; //葡语
-  } = null;
+  } | null = null;
   static Request(param: typeof WebConfigMultiLanguageTemplate.RequestParams) {
     this.RequestParams = param;
     return param;
@@ -109,16 +109,16 @@ export class WebConfigBaseConfigCombine extends WebCommon {
     data_types?: number[];
     config_types?: string[];
     last_update_time?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebConfigBaseConfigCombine.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     user_subscriptions?: unknown[];
     user_whitelist_info?: unknown;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebConfigBaseConfigCombine.RequestParams) {
     this.RequestParams = param;
@@ -149,15 +149,15 @@ export class WebConfigBeforeLoginConfig extends WebCommon {
     chat_shop_prop_price_req?: typeof WebConfigBeforeLoginConfig.RequestItem;
     geme_prop_list_req?: typeof WebConfigBeforeLoginConfig.RequestItem;
     club_level_benefit_req?: typeof WebConfigBeforeLoginConfig.RequestItem;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: unknown;
-  } = null;
+  } | null = null;
 
   static RequestItem: {
     last_update_time?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebConfigBeforeLoginConfig.RequestParams) {
     this.RequestParams = param;
@@ -178,20 +178,20 @@ export class WebConfigDiamondOrgConfig extends WebCommon {
     type_ext?: number;
     club_id?: number;
     tribe_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebConfigDiamondOrgConfig.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Config: {
     status?: number;
     setting?: (typeof WebConfigDiamondOrgConfig.Setting)[];
     start_time?: number;
     end_time?: number;
-  } = null;
+  } | null = null;
 
   static Setting: {
     sb?: number;
@@ -199,7 +199,7 @@ export class WebConfigDiamondOrgConfig extends WebCommon {
     record_floor?: number;
     record_ratio?: number;
     decimal_type?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebConfigDiamondOrgConfig.RequestParams) {
     this.RequestParams = param;
@@ -215,11 +215,11 @@ export class WebConfigDiamondOrgConfig extends WebCommon {
 export class WebConfigGamePlayTag extends WebCommon {
   static API: string = "/api/config/gameplay/tag";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: (typeof WebConfigGamePlayTag.Data)[];
-  } = null;
+  } | null = null;
 
   static Data: {
     id?: number;
@@ -228,7 +228,7 @@ export class WebConfigGamePlayTag extends WebCommon {
     color?: string;
     status?: number;
     delete_status?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebConfigGamePlayTag.RequestParams) {
     this.RequestParams = param;
@@ -246,21 +246,21 @@ export class WebConfigGetOnlinePayTypeUserAddress extends WebCommon {
 
   static RequestParams: {
     pay_type_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebConfigGetOnlinePayTypeUserAddress.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebConfigGetOnlinePayTypeUserAddress.WalletInfo)[];
-  } = null;
+  } | null = null;
 
   static WalletInfo: {
     id?: number;
     pay_type_id?: number;
     address?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebConfigGetOnlinePayTypeUserAddress.RequestParams,
@@ -278,9 +278,9 @@ export class WebConfigGetOnlinePayTypeUserAddress extends WebCommon {
 export class WebConfigMaintenance extends WebCommon {
   static API: string = "/api/config/maintenance";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Data: {
     on?: boolean;
@@ -289,7 +289,7 @@ export class WebConfigMaintenance extends WebCommon {
     start_time_str?: string;
     end_time_str?: string;
     msg?: string;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebConfigMaintenance.RequestParams) {
     this.RequestParams = param;
@@ -305,11 +305,11 @@ export class WebConfigMaintenance extends WebCommon {
 export class WebConfigMaintenanceTf extends WebCommon {
   static API: string = "/api/config/maintenance_tf";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebConfigMaintenanceTf.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     on?: boolean;
@@ -318,7 +318,7 @@ export class WebConfigMaintenanceTf extends WebCommon {
     start_time_str?: string;
     end_time_str?: string;
     version?: string;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebConfigMaintenanceTf.RequestParams) {
     this.RequestParams = param;
@@ -334,9 +334,9 @@ export class WebConfigMaintenanceTf extends WebCommon {
 export class WebConfigNetworkCheckIp extends WebCommon {
   static API: string = "/api/config/network/checkip";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(param: typeof WebConfigNetworkCheckIp.RequestParams) {
     this.RequestParams = param;
@@ -355,13 +355,13 @@ export class WebConfigOnlineWithdrawDescription extends WebCommon {
   static RequestParams: {
     withdraw_type_id?: number;
     description?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebConfigOnlineWithdrawDescription.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebConfigOnlineWithdrawDescription.RequestParams,
@@ -381,16 +381,16 @@ export class WebConfigOnlineWithdrawTypeList extends WebCommon {
 
   static RequestParams: {
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebConfigOnlineWithdrawTypeList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     total?: number;
     list?: (typeof WebConfigOnlineWithdrawTypeList.PayType)[];
-  } = null;
+  } | null = null;
 
   static PayType: {
     id?: number;
@@ -402,7 +402,7 @@ export class WebConfigOnlineWithdrawTypeList extends WebCommon {
     fee_rate?: number;
     user_withdraw_min?: number;
     user_withdraw_max?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebConfigOnlineWithdrawTypeList.RequestParams) {
     this.RequestParams = param;
@@ -418,21 +418,21 @@ export class WebConfigOnlineWithdrawTypeList extends WebCommon {
 export class WebConfigRegisterArea extends WebCommon {
   static API: string = "/api/config/register/area";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: (typeof WebConfigRegisterArea.Data)[];
-  } = null;
+  } | null = null;
 
   static Data: {
     area?: string;
     country?: string;
-  } = null;
+  } | null = null;
 
   static Message: {
     area?: string;
     country?: string;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebConfigRegisterArea.RequestParams) {
     this.RequestParams = param;
@@ -448,15 +448,15 @@ export class WebConfigRegisterArea extends WebCommon {
 export class WebConfigUserWhitelistInfo extends WebCommon {
   static API: string = "/api/config/user/whitelist/info";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebConfigUserWhitelistInfo.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     user_whitelist_info?: typeof WebConfigUserWhitelistInfo.UserWhiteListInfo;
-  } = null;
+  } | null = null;
 
   static UserWhiteListInfo: {
     cowboy?: number;
@@ -482,7 +482,7 @@ export class WebConfigUserWhitelistInfo extends WebCommon {
     room_limit_hand?: number;
     sng?: number;
     random_enter_unlimit?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebConfigUserWhitelistInfo.RequestParams) {
     this.RequestParams = param;
@@ -498,13 +498,13 @@ export class WebConfigUserWhitelistInfo extends WebCommon {
 export class WebConfigWhatsApp extends WebCommon {
   static API: string = "/api/config/whatsapp";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: (typeof WebConfigWhatsApp.Data)[];
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(param: typeof WebConfigWhatsApp.RequestParams) {
     this.RequestParams = param;

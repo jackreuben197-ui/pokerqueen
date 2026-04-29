@@ -18,13 +18,13 @@ type ResponseDataOf<T extends { ResponseData?: unknown }> = T extends {
 export class WebImossGameClientUploadAudio extends WebCommon {
   static API: string = "/api/imoss/game_client/upload/audio";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Data: {
     fileUrl?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebImossGameClientUploadAudio.RequestParams,
@@ -42,13 +42,13 @@ export class WebImossGameClientUploadAudio extends WebCommon {
 export class WebImossGameClientUploadImage extends WebCommon {
   static API: string = "/api/imoss/game_client/upload/image";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Data: {
     fileUrl?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebImossGameClientUploadImage.RequestParams,

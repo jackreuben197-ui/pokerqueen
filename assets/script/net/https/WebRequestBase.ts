@@ -12,7 +12,7 @@ export class WebCommon {
     public static ResponseData: any;
     public static CacheEnabled: boolean = false;
     public static CacheTTL: number = 0;
-    public static Request(param) {
+    public static Request(param: any) {
         this.RequestParams = param;
         return param;
     }
@@ -36,7 +36,7 @@ export class WebCommon {
     public static Response: {
         code?: number;
         message?: string;
-        data?;
+        data?: any;
     };
 }
 
@@ -71,7 +71,7 @@ export class WWW {
      * @returns 
      */
     CommonAPI(param: {
-        web_class: { API: string; Request; Response };
+        web_class: { API: string; Request: (param: any) => any; Response: any };
         body?: any;
         api_id?: number;
         club_id?: number;
@@ -85,21 +85,21 @@ export class WWW {
                 onSuccess: function () {
                     resolve(param.web_class.Response);
                 }.bind(this),
-                onFailure: function (content) {
+                onFailure: function (content: any) {
                     reject(content);
                 }.bind(this),
                 juhua: param.juhua,
                 useCache: !!param.useCache,
             };
             //设置动态id参数
-            param.api_id > 0 &&
+            (param.api_id ?? 0) > 0 &&
                 (obj.api = param.web_class.API.replace(
                     "{id}",
                     `${param.api_id}`,
                 ));
             //设置header
             let headers = [];
-            param.club_id > 0 && headers.push(["X-Club", param.club_id]);
+            (param.club_id ?? 0) > 0 && headers.push(["X-Club", param.club_id]);
             obj.headers = headers;
             HttpRequest.Send(obj);
         });

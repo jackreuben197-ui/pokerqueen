@@ -22,18 +22,18 @@ export class WebPropUserCheckPropInfo extends WebCommon {
   //字段声明
   static RequestParams: {
     prop_id?: number; //道具id
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data: (typeof WebPropUserCheckPropInfo.Data)[];
-  } = null;
+  } | null = null;
 
   static Data: {
     is_free_service_charge: number; //是否免服务费
     prop_balance: string; //道具余量
     prop_property_type: number; //1 普通，2 免服务费
     wallet_balance: string; //钱包余额
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebPropUserCheckPropInfo.RequestParams) {
     this.RequestParams = param;
@@ -51,18 +51,18 @@ export class WebRoomCenterMttGetdisCountS extends WebCommon {
   static API: string = "/api/prop/user_prop/mtt/list";
 
   //字段声明
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data: (typeof WebRoomCenterMttGetdisCountS.Data)[];
-  } = null;
+  } | null = null;
 
   static Data: {
     is_free_service_charge: number; //是否免服务费
     prop_balance: string; //道具余量
     prop_property_type: number; //1 普通，2 免服务费
     wallet_balance: string; //钱包余额
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebRoomCenterMttGetdisCountS.RequestParams) {
     this.RequestParams = param;
@@ -83,13 +83,13 @@ export class WebPropUserBuyProp extends WebCommon {
   static RequestParams: {
     prop_id?: number; //道具id
     match_id?: number; //比赛id
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data: (typeof WebPropUserBuyProp.Data)[];
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(param: typeof WebPropUserBuyProp.RequestParams) {
     this.RequestParams = param;
@@ -215,9 +215,9 @@ export class WebPropBuy extends WebCommon {
     pay_price?: number;
     count?: number;
     fram_mall?: boolean;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(param: typeof WebPropBuy.RequestParams) {
     this.RequestParams = param;
@@ -239,15 +239,15 @@ export class WebPropChatPropList extends WebCommon {
     prop_type?: number;
     prop_types?: number[];
     user_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropChatPropList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebPropChatPropList.LableData)[];
-  } = null;
+  } | null = null;
 
   static LableData: {
     prop_id?: number;
@@ -261,7 +261,7 @@ export class WebPropChatPropList extends WebCommon {
     subscription_name?: string;
     prop_amount?: number;
     game_prop_id?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebPropChatPropList.RequestParams) {
     this.RequestParams = param;
@@ -279,11 +279,11 @@ export class WebPropChatPropUsed extends WebCommon {
 
   static RequestParams: {
     list?: (typeof WebPropChatPropUsed.Prop)[];
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
-  static Prop: {} = null;
+  static Prop: {} | null = null;
 
   static Request(param: typeof WebPropChatPropUsed.RequestParams) {
     this.RequestParams = param;
@@ -303,11 +303,11 @@ export class WebPropGoldPriceList extends WebCommon {
     source_type?: number;
     club_id?: number;
     gold_types?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropGoldPriceList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
@@ -315,7 +315,7 @@ export class WebPropGoldPriceList extends WebCommon {
     total?: number;
     list?: (typeof WebPropGoldPriceList.GoldInfo)[];
     pay_types?: (typeof WebPropGoldPriceList.PayType)[];
-  } = null;
+  } | null = null;
 
   static GoldInfo: {
     gold_count?: number;
@@ -323,7 +323,7 @@ export class WebPropGoldPriceList extends WebCommon {
     id?: number;
     trader_type?: unknown;
     give_gold_count?: number;
-  } = null;
+  } | null = null;
 
   static PayType: {
     id?: number;
@@ -339,7 +339,7 @@ export class WebPropGoldPriceList extends WebCommon {
     increase_interval?: number;
     price_list?: (typeof WebPropGoldPriceList.GoldInfo)[];
     wallet_addresses?: unknown[];
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPropGoldPriceList.RequestParams,
@@ -364,11 +364,11 @@ export class WebPropList extends WebCommon {
     prop_type_category?: number[];
     has_bag_info?: boolean;
     game_type?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
@@ -376,12 +376,12 @@ export class WebPropList extends WebCommon {
     total?: number;
     category?: (typeof WebPropList.Category)[];
     list?: (typeof WebPropList.Prop)[];
-  } = null;
+  } | null = null;
 
   static Category: {
     id?: number;
     name?: string;
-  } = null;
+  } | null = null;
 
   static Prop: {
     id?: number;
@@ -396,13 +396,13 @@ export class WebPropList extends WebCommon {
     subscription_ids?: number[];
     prop_property_type?: number;
     subscription_name?: string;
-  } = null;
+  } | null = null;
 
   static Price: {
     raw_price?: number;
     pay_price?: number;
     valid_date?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebPropList.RequestParams) {
     this.RequestParams = param;
@@ -422,13 +422,13 @@ export class WebPropMallGoodsBuy extends WebCommon {
     goods_id?: number;
     days?: number;
     count?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropMallGoodsBuy.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(param: typeof WebPropMallGoodsBuy.RequestParams) {
     this.RequestParams = param;
@@ -446,22 +446,22 @@ export class WebPropMallGoodsDetail extends WebCommon {
 
   static RequestParams: {
     goods_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropMallGoodsDetail.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     detail?: typeof WebPropMallGoodsDetail.Goods;
     items?: (typeof WebPropMallGoodsDetail.Item)[];
-  } = null;
+  } | null = null;
 
   static Goods: {
     id?: number;
     banner_picture?: string;
     price?: (typeof WebPropMallGoodsDetail.Price)[];
-  } = null;
+  } | null = null;
 
   static Item: {
     prop_type?: number;
@@ -473,13 +473,13 @@ export class WebPropMallGoodsDetail extends WebCommon {
     valid_date?: number;
     prop_icon?: string;
     chat_prop_code?: string;
-  } = null;
+  } | null = null;
 
   static Price: {
     raw_price?: number;
     pay_price?: number;
     valid_date?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPropMallGoodsDetail.RequestParams,
@@ -502,18 +502,18 @@ export class WebPropMallGoodsList extends WebCommon {
     recommend?: number;
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropMallGoodsList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     total?: number;
     list?: (typeof WebPropMallGoodsList.Goods)[];
-  } = null;
+  } | null = null;
 
   static Goods: {
     id?: number;
@@ -522,12 +522,12 @@ export class WebPropMallGoodsList extends WebCommon {
     goods_type?: number;
     price?: (typeof WebPropMallGoodsList.Price)[];
     subscription_status?: number;
-  } = null;
+  } | null = null;
 
   static Price: {
     raw_price?: number;
     pay_price?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPropMallGoodsList.RequestParams,
@@ -548,13 +548,13 @@ export class WebPropMallPrettyIdBuy extends WebCommon {
   static RequestParams: {
     goods_id?: number;
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropMallPrettyIdBuy.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebPropMallPrettyIdBuy.RequestParams,
@@ -578,24 +578,24 @@ export class WebPropMallPrettyIdList extends WebCommon {
     offset?: number;
     length_type?: number;
     search?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropMallPrettyIdList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebPropMallPrettyIdList.Info)[];
     limit?: number;
     offset?: number;
     total?: number;
-  } = null;
+  } | null = null;
 
   static Info: {
     id?: number;
     pretty_id?: number;
     pay_price?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPropMallPrettyIdList.RequestParams,
@@ -613,19 +613,19 @@ export class WebPropMallPrettyIdList extends WebCommon {
 export class WebPropMallPrettyIdTotal extends WebCommon {
   static API: string = "/api/prop/mall/pretty_id/total";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebPropMallPrettyIdTotal.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebPropMallPrettyIdTotal.Item)[];
-  } = null;
+  } | null = null;
 
   static Item: {
     length_type?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPropMallPrettyIdTotal.RequestParams,
@@ -645,16 +645,16 @@ export class WebPropShareContEnt extends WebCommon {
 
   static RequestParams: {
     entry_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropShareContEnt.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     url?: string;
     type?: string;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebPropShareContEnt.RequestParams) {
     this.RequestParams = param;
@@ -672,9 +672,9 @@ export class WebPropShareDone extends WebCommon {
 
   static RequestParams: {
     entry_type?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(param: typeof WebPropShareDone.RequestParams) {
     this.RequestParams = param;
@@ -694,15 +694,15 @@ export class WebPropShopPingAppleVerifyReceIpt extends WebCommon {
     receipt_data?: string;
     order_id?: string;
     transaction_id?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropShopPingAppleVerifyReceIpt.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     data?: boolean;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPropShopPingAppleVerifyReceIpt.RequestParams,
@@ -724,13 +724,13 @@ export class WebPropShopPingGoogleVerifyOrder extends WebCommon {
     product_id?: string;
     order_id?: string;
     purchase_token?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropShopPingGoogleVerifyOrder.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebPropShopPingGoogleVerifyOrder.RequestParams,
@@ -748,16 +748,16 @@ export class WebPropShopPingGoogleVerifyOrder extends WebCommon {
 export class WebPropSignInActivityDetail extends WebCommon {
   static API: string = "/api/prop/sign_in/activity/detail";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebPropSignInActivityDetail.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     sign_in_activity?: typeof WebPropSignInActivityDetail.SignInActivity;
     user_sign_in_log?: (typeof WebPropSignInActivityDetail.UserSignInLog)[];
-  } = null;
+  } | null = null;
 
   static UserSignInLog: {
     activity_id?: number;
@@ -765,18 +765,18 @@ export class WebPropSignInActivityDetail extends WebCommon {
     sign_in_day?: number;
     sign_in_time?: number;
     user_sign_in_status?: unknown;
-  } = null;
+  } | null = null;
 
-  static SignInActivity: {} = null;
+  static SignInActivity: {} | null = null;
 
-  static ActivityDetail: {} = null;
+  static ActivityDetail: {} | null = null;
 
   static Prop: {
     prop_name?: string;
     quantity?: number;
     prop_icon?: string;
     multi_lang_names_obj?: unknown;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPropSignInActivityDetail.RequestParams,
@@ -797,13 +797,13 @@ export class WebPropSignInActivitySignIn extends WebCommon {
   static RequestParams: {
     activity_id?: number;
     activity_day?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropSignInActivitySignIn.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebPropSignInActivitySignIn.RequestParams,
@@ -825,13 +825,13 @@ export class WebPropTestSignInActivityReset extends WebCommon {
     activity_id?: number;
     begin_date?: string;
     signin_day?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropTestSignInActivityReset.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebPropTestSignInActivityReset.RequestParams,
@@ -852,25 +852,25 @@ export class WebPropTribeGoldPriceList extends WebCommon {
   static RequestParams: {
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropTribeGoldPriceList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebPropTribeGoldPriceList.Info)[];
     total?: number;
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static Info: {
     price_id?: number;
     gold_count?: number;
     raw_price?: number;
     pay_price?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPropTribeGoldPriceList.RequestParams,
@@ -888,18 +888,18 @@ export class WebPropTribeGoldPriceList extends WebCommon {
 export class WebPropUserPropGroupList extends WebCommon {
   static API: string = "/api/prop/user_prop/group/list";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebPropUserPropGroupList.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static PropInfo: {
     prop_type?: number;
     bag_num?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPropUserPropGroupList.RequestParams,
@@ -919,16 +919,16 @@ export class WebPropUserOfflInetIckets extends WebCommon {
 
   static RequestParams: {
     prop_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropUserOfflInetIckets.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     prop_name?: string;
     offline_tickets?: typeof WebPropUserOfflInetIckets.Offline_tickets_Datails;
-  } = null;
+  } | null = null;
 
   static Offline_tickets_Datails: {
     google_addr?: string;
@@ -939,13 +939,13 @@ export class WebPropUserOfflInetIckets extends WebCommon {
     entry_certificate?: typeof WebPropUserOfflInetIckets.Entry_certificate;
     announcements?: string;
     sectional_seat_list?: (typeof WebPropUserOfflInetIckets.Sectional_seat)[];
-  } = null;
+  } | null = null;
 
   static Entry_certificate: {
     cpf?: boolean;
     id?: boolean;
     phone_num?: boolean;
-  } = null;
+  } | null = null;
 
   static Sectional_seat: {
     id?: number;
@@ -954,7 +954,7 @@ export class WebPropUserOfflInetIckets extends WebCommon {
     use_seat?: number;
     start_time?: string;
     enter_time?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPropUserOfflInetIckets.RequestParams,
@@ -977,13 +977,13 @@ export class WebPropUserOfflInetIcketsGain extends WebCommon {
     sectional_seat_id?: number;
     certificate_type?: number;
     certificate?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropUserOfflInetIcketsGain.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebPropUserOfflInetIcketsGain.RequestParams,
@@ -1004,13 +1004,13 @@ export class WebPropUserOfflInetIcketsTransFer extends WebCommon {
   static RequestParams: {
     prop_id?: number;
     transfer_user_random_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropUserOfflInetIcketsTransFer.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebPropUserOfflInetIcketsTransFer.RequestParams,
@@ -1030,20 +1030,20 @@ export class WebPropUserPropInfo extends WebCommon {
 
   static RequestParams: {
     prop_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropUserPropInfo.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     info?: typeof WebPropUserPropInfo.Info;
     prop_amount?: number;
-  } = null;
+  } | null = null;
 
   static Info: {
     prop_name?: string;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebPropUserPropInfo.RequestParams) {
     this.RequestParams = param;
@@ -1061,19 +1061,19 @@ export class WebPropWheelLottEry extends WebCommon {
 
   static RequestParams: {
     wheel_template_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropWheelLottEry.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     win_prop?: typeof WebPropWheelLottEry.PropInfo;
-  } = null;
+  } | null = null;
 
   static PropInfo: {
     prop_type?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebPropWheelLottEry.RequestParams) {
     this.RequestParams = param;
@@ -1094,11 +1094,11 @@ export class WebPropWheelLottEryList extends WebCommon {
     scope_type?: number;
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropWheelLottEryList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebPropWheelLottEryList.Record)[];
@@ -1106,7 +1106,7 @@ export class WebPropWheelLottEryList extends WebCommon {
     offset?: number;
     total?: number;
     isDirty?: boolean;
-  } = null;
+  } | null = null;
 
   static Record: {
     user_name?: string;
@@ -1116,7 +1116,7 @@ export class WebPropWheelLottEryList extends WebCommon {
     avatar?: string;
     prop_type?: number;
     create_time?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPropWheelLottEryList.RequestParams,
@@ -1137,17 +1137,17 @@ export class WebPropWheelUserHandNum extends WebCommon {
   static RequestParams: {
     wheel_template_id?: number;
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebPropWheelUserHandNum.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     hand_num?: number;
     participate_state?: number;
     wheel_template?: typeof WebPropWheelUserHandNum.TemplateInfo;
-  } = null;
+  } | null = null;
 
   static TemplateInfo: {
     id?: number;
@@ -1162,13 +1162,13 @@ export class WebPropWheelUserHandNum extends WebCommon {
     start_time?: number;
     end_time?: number;
     wheel_props?: (typeof WebPropWheelUserHandNum.RewardData)[];
-  } = null;
+  } | null = null;
 
   static RewardData: {
     prop_type?: number;
     prop_icon?: string;
     prop_value?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebPropWheelUserHandNum.RequestParams,

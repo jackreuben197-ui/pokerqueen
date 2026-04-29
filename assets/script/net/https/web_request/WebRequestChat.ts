@@ -98,15 +98,15 @@ export class WebChatMessageReport extends WebCommon {
     report_type?: string;
     other?: string;
     messages?: (typeof WebChatMessageReport.ChaMessage)[];
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static ChaMessage: {
     msg_user_rid?: number;
     content?: string;
     msg_time?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebChatMessageReport.RequestParams) {
     this.RequestParams = param;
@@ -127,19 +127,19 @@ export class WebChatRoomMessageSync extends WebCommon {
     block_user_random_ids?: string[];
     is_cowboy?: number;
     msg_types?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebChatRoomMessageSync.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     data?: (typeof WebChatRoomMessageSync.ChatData)[];
-  } = null;
+  } | null = null;
 
   static ChatData: {
     extra?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebChatRoomMessageSync.RequestParams,
@@ -162,18 +162,18 @@ export class WebChatSupportChannelList extends WebCommon {
     offset?: number;
     order?: number;
     im_service_types?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebChatSupportChannelList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     total?: number;
     list?: (typeof WebChatSupportChannelList.ServiceData)[];
-  } = null;
+  } | null = null;
 
   static ServiceData: {
     club_id?: number;
@@ -186,7 +186,7 @@ export class WebChatSupportChannelList extends WebCommon {
     club_logo?: string;
     unread_count?: number;
     im_service_type?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebChatSupportChannelList.RequestParams,
@@ -214,18 +214,18 @@ export class WebChatSupportMessageList extends WebCommon {
     asc?: boolean;
     set_read?: boolean;
     im_service_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebChatSupportMessageList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     more?: boolean;
     list?: (typeof WebChatSupportMessageList.ChatData)[];
-  } = null;
+  } | null = null;
 
   static ChatData: {
     channel?: string;
@@ -246,7 +246,7 @@ export class WebChatSupportMessageList extends WebCommon {
     user_send?: boolean;
     sub_type?: number;
     extra?: string;
-  } = null;
+  } | null = null;
 
   static MatchRechargeOrder: {
     user_info?: string;
@@ -255,7 +255,7 @@ export class WebChatSupportMessageList extends WebCommon {
     type_name?: string;
     order_no?: string;
     timestamp?: number;
-  } = null;
+  } | null = null;
 
   static MatchWithdrawOrder: {
     user_info?: string;
@@ -265,7 +265,7 @@ export class WebChatSupportMessageList extends WebCommon {
     order_no?: string;
     timestamp?: number;
     address?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebChatSupportMessageList.RequestParams,
@@ -288,9 +288,9 @@ export class WebChatSupportMessageRead extends WebCommon {
     to_user_id?: number;
     time_token?: number;
     im_service_type?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebChatSupportMessageRead.RequestParams,
@@ -320,15 +320,15 @@ export class WebChatSupportMessageSend extends WebCommon {
     thumb_url?: string;
     duration?: number;
     im_service_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebChatSupportMessageSend.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     time_token?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebChatSupportMessageSend.RequestParams,

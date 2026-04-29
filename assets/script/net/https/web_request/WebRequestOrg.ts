@@ -344,11 +344,11 @@ export class WebGuildAdminHas extends WebCommon {
 export class WebOrgClubId extends WebCommon {
   static API: string = "/api/org/club/{id}";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubId.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     club_name?: string;
@@ -362,7 +362,7 @@ export class WebOrgClubId extends WebCommon {
     create_time?: string;
     is_official?: number;
     club_status?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebOrgClubId.RequestParams) {
     this.RequestParams = param;
@@ -378,13 +378,13 @@ export class WebOrgClubId extends WebCommon {
 export class WebOrgClubIdJoin extends WebCommon {
   static API: string = "/api/org/club/{id}/join";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubIdJoin.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(param: typeof WebOrgClubIdJoin.RequestParams) {
     this.RequestParams = param;
@@ -408,11 +408,11 @@ export class WebOrgClubAdminPermissionSwitch extends WebCommon {
     member_manage?: number;
     fund_manage?: number;
     get_data?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubAdminPermissionSwitch.Data;
-  } = null;
+  } | null = null;
 
   static Info: {
     create_room?: number;
@@ -420,11 +420,11 @@ export class WebOrgClubAdminPermissionSwitch extends WebCommon {
     member_manage?: number;
     fund_manage?: number;
     get_data?: number;
-  } = null;
+  } | null = null;
 
   static Data: {
     info?: typeof WebOrgClubAdminPermissionSwitch.Info;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgClubAdminPermissionSwitch.RequestParams,
@@ -447,13 +447,13 @@ export class WebOrgClubAgentCreditBalaNce extends WebCommon {
     gold_type?: number;
     amount?: number;
     is_reset?: boolean;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubAgentCreditBalaNce.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubAgentCreditBalaNce.RequestParams,
@@ -476,13 +476,13 @@ export class WebOrgClubAgentCreditLimit extends WebCommon {
     gold_type?: number;
     amount?: number;
     is_reset?: boolean;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubAgentCreditLimit.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubAgentCreditLimit.RequestParams,
@@ -503,13 +503,13 @@ export class WebOrgClubAgentInviTation extends WebCommon {
   static RequestParams: {
     user_id?: number;
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubAgentInviTation.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubAgentInviTation.RequestParams,
@@ -529,15 +529,15 @@ export class WebOrgClubAgentRatioInfo extends WebCommon {
 
   static RequestParams: {
     user_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubAgentRatioInfo.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     info?: typeof WebOrgClubAgentRatioInfo.Info;
-  } = null;
+  } | null = null;
 
   static Info: {
     agent_service_ratio?: number;
@@ -545,7 +545,7 @@ export class WebOrgClubAgentRatioInfo extends WebCommon {
     agent_cowboy_ratio?: number;
     agent_mtt_ratio?: number;
     agent_jackpot_ratio?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgClubAgentRatioInfo.RequestParams,
@@ -570,9 +570,9 @@ export class WebOrgClubAgentRatioUpdate extends WebCommon {
     agent_cowboy_ratio?: number;
     agent_mtt_ratio?: number;
     agent_jackpot_ratio?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubAgentRatioUpdate.RequestParams,
@@ -592,13 +592,13 @@ export class WebOrgClubCloneApply extends WebCommon {
 
   static RequestParams: {
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubCloneApply.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubCloneApply.RequestParams,
@@ -620,11 +620,11 @@ export class WebOrgClubClubWalletStats extends WebCommon {
     gold_type?: number;
     start_time?: number;
     end_time?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubClubWalletStats.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     gold_before?: number;
@@ -639,7 +639,7 @@ export class WebOrgClubClubWalletStats extends WebCommon {
     sng_profit?: number;
     jackpot_profit?: number;
     mini_game_profit?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgClubClubWalletStats.RequestParams,
@@ -657,15 +657,15 @@ export class WebOrgClubClubWalletStats extends WebCommon {
 export class WebOrgClubCreateIsFirst extends WebCommon {
   static API: string = "/api/org/club/create/is_first";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubCreateIsFirst.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     is_first?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgClubCreateIsFirst.RequestParams,
@@ -688,13 +688,13 @@ export class WebOrgClubCreditBalaNce extends WebCommon {
     gold_type?: number;
     amount?: number;
     is_reset?: boolean;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubCreditBalaNce.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubCreditBalaNce.RequestParams,
@@ -717,13 +717,13 @@ export class WebOrgClubCreditLimit extends WebCommon {
     gold_type?: number;
     amount?: number;
     is_reset?: boolean;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubCreditLimit.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubCreditLimit.RequestParams,
@@ -750,11 +750,11 @@ export class WebOrgClubCreditLog extends WebCommon {
     end_time?: number;
     sort_type?: number;
     order_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubCreditLog.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
@@ -762,7 +762,7 @@ export class WebOrgClubCreditLog extends WebCommon {
     offset?: number;
     data?: (typeof WebOrgClubCreditLog.CreditData)[];
     credit_info?: typeof WebOrgClubCreditLog.CreditInfo;
-  } = null;
+  } | null = null;
 
   static CreditInfo: {
     club_credit_limit_total?: number;
@@ -771,7 +771,7 @@ export class WebOrgClubCreditLog extends WebCommon {
     club_credit_total?: number;
     club_credit_increase_total?: number;
     club_credit_decrease_total?: number;
-  } = null;
+  } | null = null;
 
   static CreditData: {
     credit_change?: number;
@@ -781,7 +781,7 @@ export class WebOrgClubCreditLog extends WebCommon {
     credit_limit?: number;
     user_random_id?: number;
     user_name?: string;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebOrgClubCreditLog.RequestParams) {
     this.RequestParams = param;
@@ -799,13 +799,13 @@ export class WebOrgClubDelayRoomAuditSwitchUpdate extends WebCommon {
 
   static RequestParams: {
     delay_room_audit_switch?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubDelayRoomAuditSwitchUpdate.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubDelayRoomAuditSwitchUpdate.RequestParams,
@@ -823,13 +823,13 @@ export class WebOrgClubDelayRoomAuditSwitchUpdate extends WebCommon {
 export class WebOrgClubDisbAnd extends WebCommon {
   static API: string = "/api/org/club/disband";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubDisbAnd.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(param: typeof WebOrgClubDisbAnd.RequestParams) {
     this.RequestParams = param;
@@ -847,13 +847,13 @@ export class WebOrgClubInviTation extends WebCommon {
 
   static RequestParams: {
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubInviTation.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(param: typeof WebOrgClubInviTation.RequestParams) {
     this.RequestParams = param;
@@ -872,13 +872,13 @@ export class WebOrgClubJackpotRecharge extends WebCommon {
   static RequestParams: {
     jackpot_id?: number;
     amount?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubJackpotRecharge.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubJackpotRecharge.RequestParams,
@@ -909,11 +909,11 @@ export class WebOrgClubJackpotTemplateCreate extends WebCommon {
     bombpot_setting?: typeof WebOrgClubJackpotTemplateCreate.JackpotSetting;
     aof_switch?: number;
     aof_setting?: typeof WebOrgClubJackpotTemplateCreate.JackpotSetting;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubJackpotTemplateCreate.Data;
-  } = null;
+  } | null = null;
 
   static JackpotSetting: {
     game_play_ratio?: number;
@@ -924,7 +924,7 @@ export class WebOrgClubJackpotTemplateCreate extends WebCommon {
     straight_flush_ratio?: number;
     four_ofa_kind_switch?: number;
     four_ofa_kind_ratio?: number;
-  } = null;
+  } | null = null;
 
   static BlindsSetting: {
     sb?: number;
@@ -944,9 +944,9 @@ export class WebOrgClubJackpotTemplateCreate extends WebCommon {
     contribute_ratio?: number;
     contribute_pot_ratio?: number;
     mars_earth_ratio?: number;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubJackpotTemplateCreate.RequestParams,
@@ -966,13 +966,13 @@ export class WebOrgClubJackpotTemplateDel extends WebCommon {
 
   static RequestParams: {
     jackpot_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubJackpotTemplateDel.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubJackpotTemplateDel.RequestParams,
@@ -999,17 +999,17 @@ export class WebOrgClubJackpotTemplateList extends WebCommon {
     limit?: number;
     offset?: number;
     ids?: number[];
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubJackpotTemplateList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
     offset?: number;
     items?: unknown[];
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgClubJackpotTemplateList.RequestParams,
@@ -1040,13 +1040,13 @@ export class WebOrgClubJackpotTemplateUpdate extends WebCommon {
     bombpot_setting?: unknown;
     aof_switch?: number;
     aof_setting?: unknown;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubJackpotTemplateUpdate.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubJackpotTemplateUpdate.RequestParams,
@@ -1067,13 +1067,13 @@ export class WebOrgClubJackpotWithdraw extends WebCommon {
   static RequestParams: {
     jackpot_id?: number;
     amount?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubJackpotWithdraw.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubJackpotWithdraw.RequestParams,
@@ -1093,18 +1093,18 @@ export class WebOrgClubList extends WebCommon {
 
   static RequestParams: {
     club_random_ids?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubList.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static ClubData: {
     club_name?: string;
     logo?: string;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebOrgClubList.RequestParams) {
     this.RequestParams = param;
@@ -1128,11 +1128,11 @@ export class WebOrgClubMasterSlaveClubList extends WebCommon {
     offset?: number;
     filter_type?: number;
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubMasterSlaveClubList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
@@ -1140,7 +1140,7 @@ export class WebOrgClubMasterSlaveClubList extends WebCommon {
     total?: number;
     total_info?: typeof WebOrgClubMasterSlaveClubList.TotalInfo;
     data?: (typeof WebOrgClubMasterSlaveClubList.Record)[];
-  } = null;
+  } | null = null;
 
   static Record: {
     club_id?: number;
@@ -1159,13 +1159,13 @@ export class WebOrgClubMasterSlaveClubList extends WebCommon {
     remark_desc?: string;
     slave_create_time?: string;
     club_subscription_id?: number;
-  } = null;
+  } | null = null;
 
   static TotalInfo: {
     member_total?: number;
     profit_total?: number;
     total_gold?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgClubMasterSlaveClubList.RequestParams,
@@ -1189,9 +1189,9 @@ export class WebOrgClubMasterSlaveClubRatio extends WebCommon {
     master_insur_ratio?: number;
     master_mtt_ratio?: number;
     master_jackpot_ratio?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubMasterSlaveClubRatio.RequestParams,
@@ -1213,9 +1213,9 @@ export class WebOrgClubMasterSlaveClubRemark extends WebCommon {
     slave_club_id?: number;
     remark_name?: string;
     remark_desc?: string;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubMasterSlaveClubRemark.RequestParams,
@@ -1241,11 +1241,11 @@ export class WebOrgClubMemberRakeBack extends WebCommon {
     order_type?: number;
     start_time?: number;
     end_time?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubMemberRakeBack.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
@@ -1253,13 +1253,13 @@ export class WebOrgClubMemberRakeBack extends WebCommon {
     total?: number;
     data?: (typeof WebOrgClubMemberRakeBack.Wallet)[];
     total_info?: typeof WebOrgClubMemberRakeBack.TotalInfo;
-  } = null;
+  } | null = null;
 
   static TotalInfo: {
     rake_back_all?: number;
     rake_back_payed?: number;
     rake_back_unpay?: number;
-  } = null;
+  } | null = null;
 
   static Wallet: {
     random_num?: number;
@@ -1279,7 +1279,7 @@ export class WebOrgClubMemberRakeBack extends WebCommon {
     rb_interval_no?: number;
     unpay_rb?: number;
     payed_rb?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgClubMemberRakeBack.RequestParams,
@@ -1300,13 +1300,13 @@ export class WebOrgClubModifyClubDesc extends WebCommon {
   static RequestParams: {
     club_id?: number;
     desc?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubModifyClubDesc.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubModifyClubDesc.RequestParams,
@@ -1326,15 +1326,15 @@ export class WebOrgClubMyCreateClubs extends WebCommon {
 
   static RequestParams: {
     club_random_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubMyCreateClubs.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebOrgClubMyCreateClubs.Info)[];
-  } = null;
+  } | null = null;
 
   static Info: {
     club_logo?: string;
@@ -1342,7 +1342,7 @@ export class WebOrgClubMyCreateClubs extends WebCommon {
     random_id?: number;
     club_name?: string;
     pretty_id?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgClubMyCreateClubs.RequestParams,
@@ -1362,11 +1362,11 @@ export class WebOrgClubSearchInfo extends WebCommon {
 
   static RequestParams: {
     club_random_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubSearchInfo.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     club_id?: number;
@@ -1377,7 +1377,7 @@ export class WebOrgClubSearchInfo extends WebCommon {
     user_status?: number;
     pretty_id?: number;
     club_subscription_id?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgClubSearchInfo.RequestParams,
@@ -1397,9 +1397,9 @@ export class WebOrgClubSetTimeZone extends WebCommon {
 
   static RequestParams: {
     time_zone?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubSetTimeZone.RequestParams,
@@ -1420,13 +1420,13 @@ export class WebOrgClubSetUserUcadvaNce extends WebCommon {
   static RequestParams: {
     user_id?: number;
     status?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubSetUserUcadvaNce.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubSetUserUcadvaNce.RequestParams,
@@ -1447,13 +1447,13 @@ export class WebOrgClubSubscrIptionBuy extends WebCommon {
   static RequestParams: {
     subscription_id?: number;
     price_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubSubscrIptionBuy.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubSubscrIptionBuy.RequestParams,
@@ -1475,15 +1475,15 @@ export class WebOrgClubSubscrIptionList extends WebCommon {
     subscription_id?: number;
     subscription_status?: number;
     equity_comparison?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubSubscrIptionList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebOrgClubSubscrIptionList.VIPEquityData)[];
-  } = null;
+  } | null = null;
 
   static VIPEquityData: {
     id?: number;
@@ -1519,13 +1519,13 @@ export class WebOrgClubSubscrIptionList extends WebCommon {
     straddle_permission?: number;
     second_public_card_permission?: number;
     insurance_permission?: number;
-  } = null;
+  } | null = null;
 
   static PriceConfigs: {
     price_type?: number;
     raw_price?: number;
     pay_price?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgClubSubscrIptionList.RequestParams,
@@ -1543,9 +1543,9 @@ export class WebOrgClubSubscrIptionList extends WebCommon {
 export class WebOrgClubUserPageActive extends WebCommon {
   static API: string = "/api/org/club/user/page/active";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubUserPageActive.RequestParams,
@@ -1567,11 +1567,11 @@ export class WebOrgClubUserWalletRelationGrant extends WebCommon {
     user_ids?: number[];
     amount?: number;
     gold_type?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubUserWalletRelationGrant.RequestParams,
@@ -1593,17 +1593,17 @@ export class WebOrgClubUserWalletRelationList extends WebCommon {
     limit?: number;
     offset?: number;
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgClubUserWalletRelationList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     data?: (typeof WebOrgClubUserWalletRelationList.UserData)[];
-  } = null;
+  } | null = null;
 
-  static UserData: {} = null;
+  static UserData: {} | null = null;
 
   static Request(
     param: typeof WebOrgClubUserWalletRelationList.RequestParams,
@@ -1623,20 +1623,20 @@ export class WebOrgJackpotTemplateInfo extends WebCommon {
 
   static RequestParams: {
     jackpot_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgJackpotTemplateInfo.Data;
-  } = null;
+  } | null = null;
 
   static CombineData: {
     total?: number;
     items?: unknown[];
-  } = null;
+  } | null = null;
 
   static Data: {
     item?: unknown;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgJackpotTemplateInfo.RequestParams,
@@ -1657,17 +1657,17 @@ export class WebOrgTribeApplyList extends WebCommon {
   static RequestParams: {
     limit?: number;
     offset?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeApplyList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     offset?: number;
     total?: number;
     list?: (typeof WebOrgTribeApplyList.ClubInfo)[];
-  } = null;
+  } | null = null;
 
   static ClubInfo: {
     id?: number;
@@ -1677,7 +1677,7 @@ export class WebOrgTribeApplyList extends WebCommon {
     club_logo?: string;
     tribe_random_id?: number;
     club_subscription_id?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgTribeApplyList.RequestParams,
@@ -1698,13 +1698,13 @@ export class WebOrgTribeApplyUpgrAde extends WebCommon {
   static RequestParams: {
     tribe_phone_area?: string;
     tribe_phone?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeApplyUpgrAde.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgTribeApplyUpgrAde.RequestParams,
@@ -1726,13 +1726,13 @@ export class WebOrgTribeAuditApply extends WebCommon {
     id?: number;
     audit_op?: number;
     description?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeAuditApply.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgTribeAuditApply.RequestParams,
@@ -1753,17 +1753,17 @@ export class WebOrgTribeBlackUserList extends WebCommon {
   static RequestParams: {
     offset?: number;
     limit?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeBlackUserList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     offset?: number;
     total?: number;
     data?: (typeof WebOrgTribeBlackUserList.Info)[];
-  } = null;
+  } | null = null;
 
   static Info: {
     id?: number;
@@ -1772,7 +1772,7 @@ export class WebOrgTribeBlackUserList extends WebCommon {
     user_random_id?: number;
     user_name?: string;
     user_avatar?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgTribeBlackUserList.RequestParams,
@@ -1790,11 +1790,11 @@ export class WebOrgTribeBlackUserList extends WebCommon {
 export class WebOrgTribeCheckUpgrAde extends WebCommon {
   static API: string = "/api/org/tribe/check_upgrade";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeCheckUpgrAde.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     config?: typeof WebOrgTribeCheckUpgrAde.Config;
@@ -1804,7 +1804,7 @@ export class WebOrgTribeCheckUpgrAde extends WebCommon {
     tribe_phone_area?: string;
     tribe_phone?: string;
     tribe_phone_create_time?: string;
-  } = null;
+  } | null = null;
 
   static Config: {
     upgrade_switch?: number;
@@ -1813,7 +1813,7 @@ export class WebOrgTribeCheckUpgrAde extends WebCommon {
     day_count?: number;
     room_count?: number;
     hand_count?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgTribeCheckUpgrAde.RequestParams,
@@ -1841,24 +1841,24 @@ export class WebOrgTribeClubFundGoldChangeLog extends WebCommon {
     end_time?: number;
     sort_type?: number;
     order_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeClubFundGoldChangeLog.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     offset?: number;
     list?: (typeof WebOrgTribeClubFundGoldChangeLog.Record)[];
     total_info?: typeof WebOrgTribeClubFundGoldChangeLog.TotalInfo;
-  } = null;
+  } | null = null;
 
   static TotalInfo: {
     grant_amount?: number;
     recover_amount?: number;
     profit_amount?: number;
     change_amount?: number;
-  } = null;
+  } | null = null;
 
   static Record: {
     gold_change?: number;
@@ -1872,7 +1872,7 @@ export class WebOrgTribeClubFundGoldChangeLog extends WebCommon {
     src_match_id?: number;
     admin_nick_name?: string;
     multi_lang_names_obj?: unknown;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgTribeClubFundGoldChangeLog.RequestParams,
@@ -1892,13 +1892,13 @@ export class WebOrgTribeClubKickOut extends WebCommon {
 
   static RequestParams: {
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeClubKickOut.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgTribeClubKickOut.RequestParams,
@@ -1923,11 +1923,11 @@ export class WebOrgTribeClubList extends WebCommon {
     limit?: number;
     offset?: number;
     filter_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeClubList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
@@ -1935,7 +1935,7 @@ export class WebOrgTribeClubList extends WebCommon {
     total?: number;
     total_info?: typeof WebOrgTribeClubList.TotalInfo;
     data?: (typeof WebOrgTribeClubList.Record)[];
-  } = null;
+  } | null = null;
 
   static Record: {
     club_id?: number;
@@ -1953,13 +1953,13 @@ export class WebOrgTribeClubList extends WebCommon {
     user_gold?: number;
     tribe_create_time?: string;
     club_subscription_id?: number;
-  } = null;
+  } | null = null;
 
   static TotalInfo: {
     member_total?: number;
     profit_total?: number;
     total_gold?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebOrgTribeClubList.RequestParams) {
     this.RequestParams = param;
@@ -1975,20 +1975,20 @@ export class WebOrgTribeClubList extends WebCommon {
 export class WebOrgTribeClubListAll extends WebCommon {
   static API: string = "/api/org/tribe/club/list/all";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeClubListAll.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     data?: (typeof WebOrgTribeClubListAll.Record)[];
-  } = null;
+  } | null = null;
 
   static Record: {
     club_id?: number;
     club_name?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgTribeClubListAll.RequestParams,
@@ -2008,13 +2008,13 @@ export class WebOrgTribeClubLock extends WebCommon {
 
   static RequestParams: {
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeClubLock.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(param: typeof WebOrgTribeClubLock.RequestParams) {
     this.RequestParams = param;
@@ -2034,9 +2034,9 @@ export class WebOrgTribeClubRemark extends WebCommon {
     club_id?: number;
     remark_name?: string;
     remark_desc?: string;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebOrgTribeClubRemark.RequestParams,
@@ -2054,21 +2054,21 @@ export class WebOrgTribeClubRemark extends WebCommon {
 export class WebOrgTribeClubRemarkList extends WebCommon {
   static API: string = "/api/org/tribe/club/remark/list";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeClubRemarkList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebOrgTribeClubRemarkList.Info)[];
-  } = null;
+  } | null = null;
 
   static Info: {
     club_id?: number;
     remark_name?: string;
     remark_desc?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgTribeClubRemarkList.RequestParams,
@@ -2088,13 +2088,13 @@ export class WebOrgTribeClubUnlock extends WebCommon {
 
   static RequestParams: {
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeClubUnlock.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgTribeClubUnlock.RequestParams,
@@ -2116,13 +2116,13 @@ export class WebOrgTribeCreate extends WebCommon {
     tribe_name?: string;
     logo?: string;
     currency?: string;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeCreate.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(param: typeof WebOrgTribeCreate.RequestParams) {
     this.RequestParams = param;
@@ -2138,15 +2138,15 @@ export class WebOrgTribeCreate extends WebCommon {
 export class WebOrgTribeCreateIsFirst extends WebCommon {
   static API: string = "/api/org/tribe/create/is_first";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeCreateIsFirst.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     is_first?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgTribeCreateIsFirst.RequestParams,
@@ -2173,11 +2173,11 @@ export class WebOrgTribeFundGoldChangeLog extends WebCommon {
     end_time?: number;
     sort_type?: number;
     order_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeFundGoldChangeLog.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     limit?: number;
@@ -2188,24 +2188,24 @@ export class WebOrgTribeFundGoldChangeLog extends WebCommon {
     diamond_info?: typeof WebOrgTribeFundGoldChangeLog.Diamondinfo;
     ratio_info?: typeof WebOrgTribeFundGoldChangeLog.RatioInfo;
     random_id?: number;
-  } = null;
+  } | null = null;
 
   static Diamondinfo: {
     consume_amount?: number;
     trans_to_tribe_amount?: number;
     trans_to_user_amount?: number;
-  } = null;
+  } | null = null;
 
   static TotalInfo: {
     grant_amount?: number;
     recover_amount?: number;
     profit_amount?: number;
-  } = null;
+  } | null = null;
 
   static RatioInfo: {
     service_ratio?: number;
     insur_ratio?: number;
-  } = null;
+  } | null = null;
 
   static Record: {
     gold_change?: number;
@@ -2219,7 +2219,7 @@ export class WebOrgTribeFundGoldChangeLog extends WebCommon {
     user_nick_name?: string;
     src_room_id?: number;
     src_match_id?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgTribeFundGoldChangeLog.RequestParams,
@@ -2240,22 +2240,22 @@ export class WebOrgTribeInfoByClub extends WebCommon {
   static RequestParams: {
     tribe_random_id?: number;
     club_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeInfoByClub.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     tribe_base?: typeof WebOrgTribeInfoByClub.Info;
     club_relation?: number;
-  } = null;
+  } | null = null;
 
   static Info: {
     name?: string;
     random_id?: number;
     logo?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgTribeInfoByClub.RequestParams,
@@ -2277,15 +2277,15 @@ export class WebOrgTribeList extends WebCommon {
     tribe_random_id?: number;
     sort_type?: number;
     order_type?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     list?: (typeof WebOrgTribeList.CommunityData)[];
-  } = null;
+  } | null = null;
 
   static CommunityData: {
     id?: number;
@@ -2295,7 +2295,7 @@ export class WebOrgTribeList extends WebCommon {
     pretty_id?: number;
     members?: number;
     room_count?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebOrgTribeList.RequestParams) {
     this.RequestParams = param;
@@ -2314,15 +2314,15 @@ export class WebOrgTribeRoomPermissionS extends WebCommon {
   static RequestParams: {
     club_id?: number;
     tribe_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeRoomPermissionS.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     room_permissions?: unknown;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgTribeRoomPermissionS.RequestParams,
@@ -2342,9 +2342,9 @@ export class WebOrgTribeSetTimeZone extends WebCommon {
 
   static RequestParams: {
     time_zone?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebOrgTribeSetTimeZone.RequestParams,
@@ -2367,9 +2367,9 @@ export class WebOrgTribeSettIngClubProfitRatio extends WebCommon {
     room_game_ratio?: number;
     room_insur_ratio?: number;
     room_mtt_ratio?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebOrgTribeSettIngClubProfitRatio.RequestParams,
@@ -2387,11 +2387,11 @@ export class WebOrgTribeSettIngClubProfitRatio extends WebCommon {
 export class WebOrgTribeWallet extends WebCommon {
   static API: string = "/api/org/tribe/wallet";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgTribeWallet.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     gold?: number;
@@ -2402,7 +2402,7 @@ export class WebOrgTribeWallet extends WebCommon {
     diamonds?: number;
     diamonds_lock?: number;
     random_id?: number;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebOrgTribeWallet.RequestParams) {
     this.RequestParams = param;
@@ -2422,13 +2422,13 @@ export class WebOrgUserAdminFavorIte extends WebCommon {
     club_id?: number;
     tribe_id?: number;
     favorite?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgUserAdminFavorIte.Data;
-  } = null;
+  } | null = null;
 
-  static Data: {} = null;
+  static Data: {} | null = null;
 
   static Request(
     param: typeof WebOrgUserAdminFavorIte.RequestParams,
@@ -2449,16 +2449,16 @@ export class WebOrgUserCheckOrg extends WebCommon {
   static RequestParams: {
     club_id?: number;
     tribe_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgUserCheckOrg.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     is_in_club?: boolean;
     is_in_tribe?: boolean;
-  } = null;
+  } | null = null;
 
   static Request(param: typeof WebOrgUserCheckOrg.RequestParams) {
     this.RequestParams = param;
@@ -2474,15 +2474,15 @@ export class WebOrgUserCheckOrg extends WebCommon {
 export class WebOrgUserClubAdminList extends WebCommon {
   static API: string = "/api/org/user/club/admin/list";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgUserClubAdminList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     clubs?: (typeof WebOrgUserClubAdminList.ClubData)[];
-  } = null;
+  } | null = null;
 
   static ClubData: {
     id?: number;
@@ -2494,7 +2494,7 @@ export class WebOrgUserClubAdminList extends WebCommon {
     tribe_random_id?: number;
     user_level?: number;
     favorite?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgUserClubAdminList.RequestParams,
@@ -2514,9 +2514,9 @@ export class WebOrgUserNewLabelRead extends WebCommon {
 
   static RequestParams: {
     tribe_id?: number;
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebOrgUserNewLabelRead.RequestParams,
@@ -2536,15 +2536,15 @@ export class WebOrgUserNewLabelReadNum extends WebCommon {
 
   static RequestParams: {
     tribe_id?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgUserNewLabelReadNum.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     user_new_label_num?: unknown;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgUserNewLabelReadNum.RequestParams,
@@ -2564,9 +2564,9 @@ export class WebOrgUserSelfProfitBillNotifyConfim extends WebCommon {
 
   static RequestParams: {
     bill_ids?: number[];
-  } = null;
+  } | null = null;
 
-  static ResponseData: {} = null;
+  static ResponseData: {} | null = null;
 
   static Request(
     param: typeof WebOrgUserSelfProfitBillNotifyConfim.RequestParams,
@@ -2584,20 +2584,20 @@ export class WebOrgUserSelfProfitBillNotifyConfim extends WebCommon {
 export class WebOrgUserSelfProfitBillUnnotIfy extends WebCommon {
   static API: string = "/api/org/user/self_profit/bill_unnotify";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgUserSelfProfitBillUnnotIfy.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     data?: (typeof WebOrgUserSelfProfitBillUnnotIfy.BillData)[];
-  } = null;
+  } | null = null;
 
   static BillData: {
     amount?: number;
     bill_id?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgUserSelfProfitBillUnnotIfy.RequestParams,
@@ -2615,17 +2615,17 @@ export class WebOrgUserSelfProfitBillUnnotIfy extends WebCommon {
 export class WebOrgUserSelfProfitUnpayRecords extends WebCommon {
   static API: string = "/api/org/user/self_profit/unpay_records";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgUserSelfProfitUnpayRecords.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     data?: (typeof WebOrgUserSelfProfitUnpayRecords.Record)[];
     amount_total_uc?: number;
     latest_pay_time?: number;
-  } = null;
+  } | null = null;
 
   static Record: {
     amount?: number;
@@ -2633,7 +2633,7 @@ export class WebOrgUserSelfProfitUnpayRecords extends WebCommon {
     club_name?: string;
     club_rid?: number;
     club_logo?: string;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgUserSelfProfitUnpayRecords.RequestParams,
@@ -2651,15 +2651,15 @@ export class WebOrgUserSelfProfitUnpayRecords extends WebCommon {
 export class WebOrgUserTribeAdminList extends WebCommon {
   static API: string = "/api/org/user/tribe/admin/list";
 
-  static RequestParams: {} = null;
+  static RequestParams: {} | null = null;
 
   static ResponseData: {
     data?: typeof WebOrgUserTribeAdminList.Data;
-  } = null;
+  } | null = null;
 
   static Data: {
     tribes?: (typeof WebOrgUserTribeAdminList.CommunityData)[];
-  } = null;
+  } | null = null;
 
   static CommunityData: {
     id?: number;
@@ -2668,7 +2668,7 @@ export class WebOrgUserTribeAdminList extends WebCommon {
     club_count?: number;
     logo?: string;
     favorite?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebOrgUserTribeAdminList.RequestParams,

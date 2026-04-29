@@ -21,11 +21,11 @@ export class WebRecordCowboyDetailList extends WebCommon {
   static RequestParams: {
     nextTime?: number;
     roomId?: number;
-  } = null;
+  } | null = null;
 
   static ResponseData: {
     status?: number;
-  } = null;
+  } | null = null;
 
   static Request(
     param: typeof WebRecordCowboyDetailList.RequestParams,

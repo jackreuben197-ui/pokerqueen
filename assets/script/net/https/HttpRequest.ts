@@ -13,6 +13,24 @@ import HttpClient from "./HttpClient";
 import HotUpdateConfigCache from "./HotUpdateConfigCache";
 import WebApiCacheCenter from "./WebApiCacheCenter";
 import WebHelper from "./WebHelper";
+
+type HttpCallback = Function | null;
+
+type HttpHeaders = Array<[string, string]> | any[] | null;
+
+type HttpRequestParams = {
+    api?: string | null;
+    request?: any;
+    body?: any;
+    cuscomHost?: string | null;
+    onSuccess?: HttpCallback;
+    onFailure?: HttpCallback;
+    headers?: HttpHeaders;
+    isJson?: boolean;
+    isGet?: boolean;
+    juhua?: boolean;
+    useCache?: boolean;
+};
 /**
  * HttpRequest 在HttpClient基础上包装一层
  */
@@ -30,27 +48,30 @@ export default class HttpRequest {
         isGet = false,
         juhua = true,
         useCache = false,
-    }) {
-        let host = cuscomHost || GameConfig.Network.WebHost;
-        api = api || request.API;
+    }: HttpRequestParams) {
+        const host = cuscomHost || GameConfig.Network.WebHost || "";
+        const finalApi = api || request?.API || "";
+        if (!host || !finalApi) {
+            return;
+        }
         const method: "GET" | "POST" = isGet ? "GET" : "POST";
         const requestClassName = request?.name || "WebCommon";
 
         const handledByCache =
             await HotUpdateConfigCache.HandleLegacyConfigRequest({
-                api,
+                api: finalApi,
                 request,
-                headers,
+                headers: headers || [],
                 onSuccess,
             });
         if (handledByCache) {
             return;
         }
 
-        let url = host + api;
+        let url = host + finalApi;
         url = this.handleUrl(url);
-        let needJuhua = WebHelper.NeedJuhua(api) && juhua;
-        let needConsole = WebHelper.NeedConsole(api);
+        const needJuhua = WebHelper.NeedJuhua(finalApi) && juhua;
+        const needConsole = WebHelper.NeedConsole(finalApi);
 
         const shouldUseCache =
             !!useCache ||
@@ -59,7 +80,7 @@ export default class HttpRequest {
                 : false);
 
         const cacheContext = {
-            api,
+            api: finalApi,
             method,
             url,
             body,
@@ -102,36 +123,37 @@ export default class HttpRequest {
             request && (request.Response = cachedResponse);
             NotifyManager.instance.post(
                 EventName.serverResponse,
-                api,
+                finalApi,
                 (cachedResponse as any)?.data,
                 body,
             );
             console.log(
-                `[HttpRequest][Cache] hit api=${api} key=${cacheKey} ageMs=${WebApiCacheCenter.ageMs(cachedRecord)} skipRequest=${canSkipRequest}`,
+                `[HttpRequest][Cache] hit api=${finalApi} key=${cacheKey} ageMs=${WebApiCacheCenter.ageMs(cachedRecord)} skipRequest=${canSkipRequest}`,
             );
             onSuccess && onSuccess(cachedResponse);
         } else if (shouldUseCache) {
-            console.log(`[HttpRequest][Cache] miss api=${api} key=${cacheKey}`);
+            console.log(`[HttpRequest][Cache] miss api=${finalApi} key=${cacheKey}`);
         }
 
         if (canSkipRequest) {
             return;
         }
 
-        await HttpClient[`${isGet ? "get" : "post"}`]({
+        const send = isGet ? HttpClient.get : HttpClient.post;
+        await send({
             url: url,
             body: body,
-            onFailure: function (error) {
+            onFailure: function (error: any) {
                 // 已返回缓存时，后台同步失败不打断界面流程
                 if (cachedRecord) {
                     return;
                 }
                 onFailure && onFailure(error);
             },
-            onSuccess: function (response) {
+            onSuccess: function (response: any) {
                 if (!shouldUseCache) {
                     HttpRequest.onSuccess(
-                        api,
+                        finalApi,
                         request,
                         body,
                         onSuccess,
@@ -152,10 +174,10 @@ export default class HttpRequest {
                 if (!cachedRecord) {
                     WebApiCacheCenter.set(cacheKey, normalized, hash);
                     console.log(
-                        `[HttpRequest][Cache] store api=${api} key=${cacheKey} (no previous cache)`,
+                        `[HttpRequest][Cache] store api=${finalApi} key=${cacheKey} (no previous cache)`,
                     );
                     HttpRequest.onSuccess(
-                        api,
+                        finalApi,
                         request,
                         body,
                         onSuccess,
@@ -177,25 +199,37 @@ export default class HttpRequest {
                 if (!shouldUpdate) {
                     WebApiCacheCenter.touch(cacheKey);
                     console.log(
-                        `[HttpRequest][Cache] unchanged api=${api} key=${cacheKey}`,
+                        `[HttpRequest][Cache] unchanged api=${finalApi} key=${cacheKey}`,
                     );
                     return;
                 }
 
                 WebApiCacheCenter.set(cacheKey, normalized, hash);
                 console.log(
-                    `[HttpRequest][Cache] updated api=${api} key=${cacheKey}`,
+                    `[HttpRequest][Cache] updated api=${finalApi} key=${cacheKey}`,
                 );
-                HttpRequest.onSuccess(api, request, body, onSuccess, response);
+                HttpRequest.onSuccess(
+                    finalApi,
+                    request,
+                    body,
+                    onSuccess,
+                    response,
+                );
             },
             headers: headers,
             needJuhua: needJuhua,
             isJson: isJson,
             needConsole: needConsole,
-            api: api,
+            api: finalApi,
         });
     }
-    private static onSuccess(api, request, body, onSuccess, response) {
+    private static onSuccess(
+        api: string,
+        request: any,
+        body: any,
+        onSuccess: HttpCallback,
+        response: any,
+    ) {
         NotifyManager.instance.post(
             EventName.serverResponse,
             api,
@@ -228,11 +262,15 @@ export default class HttpRequest {
         onSuccess = null,
         onFailure = null,
         headers = null,
-    }) {
+    }: HttpRequestParams) {
         let host = "http://dev.awanptesting.com";
-        let url = host + (api || request.API);
+        const finalApi = api || request?.API || "";
+        if (!finalApi) {
+            return;
+        }
+        let url = host + finalApi;
         url = this.handleUrl2(url);
-        let needJuhua = WebHelper.NeedJuhua(request.API);
+        let needJuhua = WebHelper.NeedJuhua(finalApi);
         await HttpClient.post({
             url: url,
             body,
@@ -244,10 +282,14 @@ export default class HttpRequest {
             ),
             headers: headers,
             needJuhua,
-            api,
+            api: finalApi,
         });
     }
-    private static onSuccess2(request, onSuccess, response) {
+    private static onSuccess2(
+        request: any,
+        onSuccess: HttpCallback,
+        response: any,
+    ) {
         request.Response = response;
         onSuccess && onSuccess(response);
     }
