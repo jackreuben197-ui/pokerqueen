@@ -1,1 +1,0 @@
-System.register([],function(e,t){return{setters:[],execute:function(){e("t",""+new URL("../images/icon_chips-BEGxxu1_.png",t.meta.url).href)}}});

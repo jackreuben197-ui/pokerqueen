@@ -1,11 +1,9 @@
 
-import { GameConfig, NetWorkBase } from "../config/GameConfig";
+import { GameConfig } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
 import GC from "../frame/GameControl";
 import GameUtil from "../game/util/GameUtil";
 import { i18nMgr } from "../i18n/i18nMgr";
-
-import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
 import { Pre_Config_Define } from "../manager/ResManager";
 import LoginSession from "../session/LoginSession";
@@ -24,27 +22,27 @@ export default class ProcedureConfig extends ProcedureBase {
     async lateEnter(param?: any) {
         super.lateEnter(param);
 
-        UIComponent.Instance.ShowUI(PrefabUI.UIPreloading, {
-            pre_define: Pre_Config_Define, stopProgress: true, complete: () => {
-                //解析 语言配置
-                i18nMgr.praseConfig();
-                i18nMgr.initLanguage();
-                console.log("config :: i18nMgr praseConfig");
-                //设置网络配置
-                ProcedureConfig.setNetwork();
-                console.log("config :: GameConfig.Network : ", GameConfig.Network);
-                if (GameConfig.Network == null) {
-                    console.warn("本地网络配置有误 GameConfig.BuildType:" + GameConfig.BuildType);
-                    return;
-                }
-                //适配座位位置坐标
-                GameUtil.SeatAdapterPos();
-                let skipLogin: boolean = LoginSession.IsTokenVaild();
-                ProcedureManager.StartProcedure(ProcedureEnum.Login, { skipLogin: skipLogin });
-                GC.sdk.checkInstagranLoginSuc(CCTools.getQueryString("code"))
+        // UIComponent.Instance.ShowUI(PrefabUI.UIPreloading, {
+        //     pre_define: Pre_Config_Define, stopProgress: true, complete: () => {
+        //         //解析 语言配置
+        //         i18nMgr.praseConfig();
+        //         i18nMgr.initLanguage();
+        //         console.log("config :: i18nMgr praseConfig");
+        //         //设置网络配置
+        //         ProcedureConfig.setNetwork();
+        //         console.log("config :: GameConfig.Network : ", GameConfig.Network);
+        //         if (GameConfig.Network == null) {
+        //             console.warn("本地网络配置有误 GameConfig.BuildType:" + GameConfig.BUILD_TYPE);
+        //             return;
+        //         }
+        //         //适配座位位置坐标
+        //         GameUtil.SeatAdapterPos();
+        //         let skipLogin: boolean = LoginSession.IsTokenVaild();
+        //         ProcedureManager.StartProcedure(ProcedureEnum.Login, { skipLogin: skipLogin });
+        //         GC.sdk.checkInstagranLoginSuc(CCTools.getQueryString("code"))
 
-            }
-        })
+        //     }
+        // })
     }
     Leave() {
         super.Leave();
@@ -52,8 +50,7 @@ export default class ProcedureConfig extends ProcedureBase {
 
     //初始化网络配置（static 供其他 Procedure 在 H5 桥接模式下兜底调用）
     static setNetwork() {
-
-        switch (GameConfig.BuildType) {
+        switch (GameConfig.BUILD_TYPE) {
             case 0:
                 GameConfig.Network = {
                     WebHost: `http://${GameConfig.Web_Host_Dev}`,

@@ -1,8 +1,8 @@
 
 export interface IUpComponent {
     active: boolean;
-    Awake?(param?: any);
-    Update(dt: number);
+    Awake?(param?: any): void;
+    Update(dt: number): void;
 }
 
 export default class UpdateComponent {
@@ -32,7 +32,7 @@ export default class UpdateComponent {
         console.log("清空所有 IUpComponent");
     }
     //轮询 
-    public Update(dt): void {
+    public Update(dt: number): void {
         this.components.forEach(component => {
             component.active && component.Update(dt);
         });

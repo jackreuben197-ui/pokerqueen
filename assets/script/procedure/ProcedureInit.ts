@@ -1,5 +1,8 @@
 
 import { GameConfig } from "../config/GameConfig";
+import { ProcedureEnum } from "../define/EIDefine";
+import { i18nMgr } from "../i18n/i18nMgr";
+import * as MainUtils from "../MainUtils";
 import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureInit extends ProcedureBase {
@@ -7,10 +10,15 @@ export default class ProcedureInit extends ProcedureBase {
 
     Name: string = "ProcedureInit";
 
-    lateEnter(param?: any) {
+    async lateEnter(param?: any) {
         super.lateEnter(param);
         this.setCCC();
         this.setFit();
+        //解析 语言配置
+        this.setNetwork();
+        await i18nMgr.loadAndRefreshConfig();
+        i18nMgr.initLanguage();
+        MainUtils.loadWebSDK();
         // 引擎设置完成，等待 H5 层发送消息驱动后续流程
         console.log("ProcedureInit 完成，等待 H5 层指令...");
     }
@@ -38,5 +46,49 @@ export default class ProcedureInit extends ProcedureBase {
     setCCC() {
         cc.game.setFrameRate(GameConfig.FrameRate); // FPS 设置
         cc.macro.ENABLE_MULTI_TOUCH = GameConfig.ENABLE_MULTI_TOUCH; // 禁止多点触摸
+    }
+
+
+     //初始化网络配置（static 供其他 Procedure 在 H5 桥接模式下兜底调用）
+    setNetwork() {
+        switch (GameConfig.BUILD_TYPE) {
+            case 0:
+                GameConfig.Network = {
+                    WebHost: `http://${GameConfig.Web_Host_Dev}`,
+                    WSS: `ws://${GameConfig.Web_Host_Dev}{0}`
+                };
+                break;
+            case 1:
+                GameConfig.Network = {
+                    WebHost: `http://${GameConfig.Web_Host_Test1}`,
+                    WSS: `ws://${GameConfig.Web_Host_Test1}{0}`
+                };
+                break;
+            case 2:
+                GameConfig.Network = {
+                    WebHost: `http://${GameConfig.Web_Host_Dev1}`,
+                    WSS: `ws://${GameConfig.Web_Host_Dev1}/api/channel/`
+                };
+                break;
+            case 3:
+                GameConfig.Network = {
+                    WebHost: `https://${GameConfig.Web_Host_Test1}`,
+                    WSS: `wss://${GameConfig.Web_Host_Test1}/api/channel/`
+                };
+
+                break;
+            case 4:
+                GameConfig.Network = {
+                    WebHost: `https://${GameConfig.Web_Host_Dev1}`,
+                    WSS: `wss://${GameConfig.Web_Host_Dev1}/api/channel/`
+                };
+                break;
+            case 5:
+                GameConfig.Network = {
+                    WebHost: `https://${GameConfig.Web_Host_Test1}`,
+                    WSS: `wss://${GameConfig.Web_Host_Test1}{0}`
+                };
+                break;
+        }
     }
 }

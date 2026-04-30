@@ -1,1 +1,0 @@
-System.register(["./auth-legacy-BK4jr3Ca.js"],function(e,t){return{setters:[function(e){}],execute:function(){}}});

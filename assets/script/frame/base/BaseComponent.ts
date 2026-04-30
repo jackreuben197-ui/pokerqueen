@@ -15,7 +15,7 @@ export default class BaseComponent extends Base {
         this.regiterTouchEvents();
         //this.regiterDispatchEvent();
         this.UIDefine && !this.UIDefine.DisAdaptScreen && this.node.addComponent(AdapterComponent);
-        if (this.UIDefine) window[this.UIDefine.Name] = this;
+        if (this.UIDefine) (window as any)[this.UIDefine.Name] = this;
     }
 
     onShow(...param: any) {
@@ -44,7 +44,7 @@ export default class BaseComponent extends Base {
     }
 
     get UIDefine(): IUIDefine {
-        return this.constructor["UIDefine"];
+        return (this.constructor as any)["UIDefine"];
     }
 
     protected lateLoad() {
@@ -172,7 +172,7 @@ export default class BaseComponent extends Base {
         this._clickNodes.length = 0
     }
 
-    protected removeTouchEvent(node) {
+    protected removeTouchEvent(node : cc.Node) {
         if (node && node.isValid) {
             node.targetOff(this);
             let index = this._clickNodes.findIndex(item => item == node);

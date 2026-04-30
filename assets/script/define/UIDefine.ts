@@ -1,23 +1,23 @@
 
-import { UIType } from "./EIDefine";
+import { UIType, IUIDefine } from "./EIDefine";
 
-export type UIDefineType = {
-    UIType?: UIType,
-    Name?: string,
-    Bundle?: string,
-    Path?: string,
-    Title?: string,
-}
 
-export const UIDefine = {
+
+export const UIDefine: { [key: string]: IUIDefine } = {
 
     //预加载UI
     UIPreloadingComponent: {
-        Name: "UIPreloadingComponent"
+        UIType: UIType.CommonUI,
+        Name: "UIPreloadingComponent",
+        Bundle: null,
+        Path: "login/scene/LoginScene"
     },
     //GM界面
     UIGMComponent: {
-        Name: "UIGMComponent"
+        UIType: UIType.CommonUI,
+        Name: "UIGMComponent",
+        Bundle: null,
+        Path: "login/scene/LoginScene"
     },
     /**
      *  场景
@@ -1214,7 +1214,7 @@ export const UIDefine = {
 cc.game.on(cc.game.EVENT_GAME_INITED, () => {
     for (const key in UIDefine) {
         let constructor = cc.js.getClassByName(key);
-        if (constructor) constructor['UIDefine'] = UIDefine[key];
+        if (constructor) (constructor as any)['UIDefine'] = UIDefine[key];
     }
 });
 

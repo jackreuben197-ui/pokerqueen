@@ -1,1 +1,0 @@
-System.register([],function(e,t){return{setters:[],execute:function(){e("t",""+new URL("../images/default_avatar-BwIE-ERY.png",t.meta.url).href)}}});

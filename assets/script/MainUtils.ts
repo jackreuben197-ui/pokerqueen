@@ -158,22 +158,22 @@ export function fillGameCache(payload: any): void {
  * 所有 Init 方法都是幂等的（内部有 _initOnce 保护），多次调用无副作用。
  * 不包含：WebSocket 连接、心跳组件、Token 刷新等网络相关初始化（由 H5 层代理）。
  */
-async function initH5BridgeDependencies(): Promise<void> {
-    PacketHead.Init();       // 包头字段偏移量计算，BuildPacket 依赖
+// async function initH5BridgeDependencies(): Promise<void> {
+//     PacketHead.Init();       // 包头字段偏移量计算，BuildPacket 依赖
 
-    // i18n 初始化：正常流程由 ProcedureConfig 驱动（loadDir("config") + praseConfig），
-    // 但 H5 桥接模式和编辑器预览都跳过了 ProcedureConfig，
-    // 所以在这里通过 cc.resources.load 加载词典（走 Cocos 管道，自动享受 md5Cache）。
-    if (!i18nMgr.language) {
-        i18nMgr.initLanguage();
-        await i18nMgr.loadAndRefreshConfig();
-        // ATTENTION TO FIX: 强制使用中文，确保默认显示中文
-        i18nMgr.setLanguage("cn");             
-        console.log('[H5Bridge] i18n 初始化完成, language:', i18nMgr.language);
-    }
+//     // i18n 初始化：正常流程由 ProcedureConfig 驱动（loadDir("config") + praseConfig），
+//     // 但 H5 桥接模式和编辑器预览都跳过了 ProcedureConfig，
+//     // 所以在这里通过 cc.resources.load 加载词典（走 Cocos 管道，自动享受 md5Cache）。
+//     if (!i18nMgr.language) {
+//         i18nMgr.initLanguage();
+//         await i18nMgr.loadAndRefreshConfig();
+//         // ATTENTION TO FIX: 强制使用中文，确保默认显示中文
+//         i18nMgr.setLanguage("cn");             
+//         console.log('[H5Bridge] i18n 初始化完成, language:', i18nMgr.language);
+//     }
 
-    console.log('[H5Bridge] 数据层初始化完成 (PacketHead + i18n)');
-}
+//     console.log('[H5Bridge] 数据层初始化完成 (PacketHead + i18n)');
+// }
 
 /**
  * 预加载声音资源到 AssetContext.map。
@@ -222,8 +222,8 @@ function loadGameResources(): void {
 /** 注册 H5 桥接消息（enterTable / exitTable / syncUser） */
 export async function registerH5Listeners(): Promise<void> {
     // H5 桥接模式下，提前完成数据层初始化（含 i18n），避免跳过大厅导致懒初始化未执行
-    await initH5BridgeDependencies();
-    initH5BridgeDependencies();
+    // await initH5BridgeDependencies();
+    // initH5BridgeDependencies();
     H5MsgMgr.Instance.on('enterTable', (payload) => {
         console.log('[H5Bridge] 收到 enterTable:', JSON.stringify(payload));
         const { token, websocketPort, roomId, roomName } = payload;

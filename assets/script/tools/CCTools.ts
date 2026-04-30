@@ -16,7 +16,7 @@ export default class CCTools {
      * @param 
      * @returns 
      */
-    static getQueryString(name) {
+    static getQueryString(name: string) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(reg);
         if (r != null) return unescape(r[2]); return null;
@@ -44,7 +44,7 @@ export default class CCTools {
     }
 
     //判空
-    public static isNull(obj) {
+    public static isNull(obj: any): boolean {
         if (obj == null || obj == undefined) {
             return true;
         }

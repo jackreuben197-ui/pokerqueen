@@ -12,13 +12,9 @@
 import { ProcedureEnum } from "../define/EIDefine";
 import ProcedureBase from "../procedure/ProcedureBase";
 import ProcedureConfig from "../procedure/ProcedureConfig";
-import ProcedureEnterLobby from "../procedure/ProcedureEnterLobby";
 import ProcedureEnterTexas from "../procedure/ProcedureEnterTexas";
 import ProcedureIdle from "../procedure/ProcedureIdle";
 import ProcedureInit from "../procedure/ProcedureInit";
-import ProcedureLobby from "../procedure/ProcedureLobby";
-import ProcedureLogin from "../procedure/ProcedureLogin";
-import ProcedurePrelLoadLogin from "../procedure/ProcedurePrelLoadLogin";
 import ProcedureTexas from "../procedure/ProcedureTexas";
 
 export default class ProcedureManager {
@@ -28,13 +24,13 @@ export default class ProcedureManager {
     public static currProcedure: ProcedureBase = null;
 
     static Init() {
-        this.procedureDic[ProcedureEnum.Idel] = new ProcedureIdle(ProcedureEnum.Idel);
+        this.procedureDic[ProcedureEnum.Idle] = new ProcedureIdle(ProcedureEnum.Idle);
         this.procedureDic[ProcedureEnum.Init] = new ProcedureInit(ProcedureEnum.Init);
-        this.procedureDic[ProcedureEnum.PrelLoadLogin] = new ProcedurePrelLoadLogin(ProcedureEnum.PrelLoadLogin);
-        this.procedureDic[ProcedureEnum.Config] = new ProcedureConfig(ProcedureEnum.Config);
-        this.procedureDic[ProcedureEnum.Login] = new ProcedureLogin(ProcedureEnum.Login);
-        this.procedureDic[ProcedureEnum.EnterLobby] = new ProcedureEnterLobby(ProcedureEnum.EnterLobby);
-        this.procedureDic[ProcedureEnum.Lobby] = new ProcedureLobby(ProcedureEnum.Lobby);
+        // this.procedureDic[ProcedureEnum.PrelLoadLogin] = new ProcedurePrelLoadLogin(ProcedureEnum.PrelLoadLogin);
+        //this.procedureDic[ProcedureEnum.Config] = new ProcedureConfig(ProcedureEnum.Config);
+        // this.procedureDic[ProcedureEnum.Login] = new ProcedureLogin(ProcedureEnum.Login);
+        // this.procedureDic[ProcedureEnum.EnterLobby] = new ProcedureEnterLobby(ProcedureEnum.EnterLobby);
+        // this.procedureDic[ProcedureEnum.Lobby] = new ProcedureLobby(ProcedureEnum.Lobby);
         this.procedureDic[ProcedureEnum.EnterTexas] = new ProcedureEnterTexas(ProcedureEnum.EnterTexas);
         this.procedureDic[ProcedureEnum.Texas] = new ProcedureTexas(ProcedureEnum.Texas);
         ProcedureManager.StartProcedure(ProcedureEnum.Init);

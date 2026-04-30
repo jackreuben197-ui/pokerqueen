@@ -1,1 +1,0 @@
-var e=``+new URL(`../images/icon_diamond-CVKKv_p0.png`,import.meta.url).href;export{e as t};

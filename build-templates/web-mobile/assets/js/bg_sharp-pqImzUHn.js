@@ -1,1 +1,0 @@
-var e=``+new URL(`../images/bg_sharp-D3iMdVjb.webp`,import.meta.url).href;export{e as t};

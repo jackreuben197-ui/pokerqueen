@@ -1,1 +1,0 @@
-var e=``+new URL(`../images/club_header_quick_safety-BSkYdM8_.jpg`,import.meta.url).href,t=``+new URL(`../images/club_header_quick_ranking-rxx3TtBk.png`,import.meta.url).href;export{e as n,t};
