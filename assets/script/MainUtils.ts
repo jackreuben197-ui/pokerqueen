@@ -35,7 +35,7 @@ export function loadWebSDK(): void {
     }
 
     const sdkList = [
-        { name: 'AgoraRTC', src: 'https://download.agora.io/sdk/release/AgoraRTC_N.js' },
+        { name: 'AgoraRTC', src: 'https://download.agora.io/sdk/release/AgoraRTC_N-4.24.3.js' },
     ];
 
     sdkList.forEach(sdk => {
@@ -223,7 +223,6 @@ function loadGameResources(): void {
 export async function registerH5Listeners(): Promise<void> {
     // H5 桥接模式下，提前完成数据层初始化（含 i18n），避免跳过大厅导致懒初始化未执行
     await initH5BridgeDependencies();
-    initH5BridgeDependencies();
     H5MsgMgr.Instance.on('enterTable', (payload) => {
         console.log('[H5Bridge] 收到 enterTable:', JSON.stringify(payload));
         const { token, websocketPort, roomId, roomName } = payload;

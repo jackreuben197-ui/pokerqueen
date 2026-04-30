@@ -4,6 +4,28 @@
 
 export default class CCTools {
     private static _noRepeatNum = 10000;
+
+    /** 是否为 Safari 浏览器（含 iOS Safari） */
+    public static get isSafari(): boolean {
+        if (typeof navigator === 'undefined') return false;
+        return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    }
+
+    /** 是否为 iOS 系统 */
+    public static get isIOS(): boolean {
+        if (typeof navigator === 'undefined') return false;
+        return /iPad|iPhone|iPod/.test(navigator.userAgent)
+            || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    }
+
+    /**
+     * 是否需要用户手势才能触发摄像头权限（Safari / iOS）
+     * 在这些浏览器中，getUserMedia 必须由用户点击事件直接触发
+     */
+    public static get needsGestureForCamera(): boolean {
+        return CCTools.isSafari || CCTools.isIOS;
+    }
+
     /**
      * 触发输入文本框的弹出键盘
      */

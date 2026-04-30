@@ -7238,6 +7238,7 @@ UIMatchBreakTime=休息时间
 UIMatchPerTableCount=单桌人数
 UIMatchTotalTables=牌桌总数
 UIMatchGuaranteedTag=保底赛
+UIMatchSelectClubBuyin=选择买入的俱乐部
 UITexas_InsureRules=保险规则
 UITexas_mainmenu_emoji=表情
 UITexas_mainmenu_effect=特效
