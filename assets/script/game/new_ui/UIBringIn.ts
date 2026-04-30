@@ -383,15 +383,16 @@ export default class UIBringIn extends UIBasePlus {
 
         this.RunReqlist();
 
+        const configData = WebConfigGlobalConfig.Response?.data;
         if (type == 3) //1 平台，2 联盟，3 公会 4 个人（朋友桌）
         {
-            this.recordFeeData = JSON.parse(
-                WebConfigGlobalConfig.Response.data.scoreboard_club_price,
-            );
+            if (configData?.scoreboard_club_price) {
+                this.recordFeeData = JSON.parse(configData.scoreboard_club_price);
+            }
         } else if (type == 4) {
-            this.recordFeeData = JSON.parse(
-                WebConfigGlobalConfig.Response.data.scoreboard_friend_price,
-            );
+            if (configData?.scoreboard_friend_price) {
+                this.recordFeeData = JSON.parse(configData.scoreboard_friend_price);
+            }
         }
     }
 

@@ -50,6 +50,16 @@ export default class AgoraManager {
         return this._joined;
     }
 
+    /** 本地音频轨道是否存在（麦克风已创建） */
+    public get localAudioTrack(): any {
+        return this._localAudioTrack;
+    }
+
+    /** 本地视频轨道是否存在（摄像头已创建） */
+    public get localVideoTrack(): any {
+        return this._localVideoTrack;
+    }
+
     /** 当前频道名 */
     public get channelName(): string {
         return this._channelName;
@@ -314,6 +324,23 @@ export default class AgoraManager {
     }
 
     /**
+     * 取消发布指定类型的本地轨道（不断开，仅停止向频道发布）
+     */
+    public async unpublish(mediaType: 'audio' | 'video'): Promise<void> {
+        if (!this._joined || !this._client) return;
+        try {
+            if (mediaType === 'video' && this._localVideoTrack) {
+                await this._client.unpublish([this._localVideoTrack]);
+            }
+            if (mediaType === 'audio' && this._localAudioTrack) {
+                await this._client.unpublish([this._localAudioTrack]);
+            }
+        } catch (e) {
+            console.warn('[AgoraManager] unpublish 失败:', e);
+        }
+    }
+
+    /**
      * 开启摄像头并发布视频
      * @param container 视频渲染的 DOM 容器
      */
@@ -336,9 +363,16 @@ export default class AgoraManager {
     }
 
     /**
-     * 关闭摄像头
+     * 关闭摄像头（先取消发布，再关闭轨道）
      */
-    public disableCamera(): void {
+    public async disableCamera(): Promise<void> {
+        if (this._localVideoTrack && this._joined && this._client) {
+            try {
+                await this._client.unpublish([this._localVideoTrack]);
+            } catch (e) {
+                console.warn('[AgoraManager] unpublish 视频轨道失败:', e);
+            }
+        }
         this._localVideoTrack?.close();
         this._localVideoTrack = null;
         console.log('[AgoraManager] 摄像头已关闭');
