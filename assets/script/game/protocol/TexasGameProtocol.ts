@@ -277,7 +277,7 @@ export default class TexasGameProtocol {
         }
         // 视频房间：坐下后渲染本地摄像头到自己的头像
         if (GameCache.Instance._videoModel !== VideoModel.NONE) {
-            this._renderLocalVideoOnMySeat();
+            this.renderLocalVideoOnMySeat();
         }
 
         //房间坐下时时添加firebase事件触发
@@ -2300,6 +2300,9 @@ export default class TexasGameProtocol {
         agora.onRemoteVideo = null;
         agora.onUserLeft = null;
 
+        // 重置视频按钮状态
+        this.game.uirc?.resetVideoButtons();
+
         await agora.leave();
         console.log('[VideoRoom] 已离开视频频道');
     }
@@ -2307,7 +2310,7 @@ export default class TexasGameProtocol {
     /**
      * 自己坐下后渲染本地摄像头到自己的头像
      */
-    private async _renderLocalVideoOnMySeat(): Promise<void> {
+    public async renderLocalVideoOnMySeat(): Promise<void> {
         const agora = AgoraManager.Instance;
         if (!agora.isJoined) return;
 
@@ -2335,6 +2338,9 @@ export default class TexasGameProtocol {
 
         const rendered = await videoRender.renderLocalCamera();
         console.log('[VideoRoom] 本地视频渲染:', rendered ? '成功' : '失败');
+        if (rendered) {
+            this.game.uirc?.syncVideoButtonsFromAgora();
+        }
     }
 
     /**

@@ -35,6 +35,9 @@ import UITexasMenu from "./ui/UITexasMenu";
 import GameUtil, { GameEnterType } from "./util/GameUtil";
 import Seat from "./seat/Seat";
 import ToastManager from "../manager/ToastManager";
+import AgoraManager from "../net/agora/AgoraManager";
+import AgoraVideoRender from "../net/agora/AgoraVideoRender";
+import { VideoModel } from "../crazyPoker/gameplay/common/constant/VideoModel";
 
 export class PlayerBarrageRecord {
     public name: string;
@@ -105,6 +108,9 @@ export default class UITexas extends BaseScene {
     btn_audio: cc.Node = null;
     btn_camera: cc.Node = null;
     chatBtn: cc.Node = null;
+    // 视频控制按钮状态
+    private _cameraOn: boolean = false;
+    private _micOn: boolean = false;
     //座位节点容器
     seats_content: cc.Node = null;
 
@@ -584,6 +590,10 @@ export default class UITexas extends BaseScene {
         this.setActive(this.BombPotLogo, false);
         //消息按钮显示
         this.btn_msg.active = GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2;
+        // 视频控制按钮初始状态
+        this._cameraOn = false;
+        this._micOn = false;
+        this._syncVideoButtonVisuals();
     }
     //清理UI
     CleanUI() {
@@ -790,12 +800,96 @@ export default class UITexas extends BaseScene {
     private click_btn_effect() {
         UIComponent.open(UIDefine.UIBlank_dialog, { title: "特效" });
     }
-    private click_btn_audio() {
-        UIComponent.open(UIDefine.UIBlank_dialog, { title: "语音" });
+    private async click_btn_audio() {
+        if (GameCache.Instance._videoModel === VideoModel.NONE) {
+            ToastManager.Instance.createToast("当前房间未开启语音");
+            return;
+        }
+        const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
+        if (!mySeat) {
+            ToastManager.Instance.createToast("请先入座");
+            return;
+        }
+
+        const agora = AgoraManager.Instance;
+        if (!agora.isJoined) return;
+
+        if (this._micOn) {
+            agora.setMicMuted(true);
+            this._micOn = false;
+        } else {
+            if (!agora.localAudioTrack) {
+                const ok = await agora.enableMic();
+                this._micOn = ok;
+            } else {
+                agora.setMicMuted(false);
+                this._micOn = true;
+            }
+        }
+        this._syncVideoButtonVisuals();
     }
-    private click_btn_camera() {
-        UIComponent.open(UIDefine.UIBlank_dialog, { title: "摄像头" });
+    private async click_btn_camera() {
+        if (GameCache.Instance._videoModel === VideoModel.NONE) {
+            ToastManager.Instance.createToast("当前房间未开启视频");
+            return;
+        }
+        const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
+        if (!mySeat) {
+            ToastManager.Instance.createToast("请先入座");
+            return;
+        }
+
+        const agora = AgoraManager.Instance;
+        if (!agora.isJoined) return;
+
+        if (this._cameraOn) {
+            const headNode = mySeat.uirc?.Raw_Head?.node;
+            const vr = headNode?.getComponent(AgoraVideoRender);
+            if (vr) vr.stopRender();
+            await agora.disableCamera();
+            this._cameraOn = false;
+        } else {
+            await this.game.TexasGameProtocol.renderLocalVideoOnMySeat();
+            this._cameraOn = !!agora.localVideoTrack;
+        }
+        this._syncVideoButtonVisuals();
     }
+
+    /**
+     * 同步摄像头/麦克风按钮的视觉状态
+     */
+    private _syncVideoButtonVisuals(): void {
+        if (this.btn_camera) {
+            this.btn_camera.opacity = this._cameraOn ? 255 : 128;
+            const sprite = this.btn_camera.getComponent(cc.Sprite);
+            if (sprite) this.setSpriteShowGray(sprite, !this._cameraOn);
+        }
+        if (this.btn_audio) {
+            this.btn_audio.opacity = this._micOn ? 255 : 128;
+            const sprite = this.btn_audio.getComponent(cc.Sprite);
+            if (sprite) this.setSpriteShowGray(sprite, !this._micOn);
+        }
+    }
+
+    /**
+     * 从 AgoraManager 实际状态同步按钮（由 TexasGameProtocol 调用）
+     */
+    public syncVideoButtonsFromAgora(): void {
+        const agora = AgoraManager.Instance;
+        this._cameraOn = !!(agora.localVideoTrack);
+        this._micOn = !!(agora.localAudioTrack);
+        this._syncVideoButtonVisuals();
+    }
+
+    /**
+     * 重置视频按钮状态（离开房间时调用）
+     */
+    public resetVideoButtons(): void {
+        this._cameraOn = false;
+        this._micOn = false;
+        this._syncVideoButtonVisuals();
+    }
+
     private click_chatBtn() {
         UIComponent.open(UIDefine.UIBlank_dialog, { title: "聊天" });
     }
