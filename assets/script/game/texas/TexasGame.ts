@@ -2450,7 +2450,7 @@ export default class TexasGame {
         tween.delay(endTime + 0.4);
 
         if (null != tweenCallback) {
-            this.sequencePlayDealAnimation.IsPlaying = false;
+            this.sequencePlayDealAnimation && (this.sequencePlayDealAnimation.IsPlaying = false);
             tween.call(tweenCallback);
         }
         tween.start();
@@ -3084,7 +3084,7 @@ export default class TexasGame {
             }
         }
         tween.call(() => {
-            this.sequenceSecondUpdatePublicCards.IsPlaying = false;
+            this.sequenceSecondUpdatePublicCards && (this.sequenceSecondUpdatePublicCards.IsPlaying = false);
         });
         tween.start();
     }
@@ -3244,7 +3244,7 @@ export default class TexasGame {
 
         if (null != tween) {
             this.sequencePlayFirstRecyclingChipAnimation.complete = () => {
-                this.sequencePlayFirstRecyclingChipAnimation.IsPlaying = false;
+                this.sequencePlayFirstRecyclingChipAnimation && (this.sequencePlayFirstRecyclingChipAnimation.IsPlaying = false);
                 tweenCallback?.();
             };
             this.sequencePlayFirstRecyclingChipAnimation.IsPlaying = true;
@@ -3276,14 +3276,14 @@ export default class TexasGame {
         if (null != tween) {
             if (null != tweenCallback) {
                 this.sequencePlayRecyclingChipAnimation.complete = () => {
-                    this.sequencePlayRecyclingChipAnimation.IsPlaying = false;
+                    this.sequencePlayRecyclingChipAnimation && (this.sequencePlayRecyclingChipAnimation.IsPlaying = false);
                     this.UpdatePots();
                     tweenCallback?.();
                 };
             } else {
                 //sequencePlayRecyclingChipAnimation.OnComplete(UpdatePots);
                 this.sequencePlayRecyclingChipAnimation.complete = () => {
-                    this.sequencePlayRecyclingChipAnimation.IsPlaying = false;
+                    this.sequencePlayRecyclingChipAnimation && (this.sequencePlayRecyclingChipAnimation.IsPlaying = false);
                     this.UpdatePots();
                 };
             }
