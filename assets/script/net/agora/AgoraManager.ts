@@ -8,6 +8,18 @@ import { WWW } from "../https/WebRequestBase";
 export default class AgoraManager {
 
     private static _instance: AgoraManager = null;
+
+    // ==================== 重连相关 ====================
+    private _reconnectTimer: any = null;
+    private _reconnectAttempts: number = 0;
+    private _maxReconnectAttempts: number = 5;
+    private _isReconnecting: boolean = false;
+    private _savedChannel: string = '';
+    private _savedUid: number = 0;
+    private _hadLocalVideo: boolean = false;
+    private _hadLocalAudio: boolean = false;
+    /** 重连成功回调（供 TexasGameProtocol 恢复远端视频渲染） */
+    public onReconnected: () => void = null;
     public static get Instance(): AgoraManager {
         if (!this._instance) {
             this._instance = new AgoraManager();
@@ -43,6 +55,16 @@ export default class AgoraManager {
     /** Agora SDK 是否已加载 */
     public get isSDKReady(): boolean {
         return !!(window as any).AgoraRTC;
+    }
+
+    /** 浏览器是否支持摄像头/麦克风（需要 HTTPS 或 localhost） */
+    public get isMediaDevicesSupported(): boolean {
+        return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+    }
+
+    /** 浏览器是否为安全上下文（HTTPS 或 localhost） */
+    public get isSecureContext(): boolean {
+        return window.isSecureContext === true;
     }
 
     /** 是否已加入频道 */
@@ -89,9 +111,10 @@ export default class AgoraManager {
             return;
         }
         const AgoraRTC = (window as any).AgoraRTC;
-        this._client = AgoraRTC.createClient({ mode: 'rtc', codec: 'h264' });
+        this._client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
         this._registerEvents();
-        console.log('[AgoraManager] Client 初始化完成');
+        console.log('[AgoraManager] Client 初始化完成, 安全上下文:', this.isSecureContext
+            , '媒体设备支持:', this.isMediaDevicesSupported);
         this.checkAppId();
     }
 
@@ -138,7 +161,7 @@ export default class AgoraManager {
         }
 
         const testChannel = '__appid_test_' + Date.now();
-        const testClient = (window as any).AgoraRTC.createClient({ mode: 'rtc', codec: 'h264' });
+        const testClient = (window as any).AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
 
         // 第1步：从本地服务获取 Token
         console.log('[AgoraManager] 第1步: 请求本地Token服务...');
@@ -216,6 +239,7 @@ export default class AgoraManager {
 
         this._client.on('connection-state-change', (curState: string, revState: string) => {
             console.log('[AgoraManager] 连接状态变化:', revState, '->', curState);
+            this._handleConnectionStateChange(curState, revState);
         });
 
         this._client.on('exception', (e: any) => {
@@ -265,11 +289,162 @@ export default class AgoraManager {
         }
     }
 
+    // ==================== 断线重连 ====================
+
+    /**
+     * 处理 Agora 连接状态变化
+     */
+    private _handleConnectionStateChange(curState: string, revState: string): void {
+        switch (curState) {
+            case 'DISCONNECTED':
+                // 非主动离开的断开，尝试重连
+                if (this._joined && !this._isReconnecting) {
+                    console.warn('[AgoraManager] 连接断开，准备重连...');
+                    this._startReconnect();
+                }
+                break;
+            case 'CONNECTING':
+                console.log('[AgoraManager] 正在连接/重连中...');
+                break;
+            case 'CONNECTED':
+                if (this._isReconnecting) {
+                    console.log('[AgoraManager] 重连成功！');
+                    this._isReconnecting = false;
+                    this._reconnectAttempts = 0;
+                    this._restoreLocalTracks();
+                    this.onReconnected?.();
+                }
+                break;
+            case 'RECONNECTING':
+                console.warn('[AgoraManager] SDK 内部自动重连中...');
+                break;
+        }
+    }
+
+    /**
+     * 启动重连流程（指数退避）
+     */
+    private _startReconnect(): void {
+        if (this._reconnectTimer) return;
+
+        this._isReconnecting = true;
+        // 保存当前频道信息用于重连
+        if (!this._savedChannel) {
+            this._savedChannel = this._channelName;
+            this._savedUid = this._uid;
+            this._hadLocalVideo = !!this._localVideoTrack;
+            this._hadLocalAudio = !!this._localAudioTrack;
+        }
+
+        this._tryReconnect();
+    }
+
+    private _tryReconnect(): void {
+        if (this._reconnectAttempts >= this._maxReconnectAttempts) {
+            console.error('[AgoraManager] 重连失败，已达最大重试次数:', this._maxReconnectAttempts);
+            this._stopReconnect();
+            this.onError?.({ code: 'RECONNECT_FAILED', message: '重连失败' });
+            return;
+        }
+
+        // 指数退避: 1s, 2s, 4s, 8s, 16s
+        const delay = Math.min(1000 * Math.pow(2, this._reconnectAttempts), 16000);
+        this._reconnectAttempts++;
+
+        console.log(`[AgoraManager] 第 ${this._reconnectAttempts}/${this._maxReconnectAttempts} 次重连，${delay / 1000}s 后执行`);
+
+        this._reconnectTimer = setTimeout(async () => {
+            this._reconnectTimer = null;
+            await this._doReconnect();
+        }, delay);
+    }
+
+    private async _doReconnect(): Promise<void> {
+        try {
+            // 先尝试用 Agora SDK 内置重连（不清除 client，直接重新 join）
+            const token = await this.fetchToken(this._savedChannel, this._savedUid);
+            if (!token) {
+                console.warn('[AgoraManager] 重连时获取 Token 失败');
+                this._tryReconnect();
+                return;
+            }
+
+            // 重置 joined 状态以便重新 join
+            this._joined = false;
+            this._channelName = '';
+
+            const joined = await this.join(this._savedChannel, token, this._savedUid);
+            if (joined) {
+                console.log('[AgoraManager] 重连成功，已重新加入频道');
+            } else {
+                console.warn('[AgoraManager] 重连 join 失败，继续重试');
+                this._tryReconnect();
+            }
+        } catch (e) {
+            console.error('[AgoraManager] 重连异常:', e);
+            this._tryReconnect();
+        }
+    }
+
+    /**
+     * 重连成功后恢复本地音视频轨道发布
+     */
+    private async _restoreLocalTracks(): Promise<void> {
+        try {
+            const tracks: any[] = [];
+            if (this._hadLocalAudio && this._localAudioTrack) {
+                tracks.push(this._localAudioTrack);
+            }
+            if (this._hadLocalVideo && this._localVideoTrack) {
+                tracks.push(this._localVideoTrack);
+            }
+            if (tracks.length > 0) {
+                await this._client.publish(tracks);
+                console.log('[AgoraManager] 重连后已重新发布本地轨道，数量:', tracks.length);
+            }
+        } catch (e) {
+            console.error('[AgoraManager] 重连后重新发布轨道失败:', e);
+        }
+    }
+
+    /**
+     * 停止重连（主动离开时调用）
+     */
+    private _stopReconnect(): void {
+        if (this._reconnectTimer) {
+            clearTimeout(this._reconnectTimer);
+            this._reconnectTimer = null;
+        }
+        this._isReconnecting = false;
+        this._reconnectAttempts = 0;
+        this._savedChannel = '';
+        this._savedUid = 0;
+        this._hadLocalVideo = false;
+        this._hadLocalAudio = false;
+    }
+
     /**
      * 离开频道
      */
     public async leave(): Promise<void> {
+        this._stopReconnect();  // 主动离开时取消重连
         if (!this._joined) return;
+
+        // 停止远端用户的音频播放（防止离开房间后仍在播放）
+        try {
+            if (this._client?.remoteUsers) {
+                this._client.remoteUsers.forEach((user: any) => {
+                    try {
+                        if (user.audioTrack) {
+                            user.audioTrack.stop();
+                        }
+                        if (user.videoTrack) {
+                            user.videoTrack.stop();
+                        }
+                    } catch (_) { /* 单个 track 停止失败不影响其他 */ }
+                });
+            }
+        } catch (_) { /* remoteUsers 可能不可用 */ }
 
         // 停止本地轨道
         this._localAudioTrack?.close();
@@ -294,6 +469,10 @@ export default class AgoraManager {
      */
     public async enableMic(): Promise<boolean> {
         if (!this._joined) return false;
+        if (!this.isMediaDevicesSupported) {
+            console.error('[AgoraManager] 浏览器不支持麦克风，请使用 HTTPS 访问');
+            return false;
+        }
         try {
             if (!this._localAudioTrack) {
                 this._localAudioTrack = await (window as any).AgoraRTC.createMicrophoneAudioTrack();
@@ -346,6 +525,11 @@ export default class AgoraManager {
      */
     public async enableCamera(container?: HTMLElement): Promise<boolean> {
         if (!this._joined) return false;
+        if (!this.isMediaDevicesSupported) {
+            console.error('[AgoraManager] 浏览器不支持摄像头。'
+                + (this.isSecureContext ? '' : ' 请使用 HTTPS 访问或在 iframe 标签添加 allow="camera; microphone"。'));
+            return false;
+        }
         try {
             if (!this._localVideoTrack) {
                 this._localVideoTrack = await (window as any).AgoraRTC.createCameraVideoTrack();
@@ -356,8 +540,14 @@ export default class AgoraManager {
             await this._client.publish([this._localVideoTrack]);
             console.log('[AgoraManager] 摄像头已开启');
             return true;
-        } catch (e) {
-            console.error('[AgoraManager] 开启摄像头失败:', e);
+        } catch (e: any) {
+            const code = e?.code || '';
+            const msg = e?.message || String(e);
+            if (code === 'NOT_ALLOWED' || msg.includes('NotAllowedError') || msg.includes('Permission')) {
+                console.warn('[AgoraManager] 摄像头权限被拒绝，请手动点击摄像头按钮开启');
+            } else {
+                console.error('[AgoraManager] 开启摄像头失败:', e);
+            }
             return false;
         }
     }
@@ -383,6 +573,10 @@ export default class AgoraManager {
      */
     public async enableAudioAndVideo(cameraContainer?: HTMLElement): Promise<boolean> {
         if (!this._joined) return false;
+        if (!this.isMediaDevicesSupported) {
+            console.error('[AgoraManager] 浏览器不支持音视频设备，请使用 HTTPS 访问');
+            return false;
+        }
         try {
             if (!this._localAudioTrack) {
                 this._localAudioTrack = await (window as any).AgoraRTC.createMicrophoneAudioTrack();
@@ -421,6 +615,10 @@ export default class AgoraManager {
     public async getLocalVideoTrack(): Promise<MediaStreamTrack | null> {
         if (!this.isSDKReady) {
             console.error('[AgoraManager] SDK 未加载');
+            return null;
+        }
+        if (!this.isMediaDevicesSupported) {
+            console.error('[AgoraManager] 浏览器不支持摄像头（缺少 getUserMedia）');
             return null;
         }
         if (!this._localVideoTrack) {

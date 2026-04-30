@@ -47,6 +47,7 @@ export default class AgoraVideoRender extends cc.Component {
     private _stream: MediaStream = null;
     private _isRendering: boolean = false;
     private _isCancelled: boolean = false;
+    private _ownsStream: boolean = false;  // true = 本地流，需要 stop track; false = 远端流，不 stop
     private _defaultFrame: cc.SpriteFrame = null;
     private _originalScaleX: number = 1;
     private _gl: WebGLRenderingContext = null;
@@ -57,6 +58,9 @@ export default class AgoraVideoRender extends cc.Component {
     private _frameInterval: number = 0;          // 帧间隔（秒）
     private _frameAccum: number = 0;             // 帧累计时间
     private _lastLogTime: number = 0;
+    private _glCaptureLogged: boolean = false;
+    private _glSearchAttempts: number = 0;
+    private static readonly MAX_GL_SEARCH = 5;
 
     /** 是否正在渲染 */
     public get isRendering(): boolean {
@@ -75,17 +79,29 @@ export default class AgoraVideoRender extends cc.Component {
         this._frameInterval = 1 / this.targetFps;
     }
 
-    /** 渲染本地摄像头 */
+    /** 渲染本地摄像头（通过 Agora 已创建的 track，不重复开摄像头） */
     public async renderLocalCamera(): Promise<boolean> {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { width: 640, height: 480 }
-            });
-            return this._startWithStream(stream);
+            const track = await AgoraManager.Instance.getLocalVideoTrack();
+            if (!track) {
+                console.error('[AgoraVideoRender] 获取 Agora 本地视频Track失败');
+                return false;
+            }
+            this._ownsStream = true;
+            return this._startWithStream(new MediaStream([track]));
         } catch (e) {
-            console.error('[AgoraVideoRender] getUserMedia 失败:', e);
+            console.error('[AgoraVideoRender] 渲染本地摄像头失败:', e);
             return false;
         }
+    }
+
+    /** 用已有的 MediaStreamTrack 渲染（通用方法） */
+    public async renderFromTrack(track: MediaStreamTrack): Promise<boolean> {
+        if (!track) {
+            console.error('[AgoraVideoRender] track 为空');
+            return false;
+        }
+        return this._startWithStream(new MediaStream([track]));
     }
 
     /** 渲染远端用户视频 */
@@ -96,8 +112,7 @@ export default class AgoraVideoRender extends cc.Component {
             console.warn('[AgoraVideoRender] 远端视频Track为空, uid:', uid);
             return false;
         }
-        const stream = new MediaStream([track]);
-        return this._startWithStream(stream);
+        return this._startWithStream(new MediaStream([track]));
     }
 
     /**
@@ -141,7 +156,7 @@ export default class AgoraVideoRender extends cc.Component {
             return false;
         }
 
-        if (this._isCancelled) { console.log('[AgoraVideoRender] play后检查已取消'); this._cleanupOnly(); return false; }
+        if (this._isCancelled) { console.log('[AgoraVideoRender] play后已取消'); this._releaseResources(); return false; }
 
         await new Promise<void>((resolve) => {
             if (this._video.readyState >= 1) {
@@ -154,11 +169,11 @@ export default class AgoraVideoRender extends cc.Component {
         });
         console.log('[AgoraVideoRender] metadata 就绪, readyState:', this._video.readyState, 'videoSize:', this._video.videoWidth, 'x', this._video.videoHeight);
 
-        if (this._isCancelled) { console.log('[AgoraVideoRender] metadata后已取消'); this._cleanupOnly(); return false; }
+        if (this._isCancelled) { console.log('[AgoraVideoRender] metadata后已取消'); this._releaseResources(); return false; }
 
         await new Promise<void>(resolve => setTimeout(resolve, 100));
 
-        if (this._isCancelled) { console.log('[AgoraVideoRender] 100ms后已取消'); this._cleanupOnly(); return false; }
+        if (this._isCancelled) { console.log('[AgoraVideoRender] 100ms后已取消'); this._releaseResources(); return false; }
 
         const vw = this._video.videoWidth;
         const vh = this._video.videoHeight;
@@ -196,105 +211,149 @@ export default class AgoraVideoRender extends cc.Component {
         this._isRendering = true;
         console.log('[AgoraVideoRender] 开始渲染, canvas:', cw, 'x', ch, 'fps:', this.targetFps);
 
-        // 延迟捕获 GL 纹理 ID（需要等 CC 渲染完第一帧）
-        this.scheduleOnce(() => this._tryCaptureGLID(), 0.2);
+        // 首帧立即触发 GL 纹理创建，并尝试捕获 ID 切换到快速模式
+        if (typeof this._texture.handleLoadedTexture === 'function') {
+            this._texture.handleLoadedTexture();
+        }
+        this._tryCaptureGLID();
         return true;
     }
 
     /**
      * 尝试从 CC 纹理对象中捕获 GL 纹理 ID
-     * CC 2.4.8 不同版本的内部结构不同，尝试多个路径
+     * CC 2.4.8 不同版本的内部结构不同，尝试多个路径 + 暴力搜索兜底
      */
     private _tryCaptureGLID(): void {
-        if (!this._texture) return;
+        if (!this._texture || !this._gl) return;
 
         const t = this._texture as any;
-        // 尝试多种可能的路径
-        const id = t._glID
-            || (t._texture && t._texture._glID)
-            || (t.getImpl && t.getImpl() && t.getImpl()._glID)
-            || (t._gpuTexture && t._gpuTexture._glID)
-            || null;
+        let id: any = null;
 
-        if (id && this._gl) {
+        // CC 2.4.8 已知路径
+        if (t._glID != null) id = t._glID;
+        else if (t._texture && t._texture._glID != null) id = t._texture._glID;
+        else if (t.getImpl && t.getImpl()) {
+            const impl = t.getImpl();
+            if (impl._glID != null) id = impl._glID;
+            else if (impl._texture && impl._texture._glID != null) id = impl._texture._glID;
+        }
+        else if (t._gpuTexture && t._gpuTexture._glID != null) id = t._gpuTexture._glID;
+
+        // 兜底: 暴力搜索 WebGLTexture 对象（最多尝试 N 次，避免持续拖性能）
+        if (id == null && this._glSearchAttempts < AgoraVideoRender.MAX_GL_SEARCH) {
+            this._glSearchAttempts++;
+            id = this._findWebGLTexture(t, 3);
+        }
+
+        if (id != null) {
             this._glTextureID = id;
             this._useFastPath = true;
             console.log('[AgoraVideoRender] ✅ 捕获到 GL 纹理 ID，切换到快速模式（零分配）');
-        } else {
-            console.warn('[AgoraVideoRender] 未找到 GL 纹理 ID，保持核弹模式（路径:', {
-                '_glID': !!t._glID,
-                '_texture._glID': !!(t._texture && t._texture._glID),
-                'getImpl': !!(t.getImpl && t.getImpl()),
-                '_gpuTexture': !!t._gpuTexture,
-            }, ')');
+        } else if (!this._glCaptureLogged) {
+            this._glCaptureLogged = true;
+            console.warn('[AgoraVideoRender] 未找到 GL 纹理 ID，使用普通模式（复用 Texture2D，不会闪退）');
+            console.warn('[AgoraVideoRender] Texture 属性:', Object.keys(t).join(', '));
+            if (t._texture) console.warn('[AgoraVideoRender] _texture 属性:', Object.keys(t._texture).join(', '));
         }
     }
 
-    /** 停止渲染 */
+    /** 递归搜索对象中的 WebGLTexture（最多 depth 层） */
+    private _findWebGLTexture(obj: any, depth: number): any {
+        if (!obj || depth <= 0) return null;
+        try {
+            for (const key of Object.keys(obj)) {
+                const val = obj[key];
+                if (val instanceof WebGLTexture) return val;
+                if (typeof val === 'object' && val !== null && !(val instanceof cc.Node) && !(val instanceof HTMLElement)) {
+                    const found = this._findWebGLTexture(val, depth - 1);
+                    if (found) return found;
+                }
+            }
+        } catch (_) { }
+        return null;
+    }
+
+    /** 停止渲染，释放所有资源，恢复默认头像 */
     public stopRender(): void {
         this._isCancelled = true;
-        if (this._video) {
-            this._video.pause();
-            if (this._video.parentNode) {
-                this._video.parentNode.removeChild(this._video);
-            }
-            this._video.srcObject = null;
-            this._video = null;
-        }
-        if (this._stream) {
-            this._stream.getTracks().forEach(t => t.stop());
-            this._stream = null;
-        }
-        this._canvas = null;
-        this._ctx = null;
-        this._texture = null;
-        this._spriteFrame = null;
         this._isRendering = false;
-        this._useFastPath = false;
-        this._glTextureID = null;
-
-        if (this._sprite && this._defaultFrame) {
-            this._sprite.spriteFrame = this._defaultFrame;
-        }
-        this.node.scaleX = this._originalScaleX;
-        console.log('[AgoraVideoRender] 已停止渲染');
-    }
-
-    /** 仅清理资源（取消后内部使用，不重置 _isCancelled） */
-    private _cleanupOnly(): void {
-        if (this._video) {
-            this._video.pause();
-            if (this._video.parentNode) {
-                this._video.parentNode.removeChild(this._video);
-            }
-            this._video.srcObject = null;
-            this._video = null;
-        }
-        if (this._stream) {
-            this._stream.getTracks().forEach(t => t.stop());
-            this._stream = null;
-        }
-        this._canvas = null;
-        this._ctx = null;
-        this._texture = null;
-        this._spriteFrame = null;
-        this._isRendering = false;
-        this._useFastPath = false;
-        this._glTextureID = null;
-        if (this._sprite && this._defaultFrame) {
-            this._sprite.spriteFrame = this._defaultFrame;
-        }
-        this.node.scaleX = this._originalScaleX;
+        this._releaseResources();
     }
 
     /**
-     * 每帧更新:
-     * - 快速模式: drawImage + gl.texImage2D（零 JS 分配，零 GL 纹理创建）
-     * - 核弹模式: 新建 Texture2D + SpriteFrame（有分配，但保证可用）
-     * - 帧率控制: 按 targetFps 间隔更新
+     * 安全释放所有视频资源
+     * - 本地流（_ownsStream=true）：stop track 关闭摄像头
+     * - 远端流（_ownsStream=false）：仅 detach，不动 Agora 管理的 track
+     * - 始终释放 canvas/texture/GL 纹理，恢复默认头像
+     */
+    private _releaseResources(): void {
+        // 1. 释放 video 元素
+        if (this._video) {
+            try {
+                this._video.pause();
+            } catch (_) { /* ignore */ }
+            if (this._video.parentNode) {
+                this._video.parentNode.removeChild(this._video);
+            }
+            this._video.srcObject = null;
+            this._video = null;
+        }
+
+        // 2. 释放 stream（仅本地流才 stop track）
+        if (this._stream) {
+            if (this._ownsStream) {
+                try {
+                    this._stream.getTracks().forEach(t => t.stop());
+                } catch (_) { /* ignore */ }
+            }
+            // 远端流只断开引用，不 stop track（Agora 管生命周期）
+            this._stream = null;
+        }
+        this._ownsStream = false;
+
+        // 3. 释放 GL 纹理（快速模式）
+        if (this._glTextureID && this._gl) {
+            try {
+                this._gl.deleteTexture(this._glTextureID);
+            } catch (_) { /* ignore */ }
+            this._glTextureID = null;
+        }
+
+        // 4. 释放 Cocos 资源
+        this._canvas = null;
+        this._ctx = null;
+        this._texture = null;
+        this._spriteFrame = null;
+        this._useFastPath = false;
+        this._frameAccum = 0;
+        this._glCaptureLogged = false;
+        this._glSearchAttempts = 0;
+
+        // 5. 恢复默认头像
+        this._restoreDefaultFrame();
+    }
+
+    /** 恢复默认头像（防御性） */
+    private _restoreDefaultFrame(): void {
+        try {
+            if (this._sprite && this._defaultFrame) {
+                this._sprite.spriteFrame = this._defaultFrame;
+            }
+            if (this.node && this.node.isValid) {
+                this.node.scaleX = this._originalScaleX;
+            }
+        } catch (_) { /* ignore - node may be destroyed */ }
+    }
+
+    /**
+     * 每帧更新（带防御性 try-catch，防止清理时崩溃）
      */
     update(dt: number) {
         if (!this._isRendering || !this._ctx || !this._video) return;
+        if (this._isCancelled) {
+            this._isRendering = false;
+            return;
+        }
         if (this._video.readyState < 2) return;
 
         // 帧率控制
@@ -302,10 +361,21 @@ export default class AgoraVideoRender extends cc.Component {
         if (this._frameAccum < this._frameInterval) return;
         this._frameAccum = 0;
 
+        try {
+            this._renderFrame();
+        } catch (e) {
+            // 视频元素可能在渲染中被清理，静默处理避免卡死
+            console.warn('[AgoraVideoRender] 渲染帧异常，停止渲染:', (e as Error).message);
+            this.stopRender();
+        }
+    }
+
+    /** 单帧渲染 */
+    private _renderFrame(): void {
         const cw = this._canvas.width;
         const ch = this._canvas.height;
 
-        // 画视频帧到 Canvas（裁剪中心 480x480 区域，保持正方形比例）
+        // 画视频帧到 Canvas
         this._ctx.drawImage(this._video, 80, 0, 480, 480, 0, 0, cw, ch);
 
         // ============ 快速模式: 直接 GL 上传，零分配 ============
@@ -315,39 +385,25 @@ export default class AgoraVideoRender extends cc.Component {
             return;
         }
 
-        // ============ 核弹模式: 新建纹理 + 帧画面 ============
-        // 清理旧 GL 纹理
+        // ============ 普通模式: 复用现有 Texture2D，仅更新像素数据 ============
+        // 关键：不创建新的 Texture2D / SpriteFrame，避免内存泄漏导致闪退
         if (this._texture) {
-            const oldID = (this._texture as any)._glID;
-            if (oldID && this._gl) {
-                this._gl.deleteTexture(oldID);
+            this._texture.initWithElement(this._canvas as any);
+            if (typeof this._texture.handleLoadedTexture === 'function') {
+                this._texture.handleLoadedTexture();
             }
         }
 
-        this._texture = new cc.Texture2D();
-        this._texture.initWithElement(this._canvas as any);
-        this._texture.packable = false;
-
-        this._spriteFrame = new cc.SpriteFrame();
-        (this._spriteFrame as any).initWithTexture(
-            this._texture,
-            cc.rect(0, 0, cw, ch),
-            false,
-            cc.v2(0, 0),
-            cc.size(cw, ch)
-        );
-        this._sprite.spriteFrame = this._spriteFrame;
-
-        // 核弹模式下持续尝试捕获 GL ID
+        // 尝试捕获 GL 纹理 ID，切换到快速模式
         if (!this._useFastPath) {
             this._tryCaptureGLID();
         }
 
-        // 状态日志
+        // 状态日志（节流）
         const now = Date.now();
-        if (now - this._lastLogTime > 5000) {
+        if (now - this._lastLogTime > 10000) {
             this._lastLogTime = now;
-            console.log('[AgoraVideoRender]', this._useFastPath ? '快速模式' : '核弹模式',
+            console.log('[AgoraVideoRender]', this._useFastPath ? '快速模式' : '普通模式',
                 'time:', this._video.currentTime.toFixed(2));
         }
     }

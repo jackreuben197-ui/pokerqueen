@@ -35,7 +35,7 @@ export function loadWebSDK(): void {
     }
 
     const sdkList = [
-        { name: 'AgoraRTC', src: 'https://download.agora.io/sdk/release/AgoraRTC_N.js' },
+        { name: 'AgoraRTC', src: 'https://download.agora.io/sdk/release/AgoraRTC_N-4.24.3.js' },
     ];
 
     sdkList.forEach(sdk => {
