@@ -239,6 +239,21 @@ export default class AgoraManager {
         this._client.on('exception', (e: any) => {
             console.warn('[AgoraManager] 异常事件:', e.code, e.msg);
         });
+
+        // Token 过期前 30 秒自动续期
+        this._client.on('token-privilege-will-expire', async () => {
+            console.log('[AgoraManager] Token 即将过期，自动续期...');
+            if (!this._channelName) return;
+            const token = await this.fetchToken(this._channelName, this._uid);
+            if (token) {
+                try {
+                    await this._client.renewToken(token);
+                    console.log('[AgoraManager] Token 续期成功');
+                } catch (e) {
+                    console.error('[AgoraManager] Token 续期失败:', e);
+                }
+            }
+        });
     }
 
     /**
@@ -315,6 +330,10 @@ export default class AgoraManager {
             case 'DISCONNECTED':
                 if (this._joined) {
                     console.error('[AgoraManager] 连接已断开（SDK 重连失败）');
+                    // 重置 joined 状态，允许后续重新 join
+                    this._joined = false;
+                    this._channelName = '';
+                    this._uid = 0;
                     this.onError?.({ code: 'CONNECTION_LOST', message: '连接已断开' });
                 }
                 break;

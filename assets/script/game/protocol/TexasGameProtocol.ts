@@ -2278,6 +2278,9 @@ export default class TexasGameProtocol {
         // 注册重连回调：重连成功后重新渲染远端视频
         agora.onReconnected = this._onAgoraReconnected.bind(this);
 
+        // 注册错误回调：SDK 放弃重连时清理 UI 状态
+        agora.onError = this._onAgoraError.bind(this);
+
         // 渲染已在座位上的远端玩家视频
         this._renderAllExistingRemoteVideos();
 
@@ -2298,17 +2301,25 @@ export default class TexasGameProtocol {
                     try {
                         if (seat?.uirc?.Raw_Head?.node?.isValid) {
                             const vr = seat.uirc.Raw_Head.node.getComponent(AgoraVideoRender);
-                            if (vr) vr.stopRender();
+                            if (vr) {
+                                vr.onRenderStopped = null; // 先清回调，防止 stopRender 触发异步 disableCamera
+                                vr.stopRender();
+                            }
                         }
                     } catch (_) { /* 单个座位清理失败不影响其他 */ }
                 });
             }
         } catch (_) { /* listSeat 可能不可用 */ }
 
+        // 显式关闭摄像头和麦克风（同步 await，确保在 leave 前完成）
+        await agora.disableCamera();
+        agora.disableMic();
+
         // 清除所有回调
         agora.onRemoteVideo = null;
         agora.onUserLeft = null;
         agora.onReconnected = null;
+        agora.onError = null;
 
         // 重置视频按钮状态
         this.game?.uirc?.resetVideoButtons();
@@ -2356,7 +2367,7 @@ export default class TexasGameProtocol {
         const rendered = await videoRender.renderFromTrack(rawTrack);
         console.log('[VideoRoom] 本地视频渲染:', rendered ? '成功' : '失败');
         if (rendered) {
-            // 注册渲染停止回调：异常/停止时同步按钮状态，防止 UI 与实际状态脱节
+            // 注册渲染停止回调：同步按钮状态（不调 disableCamera，避免退房时异步竞态）
             videoRender.onRenderStopped = () => {
                 console.log('[VideoRoom] 本地视频渲染已停止，同步按钮状态');
                 this.game?.uirc?.syncVideoButtonsFromAgora();
@@ -2462,14 +2473,12 @@ export default class TexasGameProtocol {
 
     /**
      * Agora 重连成功回调
-     * 重新渲染所有远端视频 + 自己的本地视频
+     * SDK 重连后会自动重新触发 user-published 事件 → onRemoteVideo → 自动恢复远端视频
+     * 这里只需要恢复本地视频 + 同步按钮状态
      */
     private _onAgoraReconnected(): void {
-        console.log('[VideoRoom] Agora 重连成功，恢复视频渲染');
+        console.log('[VideoRoom] Agora 重连成功，恢复本地视频');
         try {
-            // 重新渲染已在座位的远端玩家
-            this._renderAllExistingRemoteVideos();
-
             // 如果自己有座位，恢复本地视频
             const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
             if (mySeat && AgoraManager.Instance.localVideoTrack) {
@@ -2491,6 +2500,40 @@ export default class TexasGameProtocol {
             this.game?.uirc?.syncVideoButtonsFromAgora();
         } catch (e) {
             console.warn('[VideoRoom] 重连后恢复视频异常:', e);
+        }
+    }
+
+    /**
+     * Agora 错误回调（SDK 放弃重连 / 加入失败等）
+     */
+    private _onAgoraError(err: any): void {
+        const code = err?.code || 'UNKNOWN';
+        console.error('[VideoRoom] Agora 错误:', code, err?.message || '');
+
+        if (code === 'CONNECTION_LOST') {
+            // SDK 重连失败，频道已断开 — 停止所有渲染，关闭 track，同步 UI
+            console.warn('[VideoRoom] Agora 连接彻底断开，停止视频渲染');
+            try {
+                if (this.game?.listSeat) {
+                    this.game.listSeat.forEach((seat: Seat) => {
+                        try {
+                            if (seat?.uirc?.Raw_Head?.node?.isValid) {
+                                const vr = seat.uirc.Raw_Head.node.getComponent(AgoraVideoRender);
+                                if (vr) {
+                                    vr.onRenderStopped = null;
+                                    vr.stopRender();
+                                }
+                            }
+                        } catch (_) { }
+                    });
+                }
+            } catch (_) { }
+
+            // 显式关闭摄像头（防止远端还能看到画面）
+            AgoraManager.Instance.disableCamera().catch(() => {});
+
+            // 重置按钮（视频不可用）
+            this.game?.uirc?.resetVideoButtons();
         }
     }
 }
