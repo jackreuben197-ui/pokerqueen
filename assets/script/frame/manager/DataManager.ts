@@ -1,4 +1,3 @@
-import { table } from "console";
 import ClubData from "../data/club/ClubData";
 import LanguageTemplateData from "../data/languageTemplate/LanguageTemplateData";
 import LobbyData from "../data/lobby/LobbyData";

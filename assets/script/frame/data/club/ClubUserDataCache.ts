@@ -14,10 +14,10 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export class ClubUserDataCache {
-    static _msg = null;
-    static _allCubData = null;
+    static _msg: any = null;
+    static _allCubData: any = null;
 
-    static setUserData(data) {
+    static setUserData(data: any) {
         this._msg = data
     }
     static get gold() {
@@ -27,7 +27,7 @@ export class ClubUserDataCache {
         return this._msg?.user_info?.usdt
     }
 
-    static refreshData(data: Object) {
+    static refreshData(data: {[props: string]: any}) {
         Object.keys(data).map((key) => {
             this._msg[key] = data[key];
         })

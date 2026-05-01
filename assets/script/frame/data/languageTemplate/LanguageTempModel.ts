@@ -19,12 +19,12 @@ export default class LanguageTempModel {
         let [key, _] = nameKey.split("-")
         let msg = this._data.get(key);
         if (msg) {
-            return msg[`${this.languageFlag}_name`];
+            return (msg as any)[`${this.languageFlag}_name`];
         }
         return nameKey;
     }
 
-    get languageFlag() {
+    get languageFlag():string {
         if (i18nMgr.language == "en") return "us";
         if (i18nMgr.language == "pt") return "br";
         return i18nMgr.language

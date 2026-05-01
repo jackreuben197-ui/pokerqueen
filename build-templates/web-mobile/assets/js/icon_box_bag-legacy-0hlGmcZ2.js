@@ -1,1 +1,0 @@
-System.register([],function(e,t){return{setters:[],execute:function(){e("t",""+new URL("../images/icon_box_bag-IylFu6RU.png",t.meta.url).href)}}});

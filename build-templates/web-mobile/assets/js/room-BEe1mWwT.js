@@ -1,1 +1,0 @@
-import{t as e}from"./http-DtCDwrXy.js";import{a as t}from"./auth-Ck7h7BOn.js";async function n(t){return(await e.post(`/roomcenter/user/all/room/ids`,t)).data}async function r(n){let r=(await e.post(`/roomcenter/user/rooms/list`,n)).data;return t(n,r),r}export{r as n,n as t};

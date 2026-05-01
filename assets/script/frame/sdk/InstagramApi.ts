@@ -6,8 +6,8 @@ import CCTools from "../../tools/CCTools";
 
 
 export default class InstagramApi {
-    static func
-    static login(func) {
+    static func: Function = null;
+    static login(func: Function = null) {
         this.func = func;
         console.log("==========> Instagram login : ")
         // let sendInfo: TSendInfo = {

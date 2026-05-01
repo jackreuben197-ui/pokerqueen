@@ -20,7 +20,7 @@ export enum UIType {
  */
 export enum ProcedureEnum {
     //闲置
-    Idel = 0,
+    Idle = 0,
     //初始化
     Init = 1,
     //预加载login

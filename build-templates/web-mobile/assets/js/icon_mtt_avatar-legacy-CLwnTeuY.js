@@ -1,1 +1,0 @@
-System.register([],function(t,e){return{setters:[],execute:function(){t("t",""+new URL("../images/icon_mtt_avatar-D1tyJ98Z.png",e.meta.url).href)}}});

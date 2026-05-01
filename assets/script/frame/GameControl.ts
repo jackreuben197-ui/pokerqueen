@@ -78,7 +78,7 @@ class GameControl {
 
     init() {
         this.data.init();
-        this.sdk.init();
+        // this.sdk.init();
     }
 
 }

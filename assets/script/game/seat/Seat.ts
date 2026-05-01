@@ -1599,6 +1599,7 @@ export default class Seat {
         tween.to(.2, { scale: 0 })
         tween.delay(1);
         tween.call(() => {
+            if (!this.ui?.isValid) return;
             this.uirc.Image_Bubble.active = false;
             this.UpdateNickName();
             this.tweenerHideBubble.IsPlaying = false;
@@ -1647,6 +1648,7 @@ export default class Seat {
             let pos = GameUtil.ChangeToLocalPos(this.uirc.Frame_Head.position, this.uirc.Frame_Head.parent, this.ui);
             tween.to(.5, { position: pos }, cc.easeQuadraticActionOut());
             tween.call(() => {
+                if (!this.ui?.isValid) return;
                 imageRecyclingWinChip.node.active = false;
                 this.tweenerPlayRecyclingWinChipAnimation.IsPlaying = false;
             });
@@ -1671,6 +1673,7 @@ export default class Seat {
         tween.to(.1, { scale: 0.95 });
         tween.to(.1, { scale: 1 });
         tween.call(() => {
+            if (!this.ui?.isValid) return;
             this.sequenceUpdateBubble.IsPlaying = false;
         })
         tween.start();

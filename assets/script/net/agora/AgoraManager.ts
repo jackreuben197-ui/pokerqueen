@@ -9,16 +9,9 @@ export default class AgoraManager {
 
     private static _instance: AgoraManager = null;
 
-    // ==================== 重连相关 ====================
-    private _reconnectTimer: any = null;
-    private _reconnectAttempts: number = 0;
-    private _maxReconnectAttempts: number = 5;
-    private _isReconnecting: boolean = false;
-    private _savedChannel: string = '';
-    private _savedUid: number = 0;
-    private _hadLocalVideo: boolean = false;
-    private _hadLocalAudio: boolean = false;
-    /** 重连成功回调（供 TexasGameProtocol 恢复远端视频渲染） */
+    // ==================== 连接状态追踪 ====================
+    private _prevConnState: string = 'DISCONNECTED';
+    /** SDK 重连成功回调（供 TexasGameProtocol 恢复远端视频渲染） */
     public onReconnected: () => void = null;
     public static get Instance(): AgoraManager {
         if (!this._instance) {
@@ -289,146 +282,48 @@ export default class AgoraManager {
         }
     }
 
-    // ==================== 断线重连 ====================
-
     /**
      * 处理 Agora 连接状态变化
+     * 不做自定义重连，完全依赖 Agora SDK v4.x 内置重连机制
+     * SDK 重连流程: CONNECTED → RECONNECTING → CONNECTED
+     * SDK 放弃时: RECONNECTING → DISCONNECTED
      */
     private _handleConnectionStateChange(curState: string, revState: string): void {
+        console.log('[AgoraManager] 连接状态变化:', revState, '->', curState);
+
         switch (curState) {
-            case 'DISCONNECTED':
-                // 非主动离开的断开，尝试重连
-                if (this._joined && !this._isReconnecting) {
-                    console.warn('[AgoraManager] 连接断开，准备重连...');
-                    this._startReconnect();
-                }
-                break;
-            case 'CONNECTING':
-                console.log('[AgoraManager] 正在连接/重连中...');
-                break;
             case 'CONNECTED':
-                if (this._isReconnecting) {
-                    console.log('[AgoraManager] 重连成功！');
-                    this._isReconnecting = false;
-                    this._reconnectAttempts = 0;
-                    this._restoreLocalTracks();
+                // 从 RECONNECTING 恢复 → SDK 内部重连成功，恢复视频渲染
+                if (this._prevConnState === 'RECONNECTING') {
+                    console.log('[AgoraManager] SDK 自动重连成功，恢复视频渲染');
                     this.onReconnected?.();
                 }
                 break;
             case 'RECONNECTING':
                 console.warn('[AgoraManager] SDK 内部自动重连中...');
                 break;
-        }
-    }
-
-    /**
-     * 启动重连流程（指数退避）
-     */
-    private _startReconnect(): void {
-        if (this._reconnectTimer) return;
-
-        this._isReconnecting = true;
-        // 保存当前频道信息用于重连
-        if (!this._savedChannel) {
-            this._savedChannel = this._channelName;
-            this._savedUid = this._uid;
-            this._hadLocalVideo = !!this._localVideoTrack;
-            this._hadLocalAudio = !!this._localAudioTrack;
+            case 'DISCONNECTED':
+                if (this._joined) {
+                    console.error('[AgoraManager] 连接已断开（SDK 重连失败）');
+                    this.onError?.({ code: 'CONNECTION_LOST', message: '连接已断开' });
+                }
+                break;
         }
 
-        this._tryReconnect();
-    }
-
-    private _tryReconnect(): void {
-        if (this._reconnectAttempts >= this._maxReconnectAttempts) {
-            console.error('[AgoraManager] 重连失败，已达最大重试次数:', this._maxReconnectAttempts);
-            this._stopReconnect();
-            this.onError?.({ code: 'RECONNECT_FAILED', message: '重连失败' });
-            return;
-        }
-
-        // 指数退避: 1s, 2s, 4s, 8s, 16s
-        const delay = Math.min(1000 * Math.pow(2, this._reconnectAttempts), 16000);
-        this._reconnectAttempts++;
-
-        console.log(`[AgoraManager] 第 ${this._reconnectAttempts}/${this._maxReconnectAttempts} 次重连，${delay / 1000}s 后执行`);
-
-        this._reconnectTimer = setTimeout(async () => {
-            this._reconnectTimer = null;
-            await this._doReconnect();
-        }, delay);
-    }
-
-    private async _doReconnect(): Promise<void> {
-        try {
-            // 先尝试用 Agora SDK 内置重连（不清除 client，直接重新 join）
-            const token = await this.fetchToken(this._savedChannel, this._savedUid);
-            if (!token) {
-                console.warn('[AgoraManager] 重连时获取 Token 失败');
-                this._tryReconnect();
-                return;
-            }
-
-            // 重置 joined 状态以便重新 join
-            this._joined = false;
-            this._channelName = '';
-
-            const joined = await this.join(this._savedChannel, token, this._savedUid);
-            if (joined) {
-                console.log('[AgoraManager] 重连成功，已重新加入频道');
-            } else {
-                console.warn('[AgoraManager] 重连 join 失败，继续重试');
-                this._tryReconnect();
-            }
-        } catch (e) {
-            console.error('[AgoraManager] 重连异常:', e);
-            this._tryReconnect();
-        }
-    }
-
-    /**
-     * 重连成功后恢复本地音视频轨道发布
-     */
-    private async _restoreLocalTracks(): Promise<void> {
-        try {
-            const tracks: any[] = [];
-            if (this._hadLocalAudio && this._localAudioTrack) {
-                tracks.push(this._localAudioTrack);
-            }
-            if (this._hadLocalVideo && this._localVideoTrack) {
-                tracks.push(this._localVideoTrack);
-            }
-            if (tracks.length > 0) {
-                await this._client.publish(tracks);
-                console.log('[AgoraManager] 重连后已重新发布本地轨道，数量:', tracks.length);
-            }
-        } catch (e) {
-            console.error('[AgoraManager] 重连后重新发布轨道失败:', e);
-        }
-    }
-
-    /**
-     * 停止重连（主动离开时调用）
-     */
-    private _stopReconnect(): void {
-        if (this._reconnectTimer) {
-            clearTimeout(this._reconnectTimer);
-            this._reconnectTimer = null;
-        }
-        this._isReconnecting = false;
-        this._reconnectAttempts = 0;
-        this._savedChannel = '';
-        this._savedUid = 0;
-        this._hadLocalVideo = false;
-        this._hadLocalAudio = false;
+        this._prevConnState = curState;
     }
 
     /**
      * 离开频道
      */
     public async leave(): Promise<void> {
-        this._stopReconnect();  // 主动离开时取消重连
+        this._prevConnState = 'DISCONNECTED';
         if (!this._joined) return;
+
+        // 先标记为已离开，防止 client.leave() 触发 DISCONNECTED 事件时误报 CONNECTION_LOST
+        this._joined = false;
+        this._channelName = '';
+        this._uid = 0;
 
         // 停止远端用户的音频播放（防止离开房间后仍在播放）
         try {
@@ -458,9 +353,6 @@ export default class AgoraManager {
             console.error('[AgoraManager] 离开频道失败:', e);
         }
 
-        this._joined = false;
-        this._channelName = '';
-        this._uid = 0;
         console.log('[AgoraManager] 已离开频道');
     }
 
@@ -532,7 +424,9 @@ export default class AgoraManager {
         }
         try {
             if (!this._localVideoTrack) {
-                this._localVideoTrack = await (window as any).AgoraRTC.createCameraVideoTrack();
+                this._localVideoTrack = await (window as any).AgoraRTC.createCameraVideoTrack({
+                    encoderConfig: { width: 240, height: 240, frameRate: 15, bitrateMax: 300 },
+                });
             }
             if (container) {
                 this._localVideoTrack.play(container);
@@ -582,7 +476,9 @@ export default class AgoraManager {
                 this._localAudioTrack = await (window as any).AgoraRTC.createMicrophoneAudioTrack();
             }
             if (!this._localVideoTrack) {
-                this._localVideoTrack = await (window as any).AgoraRTC.createCameraVideoTrack();
+                this._localVideoTrack = await (window as any).AgoraRTC.createCameraVideoTrack({
+                    encoderConfig: { width: 240, height: 240, frameRate: 15, bitrateMax: 300 },
+                });
             }
             if (cameraContainer) {
                 this._localVideoTrack.play(cameraContainer);
@@ -623,7 +519,9 @@ export default class AgoraManager {
         }
         if (!this._localVideoTrack) {
             try {
-                this._localVideoTrack = await (window as any).AgoraRTC.createCameraVideoTrack();
+                this._localVideoTrack = await (window as any).AgoraRTC.createCameraVideoTrack({
+                    encoderConfig: { width: 240, height: 240, frameRate: 15, bitrateMax: 300 },
+                });
                 console.log('[AgoraManager] 自动创建本地视频Track');
             } catch (e) {
                 console.error('[AgoraManager] 创建摄像头Track失败:', e);

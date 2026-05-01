@@ -56,17 +56,17 @@ export default class AssetContext extends cc.Component {
     // }
 
     public static setAsset<T extends cc.Asset>(key: AssetFold | string, name: string, asset: T) {
-
-        
-        if (key in AssetFold) {
-
-            key = `${AssetFold[key]}|${asset.name}`;
-            
+        let folderName: string;
+        if (typeof key === "number") {
+            // 如果传入的是枚举值（比如 AssetFold.texture_common，实际上是 0）
+            // 通过 AssetFold[0] 反向拿到它的名字 "texture_common"
+            folderName = AssetFold[key]; 
         } else {
-
-            key = `${key}|${asset.name}`;
+            // 如果传入的是字符串（比如 "texture_common" 或者自定义路径）
+            // 直接使用该字符串
+            folderName = key;
         }
-        AssetContext.map[key] = asset;
+        AssetContext.map[`${folderName}|${name}`] = asset;
     }
 
     /**
@@ -75,13 +75,17 @@ export default class AssetContext extends cc.Component {
      * @returns 
      */
     public static getAsset<T extends cc.Asset>(name: string, key: AssetFold | string = AssetFold.texture_common): T {
-
-        if (key in AssetFold) {
-            key = `${AssetFold[key]}|${name}`;
+        let folderName: string;
+        if (typeof key === "number") {
+            // 如果传入的是枚举值（比如 AssetFold.texture_common，实际上是 0）
+            // 通过 AssetFold[0] 反向拿到它的名字 "texture_common"
+            folderName = AssetFold[key]; 
         } else {
-            key = `${key}|${name}`;
+            // 如果传入的是字符串（比如 "texture_common" 或者自定义路径）
+            // 直接使用该字符串
+            folderName = key;
         }
-        return AssetContext.map[key] as T;
+        return  AssetContext.map[`${folderName}|${name}`] as T;
     }
 
 }

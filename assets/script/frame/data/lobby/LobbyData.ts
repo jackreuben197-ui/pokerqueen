@@ -37,11 +37,11 @@ export default class LobbyData extends BaseData {
     }
 
 
-    respLobbyBaseData(msg, sendInfo) {
+    respLobbyBaseData(msg: Array<any>, sendInfo? : any) {
         this.lobbyGroup.updataData(msg);
     }
 
-    respRoomBlinds(msg, sendInfo, isClub) {
+    respRoomBlinds(msg: any, sendInfo: any, isClub: boolean) {
         this.roomBlinds.updateData(msg.records, isClub);
     }
 
@@ -49,7 +49,7 @@ export default class LobbyData extends BaseData {
     //     this.nameTemp.updateData(msg);
     // }
 
-    respRoomList(msg: TRoomList, sendInfo, isClub) {
+    respRoomList(msg: TRoomList, sendInfo?: any, isClub:boolean = false) {
         this.roomList.updateData(msg, isClub);
     }
 

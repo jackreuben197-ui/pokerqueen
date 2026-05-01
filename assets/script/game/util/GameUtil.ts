@@ -1,6 +1,4 @@
-import { GameConfig } from "../../config/GameConfig";
 import { ProcedureEnum } from "../../define/EIDefine";
-import { UIDefineType } from "../../define/UIDefine";
 import { GM } from "../../gm/GMAPI";
 import H5MsgMgr from "../../H5MsgMgr";
 import { StringHelper } from "../../helper/StringHelper";
@@ -23,11 +21,6 @@ import OmahaGame5 from "../texas/OmahaGame5";
 import OmahaGame6 from "../texas/OmahaGame6";
 import TexasAofGame from "../texas/TexasAofGame";
 import TexasGame from "../texas/TexasGame";
-
-
-
-
-
 
 export class some_pos {
 
@@ -279,10 +272,10 @@ export enum BetType {
     PotLimit = 1,//底池限注
     Aof = 2,//aof
 }
-/**
- * 开放的房间类型
- */
-export var OpenRoomType = [];
+// /**
+//  * 开放的房间类型
+//  */
+// export var OpenRoomType = [];
 
 
 
@@ -455,7 +448,7 @@ export default class GameUtil {
 
 
     //座位位置配置
-    public static pos_config = {
+    public static pos_config: { [key: number]: seat_info[] } = {
         2: [
             new seat_info(0),
             new seat_info(5),
@@ -674,7 +667,7 @@ export default class GameUtil {
     }
 
     //扑克映射表 服务端 : 客户端
-    private static Poker_Map = {
+    private static Poker_Map: { [key: number]: { res: number, show: string } } = {
         //桃
         2: { res: 1, show: "♠2" },
         3: { res: 2, show: "♠3" },
@@ -741,7 +734,7 @@ export default class GameUtil {
     }
 
     public static showPais(list: number[], flag: string = "卡牌:") {
-        let pais = [];
+        let pais:any = [];
         list.forEach(item => {
             pais.push(this.Poker_Map[item].show);
         })
@@ -1067,7 +1060,7 @@ export default class GameUtil {
         }
     }
 
-    public static EnterMTTRoom(param) {
+    public static EnterMTTRoom(param: any = null) {
 
         let room_type: number = GameCache.Instance.room_type;
 

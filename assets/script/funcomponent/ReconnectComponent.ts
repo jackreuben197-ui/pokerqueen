@@ -63,23 +63,23 @@ export default class ReconnectComponent {
 
         if (WebSocketClient.CheckOpen(true)) return;
 
-        console.log("----> 重连socket");
+        // console.log("----> 重连socket");
 
-        WebSocketClient.CleanWS();
+        // WebSocketClient.CleanWS();
 
-        LoginSession.SyncWS().then(
-            //成功
-            () => {
-                //尝试重连
-                this.Reconnect();
-            },
-            //失败
-            () => {
-                GlobalSession.Logout();
-                UIComponent.Instance.Toast("Request Channel Fail");
-                UIComponent.Instance.Toast(i18nMgr.Get("clientInt_anormal"));
-            }
-        )
+        // LoginSession.SyncWS().then(
+        //     //成功
+        //     () => {
+        //         //尝试重连
+        //         this.Reconnect();
+        //     },
+        //     //失败
+        //     () => {
+        //         GlobalSession.Logout();
+        //         UIComponent.Instance.Toast("Request Channel Fail");
+        //         UIComponent.Instance.Toast(i18nMgr.Get("clientInt_anormal"));
+        //     }
+        // )
     }
 
     private _reconnectTime: number = 0;

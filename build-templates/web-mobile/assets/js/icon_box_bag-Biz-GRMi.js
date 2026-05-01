@@ -1,1 +1,0 @@
-var e=``+new URL(`../images/icon_box_bag-IylFu6RU.png`,import.meta.url).href;export{e as t};

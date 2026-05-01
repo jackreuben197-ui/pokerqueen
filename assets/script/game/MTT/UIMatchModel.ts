@@ -22,7 +22,7 @@ export default class UIMatchModel {
                 onSuccess: function () {
                     resolve(WebRoomCenterMttList.Response);
                 }.bind(this),
-                onFailure: function (content) {
+                onFailure: function (content: any) {
                     reject(content);
                 }.bind(this)
             });

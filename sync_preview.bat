@@ -16,6 +16,13 @@ echo.
 echo ============================================
 echo [2/5] Build h5-game
 echo ============================================
+call pnpm install
+if %errorlevel% neq 0 (
+    echo ERROR: pnpm install failed
+    popd
+    pause
+    exit /b 1
+)
 call pnpm build
 if %errorlevel% neq 0 (
     echo ERROR: pnpm build failed

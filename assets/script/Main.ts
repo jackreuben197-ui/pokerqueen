@@ -9,12 +9,11 @@
 /**
  * 入口函数
  */
-import Common_Button_Ex from "./common/Common_Button_Ex";
 import { GameConfig } from "./config/GameConfig";
 import GC from "./frame/GameControl";
 import OrientationComponent from "./funcomponent/OrientationComponent";
 import ReconnectComponent from "./funcomponent/ReconnectComponent";
-import { GM } from "./gm/GMAPI";
+// import { GM } from "./gm/GMAPI";
 import ProcedureManager from "./manager/ProcedureManager";
 import SoundComponent from "./sound/SoundComponent";
 import CCTools from "./tools/CCTools";
@@ -28,11 +27,8 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class Main extends cc.Component {
-
     static instance: Main = null;
-
-    static Cache_UI: cc.Node = null;
-
+    static CacheUI: cc.Node = null;
     static Scene: cc.Node = null;
     static Marquee: cc.Node = null;
     static Form: cc.Node = null;
@@ -67,7 +63,7 @@ export default class Main extends cc.Component {
             TelegramUtils.Instance.printDebugInfo();
         }
 
-        if (!CCTools.getQueryString("log") && GameConfig.publish) {
+        if (!CCTools.getQueryString("log") && GameConfig.IS_PUBLISHED) {
             console.log = function () { }
         }
         console.log("游戏启动", cc.sys.os);
@@ -82,10 +78,10 @@ export default class Main extends cc.Component {
         //设置各种开关
         Main.ShowSeatID = + CCTools.getQueryString("ShowSeatID");
         //设置调试开关
-        GM.SetDebugSwitch(CCTools.getQueryString("debug"));
+        // GM.SetDebugSwitch(CCTools.getQueryString("debug"));
 
         // UI 节点缓存
-        Main.Cache_UI = this.node.parent.getChildByName("Cache_UI - UI缓存");
+        Main.CacheUI = this.node.parent.getChildByName("Cache_UI - UI缓存");
         Main.Scene = this.node.parent.getChildByName("Scene - 场景");
         Main.Marquee = this.node.parent.getChildByName("Marquee - 场景上层");
         Main.Form = this.node.parent.getChildByName("Form - 窗体层");
@@ -113,8 +109,6 @@ export default class Main extends cc.Component {
 
         GC.uc.AddComponent(new OrientationComponent);
 
-        MainUtils.loadWebSDK();
-
         SoundComponent.Instance.initSound();
 
         ReconnectComponent.Instance.Start();
@@ -130,7 +124,7 @@ export default class Main extends cc.Component {
         GC.uc.Update(dt);
     }
     start() {
-        console.log("start");
+        console.log("start test");
         ProcedureManager.Init();
     }
 }

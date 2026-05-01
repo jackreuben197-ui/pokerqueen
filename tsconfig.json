@@ -8,7 +8,9 @@
     "outDir": "temp/vscode-dist",
     "rootDir": "./assets/script",
     "forceConsistentCasingInFileNames": true,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "ignoreDeprecations": "6.0",
+    "types": ["node"]
   },
   "exclude": [
     "back_script",

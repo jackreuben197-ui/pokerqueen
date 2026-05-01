@@ -97,7 +97,7 @@ class SeatMoveStruct {
     public move_cp_count: number;
 
     //this func param id标记 id flag
-    public cacheFuncs: { a?; b?; c?; d?}[] = null;
+    public cacheFuncs: { a?: Function; b?: Function; c?: Function; d?: Function }[] = null;
 
     constructor() {
         this.reset();
@@ -118,9 +118,9 @@ export default class TexasGame {
     private bombPotFeature: TexasGameBombPot = null;
     jackpotFeature: TexasGameJackpot = null;
     ///////////////////////////////
-    private setting = {
+    private setting: { deskType: any; pokerType: any } = {
         deskType: null,
-        pokerType: null,
+        pokerType: null ,
     };
     //判断是否比赛
     public isMTT: boolean = false;
@@ -1219,7 +1219,7 @@ export default class TexasGame {
             console.log("房间队列请求完毕---->");
         }
     }
-    roomReqList = [];
+    roomReqList: any = [];
 
     // 刷新分池
     public UpdatePots(): void {
@@ -2450,7 +2450,7 @@ export default class TexasGame {
         tween.delay(endTime + 0.4);
 
         if (null != tweenCallback) {
-            this.sequencePlayDealAnimation.IsPlaying = false;
+            this.sequencePlayDealAnimation && (this.sequencePlayDealAnimation.IsPlaying = false);
             tween.call(tweenCallback);
         }
         tween.start();
@@ -2609,7 +2609,7 @@ export default class TexasGame {
         this.fuck4thPCardByInsuranceState = 0;
 
         let PublicCardInfo: PublicCardInfo = null;
-        let cardId = null;
+        let cardId: number = null;
 
         let cards = this.GetPublicCards(1);
 
@@ -2764,7 +2764,7 @@ export default class TexasGame {
             // 参与了牌局，才能看到牌型提示
             let mClientSeat: Seat = this.GetSeatByClientId(0);
             if (null != mClientSeat.Player && mClientSeat.Player.userID == this.mainPlayer.userID && this.mainPlayer.isParticipateInTheGame) {
-                let highlightCards_ref = { highlightCards: null };
+                let highlightCards_ref = { highlightCards: [] as number[] };
                 let cardType: CardType = this.GetCardType(
                     highlightCards_ref,
                     cards,
@@ -3084,7 +3084,7 @@ export default class TexasGame {
             }
         }
         tween.call(() => {
-            this.sequenceSecondUpdatePublicCards.IsPlaying = false;
+            this.sequenceSecondUpdatePublicCards && (this.sequenceSecondUpdatePublicCards.IsPlaying = false);
         });
         tween.start();
     }
@@ -3095,7 +3095,7 @@ export default class TexasGame {
     public UpdateSecondPublicCardsCardType(secondPublicCards: number[]): void {
         // 参与了牌局，才能看到牌型提示
         if (null != this.mainPlayer && this.mainPlayer.cards.length > 0) {
-            let highlightCards_ref = { highlightCards: null };
+            let highlightCards_ref = { highlightCards: [] as number[] };
             let cardType: CardType = this.GetCardType(
                 highlightCards_ref,
                 secondPublicCards,
@@ -3225,7 +3225,7 @@ export default class TexasGame {
     /// <summary>
     /// 播放首次收筹码到底池动画
     /// </summary>Sequence
-    public PlayFirstRecyclingChipAnimation(tweenCallback) {
+    public PlayFirstRecyclingChipAnimation( tweenCallback?: Function): any {
         this.fuck4thPCardByInsuranceState = 1;
         let mSeat: Seat = null;
         this.sequencePlayFirstRecyclingChipAnimation = {};
@@ -3244,7 +3244,7 @@ export default class TexasGame {
 
         if (null != tween) {
             this.sequencePlayFirstRecyclingChipAnimation.complete = () => {
-                this.sequencePlayFirstRecyclingChipAnimation.IsPlaying = false;
+                this.sequencePlayFirstRecyclingChipAnimation && (this.sequencePlayFirstRecyclingChipAnimation.IsPlaying = false);
                 tweenCallback?.();
             };
             this.sequencePlayFirstRecyclingChipAnimation.IsPlaying = true;
@@ -3276,14 +3276,14 @@ export default class TexasGame {
         if (null != tween) {
             if (null != tweenCallback) {
                 this.sequencePlayRecyclingChipAnimation.complete = () => {
-                    this.sequencePlayRecyclingChipAnimation.IsPlaying = false;
+                    this.sequencePlayRecyclingChipAnimation && (this.sequencePlayRecyclingChipAnimation.IsPlaying = false);
                     this.UpdatePots();
                     tweenCallback?.();
                 };
             } else {
                 //sequencePlayRecyclingChipAnimation.OnComplete(UpdatePots);
                 this.sequencePlayRecyclingChipAnimation.complete = () => {
-                    this.sequencePlayRecyclingChipAnimation.IsPlaying = false;
+                    this.sequencePlayRecyclingChipAnimation && (this.sequencePlayRecyclingChipAnimation.IsPlaying = false);
                     this.UpdatePots();
                 };
             }
@@ -3357,7 +3357,7 @@ export default class TexasGame {
         }
 
         let mIsFirst = true;
-        let mCacheCardIds = [];
+        let mCacheCardIds: number[] = [];
         let cards = this.GetPublicCards(1);
         for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
             for (
@@ -3540,7 +3540,7 @@ export default class TexasGame {
             );
         }
     }
-    private GetSetting(diamondConfig) {
+    private GetSetting(diamondConfig: any) {
         if (diamondConfig.setting) {
             for (let item of diamondConfig.setting) {
                 if (item.sb == this.smallBlind) {
@@ -3628,7 +3628,7 @@ export default class TexasGame {
     /// <summary>
     /// 设置第一套公共牌颜色
     /// </summary>
-    public SetPublicCardsImageColor(color): void {
+    public SetPublicCardsImageColor(color: cc.Color): void {
         let PublicCardInfo: PublicCardInfo = null;
         for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
             PublicCardInfo = this.uirc.listCards[i];
@@ -3636,7 +3636,7 @@ export default class TexasGame {
             PublicCardInfo.imageSelect.node.active = false;
         }
     }
-    public SetSecondPublicCardImageColor(color): void {
+    public SetSecondPublicCardImageColor(color: cc.Color): void {
         let SecondPublicCardInfo: PublicCardInfo = null;
         for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
             SecondPublicCardInfo = this.uirc.listSecondCards[i];
@@ -3706,7 +3706,7 @@ export default class TexasGame {
 
         // 参与了牌局，才能看到牌型提示
         if (null != this.mainPlayer && this.mainPlayer.isPlaying) {
-            let highlightCards_ref = { highlightCards: null };
+            let highlightCards_ref = { highlightCards: [] as number[] };
 
             let cardType: CardType = this.GetCardType(
                 highlightCards_ref,
@@ -3857,7 +3857,7 @@ export default class TexasGame {
     /**
      * 显示手动设置面板 
      */
-    private ShowAddChips(wallets): void {
+    private ShowAddChips(wallets: any): void {
         UIComponent.Instance.ShowUI<AddClipsData>(
             PrefabUI.UIBringIn,
             {
@@ -4610,7 +4610,7 @@ export default class TexasGame {
                     (res: any) => {
                         if (res.code == 0 && res.data.data != null) {
                             let isShow = false;
-                            res.data.data.forEach((item) => {
+                            res.data.data.forEach((item: any) => {
                                 if (item.status == 1) {
                                     isShow = true;
                                 }

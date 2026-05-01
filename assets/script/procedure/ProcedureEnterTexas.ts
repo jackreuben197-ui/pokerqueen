@@ -109,7 +109,7 @@ export default class ProcedureEnterTexas extends ProcedureBase {
         ReconnectComponent.Instance.ChangeStatus(1);
 
         // 切换到闲置状态
-        ProcedureManager.StartProcedure(ProcedureEnum.Idel);
+        ProcedureManager.StartProcedure(ProcedureEnum.Idle);
 
         // 通知 H5 层恢复显示
         H5MsgMgr.sendToH5('h5Show', 1);
@@ -124,9 +124,10 @@ export default class ProcedureEnterTexas extends ProcedureBase {
         // 开始进入前台
         this._entrance.enterForegroundAsync();
     }
-    errorHandler() {
+    errorHandler(error: any) {
         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
-        ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { mode: 1, game_enter_type: 0 });
+        console.log('进入房间发生错误:', error);
+        // ProcedureManager.StartProcedure(ProcedureEnum.Idle, { mode: 1, game_enter_type: 0 });
     }
 
 } 

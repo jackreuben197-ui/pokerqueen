@@ -380,7 +380,7 @@ export default class ProtocolAgency extends cc.Component {
         body_ua = null;
     }
 
-    static _readNumber(ua: Uint8Array, offset, size): number {
+    static _readNumber(ua: Uint8Array, offset: number, size: number): number {
         let result: number = 0;
         for (let i = 0; i < size; i++) {
             let num = ua[offset + i];
@@ -390,10 +390,10 @@ export default class ProtocolAgency extends cc.Component {
         return result;
     }
 
-    static _getProtocolNameByCode(code): string {
+    static _getProtocolNameByCode(code: number): string {
         return ProtocolCode[code];
     }
     static _getCodeByProtocolName(name: string): number {
-        return ProtocolCode[name];
+        return ProtocolCode[name as keyof typeof ProtocolCode];
     }
 }

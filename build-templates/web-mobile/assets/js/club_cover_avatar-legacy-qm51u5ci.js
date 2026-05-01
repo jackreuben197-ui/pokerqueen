@@ -1,1 +1,0 @@
-System.register([],function(e,t){return{setters:[],execute:function(){e("t",""+new URL("../images/club_cover_avatar-CGnS5mJl.png",t.meta.url).href)}}});

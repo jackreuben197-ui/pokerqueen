@@ -9,25 +9,22 @@ export default class SoundComponent {
         return (this as any).instance ??= new SoundComponent;
     }
 
-    sound_switch_on: boolean = false;
+    soundOn: boolean = false;
 
     initSound() {
-        let sound_is_open = GC.localStore.getItem(StorageKey.soundIsOpen);
-        if (sound_is_open == null || (+sound_is_open) == 1) {
-            this.sound_switch_on = true;
+        let soundIsOpen = GC.localStore.getItem(StorageKey.soundIsOpen);
+        if (soundIsOpen == null || (+soundIsOpen) == 1) {
+            this.soundOn = true;
         }
         else {
-            this.sound_switch_on = false;
+            this.soundOn = false;
         }
     }
 
     Play(name: string, loop: boolean = false) {
-
-        if (this.sound_switch_on) {
-
-            let sounc_clip: cc.AudioClip = AssetContext.getAsset<cc.AudioClip>(name, AssetFold.sound_all);
-
-            sounc_clip && cc.audioEngine.playEffect(sounc_clip, loop);
+        if (this.soundOn) {
+            let soundClip: cc.AudioClip = AssetContext.getAsset<cc.AudioClip>(name, AssetFold.sound_all);
+            soundClip && cc.audioEngine.playEffect(soundClip, loop);
         }
     }
 }

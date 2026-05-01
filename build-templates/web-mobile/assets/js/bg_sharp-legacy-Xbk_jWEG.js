@@ -1,1 +1,0 @@
-System.register([],function(e,t){return{setters:[],execute:function(){e("t",""+new URL("../images/bg_sharp-D3iMdVjb.webp",t.meta.url).href)}}});

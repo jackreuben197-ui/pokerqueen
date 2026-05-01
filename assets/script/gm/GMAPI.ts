@@ -4,7 +4,6 @@ import { UIDefine } from "../define/UIDefine";
 import GC from "../frame/GameControl";
 import { GameCache } from "../game/GameCache";
 
-import Seat from "../game/seat/Seat";
 import PublicHelper from "../helper/PublicHelper";
 import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";

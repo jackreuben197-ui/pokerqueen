@@ -7,7 +7,7 @@ import * as i18nLabel from "./i18nLabel";
 import * as i18nSprite from "./i18nSprite";
 //var CSV = require("CSV");
 //上来先处理数据 当前的语言 0简中 1繁中 2英文 3葡语  let type = ["cn","zh","en","pt"]
-var LanguageAllObject = {
+var LanguageAllObject: Record<string, { [key: string]: string }> = {
     cn: {},
     zh: {},
     en: {},
@@ -36,39 +36,40 @@ export class i18nMgr {
     private static LanguageObject: { [key: string]: string } = {};   // 文字配置
     private static spriteArr: i18nSprite.i18nSprite[] = [];       // i18nSprite 列表
 
-    private static LanMap = {
-        cn: "sl_bnftN7UY",
-        pt: "sl_ptyyPutao",
-        en: "sl_K8cPNvxU",
-    }
+    // private static LanMap = {
+    //     cn: "sl_bnftN7UY",
+    //     pt: "sl_ptyyPutao",
+    //     en: "sl_K8cPNvxU",
+    // }
 
-    public static isCN() {
-        return this.language == "cn";
-    }
+    // public static isCN() {
+    //     return this.language == "cn";
+    // }
 
     public static initLanguage() {
-        this.language = GC.localStore.getItem(StorageKey.Language) || GameConfig.Default_Language;
+        this.language = GC.localStore.getItem(StorageKey.LANGUAGE) || GameConfig.DEFAULT_LANGUAGE;
         this.LanguageObject = LanguageAllObject[this.language];
     }
-    //当前的语言 0简中 1英文 2繁中 3葡语 4西班牙语 5 俄语 6 德语 7 印度语 8 越南语
-    public static getLanguage() {
-        this.language = GC.localStore.getItem(StorageKey.Language) || GameConfig.Default_Language;
-        switch (this.language) {
-            case 'cn':
-                return 0;
-            case 'pt':
-                return 3;
-            case 'en':
-                return 1;
-            default:
-                break;
-        }
-    }
 
-    public static getLanguageText() {
-        //return i18nMgr.Get("UserLanguage").split("^")[i18nMgr.getLanguage()];
-        return i18nMgr.Get(this.LanMap[this.language]);
-    }
+    //当前的语言 0简中 1英文 2繁中 3葡语 4西班牙语 5 俄语 6 德语 7 印度语 8 越南语
+    // public static getLanguage() {
+    //     this.language = GC.localStore.getItem(StorageKey.Language) || GameConfig.Default_Language;
+    //     switch (this.language) {
+    //         case 'cn':
+    //             return 0;
+    //         case 'pt':
+    //             return 3;
+    //         case 'en':
+    //             return 1;
+    //         default:
+    //             break;
+    //     }
+    // }
+
+    // public static getLanguageText() {
+    //     //return i18nMgr.Get("UserLanguage").split("^")[i18nMgr.getLanguage()];
+    //     return i18nMgr.Get(this.LanMap[this.language]);
+    // }
 
 
 
@@ -80,7 +81,7 @@ export class i18nMgr {
             return;
         }
         this.language = language;
-        GC.localStore.setItem(StorageKey.Language, this.language);
+        GC.localStore.setItem(StorageKey.LANGUAGE, this.language);
         this.LanguageObject = LanguageAllObject[this.language];
         this.refreshAllLabel();
         this.reloadSprite();
@@ -160,12 +161,13 @@ export class i18nMgr {
      * 解析配置表：先用 cc.resources 读取内置词典，
      * 再在 Web 环境下 fetch 外部同名 txt 文件进行补充/覆盖。
      */
-    public static praseConfig() {
-        this._praseConfig("en", cc.resources.get("config/USER_EN", cc.TextAsset));
-        this._praseConfig("pt", cc.resources.get("config/USER_PT", cc.TextAsset));
-        this._praseConfig("zh", cc.resources.get("config/USER_TW", cc.TextAsset));
-        this._praseConfig("cn", cc.resources.get("config/USER_ZH", cc.TextAsset));
-    }
+    // public static praseConfig() {
+    //     this._praseConfig("en", cc.resources.get("config/USER_EN", cc.TextAsset));
+    //     this._praseConfig("pt", cc.resources.get("config/USER_PT", cc.TextAsset));
+    //     this._praseConfig("zh", cc.resources.get("config/USER_TW", cc.TextAsset));
+    //     this._praseConfig("cn", cc.resources.get("config/USER_ZH", cc.TextAsset));
+    // }
+    
     public static _praseConfig(language: string, config: cc.TextAsset) {
         if (config && config.text) {
             let list = config.text.split("\n");
@@ -185,17 +187,16 @@ export class i18nMgr {
      * 通过 cc.resources.load 加载词典资源并刷新 UI。
      * 走 Cocos 资源管道，自动享受 md5Cache 缓存刷新。
      */
-    public static loadAndRefreshConfig(): Promise<void> {
+    public static async loadAndRefreshConfig(): Promise<void> {
         const tasks = [
             this._loadConfig("en", "config/USER_EN"),
             this._loadConfig("pt", "config/USER_PT"),
             this._loadConfig("zh", "config/USER_TW"),
             this._loadConfig("cn", "config/USER_ZH"),
         ];
-        return Promise.all(tasks).then(() => {
-            this.LanguageObject = LanguageAllObject[this.language];
-            this.refreshAllLabel();
-        });
+        await Promise.all(tasks);
+        this.LanguageObject = LanguageAllObject[this.language];
+        this.refreshAllLabel();
     }
     private static _loadConfig(language: string, path: string): Promise<void> {
         return new Promise((resolve) => {

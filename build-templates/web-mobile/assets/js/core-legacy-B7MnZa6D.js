@@ -1,1 +1,0 @@
-System.register(["./sync-legacy-CQwpeNNk.js"],function(e,t){return{setters:[function(e){}],execute:function(){}}});

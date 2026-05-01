@@ -23,7 +23,7 @@ export default class StorageKey {
   static PHONE = "PHONE";
   /////////////////////////////////////////
   //语言
-  static Language = "Language";
+  static LANGUAGE = "Language";
 
   static KEY_USERID = "KEY_USERID";
   static KEY_PHONE = "KEY_PHONE";

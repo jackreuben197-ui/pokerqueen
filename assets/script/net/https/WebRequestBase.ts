@@ -77,7 +77,7 @@ export class WWW {
         club_id?: number;
         juhua?: boolean;
         useCache?: boolean;
-    }) {
+    }): Promise<any> {
         return new Promise((resolve, reject) => {
             let obj: any = {
                 request: param.web_class,

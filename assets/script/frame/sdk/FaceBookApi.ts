@@ -24,8 +24,8 @@ export type TFackBookLoginRspAuth = {
 
 export default class FaceBookApi {
     static rspData: TFackBookLoginRspAuth = null;
-    static func = null;
-    static login(func) {
+    static func:Function = null;
+    static login(func:Function) {
         this.func = func;
         (window as any).FB && (window as any).FB.getLoginStatus(function (response: TFackBookLoginCB) {
             // 返回的数据结构
@@ -43,7 +43,7 @@ export default class FaceBookApi {
             if (response.status == 'connected') {
                 FaceBookApi.loginSuc(response.authResponse)
             } else {
-                (window as any).FB && (window as any).FB.login(function (response) {
+                (window as any).FB && (window as any).FB.login(function (response:any) {
                     console.log("==========> facebook login : ", response)
                     if (response.status == 'connected') {
                         FaceBookApi.loginSuc(response.authResponse)
@@ -70,7 +70,7 @@ export default class FaceBookApi {
             LoginSession.WebLoginThirdParty({ token: this.rspData.accessToken, source: "facebook", app_source: 3 }).then(() => ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby));
         }
 
-        (window as any).FB && (window as any).FB.api('/me', function (response) {
+        (window as any).FB && (window as any).FB.api('/me', function (response:any) {
             console.log('==========> facebook api : ', response);
         });
     }

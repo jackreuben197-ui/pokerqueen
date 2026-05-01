@@ -95,13 +95,13 @@ export default class SettingsForm extends BaseForm {
         );
         let Layout: cc.Node = this.getChildNodeOrComponent("Layout");
         Layout.children.forEach((item, i) => {
-            item["index"] = i + 1;
+            //item["index"] = i;
             item.on(cc.Node.EventType.TOUCH_END, this.onItemClick, this);
         });
         //this.setItems();
         this.updateLaunch();
         let version_Text = this.getChildNodeOrComponent("Text_Right", cc.Label);
-        version_Text.string = GameConfig.Version + "||" + GameConfig.BuildType;
+        version_Text.string = GameConfig.VERSION + "||" + GameConfig.BUILD_TYPE;
     }
     /**
      * 注册触摸事件

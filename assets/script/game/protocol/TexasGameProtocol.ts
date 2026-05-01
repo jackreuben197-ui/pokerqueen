@@ -1099,6 +1099,7 @@ export default class TexasGameProtocol {
             if (PlayRecyclingWinChipAnimation_Tween) {
 
                 tween.then(cc.callFunc(() => {
+                    if (!Seat?.ui?.isValid) return;
                     PlayRecyclingWinChipAnimation_Tween.IsPlaying = true;
                     PlayRecyclingWinChipAnimation_Tween.tween.start();
                 }));
@@ -1304,6 +1305,7 @@ export default class TexasGameProtocol {
             if (PlayRecyclingWinChipAnimation_Tween) {
 
                 tween.then(cc.callFunc(() => {
+                    if (!mSeat?.ui?.isValid) return;
                     PlayRecyclingWinChipAnimation_Tween.IsPlaying = true;
                     PlayRecyclingWinChipAnimation_Tween.tween.start();
                 }));

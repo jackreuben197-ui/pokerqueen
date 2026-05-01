@@ -1,1 +1,0 @@
-import{a as e,o as t}from"./auth-BbmH9BLM.js";async function n(e){return(await t.post(`/roomcenter/user/all/room/ids`,e)).data}async function r(n){let r=(await t.post(`/roomcenter/user/rooms/list`,n)).data;return e(n,r),r}export{r as n,n as t};

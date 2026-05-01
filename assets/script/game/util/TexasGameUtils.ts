@@ -200,7 +200,7 @@ export default class TexasGameUtils {
     /// </summary>
     /// <param name="publicCardInfos"></param>
     public SetWinnerCardsHight(publicCardInfos: PublicCardInfo[], _cards: number[]): void {
-        let highlightCards_ref = { highlightCards: null };
+        let highlightCards_ref = { highlightCards: [] as number[] };
         let cardType: CardType = this.game.GetCardType(highlightCards_ref, _cards);
         let highlightCards = highlightCards_ref.highlightCards;
         for (let i = 0, n = publicCardInfos.length; i < n; i++) {
@@ -293,6 +293,10 @@ export default class TexasGameUtils {
         // GameCache.Instance.limit_bring_in = 0
 
         //#endregion
+        
+        // 通知 H5 层恢复显示
+        ProcedureManager.StartProcedure(ProcedureEnum.Idle);
+        H5MsgMgr.sendToH5('h5Show', 1);
     }
 
     //得到 当前 在场玩家     不包括自己
