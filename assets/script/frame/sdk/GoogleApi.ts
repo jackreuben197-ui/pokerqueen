@@ -1,3 +1,4 @@
+import { A } from "../../common/Singleton";
 import { ProcedureEnum } from "../../define/EIDefine";
 import ProcedureManager from "../../manager/ProcedureManager";
 import LoginSession from "../../session/LoginSession";
@@ -6,18 +7,18 @@ export default class GoogleApi {
     static client_id: string = '671936740901-7e3qu313i1tf6bkg0gdo39jekv085r48.apps.googleusercontent.com'
     // static client_id: string = '779388442442-1ov44ohqr1mgauuf8mkem30orc3mn7ev.apps.googleusercontent.com';
     static credential: string = '';
-    static func = null;
+    static func:Function = null;
     static init() {
         console.log("================> google sdk init");
         (window as any).google && (window as any).google.accounts.id.initialize({
             client_id: this.client_id,
             cancel_on_tap_outside: false,
-            callback: (msg) => GoogleApi.loginSuc(msg)
+            callback: (msg: any) => GoogleApi.loginSuc(msg)
         })
     };
 
 
-    static loginSuc(msg) {
+    static loginSuc(msg: any) {
         console.log("================> google login initialize cb : ", msg)
         // {clientId: '381824986181-cg3676e7rlg4ofv9r5pbsad35jtcqv9s.apps.googleusercontent.com', credential: 'eyJhbGciOiJSUzI1NiIsImtpZCI6Ijc3Y2MwZWY0YzcxODFjZj…vqJxpR0ycZlwV8xia5bwyZqwFmtNX8HjcJ29zQAjSH926Y0Sw', select_by: 'user'}
         this.credential = msg.credential;
@@ -62,10 +63,10 @@ export default class GoogleApi {
         )
     }
 
-    static prompt(func) {
+    static prompt(func:Function) {
         this.func = func
         console.log("================> google sdk prompt");
-        (window as any).google && (window as any).google.accounts.id.prompt(notification => {
+        (window as any).google && (window as any).google.accounts.id.prompt((notification:any) => {
             console.log("这个通知适用于显示时刻吗？ ==> ", notification.isDisplayMoment())
             console.log("此通知是针对某个显示时刻，还是显示了界面？ ==> ", notification.isDisplayed())
             console.log("这是针对显示时刻的通知，而界面未显示吗？ ==> ", notification.isNotDisplayed())
@@ -88,7 +89,7 @@ export default class GoogleApi {
             client_id: this.client_id,
             ux_mode: 'popup',
             scope: "https://www.googleapis.com/auth/calendar.readonly",
-            callback: (msg) => this.initCodeClientSuc(msg)
+            callback: (msg:any) => this.initCodeClientSuc(msg)
         })
     }
 
@@ -98,14 +99,14 @@ export default class GoogleApi {
             client_id: this.client_id,
             ux_mode: 'popup',
             scope: "https://www.googleapis.com/auth/calendar.readonly",
-            callback: (msg) => this.initTokenClientSuc(msg)
+            callback: (msg:any) => this.initTokenClientSuc(msg)
         })
     }
 
-    static initCodeClientSuc(msg) {
+    static initCodeClientSuc(msg:any) {
         console.log("================> google initCodeClientSuc : ", msg)
     }
-    static initTokenClientSuc(msg) {
+    static initTokenClientSuc(msg:any) {
         console.log("================> google initTokenClientSuc : ", msg)
     }
 }

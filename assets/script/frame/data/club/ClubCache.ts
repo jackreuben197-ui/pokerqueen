@@ -23,16 +23,16 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export class ClubCache {
-    static _msg = null;
-    static _allCubData = null;
-    static _diamonds_wallet = null;
+    static _msg:any = null;
+    static _allCubData: any = null;
+    static _diamonds_wallet: number | null = null;
     // 创建来源 1 平台，2 联盟，3 公会（外） 4 个人（朋友桌）5 公会（内）
     // joinCreateMatchType 0 俱乐部  1 朋友桌
-    static joinCreateMatchType = 0;
+    static joinCreateMatchType:number = 0;
     //玩法类型 1 NLH 2 PLO 3 6+
-    static CreateGameType = 1
-    static mttPayWallat = null;   //mtt支付钱包
-    static setClubData(data) {
+    static CreateGameType: number = 1
+    static mttPayWallat: any = null;   //mtt支付钱包
+    static setClubData(data: any) {
         this._msg = data
         GameCache.Instance.isHadClub = this._msg?.club_id > 0;
     }
@@ -143,13 +143,13 @@ export class ClubCache {
 
 
 
-    static refreshData(data: Object) {
+    static refreshData(data: {[props: string]: any}) {
         Object.keys(data).map((key) => {
             this._msg[key] = data[key];
         })
         GC.notify.post(EventName.refreshClubData)
     }
-    static setRoleType(hg, type) {
+    static setRoleType(hg:any, type: number) {
         //0 普通 1会长 3管理员 4代理
         switch (type) {
             case 0:
@@ -171,7 +171,7 @@ export class ClubCache {
                 break;
         }
     }
-    static getRoleName(type) {
+    static getRoleName(type: number) {
         let name = ''
         switch (type) {
             case 0:
@@ -195,10 +195,10 @@ export class ClubCache {
     }
     //设置用户等级图标
     static getUserLevelIcon(user_level: number): cc.SpriteFrame {
-        let spriteFrame = null;
+        let spriteFrame: cc.SpriteFrame;
         switch (user_level) {
             case 0:
-                spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club);;
+                spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club);
                 break;
             case 1:
                 spriteFrame = AssetContext.getAsset('hg03', AssetFold.texture_new_club);
@@ -208,6 +208,9 @@ export class ClubCache {
                 break;
             case 4:
                 spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club);
+                break;
+            default:
+                spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club);;
                 break;
         }
         return spriteFrame;

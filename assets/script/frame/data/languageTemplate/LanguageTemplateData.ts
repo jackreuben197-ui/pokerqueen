@@ -15,7 +15,7 @@ export default class LanguageTemplateData extends BaseData {
         }
     }
 
-    respLanguageTemp(msg: Array<TLanguageTemp>, sendInfo) {
+    respLanguageTemp(msg: Array<TLanguageTemp>, sendInfo?: any): void {
         this.temp.updateData(msg);
     }
 

@@ -425,7 +425,7 @@ export default class TexasGameMessageHandler {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_BringIn_Handler`);
     }
 
-    public Protocol_Holdem_UpBlind_Handler(rec) {
+    public Protocol_Holdem_UpBlind_Handler(response: any): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_UpBlind_Handler`);
     }
     /// <summary>
@@ -449,14 +449,14 @@ export default class TexasGameMessageHandler {
 
 
 
-    Protocol_Holdem_InsuranceTrigged_Handler(response) {
+    Protocol_Holdem_InsuranceTrigged_Handler(response: any): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_InsuranceTrigged_Handler`);
     }
     /// <summary>
     /// 加时（其他人接收）消息回调
     /// </summary>
     /// <param name="response"></param>
-    Protocol_Holdem_AddTimeOthers_Handler(response) {
+    Protocol_Holdem_AddTimeOthers_Handler(response: any): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_AddTimeOthers_Handler`);
     }
     /// <summary>
@@ -475,14 +475,14 @@ export default class TexasGameMessageHandler {
     /// 本人/所有人都收到的消息（本人主动留座收不到，被动会收到）消息回调
     /// </summary>
     /// <param name="response"></param>
-    Protocol_Holdem_KeepSeat_Handler(response) {
+    Protocol_Holdem_KeepSeat_Handler(response: any): void {
         cc.log(`# MSG_CALLBACK: Protocol_Holdem_KeepSeat_Handler`);
     }
     /// <summary>
     /// 所有人收到主动/自动行为（包括自己） 消息回调
     /// </summary>
     /// <param name="response"></param>
-    private Protocol_Holdem_ActionAll_Handler(response): void {
+    private Protocol_Holdem_ActionAll_Handler(response: any): void {
         cc.log(`# MSG_CALLBACK: Protocol_Holdem_ActionAll_Handler`);
     }
 
@@ -490,7 +490,7 @@ export default class TexasGameMessageHandler {
     /// 桌上筹码带入变动（上桌的筹码变动) 消息回调
     /// </summary>
     /// <param name="response"></param>
-    Protocol_Holdem_ChipsChange_Handler(response) {
+    Protocol_Holdem_ChipsChange_Handler(response: any): void {
         cc.log(`# MSG_CALLBACK: Protocol_Holdem_ChipsChange_Handler`);
     }
 
@@ -498,7 +498,7 @@ export default class TexasGameMessageHandler {
     /// 边池信息 消息回调
     /// </summary>
     /// <param name="response"></param>
-    private Protocol_Holdem_SidePots_Handler(response): void {
+    private Protocol_Holdem_SidePots_Handler(response: any): void {
         cc.log(`# MSG_CALLBACK: Protocol_Holdem_SidePots_Handler`);
     }
 
@@ -538,7 +538,7 @@ export default class TexasGameMessageHandler {
     /// 亮牌 消息回调
     /// </summary>
     /// <param name="response"></param>
-    Protocol_Holdem_Showcards_Handler(response) {
+    Protocol_Holdem_Showcards_Handler(response: any): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_Showcards_Handler`);
     }
 
@@ -546,27 +546,27 @@ export default class TexasGameMessageHandler {
     /// 主动存筹码 消息回调
     /// </summary>
     /// <param name="response"></param>
-    Protocol_Holdem_StoreChips_Handler(response) {
+    Protocol_Holdem_StoreChips_Handler(response: any): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_StoreChips_Handler`);
     }
-    Protocol_Holdem_AgreePost_Handler(response) {
+    Protocol_Holdem_AgreePost_Handler(response: any): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_AgreePost_Handler`);
     }
-    Protocol_Holdem_BuyInsuranceActive_Handler(response) {
+    Protocol_Holdem_BuyInsuranceActive_Handler(response: any): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_BuyInsuranceActive_Handler`);
     }
     /// <summary>
     /// 要求亮明未使用的公共牌 消息回调
     /// </summary>
     /// <param name="response"></param>
-    Protocol_Holdem_ShowPublicCards_Handler(response) {
+    Protocol_Holdem_ShowPublicCards_Handler(response: any): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_ShowPublicCards_Handler`);
     }
     /// <summary>
     /// 其他人收到有人看公共牌 消息回调
     /// </summary>
     /// <param name="response"></param>
-    Protocol_Holdem_ShowPublicCardsOthers_Handler(response) {
+    Protocol_Holdem_ShowPublicCardsOthers_Handler(response: any) {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_ShowPublicCardsOthers_Handler`);
     }
 
@@ -574,28 +574,28 @@ export default class TexasGameMessageHandler {
     /// 主动留座 消息回调
     /// </summary>
     /// <param name="response"></param>
-    private Protocol_Holdem_KeepSeatActive_Handler(response): void {
+    private Protocol_Holdem_KeepSeatActive_Handler(response: any): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_KeepSeatActive_Handler`);
     }
     /// <summary>
     /// 设置自动带入额度(自动每手带入） 消息回调
     /// </summary>
     /// <param name="response"></param>
-    Protocol_Holdem_SetAutoOnTable_Handler(response) {
+    Protocol_Holdem_SetAutoOnTable_Handler(response: any): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_SetAutoOnTable_Handler`);
     }
     /// <summary>
     /// 主动行为 消息回调
     /// </summary>
     /// <param name="response"></param>
-    Protocol_Holdem_Action_Handler(response) {
+    Protocol_Holdem_Action_Handler(response: any): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_Action_Handler`);
     }
     /// <summary>
     /// 加时 消息回调
     /// </summary>
     /// <param name="response"></param>
-    Protocol_Holdem_AddTime_Handler(response) {
+    Protocol_Holdem_AddTime_Handler(response: any): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_AddTime_Handler`);
     }
 
@@ -603,7 +603,7 @@ export default class TexasGameMessageHandler {
     /// 主动展示底牌 消息回调
     /// </summary>
     /// <param name="response"></param>
-    private Protocol_Holdem_Showdown_Handler(response) {
+    private Protocol_Holdem_Showdown_Handler(response: any): void {
         cc.log(`# MSG_CALLBACK: Protocol_Holdem_Showdown_Handler`);
     }
 

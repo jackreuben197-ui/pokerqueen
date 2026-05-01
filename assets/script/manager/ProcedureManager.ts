@@ -11,7 +11,6 @@
  */
 import { ProcedureEnum } from "../define/EIDefine";
 import ProcedureBase from "../procedure/ProcedureBase";
-import ProcedureConfig from "../procedure/ProcedureConfig";
 import ProcedureEnterTexas from "../procedure/ProcedureEnterTexas";
 import ProcedureIdle from "../procedure/ProcedureIdle";
 import ProcedureInit from "../procedure/ProcedureInit";
@@ -27,7 +26,7 @@ export default class ProcedureManager {
         this.procedureDic[ProcedureEnum.Idle] = new ProcedureIdle(ProcedureEnum.Idle);
         this.procedureDic[ProcedureEnum.Init] = new ProcedureInit(ProcedureEnum.Init);
         // this.procedureDic[ProcedureEnum.PrelLoadLogin] = new ProcedurePrelLoadLogin(ProcedureEnum.PrelLoadLogin);
-        //this.procedureDic[ProcedureEnum.Config] = new ProcedureConfig(ProcedureEnum.Config);
+        // this.procedureDic[ProcedureEnum.Config] = new ProcedureConfig(ProcedureEnum.Config);
         // this.procedureDic[ProcedureEnum.Login] = new ProcedureLogin(ProcedureEnum.Login);
         // this.procedureDic[ProcedureEnum.EnterLobby] = new ProcedureEnterLobby(ProcedureEnum.EnterLobby);
         // this.procedureDic[ProcedureEnum.Lobby] = new ProcedureLobby(ProcedureEnum.Lobby);

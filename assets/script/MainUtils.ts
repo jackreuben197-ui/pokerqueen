@@ -226,7 +226,7 @@ export async function registerH5Listeners(): Promise<void> {
     // initH5BridgeDependencies();
     H5MsgMgr.Instance.on('enterTable', (payload) => {
         console.log('[H5Bridge] 收到 enterTable:', JSON.stringify(payload));
-        const { token, websocketPort, roomId, roomName } = payload;
+        const { token, websocketPort, roomId, roomInfo:roomData } = payload;
 
         // === 1. H5 消息基本字段校验 ===
         const missing: string[] = [];
@@ -239,17 +239,17 @@ export async function registerH5Listeners(): Promise<void> {
         }
 
         // === 2. 从缓存查找房间详情（syncRoomsList 缓存的数据） ===
-        const roomIdNum = Number(roomId);
-        const cachedRooms = GC.data.lobby.roomList.getList(false);
-        const cachedClubRooms = GC.data.lobby.roomList.getList(true);
-        const targetItem = [...cachedRooms, ...cachedClubRooms].find(r => r.rid === roomIdNum);
+        // const roomIdNum = Number(roomId);
+        // const cachedRooms = GC.data.lobby.roomList.getList(false);
+        // const cachedClubRooms = GC.data.lobby.roomList.getList(true);
+        // const targetItem = [...cachedRooms, ...cachedClubRooms].find(r => r.rid === roomIdNum);
 
-        if (!targetItem) {
-            console.error('[H5Bridge] enterTable 未在缓存房间列表中找到房间:', roomId, '请确认 syncRoomsList 已送达');
-            return;
-        }
+        // if (!targetItem) {
+        //     console.error('[H5Bridge] enterTable 未在缓存房间列表中找到房间:', roomId, '请确认 syncRoomsList 已送达');
+        //     return;
+        // }
         // 原始房间数据 TRoomListItem
-        const roomData = (targetItem as any)._data;
+        // const roomData = (targetItem as any)._data;
 
         // === 3. 进入牌桌所需数据完整性校验 ===
         const requiredForEnter: { key: string; val: any }[] = [
@@ -272,8 +272,8 @@ export async function registerH5Listeners(): Promise<void> {
 
         // === 5. 填充 GameCache（从缓存房间数据） ===
         const gc = GameCache.Instance;
-        gc.room_id = roomIdNum;
-        gc.roomName = roomName || targetItem.name;
+        gc.room_id = roomData.rid;
+        gc.roomName = roomData.name;
         gc.room_type = roomData.room_type;
         gc.game_type = roomData.game_type;
         gc.poker_type = roomData.poker_type;
@@ -297,7 +297,7 @@ export async function registerH5Listeners(): Promise<void> {
         // EnterTexas → 加载资源 → Texas procedure → TexasGameUtils.EnterRoom()
         // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
         ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
-        console.log('[H5Bridge] enterTable 已启动进桌流程, room_id:', roomIdNum, 'room:', roomName);
+        console.log('[H5Bridge] enterTable 已启动进桌流程, room_id:', roomData.rid, 'room:', roomData.name);
 
         // === 7. 通知 H5 层隐藏自身，让出 CC 层牌桌显示 ===
         H5MsgMgr.sendToH5('h5Hide', 1);
@@ -346,23 +346,23 @@ export async function registerH5Listeners(): Promise<void> {
         }
         console.log('[H5Bridge] syncUserClub 缓存完成, 共', clubList.length, '个俱乐部');
     });
-    H5MsgMgr.Instance.on('syncRoomsList', (payload) => {
-        console.log('[H5Bridge] 同步房间列表:', payload);
-        const records = payload?.response?.data?.records;
-        if (!records || !Array.isArray(records)) {
-            console.error('[H5Bridge] syncRoomsList 数据异常：缺少 payload.response.data.records');
-            return;
-        }
-        // 仅写入本地缓存，不触发 UI 事件和网络请求
-        const roomListModel = GC.data.lobby.roomList;
-        const list = records.map(r => new LobbyRoomListItem(r));
-        // 直接替换内部列表（不是追加）
-        (roomListModel as any)._list = list;
-        (roomListModel as any)._offset = list.length;
-        (roomListModel as any)._reqEnd = true;
-        (roomListModel as any)._reqing = false;
-        console.log('[H5Bridge] syncRoomsList 缓存完成, 共', records.length, '个房间');
-    });
+    // H5MsgMgr.Instance.on('syncRoomsList', (payload) => {
+    //     console.log('[H5Bridge] 同步房间列表:', payload);
+    //     const records = payload?.response?.data?.records;
+    //     if (!records || !Array.isArray(records)) {
+    //         console.error('[H5Bridge] syncRoomsList 数据异常：缺少 payload.response.data.records');
+    //         return;
+    //     }
+    //     // 仅写入本地缓存，不触发 UI 事件和网络请求
+    //     const roomListModel = GC.data.lobby.roomList;
+    //     const list = records.map(r => new LobbyRoomListItem(r));
+    //     // 直接替换内部列表（不是追加）
+    //     (roomListModel as any)._list = list;
+    //     (roomListModel as any)._offset = list.length;
+    //     (roomListModel as any)._reqEnd = true;
+    //     (roomListModel as any)._reqing = false;
+    //     console.log('[H5Bridge] syncRoomsList 缓存完成, 共', records.length, '个房间');
+    // });
 
     // 监听服务器推送的房间变更通知（code 140），实时更新缓存
     GC.notify.register(

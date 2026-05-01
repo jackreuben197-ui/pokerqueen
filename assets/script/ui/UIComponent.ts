@@ -48,6 +48,7 @@ export interface Close_Obj {
 
 @ccclass
 export default class UIComponent {
+    [key: string]: any;
 
     prefab_node_map = new Map;
 
@@ -217,7 +218,7 @@ export default class UIComponent {
 
     static closeDialog() {
         if (Main.Dialog.childrenCount) {
-            Main.Dialog.children[0].parent = Main.Cache_UI;
+            Main.Dialog.children[0].parent = Main.CacheUI;
         }
     }
     //////////////////////////////
