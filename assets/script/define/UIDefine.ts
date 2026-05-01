@@ -1205,6 +1205,13 @@ export const UIDefine: { [key: string]: IUIDefine } = {
         Bundle: 'texas',
         Path: "prefab/widgetLayer/Blank_Dialog",
         DisAdaptScreen: true,
+    },
+    UIGameplayAddChipsAndDiamond: {
+        UIType: UIType.Dialog,
+        Name: "UIGameplayAddChipsAndDiamondComponent",
+        Bundle: 'texas',
+        Path: "purple_prefab/ui/UIGameplayAddChipsAndDiamond",
+        DisAdaptScreen: true,
     }
 
 

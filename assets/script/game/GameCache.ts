@@ -476,7 +476,8 @@ export class GameCache {
     public _tableSkin: string = "";
 
     /**
-     * 共享桌类型
+     * 是否共享牌桌及共享牌桌类型
+     * 1 不共享 2 USDT桌 3 联盟币桌
      */
     public _shareTableType: number = 0;
 
@@ -709,6 +710,10 @@ export class GameCache {
     private bb_status_map = {};
 
     public curSelectWalletType;//当前选择钱包类别，1 基金，2 玩家钱包
+    /** 
+     * 来自哪个俱乐部Id
+     */
+    public _fromClubId: number = 0;
 
 
 

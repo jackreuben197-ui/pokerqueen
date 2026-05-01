@@ -80,4 +80,13 @@ export default class TexasBusiness {
         // TODO: 根据具体实现返回
         return false;
     }
+
+    /**
+     * 得到蘑菇所需押金
+     * @returns 蘑菇所需押金
+     */
+    public GetMushroomDeposit(): number {
+        return GameCache.Instance._texasData._mushroomBase *
+            GameCache.Instance._texasData._mushroomMode;
+    }
 }

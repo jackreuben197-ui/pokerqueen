@@ -57,7 +57,7 @@ import UIDialogContentSizeLimit from "../../ui/dialog/UIDialogContentSizeLimit";
 import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import TexasGameMessageHandler from "../messageHandler/TexasGameMessageHandler";
-import { AddClipsData } from "../new_ui/UIBringIn";
+// import { AddClipsData } from "../new_ui/UIBringIn";
 import { HistoryInfoData } from "../new_ui/UITexasHistory";
 import TexasGameProtocol from "../protocol/TexasGameProtocol";
 import Seat, { SeatUIInfo } from "../seat/Seat";
@@ -86,6 +86,9 @@ import UIOperationComponent, {
 import UITexas, { PotInfo, PublicCardInfo } from "./../UITexas";
 import { UITexasModel } from "./../UITexasModel";
 import { AddClipsDataOut } from "../new_ui/UIBringOut";
+import { AddClipsData } from "../../crazyPoker/gameplay/common/view/chips/UIGameplayAddChipsAndDiamond";
+import { BringInChipsType } from "../../crazyPoker/gameplay/common/constant/BringInChipsType";
+import { HttpRoomBringOutProtocol } from "../../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringOutProtocol";
 //const PBTypes = Def.Types;
 
 class SeatMoveStruct {
@@ -120,7 +123,7 @@ export default class TexasGame {
     ///////////////////////////////
     private setting: { deskType: any; pokerType: any } = {
         deskType: null,
-        pokerType: null ,
+        pokerType: null,
     };
     //判断是否比赛
     public isMTT: boolean = false;
@@ -722,6 +725,8 @@ export default class TexasGame {
 
         GameCache.Instance._texasData._isCriticalHitOpen = obj.handInfo.criticalHitOpen;
         GameCache.Instance._texasData._curCriticalHitRound = obj.handInfo.conRounds;
+
+
     }
 
     /**
@@ -823,6 +828,11 @@ export default class TexasGame {
                 this.IsSecondPsc = true;
             }
         }
+
+        GameCache.Instance._texasData._smallBlind = rec.roomInfo.smallBlind;
+        GameCache.Instance._texasData._bigBlind = rec.roomInfo.smallBlind * 2;
+        GameCache.Instance._texasData._minBringIn = GameCache.Instance._texasData._bigBlind;
+
         this.smallBlind = rec.roomInfo.smallBlind;
         GameCache.Instance.carry_small = rec.roomInfo.smallBlind * 2;
         this.bigBlind = rec.roomInfo.smallBlind * 2;
@@ -1885,7 +1895,12 @@ export default class TexasGame {
             api_id: GameCache.Instance.room_id,
         }).then(
             (res: typeof WebUserRoom.Response) => {
-                if (res.code == 0 && res.data.last_bring_out != null) {
+
+                // 将 res 转换为 ResponseData
+                let response = res as HttpRoomBringOutProtocol.ResponseData;
+
+
+                if (response.code == 0 && response.data.last_bring_out != null) {
                     let fee = res.data.last_bring_out.fee;
                     let bring_out = res.data.last_bring_out.to_wallet;
                     if (bring_out + fee > 0) {
@@ -1952,10 +1967,10 @@ export default class TexasGame {
                     }
                     else {
                         if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                            this.OpenBringInWithSecurity(res.data.wallet);
+                            this.OpenBringInWithSecurity(response.data);
                         }
                         else {
-                            this.OpenBringInWithSecurity(res.data.wallet);
+                            this.OpenBringInWithSecurity(response.data);
                         }
                     }
                 } else if (
@@ -1990,10 +2005,10 @@ export default class TexasGame {
                     });
                 } else {
                     if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                        this.OpenBringInWithSecurity(res.data.wallet);
+                        this.OpenBringInWithSecurity(response.data);
                     }
                     else {
-                        this.OpenBringInWithSecurity(res.data.wallet);
+                        this.OpenBringInWithSecurity(response.data);
                     }
                 }
             },
@@ -3225,7 +3240,7 @@ export default class TexasGame {
     /// <summary>
     /// 播放首次收筹码到底池动画
     /// </summary>Sequence
-    public PlayFirstRecyclingChipAnimation( tweenCallback?: Function): any {
+    public PlayFirstRecyclingChipAnimation(tweenCallback?: Function): any {
         this.fuck4thPCardByInsuranceState = 1;
         let mSeat: Seat = null;
         this.sequencePlayFirstRecyclingChipAnimation = {};
@@ -3815,12 +3830,12 @@ export default class TexasGame {
     /**
     * 代入前安全设置（Unity 对齐）
     */
-    private OpenBringInWithSecurity(wallets: any): void {
+    private OpenBringInWithSecurity(data: HttpRoomBringOutProtocol.Data): void {
         const openBringIn = () => {
             if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                this.ShowAutoAddChips(wallets);
+                this.ShowAutoAddChips(data.wallet);
             } else {
-                this.ShowAddChips(wallets);
+                this.ShowAddChips(data);
             }
         };
 
@@ -3857,20 +3872,35 @@ export default class TexasGame {
     /**
      * 显示手动设置面板 
      */
-    private ShowAddChips(wallets: any): void {
-        UIComponent.Instance.ShowUI<AddClipsData>(
-            PrefabUI.UIBringIn,
+    private ShowAddChips(data: HttpRoomBringOutProtocol.Data): void {
+        // UIComponent.Instance.ShowUI<AddClipsData>(
+        //     PrefabUI.UIBringIn,
+        //     {
+        //         bigBlind: this.bigBlind,
+        //         smallBlind: this.smallBlind,
+        //         currentMinRate: this.currentMinRate,
+        //         currentMaxRate: this.currentMaxRate,
+        //         totalCoin: GC.data.user.info.gold,
+        //         tableChips: this.mainPlayer.chips,
+        //         minBringIn: this.GetMinBringInWithMush(),
+        //         wallets: wallets
+        //     }
+        // )
+
+        UIComponent.open<AddClipsData>(UIDefine.UIGameplayAddChipsAndDiamond,
             {
-                bigBlind: this.bigBlind,
-                smallBlind: this.smallBlind,
-                currentMinRate: this.currentMinRate,
-                currentMaxRate: this.currentMaxRate,
-                totalCoin: GC.data.user.info.gold,
-                tableChips: this.mainPlayer.chips,
-                minBringIn: this.GetMinBringInWithMush(),
-                wallets: wallets
-            }
-        )
+                _bigBlind: this.bigBlind,
+                _smallBlind: this.smallBlind,
+                _currentMinRate: this.currentMinRate,
+                _currentMaxRate: this.currentMaxRate,
+                _totalCoin: GC.data.user.info.gold,
+                _tableChips: this.mainPlayer.chips,
+                _wallets: data.wallet,
+                _source: BringInChipsType.BRING_IN,
+                _isBringIn: true,
+                _creditNum: data.user_club_gold_credit,
+            } as AddClipsData
+        );
     }
 
     /**

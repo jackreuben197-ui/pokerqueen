@@ -68,6 +68,11 @@ export class CPlayer {
     public mushroomCount: number = 0;
     /** 蘑菇对应金额（筹码） */
     public mushroomAmount: number = 0;
+    
+    /**
+     *  蘑菇对应金额（筹码）
+     */
+    public mushDeposit: number = 0;
     /** 本手或当前带入的蘑菇押金成本 */
     public costMushroom: number = 0;
     /** 是否参与当前鱿鱼轮 */

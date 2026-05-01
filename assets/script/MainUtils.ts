@@ -226,7 +226,7 @@ export async function registerH5Listeners(): Promise<void> {
     // initH5BridgeDependencies();
     H5MsgMgr.Instance.on('enterTable', (payload) => {
         console.log('[H5Bridge] 收到 enterTable:', JSON.stringify(payload));
-        const { token, websocketPort, roomId, roomInfo:roomData } = payload;
+        const { token, websocketPort, roomId, roomInfo: roomData } = payload;
 
         // === 1. H5 消息基本字段校验 ===
         const missing: string[] = [];
@@ -302,6 +302,9 @@ export async function registerH5Listeners(): Promise<void> {
         // === 7. 通知 H5 层隐藏自身，让出 CC 层牌桌显示 ===
         H5MsgMgr.sendToH5('h5Hide', 1);
     });
+
+    registerTexasMtt();
+    
     H5MsgMgr.Instance.on('exitTable', (payload) => {
         console.log('[H5Bridge] 离开牌桌:', payload);
         // TODO: 调用离开牌桌的逻辑
@@ -403,6 +406,27 @@ export async function registerH5Listeners(): Promise<void> {
         },
         null,
     );
+
+
+    /**
+    * 进入德州MTT
+    */
+    function registerTexasMtt(): void {
+        H5MsgMgr.Instance.on('enterMtt', (payload) => {
+            console.log('[H5Bridge] enterMtt:', payload);
+            const matchInfo = payload?.matchInfo;
+            if (!matchInfo) {
+                console.error('[H5Bridge] enterMtt 数据异常：缺少 payload.matchInfo');
+                return;
+            }
+
+            // === 5. 填充 GameCache ===
+            GameCache.Instance.match_id = matchInfo.match_id;
+
+            console.log('[H5Bridge] enterMtt 缓存完成, matchId', GameCache.Instance.match_id, ',开始进入mtt');
+        });
+    }
+
 
     // ─── 网络消息转发 ─────────────────────────────────
 
