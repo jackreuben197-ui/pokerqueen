@@ -292,6 +292,21 @@ const out = `<!--
 </html>
 `
 
-// ─── 写入 ─────────────────────────────────────────────
+// ─── 写入 preview-templates ──────────────────────────────
 fs.writeFileSync(PREVIEW_HTML, out, 'utf-8')
 console.log('\n✓ preview-templates/index.html 已生成')
+
+// ─── 步骤 4：修补 build-templates index.html 的 #splash ──
+// xcopy 从 H5 dist 覆盖后 #splash 是空的，但 CC 的 main.js 需要 .progress-bar > span 子元素
+const SPLASH_EMPTY = /<div id="splash"><\/div>/
+const SPLASH_CORRECT = '<div id="splash">\n      <div class="progress-bar stripes">\n        <span></span>\n      </div>\n    </div>'
+
+if (SPLASH_EMPTY.test(src)) {
+  // 读取当前文件（可能已被 xcopy 覆盖）
+  let buildHtml = fs.readFileSync(BUILD_HTML, 'utf-8')
+  buildHtml = buildHtml.replace(SPLASH_EMPTY, SPLASH_CORRECT)
+  fs.writeFileSync(BUILD_HTML, buildHtml, 'utf-8')
+  console.log('✓ build-templates/web-mobile/index.html #splash 已修补')
+} else {
+  console.log('✓ build-templates/web-mobile/index.html #splash 无需修补')
+}
