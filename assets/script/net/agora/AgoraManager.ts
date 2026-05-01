@@ -31,6 +31,8 @@ export default class AgoraManager {
     private _joined: boolean = false;
     private _channelName: string = '';
     private _uid: number = 0;
+    /** 是否已完成 AppId 有效性检测（首次 join 时执行一次） */
+    private _appIdChecked: boolean = false;
 
     /** 远端用户加入回调 */
     public onUserJoined: (uid: number) => void = null;
@@ -108,7 +110,6 @@ export default class AgoraManager {
         this._registerEvents();
         console.log('[AgoraManager] Client 初始化完成, 安全上下文:', this.isSecureContext
             , '媒体设备支持:', this.isMediaDevicesSupported);
-        this.checkAppId();
     }
 
     /**
@@ -258,6 +259,15 @@ export default class AgoraManager {
         if (!this.appId) {
             console.error('[AgoraManager] appId 未配置');
             return false;
+        }
+
+        // 首次 join 时检测 AppId + Token 服务是否可用
+        if (!this._appIdChecked) {
+            this._appIdChecked = true;
+            const ok = await this.checkAppId();
+            if (!ok) {
+                console.warn('[AgoraManager] AppId 检测未通过，但仍尝试加入频道');
+            }
         }
 
         // 如果没传 token，自动从 Token 服务获取
