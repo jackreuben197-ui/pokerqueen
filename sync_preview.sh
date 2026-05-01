@@ -26,20 +26,20 @@ pushd "${H5_GAME_DIR}" >/dev/null || {
     pause
     exit 1
 }
-
-if ! git fetch --all; then
-    echo "ERROR: git fetch --all failed"
+# DON'T RECOVER LOCAL CHANGES, JUST FETCH LATEST FROM REMOTE
+if ! git fetch origin master; then
+    echo "ERROR: git fetch origin master failed"
     popd >/dev/null
     pause
     exit 1
 fi
 
-if ! git reset --hard origin/master; then
-    echo "ERROR: git reset --hard origin/master failed"
-    popd >/dev/null
-    pause
-    exit 1
-fi
+# if ! git reset --hard origin/master; then
+#     echo "ERROR: git reset --hard origin/master failed"
+#     popd >/dev/null
+#     pause
+#     exit 1
+# fi
 
 echo
 echo "============================================"
