@@ -54,9 +54,8 @@ export default class AgoraVideoRender extends cc.Component {
     private _frameInterval: number = 0;
     private _frameAccum: number = 0;
     private _lastLogTime: number = 0;
-    private _glCaptureLogged: boolean = false;
-    private _glSearchAttempts: number = 0;
-    private static readonly MAX_GL_SEARCH = 5;
+    /** 渲染异常或被停止时的回调，上层借此同步 UI 状态 */
+    public onRenderStopped: (() => void) | null = null;
 
     /** 是否正在渲染 */
     public get isRendering(): boolean {
@@ -212,9 +211,14 @@ export default class AgoraVideoRender extends cc.Component {
 
     /** 停止渲染，释放所有资源，恢复默认头像 */
     public stopRender(): void {
+        const wasRendering = this._isRendering;
         this._isCancelled = true;
         this._isRendering = false;
         this._releaseResources();
+        // 通知上层渲染已停止（仅在实际渲染中停止时通知）
+        if (wasRendering && this.onRenderStopped) {
+            try { this.onRenderStopped(); } catch (_) { }
+        }
     }
 
     private _releaseResources(): void {
@@ -337,12 +341,19 @@ export default class AgoraVideoRender extends cc.Component {
         );
         this._sprite.spriteFrame = this._spriteFrame;
 
-        // 清理旧资源（GL 纹理 + CC 对象）
-        if (oldTex) {
-            this._deleteGLTextures(oldTex);
-            oldTex.destroy();
+        // 延迟清理旧资源：确保新帧已提交到 GPU 后再销毁旧纹理，
+        // 避免 CC 2.4.8 异步 GL 资源回收误伤刚创建的新帧
+        if (oldTex || oldFrame) {
+            setTimeout(() => {
+                try {
+                    if (oldTex) {
+                        this._deleteGLTextures(oldTex);
+                        oldTex.destroy();
+                    }
+                    if (oldFrame) { oldFrame.destroy(); }
+                } catch (_) { }
+            }, 0);
         }
-        if (oldFrame) { oldFrame.destroy(); }
 
         const now = Date.now();
         if (now - this._lastLogTime > 10000) {

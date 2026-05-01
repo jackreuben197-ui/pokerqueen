@@ -842,6 +842,12 @@ export default class UITexas extends BaseScene {
         const agora = AgoraManager.Instance;
         if (!agora.isJoined) return;
 
+        // 以实际渲染状态为准，防止 _cameraOn 与实际脱节（如渲染异常静默停止）
+        const headNode = mySeat.uirc?.Raw_Head?.node;
+        const vr = headNode?.getComponent(AgoraVideoRender);
+        const actuallyRendering = vr?.isRendering === true;
+        this._cameraOn = actuallyRendering;
+
         if (this._cameraOn) {
             const headNode = mySeat.uirc?.Raw_Head?.node;
             const vr = headNode?.getComponent(AgoraVideoRender);

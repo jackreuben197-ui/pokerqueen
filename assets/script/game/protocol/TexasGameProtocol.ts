@@ -2356,6 +2356,11 @@ export default class TexasGameProtocol {
         const rendered = await videoRender.renderFromTrack(rawTrack);
         console.log('[VideoRoom] 本地视频渲染:', rendered ? '成功' : '失败');
         if (rendered) {
+            // 注册渲染停止回调：异常/停止时同步按钮状态，防止 UI 与实际状态脱节
+            videoRender.onRenderStopped = () => {
+                console.log('[VideoRoom] 本地视频渲染已停止，同步按钮状态');
+                this.game?.uirc?.syncVideoButtonsFromAgora();
+            };
             this.game.uirc?.syncVideoButtonsFromAgora();
         }
     }
