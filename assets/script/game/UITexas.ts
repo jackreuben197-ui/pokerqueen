@@ -1,6 +1,6 @@
 import SimpleNodePool from "../common/MyNodePool";
 
-import { UIDefine, UIDefineType } from "../define/UIDefine";
+import { UIDefine } from "../define/UIDefine";
 import { Sequence } from "../dotween/DOTween";
 import GC from "../frame/GameControl";
 import { StringHelper } from "../helper/StringHelper";
@@ -647,7 +647,7 @@ export default class UITexas extends BaseScene {
         //关闭战绩
         UIComponent.close(UIDefine.UITexasHistoryComponent);
     }
-    Exit(param) {
+    Exit(param: any): void {
         super.Exit(param);
     }
     /// <param name="num"></param>几张

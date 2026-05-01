@@ -1,4 +1,5 @@
-import { UIDefine, UIDefineType } from "../../define/UIDefine";
+import { IUIDefine } from "../../define/EIDefine";
+import { UIDefine } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
@@ -26,7 +27,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
     private tabBtnsParent: cc.Node = null;
     private tabViewParents: Array<cc.Node> = [];
 
-    private _tabViewData: Array<UIDefineType> = [
+    private _tabViewData: Array<IUIDefine> = [
         UIDefine.UIMatchChessView,
         UIDefine.UIMatchSportsView,
         UIDefine.UIMatchGameView,
