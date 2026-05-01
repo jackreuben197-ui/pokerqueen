@@ -1,12 +1,15 @@
 /**
  * 声网视频渲染组件
- * 挂载到 cc.Sprite 节点上，将视频流渲染到头像位置
+ * 挂载到头像节点（Raw_Head）上，动态创建 VideoOverlay 子节点，
+ * 将视频流渲染到覆盖层上，不修改原始头像的 spriteFrame。
  *
- * 渲染链路: video → canvas → cc.Texture2D → cc.SpriteFrame → cc.Sprite
+ * 渲染链路（无 canvas 中转，最高效）:
+ *   <video> 元素 → cc.Texture2D.initWithElement(video) → handleLoadedTexture()
+ *   浏览器底层完成 video 解码 → GPU 纹理上传，零 CPU 拷贝。
  *
- * CC 2.4.8 的 handleLoadedTexture 会跳过已加载纹理的重新上传，
- * 因此每帧需重置纹理的 GL 状态（_glID / _loaded），强制 CC 完整上传新帧。
- * Texture2D / SpriteFrame 只创建一次，永远复用。
+ * 节点层级:
+ *   Raw_Head (cc.Sprite) ← 头像图片，永远不被视频写入
+ *   └── VideoOverlay (cc.Sprite) ← 视频覆盖层，仅渲染时可见
  *
  * 编辑器配置:
  *   renderTarget: local = 本地摄像头, remote = 远端用户
@@ -39,17 +42,18 @@ export default class AgoraVideoRender extends cc.Component {
     targetFps: number = 30;
 
     private _video: HTMLVideoElement = null;
-    private _canvas: HTMLCanvasElement = null;
-    private _ctx: CanvasRenderingContext2D = null;
     private _texture: cc.Texture2D = null;
     private _spriteFrame: cc.SpriteFrame = null;
-    private _sprite: cc.Sprite = null;
+
+    /** 动态创建的视频覆盖层节点（Raw_Head 的子节点） */
+    private _overlayNode: cc.Node = null;
+    /** 覆盖层上的 Sprite 组件 */
+    private _videoSprite: cc.Sprite = null;
+
     private _stream: MediaStream = null;
     private _isRendering: boolean = false;
     private _isCancelled: boolean = false;
     private _ownsStream: boolean = false;
-    private _defaultFrame: cc.SpriteFrame = null;
-    private _originalScaleX: number = 1;
     private _gl: WebGLRenderingContext = null;
     private _frameInterval: number = 0;
     private _frameAccum: number = 0;
@@ -63,12 +67,20 @@ export default class AgoraVideoRender extends cc.Component {
     }
 
     onLoad() {
-        this._sprite = this.getComponent(cc.Sprite);
-        if (!this._sprite) {
-            this._sprite = this.addComponent(cc.Sprite);
-        }
-        this._defaultFrame = this._sprite.spriteFrame;
-        this._originalScaleX = this.node.scaleX;
+        this._ensureOverlay();
+    }
+
+    /** 确保视频覆盖层节点已创建（onLoad 或首次渲染时调用） */
+    private _ensureOverlay(): void {
+        if (this._overlayNode) return;
+
+        this._overlayNode = new cc.Node('VideoOverlay');
+        this._overlayNode.parent = this.node;
+        this._overlayNode.setContentSize(this.node.getContentSize());
+        this._overlayNode.active = false; // 默认隐藏
+
+        this._videoSprite = this._overlayNode.addComponent(cc.Sprite);
+
         this._gl = (cc.game as any)._renderContext;
         this._frameInterval = 1 / this.targetFps;
     }
@@ -110,16 +122,17 @@ export default class AgoraVideoRender extends cc.Component {
     }
 
     /**
-     * 初始化: video + canvas + 纹理（只创建一次）
+     * 初始化: video 元素 + Texture2D（用 video 直接作为纹理源，无 canvas 中转）
      */
     private async _startWithStream(stream: MediaStream): Promise<boolean> {
         console.log('[AgoraVideoRender] _startWithStream 开始, stream tracks:', stream.getTracks().length);
+        this._ensureOverlay();
         this.stopRender();
         this._isCancelled = false;
         this._stream = stream;
         this._frameAccum = 0;
 
-        // 1. 创建 video 元素
+        // 1. 创建隐藏的 video 元素
         this._video = document.createElement('video');
         this._video.setAttribute('playsinline', '');
         this._video.setAttribute('autoplay', '');
@@ -168,48 +181,55 @@ export default class AgoraVideoRender extends cc.Component {
         const vw = this._video.videoWidth || 240;
         const vh = this._video.videoHeight || 240;
 
-        // 2. Canvas 对齐 Sprite 节点大小
+        // 关键：设置 video 元素的 width/height 属性
+        // handleLoadedTexture 内部检查 this._image.width && this._image.height，
+        // 对 video 元素来说，video.width 返回的是属性值而非 videoWidth，
+        // 不设属性就是 0，handleLoadedTexture 会直接跳过纹理创建！
+        this._video.setAttribute('width', String(vw));
+        this._video.setAttribute('height', String(vh));
+
+        // 2. 覆盖层对齐节点大小
         const nodeSize = this.node.getContentSize();
         const cw = nodeSize.width || vw;
         const ch = nodeSize.height || vh;
 
-        this._canvas = document.createElement('canvas');
-        this._canvas.width = cw;
-        this._canvas.height = ch;
-        this._ctx = this._canvas.getContext('2d');
-
-        // 首帧绘制
-        const cropSize = Math.min(vw, vh);
-        const cropX = (vw - cropSize) / 2;
-        const cropY = (vh - cropSize) / 2;
-        this._ctx.drawImage(this._video, cropX, cropY, cropSize, cropSize, 0, 0, cw, ch);
-
-        // 3. 创建 Texture2D + SpriteFrame（整个生命周期只创建这一次）
+        // 3. 创建 Texture2D — 直接绑定 <video> 元素，无 canvas 中转
+        //    initWithElement(video) 让浏览器原生处理 video → GPU 纹理上传
         this._texture = new cc.Texture2D();
-        this._texture.initWithElement(this._canvas as any);
+        this._texture.initWithElement(this._video as any);
         this._texture.packable = false;
         this._texture.handleLoadedTexture();
 
+        // 4. SpriteFrame — 居中裁剪：取视频中心正方形区域
+        const cropSize = Math.min(vw, vh);
+        const cropX = (vw - cropSize) / 2;
+        const cropY = (vh - cropSize) / 2;
         this._spriteFrame = new cc.SpriteFrame();
         (this._spriteFrame as any).initWithTexture(
             this._texture,
-            cc.rect(0, 0, cw, ch),
+            cc.rect(cropX, cropY, cropSize, cropSize),
             false,
             cc.v2(0, 0),
             cc.size(cw, ch)
         );
-        this._sprite.spriteFrame = this._spriteFrame;
+
+        // 5. 显示视频覆盖层
+        this._overlayNode.setContentSize(cw, ch);
+        this._overlayNode.active = true;
+        this._overlayNode.setSiblingIndex(this.node.childrenCount - 1);
+        this._videoSprite.spriteFrame = this._spriteFrame;
 
         if (this.mirror) {
-            this.node.scaleX = -Math.abs(this._originalScaleX);
+            this._overlayNode.scaleX = -1;
         }
 
         this._isRendering = true;
-        console.log('[AgoraVideoRender] 开始渲染, canvas:', cw, 'x', ch, 'fps:', this.targetFps);
+        console.log('[AgoraVideoRender] 开始渲染 (video direct), video:', vw, 'x', vh,
+            'overlay:', cw, 'x', ch, 'fps:', this.targetFps);
         return true;
     }
 
-    /** 停止渲染，释放所有资源，恢复默认头像 */
+    /** 停止渲染，释放所有资源，隐藏覆盖层 */
     public stopRender(): void {
         const wasRendering = this._isRendering;
         this._isCancelled = true;
@@ -250,13 +270,13 @@ export default class AgoraVideoRender extends cc.Component {
             this._spriteFrame = null;
         }
 
-        // 4. Canvas
-        this._canvas = null;
-        this._ctx = null;
         this._frameAccum = 0;
 
-        // 5. 恢复默认头像
-        this._restoreDefaultFrame();
+        // 4. 隐藏视频覆盖层
+        if (this._overlayNode) {
+            this._overlayNode.active = false;
+            this._overlayNode.scaleX = 1; // 重置镜像
+        }
     }
 
     /** 删除 Texture2D 内部所有 GL 纹理 */
@@ -275,19 +295,8 @@ export default class AgoraVideoRender extends cc.Component {
         } catch (_) { }
     }
 
-    private _restoreDefaultFrame(): void {
-        try {
-            if (this._sprite && this._defaultFrame) {
-                this._sprite.spriteFrame = this._defaultFrame;
-            }
-            if (this.node && this.node.isValid) {
-                this.node.scaleX = this._originalScaleX;
-            }
-        } catch (_) { }
-    }
-
     update(dt: number) {
-        if (!this._isRendering || !this._ctx || !this._video) return;
+        if (!this._isRendering || !this._video) return;
         if (this._isCancelled) { this._isRendering = false; return; }
 
         if (this._video.paused && this._video.srcObject) {
@@ -308,51 +317,22 @@ export default class AgoraVideoRender extends cc.Component {
         }
     }
 
-    /** 单帧渲染 */
+    /**
+     * 单帧渲染 — 无 canvas 中转
+     * 直接用 initWithElement(video) + handleLoadedTexture() 通知 CC 纹理更新。
+     * handleLoadedTexture 内部会:
+     *   1. 上传 video 当前帧到 GPU（gl.texImage2D）
+     *   2. emit("load") 事件 → SpriteFrame 感知 → Sprite dirty
+     *   3. 强制 _vertsDirty 确保渲染器重绘制
+     */
     private _renderFrame(): void {
-        const cw = this._canvas.width;
-        const ch = this._canvas.height;
-
-        // 动态居中裁剪
-        const vw = this._video.videoWidth || 240;
-        const vh = this._video.videoHeight || 240;
-        const cropSize = Math.min(vw, vh);
-        const cropX = (vw - cropSize) / 2;
-        const cropY = (vh - cropSize) / 2;
-        this._ctx.drawImage(this._video, cropX, cropY, cropSize, cropSize, 0, 0, cw, ch);
-
-        // CC 2.4.8 renderer 层缓存了纹理映射，reset _glID/_loaded 不够。
-        // 唯一可靠方案：每帧 new Texture2D + SpriteFrame，强制走完整上传。
-        const oldTex = this._texture;
-        const oldFrame = this._spriteFrame;
-
-        this._texture = new cc.Texture2D();
-        this._texture.initWithElement(this._canvas as any);
-        this._texture.packable = false;
+        // 重新绑定 video 元素（video 的帧内容已自动更新）
+        (this._texture as any).initWithElement(this._video as any);
         this._texture.handleLoadedTexture();
 
-        this._spriteFrame = new cc.SpriteFrame();
-        (this._spriteFrame as any).initWithTexture(
-            this._texture,
-            cc.rect(0, 0, cw, ch),
-            false,
-            cc.v2(0, 0),
-            cc.size(cw, ch)
-        );
-        this._sprite.spriteFrame = this._spriteFrame;
-
-        // 延迟清理旧资源：确保新帧已提交到 GPU 后再销毁旧纹理，
-        // 避免 CC 2.4.8 异步 GL 资源回收误伤刚创建的新帧
-        if (oldTex || oldFrame) {
-            setTimeout(() => {
-                try {
-                    if (oldTex) {
-                        this._deleteGLTextures(oldTex);
-                        oldTex.destroy();
-                    }
-                    if (oldFrame) { oldFrame.destroy(); }
-                } catch (_) { }
-            }, 0);
+        // 强制标记 sprite 为 dirty，确保 batch renderer 重新处理
+        if (this._videoSprite) {
+            (this._videoSprite as any)._vertsDirty = true;
         }
 
         const now = Date.now();
@@ -364,5 +344,9 @@ export default class AgoraVideoRender extends cc.Component {
 
     onDestroy() {
         this.stopRender();
+        if (this._overlayNode) {
+            this._overlayNode.destroy();
+            this._overlayNode = null;
+        }
     }
 }
