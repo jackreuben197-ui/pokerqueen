@@ -10,7 +10,7 @@
  * 入口函数
  */
 import { GameConfig } from "./config/GameConfig";
-import GC from "./frame/GameControl";
+// import GC from "./frame/GameControl";
 import OrientationComponent from "./funcomponent/OrientationComponent";
 import ReconnectComponent from "./funcomponent/ReconnectComponent";
 // import { GM } from "./gm/GMAPI";
@@ -21,6 +21,8 @@ import TelegramUtils from "./tools/TelegramUtils";
 import UIComponent, { PrefabUI } from "./ui/UIComponent";
 import H5MsgMgr from "./H5MsgMgr";
 import * as MainUtils from "./MainUtils";
+import UpdateComponent from "./funcomponent/UpdateComponent";
+import DataManager from "./frame/manager/DataManager";
 ///////////////////////////////////////////////
 cc.macro.ENABLE_TRANSPARENT_CANVAS = false;
 const { ccclass, property } = cc._decorator;
@@ -68,9 +70,9 @@ export default class Main extends cc.Component {
         }
         console.log("游戏启动", cc.sys.os);
 
-        GC.init();
+        DataManager.instance.init();
 
-        GC.localStore.keyPre = CCTools.getQueryString("player") || "";
+        // GC.localStore.keyPre = CCTools.getQueryString("player") || "";
 
         Main.instance = this;
         //设置是否代理模式(根据地址栏配置proxy字段)
@@ -107,7 +109,7 @@ export default class Main extends cc.Component {
             MainUtils.refreshDiss(Main.Diss);
         }, 1);
 
-        GC.uc.AddComponent(new OrientationComponent);
+        UpdateComponent.Instance.AddComponent(new OrientationComponent);
 
         SoundComponent.Instance.initSound();
 
@@ -121,7 +123,7 @@ export default class Main extends cc.Component {
         H5MsgMgr.Instance.startHandshake();
     }
     protected update(dt: number): void {
-        GC.uc.Update(dt);
+        UpdateComponent.Instance.Update(dt);
     }
     start() {
         console.log("start test");

@@ -5,12 +5,29 @@ import Main from "../Main";
 import Toast from "../ui/toast/Toast";
 
 
+export interface IToastConfig {
+    /** 容器起始位置 */
+    contentStartPosition?: number,
+    /** 渐入的偏移距离*/
+    fadeInOffSetDis?: number,
+    /** 节点间隔距离*/
+    spaceDis?: number,
+    /** 缓冲出现时间(解决文本自适应有异步时间差)*/
+    bufferDuration?: number,
+    /** 渐入时间*/
+    fadeInDuration?: number,
+    /** 停留时间*/
+    stayDuration?: number,
+    /** 消失时间*/
+    fadeOutDuration?: number,
+}
+
 const { ccclass } = cc._decorator;
 
 @ccclass
 export default class ToastManager {
 
-    config: any = {
+    config: IToastConfig = {
         //容器起始位置
         contentStartPosition: 350,
         //渐入的偏移距离
@@ -54,7 +71,7 @@ export default class ToastManager {
 
     //prevContent: string = null;
 
-    createToast(content: string) {
+    createToast(content: string, customConfig?: IToastConfig, cb?: () => void) {
         //防止重复提示
         // if (content == this.prevContent) return;
         // this.prevContent = content;
@@ -65,21 +82,29 @@ export default class ToastManager {
             toast.parent = this.sequenceContent;
             toast.opacity = 0;
             //toast_script.setLabel(i18nMgr._getLabel(content));
+            let config = this.config;
+            if (customConfig) config = {
+                ...this.config,
+                ...customConfig,
+            };
             toast_script.setLabel(content);
             if (this.sequenceToasts.length == 0) {
                 this.resetSCPosition();
                 toast_script.posY = 0;
-                toast.y = toast_script.posY - this.config.fadeInOffSetDis;
-                cc.tween(toast).to(this.config.bufferDuration, { opacity: 255 }).to(this.config.fadeInDuration, { y: toast_script.posY }).delay(this.config.stayDuration).to(this.config.fadeOutDuration, { opacity: 0 }).call(() => {
+                toast.y = toast_script.posY - config.fadeInOffSetDis;
+                cc.tween(toast).to(config.bufferDuration, { opacity: 255 }).to(config.fadeInDuration, { y: toast_script.posY }).delay(config.stayDuration).to(config.fadeOutDuration, { opacity: 0 }).call(async () => {
                     this.fadeComplete();
-                    this.sequenceMove();
+                    await this.sequenceMove(config);
+                    if (cb) cb();
                 }).start();
             } else {
-                let step: number = this.config.spaceDis + (this.prevToast.node.height + toast.height) / 2;
+                let step: number = config.spaceDis + (this.prevToast.node.height + toast.height) / 2;
                 toast_script.posY = this.prevToast.posY - step;
                 toast_script.markFadeOriTime = new Date().getTime();
-                toast.y = toast_script.posY - this.config.fadeInOffSetDis;
-                cc.tween(toast).to(this.config.bufferDuration, { opacity: 255 }).to(this.config.fadeInDuration, { y: toast_script.posY }).delay(this.config.stayDuration).to(this.config.fadeOutDuration, { opacity: 0 }).start();
+                toast.y = toast_script.posY - config.fadeInOffSetDis;
+                cc.tween(toast).to(config.bufferDuration, { opacity: 255 }).to(config.fadeInDuration, { y: toast_script.posY }).delay(config.stayDuration).to(config.fadeOutDuration, { opacity: 0 }).call(() => {
+                    if (cb) cb();
+                }).start();
             }
             this.prevToast = toast_script;
             this.sequenceToasts.push(toast_script);
@@ -89,9 +114,9 @@ export default class ToastManager {
     /**
      * 队列集体运动
      */
-    async sequenceMove() {
+    async sequenceMove(config: IToastConfig) {
         while (this.sequenceToasts.length) {
-            await this.moveStep();
+            await this.moveStep(config);
             this.fadeComplete();
         }
         cc.log("sequenceMove complete");
@@ -99,12 +124,12 @@ export default class ToastManager {
     /**
      *  每步运动
      */
-    async moveStep() {
+    async moveStep(config: IToastConfig) {
 
         return new Promise((reslove, reject) => {
             let toast_script = this.sequenceToasts[0];
             let toast = toast_script.node;
-            let target = this.config.contentStartPosition - toast_script.posY;
+            let target = config.contentStartPosition - toast_script.posY;
             cc.tween(this.sequenceContent).to(.2, { y: target }).call(() => {
                 //判断时长，超过变化时长就算完成,否在需要补充停留时间
                 let disTime = (new Date().getTime() - toast_script.markFadeOriTime) / 1000;

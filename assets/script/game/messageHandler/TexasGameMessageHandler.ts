@@ -223,9 +223,15 @@ export default class TexasGameMessageHandler {
             return;
         }
 
-        // UIComponent.Instance.Toast(i18nMgr.Get(`LeaveReason${Def.LeaveReason.LR_ACTIVE}`));
-        this.game.TexasGameUtils.ExitRoom();
-
+        UIComponent.Instance.Toast(
+            i18nMgr.Get(`LeaveReason${Def.LeaveReason.LR_ACTIVE}`), 
+            {
+                stayDuration: 1,
+            },
+            ()=>{
+            this.game.TexasGameUtils.ExitRoom();
+             }
+        );
     }
 
     /**
