@@ -4757,7 +4757,7 @@ export default class TexasGame {
         GC.uc.RemoveComponent(this.GameLogicSMComponent);
 
         //移除资源
-        //GC.bundle.get(Bundle_Texas).releaseAll();
+        //GC.bundle.get(BUNDLE_TEXAS).releaseAll();
         //SceneManager.Instance.removeScene(UIDefine.UITexas);
     }
     //判断是否能够点击

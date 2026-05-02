@@ -130,7 +130,7 @@ export default class TexasGameMessageHandler {
     /// 进入房间 消息回调
     /// </summary>
     /// <param name="response"></param>
-    Protocol_Holdem_EnterRoom_Handler(response: ServerMessageEnterRoom.AsObject) {
+    async Protocol_Holdem_EnterRoom_Handler(response: ServerMessageEnterRoom.AsObject) {
 
         console.log(`# MSG_CALLBACK: Protocol_Holdem_EnterRoom_Handler`);
 
@@ -191,7 +191,7 @@ export default class TexasGameMessageHandler {
 
             }
 
-            SceneManager.Instance.switchScene(UIDefine.UITexas, null, GameCache.Instance.enter_param);
+            await SceneManager.Instance.switchScene(UIDefine.UITexas, null, GameCache.Instance.enter_param);
 
             this.game.SMAgency.ChangeGameState(TexasGameState.Init, response);
 

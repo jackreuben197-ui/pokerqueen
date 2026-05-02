@@ -54,19 +54,19 @@ export class UIFormMgr {
 
         } else {
 
-            ResManager.Load(uiDefine.Bundle, uiDefine.Path, cc.Prefab, (err, asset: cc.Prefab) => {
-                if (err) {
-                    cc.log("加载预制体", uiDefine.Bundle, uiDefine.Path, "发生错误", err);
-                    return;
-                }
-                let ui_node = cc.instantiate(asset);
-                newUI = ui_node.getComponent(UIBase);
-                if (!newUI) {
-                    console.log(uiDefine.Name, "缺少脚本");
-                }
-                this.uiMap[uiDefine.Name] = newUI;
-                this.lateOpen(newUI, param, obj);
-            });
+            // ResManager.Load(uiDefine.Bundle, uiDefine.Path, cc.Prefab, (err, asset: cc.Prefab) => {
+            //     if (err) {
+            //         cc.log("加载预制体", uiDefine.Bundle, uiDefine.Path, "发生错误", err);
+            //         return;
+            //     }
+            //     let ui_node = cc.instantiate(asset);
+            //     newUI = ui_node.getComponent(UIBase);
+            //     if (!newUI) {
+            //         console.log(uiDefine.Name, "缺少脚本");
+            //     }
+            //     this.uiMap[uiDefine.Name] = newUI;
+            //     this.lateOpen(newUI, param, obj);
+            // });
         }
     }
     async close(uiDefine: { Name: string, Bundle: string, Path: string } = null, param: any = null, obj: Close_Obj) {

@@ -4,7 +4,7 @@ import { GameCache } from "../game/GameCache";
 import H5MsgMgr from "../H5MsgMgr";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import ProcedureManager from "../manager/ProcedureManager";
-import { Pre_Texas_Define } from "../manager/ResManager";
+import { PreloadDefinitionTexas, PreloadParams } from "../manager/ResManager";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ClientMessageRooms, ServerMessageRooms } from "../protobuf/holdem/req_rpc_rooms_pb";
@@ -32,7 +32,14 @@ export default class ProcedureEnterTexas extends ProcedureBase {
 
         GC.notify.register(ProtocolCode.Protocol_Holdem_Rooms, this.OnMsgHoldemRooms, this);
         //显示房间进入loading
-        UIComponent.Instance.ShowUI(PrefabUI.UIPreloading, { pre_define: Pre_Texas_Define, complete: this.onComplete.bind(this), error: this.errorHandler.bind(this) });
+        UIComponent.Instance.ShowUI<PreloadParams>(
+            PrefabUI.UIPreloading, 
+            { 
+                preloadDefinition: PreloadDefinitionTexas, 
+                complete: this.onComplete.bind(this), 
+                error: this.errorHandler.bind(this),
+            }
+        );
 
         // 创建德州玩法入口
         const entrance = new TexasGameplayEntrance(
@@ -41,8 +48,6 @@ export default class ProcedureEnterTexas extends ProcedureBase {
             GameCache.Instance.room_id
         );
         this._entrance = entrance;
-
-
     }
 
     /**

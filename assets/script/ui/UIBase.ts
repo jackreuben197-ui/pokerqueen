@@ -156,39 +156,39 @@ export default class UIBase extends BaseComponent {
             if (ex) ex.interactable = boo;
         }
     }
-    /**
-    * 生成对象
-    * @param url
-    * @param type
-    * @param handle
-    */
-    protected loadAsset(url: string, cb: Function, asset_type: typeof cc.Asset, errorCb: Function = null) {
-        switch (asset_type) {
-            case cc.Prefab: {
-                ResManager.instance.loadPrefab(url, (instance: cc.Node, res: cc.Prefab) => {
-                    this._prefabs.set(url, instance.getComponent(UIBase));
-                    cb && cb(instance, res);
-                }, errorCb)
-            } break;
-            // case dragonBones.DragonBonesAsset: {
-            //     ResManager.instance.loadRes(url + "_ske", (asset: dragonBones.DragonBonesAsset) => {
-            //         ResManager.instance.loadRes(url + "_tex", (atlas: dragonBones.DragonBonesAtlasAsset) => {
-            //             cb && cb(asset, atlas)
-            //         }, dragonBones.DragonBonesAtlasAsset);
-            //     }, dragonBones.DragonBonesAsset);
-            // } break;
-            case cc.Texture2D: {
-                ResManager.instance.loadUrl(url, asset_type, (instance: cc.Texture2D) => {
-                    cb && cb(new cc.SpriteFrame(instance))
-                })
-            } break;
-            default: {
-                ResManager.instance.loadRes(url, (instance: any) => {
-                    cb && cb(instance);
-                }, asset_type);
-            } break;
-        }
-    }
+    // /**
+    // * 生成对象
+    // * @param url
+    // * @param type
+    // * @param handle
+    // */
+    // protected loadAsset(url: string, cb: Function, asset_type: typeof cc.Asset, errorCb: Function = null) {
+    //     switch (asset_type) {
+    //         case cc.Prefab: {
+    //             ResManager.instance.loadPrefab(url, (instance: cc.Node, res: cc.Prefab) => {
+    //                 this._prefabs.set(url, instance.getComponent(UIBase));
+    //                 cb && cb(instance, res);
+    //             }, errorCb)
+    //         } break;
+    //         // case dragonBones.DragonBonesAsset: {
+    //         //     ResManager.instance.loadRes(url + "_ske", (asset: dragonBones.DragonBonesAsset) => {
+    //         //         ResManager.instance.loadRes(url + "_tex", (atlas: dragonBones.DragonBonesAtlasAsset) => {
+    //         //             cb && cb(asset, atlas)
+    //         //         }, dragonBones.DragonBonesAtlasAsset);
+    //         //     }, dragonBones.DragonBonesAsset);
+    //         // } break;
+    //         case cc.Texture2D: {
+    //             ResManager.instance.loadUrl(url, asset_type, (instance: cc.Texture2D) => {
+    //                 cb && cb(new cc.SpriteFrame(instance))
+    //             })
+    //         } break;
+    //         default: {
+    //             ResManager.instance.loadRes(url, (instance: any) => {
+    //                 cb && cb(instance);
+    //             }, asset_type);
+    //         } break;
+    //     }
+    // }
 
     lateClose(params?: any) {
         this._prefabs.forEach(prefab => {

@@ -25,11 +25,6 @@ export default class ProcedureManager {
     static Init() {
         this.procedureDic[ProcedureEnum.Idle] = new ProcedureIdle(ProcedureEnum.Idle);
         this.procedureDic[ProcedureEnum.Init] = new ProcedureInit(ProcedureEnum.Init);
-        // this.procedureDic[ProcedureEnum.PrelLoadLogin] = new ProcedurePrelLoadLogin(ProcedureEnum.PrelLoadLogin);
-        // this.procedureDic[ProcedureEnum.Config] = new ProcedureConfig(ProcedureEnum.Config);
-        // this.procedureDic[ProcedureEnum.Login] = new ProcedureLogin(ProcedureEnum.Login);
-        // this.procedureDic[ProcedureEnum.EnterLobby] = new ProcedureEnterLobby(ProcedureEnum.EnterLobby);
-        // this.procedureDic[ProcedureEnum.Lobby] = new ProcedureLobby(ProcedureEnum.Lobby);
         this.procedureDic[ProcedureEnum.EnterTexas] = new ProcedureEnterTexas(ProcedureEnum.EnterTexas);
         this.procedureDic[ProcedureEnum.Texas] = new ProcedureTexas(ProcedureEnum.Texas);
         ProcedureManager.StartProcedure(ProcedureEnum.Init);

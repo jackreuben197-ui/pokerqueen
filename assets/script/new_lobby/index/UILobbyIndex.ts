@@ -11,7 +11,7 @@ import GameUtil, {
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { Bundle_Resources } from "../../manager/ResManager";
+import { BUNDLE_RESOURCES } from "../../manager/ResManager";
 import SceneManager from "../../manager/SceneManager";
 import {
     WebWalletTotal,

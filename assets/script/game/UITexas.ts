@@ -9,7 +9,7 @@ import { i18nMgr } from "../i18n/i18nMgr";
 
 
 
-import { Bundle_Resources, Bundle_Texas } from "../manager/ResManager";
+import { BUNDLE_RESOURCES, BUNDLE_TEXAS } from "../manager/ResManager";
 import MttAgainBuy from "../mtt/detail/MttAgainBuy";
 
 
@@ -465,8 +465,8 @@ export default class UITexas extends BaseScene {
         this.UIAgreeSecondPcs_Com = this.AddComponents(PrefabUI.UIAgreeSecondPcsComponent, this.UIAgreeSecondPcs_Con);
         //8.MTT重购面板
         this.MttAgainBuy_Con = this.getChildNodeOrComponent("UIMttSignDialog_Con");
-        //this.UIMttSignDialog_Com = this.AddComponents(PrefabUI.UIMttSignDialogComponent, this.UIMttSignDialog_Con, false, Bundle_Resources);
-        this.MttAgainBuy = this.AddComponents(PrefabUI.MttAgainBuy, this.MttAgainBuy_Con, false, Bundle_Resources);
+        //this.UIMttSignDialog_Com = this.AddComponents(PrefabUI.UIMttSignDialogComponent, this.UIMttSignDialog_Con, false, BUNDLE_RESOURCES);
+        this.MttAgainBuy = this.AddComponents(PrefabUI.MttAgainBuy, this.MttAgainBuy_Con, false, BUNDLE_RESOURCES);
         //////////////////////////////////////////////////////////////////////
         //////////////////初始化杂类
         //隐藏座位模板
@@ -479,7 +479,7 @@ export default class UITexas extends BaseScene {
 
 
     //从预制体添加到容器
-    AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = Bundle_Texas) {
+    AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = BUNDLE_TEXAS) {
         let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, bundle);
         let com = null;
         if (prefab) {
@@ -534,7 +534,7 @@ export default class UITexas extends BaseScene {
 
 
     Enter(param: { game_enter_type: GameEnterType, isLookOn: boolean }): void {
-
+        console.log("i am called");
         super.Enter(param);
 
         this.AdaptiveMain();

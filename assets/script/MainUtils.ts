@@ -11,7 +11,7 @@ import AgoraManager from "./net/agora/AgoraManager";
 import H5MsgMgr from "./H5MsgMgr";
 import LobbyRoomListItem from "./frame/data/lobby/LobbyRoomListItem";
 import ProcedureManager from "./manager/ProcedureManager";
-import { ResManager, Bundle_Resources } from "./manager/ResManager";
+import { ResManager, BUNDLE_RESOURCES } from "./manager/ResManager";
 import CCTools from "./tools/CCTools";
 import TelegramUtils from "./tools/TelegramUtils";
 import { ProcedureEnum } from "./define/EIDefine";
@@ -191,7 +191,7 @@ function loadSoundResources(): void {
             _soundLoaded = false;
             return;
         }
-        ResManager.AssetForeach(assets, Bundle_Resources);
+        ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
         console.log('[H5Bridge] 声音资源加载完成, 共', assets.length, '个资源');
     });
 }
@@ -212,7 +212,7 @@ function loadGameResources(): void {
             _gameResLoaded = false;
             return;
         }
-        ResManager.AssetForeach(assets, Bundle_Resources);
+        ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
         console.log('[H5Bridge] 游戏资源加载完成, 共', assets.length, '个资源');
     });
 }
