@@ -696,7 +696,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
                 min_value: min,
                 max_value: max,
                 step: 1,
-                change: (val) => {
+                change: (val:number) => {
                     this.onValueChangedSliderCoin(val);
                 },
                 own: this

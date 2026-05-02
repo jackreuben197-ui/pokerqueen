@@ -29,7 +29,7 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import UINewDialogComponent from "../../ui/dialog/UINewDialogComponent";
-import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
+import { WalletType } from "../../config/TexasConfig";
 import { UIClubModel } from "../../lobby/labor/UIClubModel";
 import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 import { GameCache } from "../../game/GameCache";

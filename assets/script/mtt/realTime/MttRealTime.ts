@@ -2,7 +2,7 @@ import ComTabToggles, { ETabToggle } from "../../common/ComTabToggles";
 import List from "../../common/List";
 import TabNode from "../../common/tabNode";
 import { EMttRealTimeTabType } from "../../config/EEnumConfig";
-import { mttRealTimeTabConfig } from "../../frame/config/tabConfig";
+// import { mttRealTimeTabConfig } from "../../frame/config/tabConfig";
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import TimeHelper from "../../helper/TimeHelper";
@@ -14,6 +14,8 @@ import MttRealTimeBlindsNode from "./MttRealTimeBlindsNode";
 import MttRealTimeRankItem from "./MttRealTimeRankItem";
 import MttRealTimeRewardNode from "./MttRealTimeRewardNode";
 import MttRealTimeTablesNode from "./MttRealTimeTablesNode";
+
+const mttRealTimeTabConfig =  { data: ["UITexasReport_Label_AllBarSK", "UITexasReport_Label_AllBarPZ", "UITexasReport_Label_AllBarJL", "UITexasReport_Label_AllBarMZ"], defaultIndex: 0, defaultWidth: 1060, defaultHeight: 133 }
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass

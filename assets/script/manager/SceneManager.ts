@@ -31,45 +31,20 @@ export default class SceneManager {
      * currExitParams 当前场景退出的参数
      * newEnterParams 新场景进入的参数
      */
-    async switchScene<T>(scene: IUIDefine, currExitParams: any = null, newEnterParams: T = null) {
-        // let sceneKey = scene.Bundle + scene.Path;
-        // let newUI = this.sceneMap.get(sceneKey);
-        // const asset = await ResManager.GetOrLoad<cc.Prefab>(scene.Bundle, scene.Path);
-        // console.log('loaded', asset);
-        // if (newUI) {
-        //     this._doScene(newUI, currExitParams, newEnterParams);
-        // } else {
-        //     let r_assset = ResManager.LoadAsset(scene.Bundle, scene.Path) as cc.Prefab;
-        //     if (r_assset) {
-        //         newUI = cc.instantiate(r_assset);
-        //         this._doScene(newUI, currExitParams, newEnterParams);
-        //         this.sceneMap.set(sceneKey, newUI);
-        //     } else {
-        //         ResManager.Load(scene.Bundle, scene.Path, cc.Prefab, (err:Error, asset: cc.Prefab) => {
-        //             if (err) {
-        //                 console.log("加载场景", scene.Bundle, scene.Path, "发生错误", err);
-        //                 return;
-        //             }
-        //             newUI = cc.instantiate(asset);
-        //             this._doScene(newUI, currExitParams, newEnterParams);
-        //             this.sceneMap.set(sceneKey, newUI);
-        //         });
-        //     }
-        // }
+    switchScene<T>(scene: IUIDefine, currExitParams: any = null, newEnterParams: T = null) {
         let sceneKey = scene.Bundle + scene.Path;
         let newUI = this.sceneMap.get(sceneKey);
-        if (!newUI) {
-            try {
-                const asset = await ResManager.GetOrLoad<cc.Prefab>(scene.Bundle, scene.Path);
-                newUI = cc.instantiate(asset);
-                this.sceneMap.set(sceneKey, newUI);
-            } catch(e) {
-                console.log('switchScene, GetOrLoad error', e)
-                return;
-            }
+        if (newUI) {
+            this._doScene(newUI, currExitParams, newEnterParams);
+            return;
         }
-        this._doScene(newUI, currExitParams, newEnterParams);
-
+        ResManager.GetOrLoad<cc.Prefab>(scene.Bundle, scene.Path).then( asset => {
+            newUI = cc.instantiate(asset);
+            this.sceneMap.set(sceneKey, newUI);
+            this._doScene(newUI, currExitParams, newEnterParams);
+        }).catch( e => {
+             console.log('switchScene, GetOrLoad error', e)
+        });
     }
 
     private _doScene(newUI: cc.Node, currExitParams: any = null, newEnterParams: any = null) {

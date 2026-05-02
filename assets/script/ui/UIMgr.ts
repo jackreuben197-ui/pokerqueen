@@ -30,7 +30,7 @@ export class UIFormMgr {
         this.CacheUILayer = Main.CacheUI;
     }
 
-    find(uiDefine: { Name: string, Bundle: string, Path: string }): UIBase {
+    find(uiDefine: IUIDefine): UIBase {
         return this.uiMap[uiDefine.Name];
     }
 
@@ -38,45 +38,38 @@ export class UIFormMgr {
      * 打开一个窗体
      * @param param 携带的参数
      */
-
-    open(uiDefine: { Name: string, Bundle: string, Path: string }, param: any = null, obj: Open_Obj) {
-
+    open(uiDefine: IUIDefine, param: any = null, obj: Open_Obj) {
         if (this.currUI?.UIDefine.Name == uiDefine.Name) {
             cc.log("当前面板已经存在:", uiDefine.Name);
             return;
         }
-
         let newUI = this.find(uiDefine);
-
         if (newUI) {
-
             this.lateOpen(newUI, param, obj);
-
-        } else {
-
-            // ResManager.Load(uiDefine.Bundle, uiDefine.Path, cc.Prefab, (err, asset: cc.Prefab) => {
-            //     if (err) {
-            //         cc.log("加载预制体", uiDefine.Bundle, uiDefine.Path, "发生错误", err);
-            //         return;
-            //     }
-            //     let ui_node = cc.instantiate(asset);
-            //     newUI = ui_node.getComponent(UIBase);
-            //     if (!newUI) {
-            //         console.log(uiDefine.Name, "缺少脚本");
-            //     }
-            //     this.uiMap[uiDefine.Name] = newUI;
-            //     this.lateOpen(newUI, param, obj);
-            // });
+            return;
         }
+        ResManager.GetOrLoad<cc.Prefab>(uiDefine.Bundle, uiDefine.Path).then((asset) => {
+            let ui_node = cc.instantiate(asset);
+            newUI = ui_node.getComponent(UIBase);
+            if (!newUI) {
+                console.log(uiDefine.Name, "缺少脚本");
+            }
+            console.log('get resournce', ui_node, newUI);
+            this.uiMap[uiDefine.Name] = newUI;
+            this.lateOpen(newUI, param, obj);
+        }).catch(e => {
+            console.log('Get Resource Error', e);
+        })
     }
-    async close(uiDefine: { Name: string, Bundle: string, Path: string } = null, param: any = null, obj: Close_Obj) {
+
+    close(uiDefine: { Name: string, Bundle: string, Path: string } = null, param: any = null, obj: Close_Obj) {
         if (uiDefine) {
             for (let i = this.showUIs.length - 1; i >= 0; i--) {
                 let ui = this.showUIs[i];
                 if (ui.UIDefine.Name == uiDefine.Name) {
                     ui.close_animation = obj?.animation == null ? true : obj?.animation;
                     if (ui.close_animation) {
-                        await this.currUI.onClose(param);
+                        this.currUI.onClose(param);
                     } else {
                         this.currUI.onClose(param);
                     }

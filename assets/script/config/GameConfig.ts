@@ -94,16 +94,16 @@ export var LogStyle = {
     ws_response: "color:#19FF00;background:#47100A",
 }
 
-// export var TextColor = {
-//     Color1: "#FFFFFF",
-//     Color2: "#35A3B3",
-//     Color3: "#757CAB",
-//     Color4: "#7187FF",
-//     Color5: "#B0FFAE",
-//     Color6: "#FF7C7C",
-//     Color7: "#EEF5FF",
-//     Color8: "#FEEC8E",
-// }
+export var TextColor = {
+    Color1: "#FFFFFF",
+    Color2: "#35A3B3",
+    Color3: "#757CAB",
+    Color4: "#7187FF",
+    Color5: "#B0FFAE",
+    Color6: "#FF7C7C",
+    Color7: "#EEF5FF",
+    Color8: "#FEEC8E",
+}
 
 // export var Member_Order_List = [
 //     { show: "UIGuild_MemberManagerSortByWinOrLose", index: 0, icon: "Up", sort_type: 1, order_type: 1 },

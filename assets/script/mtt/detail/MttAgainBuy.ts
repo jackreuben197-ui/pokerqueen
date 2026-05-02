@@ -19,7 +19,7 @@ import UINewDialogComponent from "../../ui/dialog/UINewDialogComponent";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import Toast from "../../ui/toast/Toast";
-import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
+import { WalletType } from "../../config/TexasConfig";
 import SliderPlus from "../../common/SliderPlus";
 import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 enum MTTJoinMode // 参与mtt玩法方式

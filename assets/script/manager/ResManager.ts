@@ -1,11 +1,6 @@
-import { bundleRes, bundleSpriteRes } from "../config/PathConfig";
-import MyLog from "../tools/MyLog";
 import AssetContext from "../ui/component/AssetContext";
-import UIBase from "../ui/UIBase";
-
 export const BUNDLE_RESOURCES: string = "resources";
 export const BUNDLE_TEXAS: string = "texas";
-
 export type PreloadDefinition = { bundle: string, dir: string };
 export type PreloadParams = { preloadDefinition: PreloadDefinition, complete?: ()=>void, stopProgress?: boolean, error?: (err:Error) => void };
 
@@ -54,7 +49,7 @@ export class ResManager {
     // }
 
     static async GetOrLoad<T extends cc.Asset>(bundleName: string, assetPath: string): Promise<T> {
-        let bundle = bundleName == BUNDLE_RESOURCES ? cc.resources : cc.assetManager.getBundle(bundleName);
+        let bundle = (bundleName == BUNDLE_RESOURCES ||  bundleName == null)? cc.resources : cc.assetManager.getBundle(bundleName);
         // check it is loaded
         if (!bundle) {
             return new Promise((resovle, reject) => {
@@ -89,9 +84,7 @@ export class ResManager {
                 resovle(asset)
             });
         })
-
     }
-
 
     // static LoadAsset(bundleName: string, assetPath: string) {
     //     let bundle = bundleName == null ? cc.resources : cc.assetManager.getBundle(bundleName);
