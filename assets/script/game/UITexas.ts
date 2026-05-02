@@ -261,10 +261,10 @@ export default class UITexas extends BaseScene {
     //#endregion
 
     ///////////////////////////////////
-    update(dt: number) {
+    override update(dt: number) {
         this.game?.Update(dt);
     }
-    protected lateLoad(): void {
+    protected override lateLoad(): void {
 
         this.name = "UITexas";
 
@@ -479,7 +479,7 @@ export default class UITexas extends BaseScene {
 
 
     //从预制体添加到容器
-    AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = BUNDLE_TEXAS) {
+    private AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = BUNDLE_TEXAS) {
         let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, bundle);
         let com = null;
         if (prefab) {
@@ -495,7 +495,7 @@ export default class UITexas extends BaseScene {
         }
         return com;
     }
-    protected regiterTouchEvents(): void {
+    protected override regiterTouchEvents(): void {
 
         this.setButtonClick(this.btn_menu, this.click_side_button);
         this.setButtonClick(this.btn_msg, this.click_side_button);
@@ -533,7 +533,7 @@ export default class UITexas extends BaseScene {
     }
 
 
-    Enter(param: { game_enter_type: GameEnterType, isLookOn: boolean }): void {
+    override Enter(param: { game_enter_type: GameEnterType, isLookOn: boolean }): void {
         console.log("i am called");
         super.Enter(param);
 
@@ -647,7 +647,7 @@ export default class UITexas extends BaseScene {
         //关闭战绩
         UIComponent.close(UIDefine.UITexasHistoryComponent);
     }
-    Exit(param: any): void {
+    override Exit(param: any): void {
         super.Exit(param);
     }
     /// <param name="num"></param>几张

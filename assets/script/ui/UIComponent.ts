@@ -113,75 +113,74 @@ export default class UIComponent {
         }
     }
     static open<T>(UIDefine: IUIDefine, param?: T, obj?: Open_Obj) {
-        // if (!UIDefine) return;
-        // switch (UIDefine.UIType) {
-        //     case UIType.Form:
-        //         UIFormMgr.Instance.open(UIDefine, param, obj);
-        //         break;
-        //     case UIType.Dialog:
-        //         UIDialogMgr.Instance.open(UIDefine, param, obj);
-        //         break;
-        //     case UIType.Board:
-        //         UIBoardMgr.Instance.open(UIDefine, param, obj);
-        //         break;
-        //     case UIType.Prompt:
-        //     case UIType.TexasPreLoad:
-        //         UIPromptMgr.Instance.open(UIDefine, param, obj);
-        //         break;
-        //     case UIType.CommonUI:
-        //         UICommonMgr.Instance.open(UIDefine, param, obj);
-        //         break;
-        // }
+        if (!UIDefine) return;
+        switch (UIDefine.UIType) {
+            case UIType.Form:
+                UIFormMgr.Instance.open(UIDefine, param, obj);
+                break;
+            case UIType.Dialog:
+                UIDialogMgr.Instance.open(UIDefine, param, obj);
+                break;
+            case UIType.Board:
+                UIBoardMgr.Instance.open(UIDefine, param, obj);
+                break;
+            case UIType.Prompt:
+            case UIType.TexasPreLoad:
+                UIPromptMgr.Instance.open(UIDefine, param, obj);
+                break;
+            case UIType.CommonUI:
+                UICommonMgr.Instance.open(UIDefine, param, obj);
+                break;
+        }
     }
 
     static close<T>(UIDefine: IUIDefine = null, param: T = null, obj?: Close_Obj) {
-        // if (!UIDefine) return;
-        // switch (UIDefine.UIType) {
-        //     case UIType.Form:
-        //         UIFormMgr.Instance.close(UIDefine, param, obj);
-        //         break;
-        //     case UIType.Dialog:
-        //         UIDialogMgr.Instance.close(UIDefine, param, obj);
-        //         break;
-        //     case UIType.Board:
-        //         UIBoardMgr.Instance.close(UIDefine, param, obj);
-        //         break;
-        //     case UIType.Prompt:
-        //     case UIType.TexasPreLoad:
-        //         UIPromptMgr.Instance.close(UIDefine, param, obj);
-        //         break;
-        //     case UIType.CommonUI:
-        //         UICommonMgr.Instance.close(UIDefine, param, obj);
-        //         break;
-        // }
+        if (!UIDefine) return;
+        switch (UIDefine.UIType) {
+            case UIType.Form:
+                UIFormMgr.Instance.close(UIDefine, param, obj);
+                break;
+            case UIType.Dialog:
+                UIDialogMgr.Instance.close(UIDefine, param, obj);
+                break;
+            case UIType.Board:
+                UIBoardMgr.Instance.close(UIDefine, param, obj);
+                break;
+            case UIType.Prompt:
+            case UIType.TexasPreLoad:
+                UIPromptMgr.Instance.close(UIDefine, param, obj);
+                break;
+            case UIType.CommonUI:
+                UICommonMgr.Instance.close(UIDefine, param, obj);
+                break;
+        }
     }
 
     static find(UIDefine: IUIDefine): UIBase {
 
-        // let ui: UIBase = null;
+        let ui: UIBase = null;
 
-        // switch (UIDefine.UIType) {
-        //     case UIType.Form:
-        //         ui = UIFormMgr.Instance.find(UIDefine);
-        //         break;
-        //     case UIType.Dialog:
-        //         ui = UIDialogMgr.Instance.find(UIDefine);
-        //         break;
-        //     case UIType.Board:
-        //         ui = UIBoardMgr.Instance.find(UIDefine);
-        //         break;
-        //     case UIType.Prompt:
-        //     case UIType.TexasPreLoad:
-        //         ui = UIPromptMgr.Instance.find(UIDefine);
-        //         break;
-        //     case UIType.CommonUI:
-        //         ui = UICommonMgr.Instance.find(UIDefine);
-        //         break;
-        //     default:
-        //         break;
-        // }
-        // return ui;
-        return null;
+        switch (UIDefine.UIType) {
+            case UIType.Form:
+                ui = UIFormMgr.Instance.find(UIDefine);
+                break;
+            case UIType.Dialog:
+                ui = UIDialogMgr.Instance.find(UIDefine);
+                break;
+            case UIType.Board:
+                ui = UIBoardMgr.Instance.find(UIDefine);
+                break;
+            case UIType.Prompt:
+            case UIType.TexasPreLoad:
+                ui = UIPromptMgr.Instance.find(UIDefine);
+                break;
+            case UIType.CommonUI:
+                ui = UICommonMgr.Instance.find(UIDefine);
+                break;
+            default:
+                break;
+        }
+        return ui;
     }
 
     //无动画开启UI(暂未处理)
