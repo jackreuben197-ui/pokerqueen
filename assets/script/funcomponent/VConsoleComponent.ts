@@ -26,7 +26,7 @@ export default class VConsoleComponent {
         }
         this.vconsole_click_time++;
     }
-    Update(dt) {
+    Update(dt:number) {
         if (this.timeRun) {
             this.timePass += dt;
             if (this.timePass > 2) {

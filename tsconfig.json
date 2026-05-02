@@ -10,8 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": false,
     "ignoreDeprecations": "6.0",
-    "types": ["node"],
-    "noImplicitOverride": true
+    "types": ["node"]
   },
   "exclude": [
     "back_script",

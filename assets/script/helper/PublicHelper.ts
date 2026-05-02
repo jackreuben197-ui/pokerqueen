@@ -1,5 +1,3 @@
-import { i18nMgr } from "../i18n/i18nMgr";
-import ToastManager from "../manager/ToastManager";
 import UIComponent from "../ui/UIComponent";
 
 export default class PublicHelper {
@@ -13,7 +11,7 @@ export default class PublicHelper {
         node.active = active;
     }
 
-    static copyToClipBoard(str): boolean {
+    static copyToClipBoard(str:string): boolean {
         if (cc.sys.isNative) {
             //原生自己实现 手机浏览器打开走下面的 可以复制
         } else if (cc.sys.isBrowser) {

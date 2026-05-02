@@ -9,7 +9,7 @@ export class UIFormMgr {
 
     protected Name: string = "UIFormMgr";
 
-    uiMap = {};
+    uiMap: Record<string, UIBase> = {};
 
     currUI: UIBase = null;
     //已经打开的ui列表
@@ -27,7 +27,7 @@ export class UIFormMgr {
 
         this.UILayer = Main.Form;
 
-        this.CacheUILayer = Main.Cache_UI;
+        this.CacheUILayer = Main.CacheUI;
     }
 
     find(uiDefine: { Name: string, Bundle: string, Path: string }): UIBase {
@@ -148,7 +148,7 @@ export class UIBoardMgr extends UIFormMgr {
     constructor() {
         super();
         this.UILayer = Main.Board;
-        this.CacheUILayer = Main.Cache_UI;
+        this.CacheUILayer = Main.CacheUI;
     }
 }
 export class UIDialogMgr extends UIFormMgr {
@@ -161,7 +161,7 @@ export class UIDialogMgr extends UIFormMgr {
     constructor() {
         super();
         this.UILayer = Main.Dialog;
-        this.CacheUILayer = Main.Cache_UI;
+        this.CacheUILayer = Main.CacheUI;
     }
 }
 export class UIPromptMgr extends UIFormMgr {
@@ -174,7 +174,7 @@ export class UIPromptMgr extends UIFormMgr {
     constructor() {
         super();
         this.UILayer = Main.Prompt;
-        this.CacheUILayer = Main.Cache_UI;
+        this.CacheUILayer = Main.CacheUI;
     }
 }
 

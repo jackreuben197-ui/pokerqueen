@@ -27,7 +27,7 @@ export default class SpriteAnimationHelper extends cc.Component {
     //完成回调
     callback: Function = null;
 
-    onLoad() {
+    override onLoad() {
         this.stepDuration = this.FPS / cc.game.getFrameRate();
         if (this.autoPlay) {
             this.replay();
@@ -42,7 +42,7 @@ export default class SpriteAnimationHelper extends cc.Component {
         this.frameIndex = 0;
         this.render();
     }
-    protected update(dt: number): void {
+    protected override update(dt: number): void {
         if (this.toPlay) {
             this.passTime += dt;
             while (this.toPlay && this.passTime > this.stepDuration) {

@@ -10,11 +10,12 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIBasePlus extends UIBase {
+    [key: string]: any;
 
     /**
     * 需要声明的节点的命名规则 cc_Node$ABC cc_Sprite$ABC GG$ABC
     */
-    protected load_all_object(root: cc.Node): void {
+    protected override load_all_object(root: cc.Node): void {
         root.children.forEach(child => {
             if (~child.name.indexOf("$")) {
                 let cls = child.name.split("$")[0].replace("_", ".");
@@ -28,7 +29,7 @@ export default class UIBasePlus extends UIBase {
         })
     }
 
-    protected lateLoad(): void {
+    protected override lateLoad(): void {
         super.lateLoad();
         if(this.name) UIComponent.Instance.setComponent(this);
     }

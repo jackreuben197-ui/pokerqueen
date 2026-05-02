@@ -9,15 +9,15 @@ export class Base extends cc.Component {
         super();
     }
 
-    onLoad() {
+    override onLoad() {
 
     }
 
-    start() {
+    override start() {
 
     }
 
-    onEnable() {
+    override onEnable() {
 
     }
 

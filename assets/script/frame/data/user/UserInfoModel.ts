@@ -11,7 +11,6 @@ export default class UserInfoModel extends UIBase {
         this.post(EventName.myGoldChange);
     }
 
-
     get user_id() {
         return this._msg.user_id;
     }

@@ -12,7 +12,6 @@ import { i18nMgr } from "../i18n/i18nMgr";
 import { BUNDLE_RESOURCES, BUNDLE_TEXAS } from "../manager/ResManager";
 import MttAgainBuy from "../mtt/detail/MttAgainBuy";
 
-
 import GlobalSession from "../session/GlobalSession";
 import StorageKey from "../session/StorageKey";
 import AssetContext from "../ui/component/AssetContext";
@@ -95,18 +94,27 @@ export default class UITexas extends BaseScene {
     //桌面主容器
     main: cc.Node = null;
 
-    //桌上边缘按钮
+    // 设置
     btn_menu: cc.Node = null;
+    // 消息
     btn_msg: cc.Node = null;
-    btn_report: cc.Node = null;
-    btn_poker: cc.Node = null;
+    // 客服
     btn_im: cc.Node = null;
     table_add_chip: cc.Node = null;
     // main_menu 按钮
+    // 战绩
+    btn_report: cc.Node = null;
+    // 牌谱
+    btn_poker: cc.Node = null;
+    // 表情
     btn_emoji: cc.Node = null;
+    // 效果
     btn_effect: cc.Node = null;
+    // 音效
     btn_audio: cc.Node = null;
+    // 视频
     btn_camera: cc.Node = null;
+    // 聊天
     chatBtn: cc.Node = null;
     // 视频控制按钮状态
     private _cameraOn: boolean = false;
@@ -264,6 +272,7 @@ export default class UITexas extends BaseScene {
     override update(dt: number) {
         this.game?.Update(dt);
     }
+
     protected override lateLoad(): void {
 
         this.name = "UITexas";
@@ -655,7 +664,7 @@ export default class UITexas extends BaseScene {
     /// <param name="paynum"></param>赔付金额
     public async ShowInsuranceTip(num: number, premium: number, paynum: number) {
         this.Image_InsuranceTips.active = true;
-        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = `${i18nMgr.Get("UILobby_Menu_menu_btn_my")}......\n` + StringHelper.Format(i18nMgr.Get("UIInsurance_tips001"), [num.toString(), StringHelper.GetLongString(premium), StringHelper.GetLongString(paynum)]);
+        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = `${i18nMgr.Get("UILobby_Menu_menu_btn_my")}......\n` + StringHelper.Format(i18nMgr.Get("UIInsurance_tips001"), num, StringHelper.GetLongString(premium), StringHelper.GetLongString(paynum));
         await TimeHelper.Sleep(2000);
         if (this.Image_InsuranceTips.activeInHierarchy) {
             this.Image_InsuranceTips.active = false;
@@ -760,7 +769,7 @@ export default class UITexas extends BaseScene {
 
     public async ShowInsuranceTipJieSuan(paynum: number) {
         this.Image_InsuranceTips.active = true;
-        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = StringHelper.Format(i18nMgr.Get("UIInsurance_tips003"), [StringHelper.GetLongString(paynum)]);
+        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = StringHelper.Format(i18nMgr.Get("UIInsurance_tips003"), StringHelper.GetLongString(paynum));
         await TimeHelper.Sleep(2000);
         if (this.Image_InsuranceTips.activeInHierarchy) {
             this.Image_InsuranceTips.active = false;

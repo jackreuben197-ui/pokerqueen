@@ -21,9 +21,9 @@ class GameControl {
     //判断游戏是否激活
     game_active: boolean = true;
 
-    get language() {
-        return LanguageManager.instance;
-    }
+    // get language() {
+    //     return LanguageManager.instance;
+    // }
 
     get notify() {
         return NotifyManager.instance;
@@ -33,17 +33,17 @@ class GameControl {
         return LocalStoreManager.instance;
     }
 
-    get audio() {
-        return AudioManager.instance;
-    }
+    // get audio() {
+    //     return AudioManager.instance;
+    // }
 
     get data() {
         return DataManager.instance;
     }
 
-    get sdk() {
-        return SDKManager.instance;
-    }
+    // get sdk() {
+    //     return SDKManager.instance;
+    // }
 
     get game(): TexasGame {
         return GameCache.Instance.CurGame;
@@ -57,24 +57,24 @@ class GameControl {
         return UpdateComponent.Instance;
     }
 
-    get moni(): MoniModel {
-        return MoniModel.Instance;
-    }
+    // get moni(): MoniModel {
+    //     return MoniModel.Instance;
+    // }
     get sound(): SoundComponent {
         return SoundComponent.Instance;
     }
 
-    get bundle(): Map<string, cc.AssetManager.Bundle> {
-        return Bundle_Map;
-    }
+    // get bundle(): Map<string, cc.AssetManager.Bundle> {
+    //     return Bundle_Map;
+    // }
 
-    get wallet() {
-        return WalletModel.Instance;
-    }
+    // get wallet() {
+    //     return WalletModel.Instance;
+    // }
 
-    get message() {
-        return MyMessageModel.Instance;
-    }
+    // get message() {
+    //     return MyMessageModel.Instance;
+    // }
 
     init() {
         this.data.init();

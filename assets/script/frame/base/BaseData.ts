@@ -13,8 +13,6 @@ import { NotifyManager } from "../manager/NotifyManager";
 
 export class BaseData {
     constructor() {
-        // super();
-        // this.regiterDispatchEvent()
         NotifyManager.instance.register(EventName.serverResponse, this.notify, this);
     }
 

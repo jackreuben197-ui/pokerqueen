@@ -9,7 +9,7 @@ import PublicHelper from "../../helper/PublicHelper";
 import { StringHelper } from "../../helper/StringHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
+import { WalletType } from "../../config/TexasConfig";
 import Main from "../../Main";
 import {
     WebOrgClubUserInfo,

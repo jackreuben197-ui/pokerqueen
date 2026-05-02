@@ -648,10 +648,10 @@ export type TClubInfo = {
 
 
 export type TMttRank = {
-    limit, //条目
-    offset, //开始下标。例子（offset=0，limit=10，0-9。）
-    alive, //存活人数
-    total, //总人数
+    limit:number, //条目
+    offset:number, //开始下标。例子（offset=0，limit=10，0-9。）
+    alive:number, //存活人数
+    total:number, //总人数
     records: Array<TMttRankItem>,  // 玩家列表
 }
 export type TMttRankItem = {

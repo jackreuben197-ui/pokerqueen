@@ -36,18 +36,18 @@ export default class TimeHelper {
     public static get NowS() {
         return (new Date().getTime() / 1000) ^ 0;
     }
-    public static convertUTCTimeToLocalTime(UTCDateString, separated = '-', isNeedYear = true, isNeedMin = true) {
+    public static convertUTCTimeToLocalTime(UTCDateString: string , separated = '-', isNeedYear = true, isNeedMin = true) {
         let date2 = new Date(UTCDateString);     //这步是关键
         let year = date2.getFullYear();
-        let formatFunc = (str) => {    //格式化显示
-            return str > 9 ? str : '0' + str
+        let formatFunc = (str: number ):string => {    //格式化显示
+            return str > 9 ? '' + str : '0' + str
         }
         let mon = formatFunc(date2.getMonth() + 1);
         let day = formatFunc(date2.getDate());
-        let hour = date2.getHours();
+        let hourNum = date2.getHours();
         // let noon = hour >= 12 ? 'PM' : 'AM';
         // hour = hour >= 12 ? hour - 12 : hour;
-        hour = formatFunc(hour);
+        let hour = formatFunc(hourNum);
         let min = formatFunc(date2.getMinutes());
 
         let dateStr = mon + separated + day
@@ -60,12 +60,12 @@ export default class TimeHelper {
         return dateStr;
     }
 
-    public static RFC3339TimeConvertToUTCTime(rfc3339Time) {
+    public static RFC3339TimeConvertToUTCTime(rfc3339Time: string) {
         let t = Date.parse(rfc3339Time)    //   DateTime.Parse(rfc3339Time).ToUniversalTime();
         return t;
     }
 
-    public static ShowRemainingSemicolon(pNum) {//1小时3600秒      1天86400秒
+    public static ShowRemainingSemicolon(pNum: number) {//1小时3600秒      1天86400秒
         if (pNum >= 3600)//>1小时
         {
 
@@ -87,7 +87,7 @@ export default class TimeHelper {
         }
         return "";
     }
-    public static ShowRemainingSemicolon2(pNum) {//1小时3600秒      1天86400秒
+    public static ShowRemainingSemicolon2(pNum: number) {//1小时3600秒      1天86400秒
         if (pNum >= 3600)//>1小时
         {
             let tHour = Math.floor(pNum / 3600);
@@ -107,7 +107,7 @@ export default class TimeHelper {
         }
         return "";
     }
-    public static ShowRemainingSemicolon3(pNum) {//1小时3600秒      1天86400秒
+    public static ShowRemainingSemicolon3(pNum: number) {//1小时3600秒      1天86400秒
         let tseconds_str = ''
         let tMinutes_str = ''
 
@@ -183,7 +183,7 @@ export default class TimeHelper {
         if (i18nMgr.isCN) {
             return `${data.year}年${data.month}月${data.day}日`;
         } else {
-            return `${this.getMonthENName(data.month)} ${data.day}, ${data.year}`;
+            return `${this.getMonthENName(Number(data.month))} ${data.day}, ${data.year}`;
         }
     }
 
@@ -196,7 +196,7 @@ export default class TimeHelper {
         if (i18nMgr.isCN) {
             return `${data.month}月${data.day}日`;
         } else {
-            return `${this.getMonthENName(data.month)} ${data.day}`;
+            return `${this.getMonthENName(Number(data.month))} ${data.day}`;
         }
     }
 
@@ -359,7 +359,7 @@ export default class TimeHelper {
         return (day1.getFullYear() == day2.getFullYear() && day1.getMonth() == day2.getMonth() && day1.getDate() == day2.getDate());
     }
 
-    static getDateStructYMD(t, isMil: boolean = false) {
+    static getDateStructYMD(t: number, isMil: boolean = false) {
         let data = new Date(t * (isMil ? 1 : 1000));
         let year = this.toTimeFormat(data.getFullYear());
         let month = this.toTimeFormat(data.getMonth() + 1);
@@ -367,7 +367,7 @@ export default class TimeHelper {
         return { year, month, day };
     }
 
-    private static getDateStructHMS(t, isMil: boolean = false) {
+    private static getDateStructHMS(t: number, isMil: boolean = false) {
         let data = new Date(t * (isMil ? 1 : 1000));
         let hour = this.toTimeFormat(data.getHours());
         let min = this.toTimeFormat(data.getMinutes());
@@ -395,7 +395,7 @@ export default class TimeHelper {
         return unit >= 0 ? `${unit < 10 ? "0" : ""}${unit}` : "00";
     }
 
-    private static getMonthENName(m) {
+    private static getMonthENName(m: number) {
         return [
             "January",
             "February",
@@ -475,7 +475,7 @@ export default class TimeHelper {
     }
 
 
-    private static MonthLanMap = {
+    private static MonthLanMap: Record<number, string> = {
         1: "StrJanuary",
         2: "StrFebruary",
         3: "StrMarch",
@@ -489,7 +489,7 @@ export default class TimeHelper {
         11: "StrNovember",
         12: "StrDecember",
     }
-    private static DayLanMap = {
+    private static DayLanMap: Record<number, string> = {
         1: "WeekMon",
         2: "WeekTues",
         3: "WeekWed",
