@@ -126,7 +126,6 @@ export default class Main extends cc.Component {
         UpdateComponent.Instance.Update(dt);
     }
     override start() {
-        console.log("start test");
         ProcedureManager.Init();
     }
 }

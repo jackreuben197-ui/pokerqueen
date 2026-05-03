@@ -296,10 +296,6 @@ export default class UITexas extends BaseScene {
         this.btn_audio = this.getChildNodeOrComponent("btn_audio");
         this.btn_camera = this.getChildNodeOrComponent("btn_camera");
         this.chatBtn = this.getChildNodeOrComponent("chatBtn");
-
-        this.seats_content = this.getChildNodeOrComponent("seats_content");
-
-
         this.textRoomInfo = this.getChildNodeOrComponent("Text_RoomInfo", cc.Label);
 
         this.Image_WaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
@@ -307,8 +303,11 @@ export default class UITexas extends BaseScene {
         this.Image_ReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
         this.Image_InsuranceTips = this.getChildNodeOrComponent("Image_InsuranceTips");
 
+        // 座位管理
         this.seats_content = this.getChildNodeOrComponent("seats_content");
         this.Seat_Temp = this.getChildNodeOrComponent("Seat_Temp");
+
+        // 鱿鱼
         this.RemainingSquidCount = this.main?.getChildByName("RemainingSquidCount");
         this.RemainingSquidLabelCount = this.RemainingSquidCount
             ?.getChildByName("RemainingSquidLabel")
@@ -541,28 +540,24 @@ export default class UITexas extends BaseScene {
 
     }
 
-
+    // Enter Called by SceneManager.switchScene & enter
     override Enter(param: { game_enter_type: GameEnterType, isLookOn: boolean }): void {
-        console.log("i am called");
         super.Enter(param);
-
         this.AdaptiveMain();
-
         this.game = GameCache.Instance.CurGame;
-
+        // 设置UI对象
         this.game.uirc = this;
-
+        // 设置公共牌位置
         this.game.InitPublicLocalPos();
-
+        // 是否是观看(MTT)
         this.game.IsLookOn = param?.isLookOn ?? false;
-
+        // 设置桌布类型
         this.game.SetDeskType(this.game.deskType);
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
-
         this.EnterInitUI();
-
     }
+
     //适配
     AdaptiveMain() {
         //高度小于目标进行缩放

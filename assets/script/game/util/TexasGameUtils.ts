@@ -49,7 +49,7 @@ export default class TexasGameUtils {
             GameCache.Instance.match_id = UIMTTModel.Instance.MttInfo.mtt.match_id;
             GameCache.Instance.seat_count = UIMTTModel.Instance.MttInfo.mtt.seat_count;
             GameCache.Instance.mtt_Hunter_game = UIMTTModel.Instance.MttInfo.mtt.hunter_on > 0;
-            GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(UIMTTModel.Instance.MttInfo.mtt.name);
+            // GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(UIMTTModel.Instance.MttInfo.mtt.name);
             matchId = GameCache.Instance.match_id;
             roomId = GameCache.Instance.room_id;
             mttPartialBringIn = UIMTTModel.Instance.PartialBringIn;

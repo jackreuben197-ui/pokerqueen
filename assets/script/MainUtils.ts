@@ -268,8 +268,6 @@ export async function registerH5Listeners(): Promise<void> {
         // === 4. 设置 Token（WS 由 H5 层代理，CC 层不直接连接） ===
         LoginSession.Token = token;
 
-        console.log('roomData ${roomData}', roomData);
-
         // === 5. 填充 GameCache（从缓存房间数据） ===
         const gc = GameCache.Instance;
         gc.room_id = roomData.rid;

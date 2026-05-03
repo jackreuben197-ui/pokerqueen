@@ -226,7 +226,7 @@ export class GameCache {
     /// <summary>
     /// 是否是猎人赛
     /// </summary>
-    public mtt_Hunter_game: number = null;
+    public mtt_Hunter_game: boolean = false;
     /// <summary>
     /// 重购的级别, 0为关
     /// </summary>

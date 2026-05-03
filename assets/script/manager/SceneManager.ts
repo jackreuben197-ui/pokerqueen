@@ -31,24 +31,24 @@ export default class SceneManager {
      * currExitParams 当前场景退出的参数
      * newEnterParams 新场景进入的参数
      */
-    switchScene<T>(scene: IUIDefine, currExitParams: any = null, newEnterParams: T = null) {
+    async switchScene<T>(scene: IUIDefine, currExitParams: any = null, newEnterParams: T = null):Promise<void>{
         let sceneKey = scene.Bundle + scene.Path;
         let newUI = this.sceneMap.get(sceneKey);
         if (newUI) {
             this._doScene(newUI, currExitParams, newEnterParams);
             return;
         }
-        ResManager.GetOrLoad<cc.Prefab>(scene.Bundle, scene.Path).then( asset => {
+        try {
+            const asset = await ResManager.GetOrLoad<cc.Prefab>(scene.Bundle, scene.Path);
             newUI = cc.instantiate(asset);
             this.sceneMap.set(sceneKey, newUI);
             this._doScene(newUI, currExitParams, newEnterParams);
-        }).catch( e => {
+        }catch(e){
              console.log('switchScene, GetOrLoad error', e)
-        });
+        };
     }
 
     private _doScene(newUI: cc.Node, currExitParams: any = null, newEnterParams: any = null) {
-
         if (this.currUI) {
             this.currUI.parent = this.CacheUILayer;
             this.currUI.getComponent(BaseScene)?.Exit(currExitParams);

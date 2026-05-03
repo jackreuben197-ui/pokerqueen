@@ -21,7 +21,7 @@ export default class BaseComponent extends Base {
     onShow(...param: any) {
         this._param = param && param[0];
         this.UIDefine && console.log("[UI][BaseComponent]", this.UIDefine.Name, "onShow()");
-        this.regiterDispatchEvent();
+        // this.regiterDispatchEvent();
     }
 
     override start() {

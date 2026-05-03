@@ -1440,7 +1440,7 @@ export default class TexasGame {
     }
 
     protected IsGameNotStart(): boolean {
-        console.log(LN,'777.IsGameNotStart', this.gamestatus, this.mHandNum);
+        console.log(LN,'IsGameNotStart', this.gamestatus, this.mHandNum);
         return this.gamestatus == Def.GameStatus.NOT_START && this.mHandNum == 0;
     }
 

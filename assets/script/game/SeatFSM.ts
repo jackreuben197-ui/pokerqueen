@@ -63,9 +63,7 @@ export class SeatFSM {
         // Image_OtherWinner.gameObject.SetActive(false);
         this.seat.uirc.WaitforthenextmoveTips.node.active = false;
 
-
         this.seat.uirc.TextRequesting.node.active = false;
-        console.log(12345,this.seat.uirc.Nick_Coin);
         
         if (this.seat.uirc.Nick_Coin) {
             this.seat.uirc.Nick_Coin.active = false;
