@@ -334,6 +334,15 @@ export async function registerH5Listeners(): Promise<void> {
         loadSoundResources();
         loadGameResources();
     });
+    H5MsgMgr.Instance.on('syncLanguage', (payload) => {
+        const locale = payload?.locale;
+        if (!locale) {
+            console.warn('[H5Bridge] syncLanguage 缺少 locale 字段');
+            return;
+        }
+        console.log('[H5Bridge] syncLanguage:', locale, '当前:', i18nMgr.language);
+        i18nMgr.setLanguage(locale);
+    });
     H5MsgMgr.Instance.on('syncUserClub', (payload) => {
         console.log('[H5Bridge] 同步俱乐部信息:', payload);
         const clubList = payload?.response?.data;
