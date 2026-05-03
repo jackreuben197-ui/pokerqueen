@@ -40,7 +40,7 @@ export class GameConfig {
     //设计分辨率
     static DesignResolution = cc.size(1242, 2688);
     //fps
-    static FrameRate = 60;
+    static readonly FRAME_RATE = 60;
     //多点触摸
     static readonly ENABLE_MULTI_TOUCH = false;
 

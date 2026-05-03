@@ -49,11 +49,11 @@ export default class HttpClient {
         if (isJson) {
             body = JSON.stringify(body);
         }
-        needConsole && console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http post - request : ", url, body);
-        needJuhua && UIComponent.open(UIDefine.UIPromptComponent as any);
+        needConsole && console.log('[HttpClient]', ">>>>> http post - request : ", url, body);
+        needJuhua && UIComponent.open<void>(UIDefine.UIPromptComponent);
         let response: string = <string>await HttpClient.__request(url, false, body, headers, isJson);
-        needJuhua && UIComponent.close(UIDefine.UIPromptComponent as any);
-        needConsole && console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http post - response : ", url, response);
+        needJuhua && UIComponent.close<void>(UIDefine.UIPromptComponent);
+        needConsole && console.log('[HttpClient]', ">>>>> http post - response : ", url, response);
         HttpClient.__response(response, onFailure, onSuccess, api);
     }
     /**

@@ -1,15 +1,11 @@
 
 import { GameConfig } from "../config/GameConfig";
-import { ProcedureEnum } from "../define/EIDefine";
 import { i18nMgr } from "../i18n/i18nMgr";
 import * as MainUtils from "../MainUtils";
 import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureInit extends ProcedureBase {
-
-
     Name: string = "ProcedureInit";
-
     async lateEnter(param?: any) {
         super.lateEnter(param);
         this.setCCC();
@@ -20,7 +16,7 @@ export default class ProcedureInit extends ProcedureBase {
         i18nMgr.initLanguage();
         MainUtils.loadWebSDK();
         // 引擎设置完成，等待 H5 层发送消息驱动后续流程
-        console.log("ProcedureInit 完成，等待 H5 层指令...");
+        console.log('[Procedure]',"ProcedureInit 完成，等待 H5 层指令...");
     }
     Leave() {
         super.Leave();
@@ -28,11 +24,11 @@ export default class ProcedureInit extends ProcedureBase {
     /**
      * 设置适配
      */
-    setFit(): void {
+    private setFit(): void {
         let framesize = cc.view.getFrameSize();
         let w_h_r = framesize.width / framesize.height;
 
-        console.log("屏幕实际分辨率", framesize.width, framesize.height);
+        console.log('[Procedure]',"屏幕实际分辨率", framesize.width, framesize.height);
 
         if (w_h_r > 0.63) {
             cc.Canvas.instance.fitHeight = true;
@@ -43,14 +39,16 @@ export default class ProcedureInit extends ProcedureBase {
     /**
      * 引擎设置
      */
-    setCCC() {
-        cc.game.setFrameRate(GameConfig.FrameRate); // FPS 设置
+    private setCCC() {
+        console.log('[Procedure]','set frame rate')
+        cc.game.setFrameRate(GameConfig.FRAME_RATE); // FPS 设置
         cc.macro.ENABLE_MULTI_TOUCH = GameConfig.ENABLE_MULTI_TOUCH; // 禁止多点触摸
     }
 
 
      //初始化网络配置（static 供其他 Procedure 在 H5 桥接模式下兜底调用）
-    setNetwork() {
+    private setNetwork() {
+        console.log('[Procedure]','set network')
         switch (GameConfig.BUILD_TYPE) {
             case 0:
                 GameConfig.Network = {

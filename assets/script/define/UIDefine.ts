@@ -3,7 +3,7 @@ import { UIType, IUIDefine } from "./EIDefine";
 
 
 
-export const UIDefine: { [key: string]: IUIDefine } = {
+export const UIDefine: Record<string, IUIDefine> = {
 
     //预加载UI
     UIPreloadingComponent: {

@@ -42,7 +42,7 @@ export default class ProcedureManager {
             if (prevProcedure.id == procedure.id) return;
             prevProcedure.Leave();
         }
-        console.log("[上个流程:", prevProcedure && prevProcedure.Name, "切换到==>当前流程:", ProcedureEnum[procedure.id], "]");
+        console.log('[Procedure]',"[上个流程:", prevProcedure && prevProcedure.Name, "切换到==>当前流程:", ProcedureEnum[procedure.id]);
         ProcedureManager.prevProcedure = procedure;
         procedure.Enter(param);
     }

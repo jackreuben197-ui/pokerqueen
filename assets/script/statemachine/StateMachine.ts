@@ -36,7 +36,7 @@ export default class StateMachine {
     /**
      * 判断当前状态是否某状态
      */
-    public IsInState(state: any) {
+    public IsInState(state: StateHandler) {
         return this.currentState == state;
     }
 

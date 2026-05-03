@@ -27,16 +27,16 @@ export default class UIBase extends BaseComponent {
         }
 
         //防止连续两次赋值，由于加载速度不同，导致图片为第一次的图片
-        let flagId = CCTools.onceNotRepeatNum;
-        sp.node["flagId"] = flagId;
-        this.loadAsset(url, (spriteframe) => {
-            if (this.nodeIsValid(sp)) {
-                if (sp.node["flagId"] && sp.node["flagId"] == flagId) {
-                    sp.spriteFrame = spriteframe;
-                    cb && cb(spriteframe);
-                }
-            }
-        }, cc.SpriteFrame);
+        // let flagId = CCTools.onceNotRepeatNum;
+        // sp.node["flagId"] = flagId;
+        // this.loadAsset(url, (spriteframe) => {
+        //     if (this.nodeIsValid(sp)) {
+        //         if (sp.node["flagId"] && sp.node["flagId"] == flagId) {
+        //             sp.spriteFrame = spriteframe;
+        //             cb && cb(spriteframe);
+        //         }
+        //     }
+        // }, cc.SpriteFrame);
     }
     protected setSpriteShowGray(sp: cc.Sprite | cc.Node | cc.Button | cc.Label | sp.Skeleton, showGray: boolean = true) {
         if (this.nodeIsValid(sp)) {
@@ -56,33 +56,33 @@ export default class UIBase extends BaseComponent {
         }
     }
 
-    protected setTexture(sp: cc.Sprite, url: string, cb: Function = null) {
-        if (CCTools.isNull(url)) {
-            sp.spriteFrame = null;
-            return;
-        }
+    // protected setTexture(sp: cc.Sprite, url: string, cb: Function = null) {
+    //     if (CCTools.isNull(url)) {
+    //         sp.spriteFrame = null;
+    //         return;
+    //     }
 
-        let flagId = CCTools.onceNotRepeatNum;
-        sp.node["flagId"] = flagId;
-        this.loadAsset(url, (spriteframe) => {
-            if (this.nodeIsValid(sp)) {
-                if (sp.node["flagId"] && sp.node["flagId"] == flagId) {
-                    sp.spriteFrame = spriteframe;
-                    Boolean(cb) && cb(spriteframe);
-                }
-            }
-        }, cc.Texture2D);
-    }
+    //     let flagId = CCTools.onceNotRepeatNum;
+    //     sp.node["flagId"] = flagId;
+    //     this.loadAsset(url, (spriteframe) => {
+    //         if (this.nodeIsValid(sp)) {
+    //             if (sp.node["flagId"] && sp.node["flagId"] == flagId) {
+    //                 sp.spriteFrame = spriteframe;
+    //                 Boolean(cb) && cb(spriteframe);
+    //             }
+    //         }
+    //     }, cc.Texture2D);
+    // }
 
-    protected loadPrefab(url: string, cb: Function = null, errorCb: Function = null) {
-        this.loadAsset(url, (instant, res) => {
-            if (Boolean(this)) {
-                cb && cb(instant, res);
-            }
-        }, cc.Prefab, errorCb);
-    }
+    // protected loadPrefab(url: string, cb: Function = null, errorCb: Function = null) {
+    //     this.loadAsset(url, (instant, res) => {
+    //         if (Boolean(this)) {
+    //             cb && cb(instant, res);
+    //         }
+    //     }, cc.Prefab, errorCb);
+    // }
 
-    protected setText(label: cc.Label | cc.RichText | cc.EditBox, msg: string | number, ...params) {
+    protected setText(label: cc.Label | cc.RichText | cc.EditBox, msg: string | number, ...params: any) {
         if (this.nodeIsValid(label)) {
             if (CCTools.isNull(msg)) {
                 label.string = "";
@@ -223,7 +223,7 @@ export default class UIBase extends BaseComponent {
                 label.string = `${text}`;
             }
         } else {
-            console.log("-----未找到node-----", path);
+            console.log('[UI][UIBase]',"-----未找到node-----", path);
         }
     }
     //设置节点下的文本颜色

@@ -82,7 +82,7 @@ export class ProtocolCommon {
         }
         return request;
     }
-    _setBody(obj, body, classDic?: any) {
+    _setBody(obj:any, body:any, classDic?: any) {
 
         for (let key in body) {
 
@@ -95,7 +95,7 @@ export class ProtocolCommon {
             if (classDic && classDic[key]) {
                 //如果是数组
                 if (value instanceof Array) {
-                    let childs = [];
+                    let childs:any = [];
                     value.forEach(item => {
                         let childObj = new classDic[key]();
                         //cc.log("new 对象", key)
