@@ -1192,7 +1192,9 @@ export default class TexasGameProtocol {
             let highlightCards_ref = { highlightCards: [] as number[] };
             let cardType: CardType = this.game.GetCardType(highlightCards_ref, this.game.GetPublicCards(1));
             let highlightCards = highlightCards_ref.highlightCards;
+            
             for (let i = 0, n = this.game.uirc.listCards.length; i < n; i++) {
+                console.log('[PUBCARDS]',this.game.uirc.listCards[i].cardId,highlightCards);
                 this.game.uirc.listCards[i].imageSelect.node.active = false;
                 for (let j = 0, m = highlightCards.length; j < m; j++) {
                     if (this.game.uirc.listCards[i].cardId == highlightCards[j]) {

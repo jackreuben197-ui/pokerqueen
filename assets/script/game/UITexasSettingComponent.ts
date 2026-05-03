@@ -80,8 +80,8 @@ export default class UITexasSettingComponent extends UIBase {
         let closeVoice = cc.find('Background/closeVoice', this.Toggle_Voice);
         let openVoice = cc.find('Background/openVoice', this.Toggle_Voice);
 
-        openVoice.active = SoundComponent.Instance.sound_switch_on == true;
-        closeVoice.active = SoundComponent.Instance.sound_switch_on == false;
+        openVoice.active = SoundComponent.Instance.soundOn == true;
+        closeVoice.active = SoundComponent.Instance.soundOn == false;
 
         // if (!GC.localStore.getItem(StorageKey.soundIsOpen)) {
         //     this.soundIsOpen = true;
@@ -271,13 +271,13 @@ export default class UITexasSettingComponent extends UIBase {
             if (soundCheck) {
                 let sprite = soundCheck.getComponent(cc.Sprite);
                 if (sprite) {
-                    sprite.spriteFrame = SoundComponent.Instance.sound_switch_on ? this.checkOn : this.checkOff;
+                    sprite.spriteFrame = SoundComponent.Instance.soundOn ? this.checkOn : this.checkOff;
                 }
                 soundCheck.on(cc.Node.EventType.TOUCH_END, () => {
                     this.onValueChangedVoice();
                     let sprite = soundCheck.getComponent(cc.Sprite);
                     if (sprite) {
-                        sprite.spriteFrame = SoundComponent.Instance.sound_switch_on ? this.checkOn : this.checkOff;
+                        sprite.spriteFrame = SoundComponent.Instance.soundOn ? this.checkOn : this.checkOff;
                     }
                 }, this);
             }
@@ -509,10 +509,10 @@ export default class UITexasSettingComponent extends UIBase {
         let closeVoice = cc.find('Background/closeVoice', this.Toggle_Voice);
         let openVoice = cc.find('Background/openVoice', this.Toggle_Voice);
 
-        SoundComponent.Instance.sound_switch_on = !SoundComponent.Instance.sound_switch_on;
+        SoundComponent.Instance.soundOn = !SoundComponent.Instance.soundOn;
 
-        openVoice.active = SoundComponent.Instance.sound_switch_on == true;
-        closeVoice.active = SoundComponent.Instance.sound_switch_on == false;
+        openVoice.active = SoundComponent.Instance.soundOn == true;
+        closeVoice.active = SoundComponent.Instance.soundOn == false;
 
 
         // this.soundIsOpen = !this.soundIsOpen
@@ -523,7 +523,7 @@ export default class UITexasSettingComponent extends UIBase {
         //     closeVoice.active = true
         //     openVoice.active = false;
         // }
-        GC.localStore.setItem(StorageKey.soundIsOpen, SoundComponent.Instance.sound_switch_on ? 1 + "" : 0 + "")
+        GC.localStore.setItem(StorageKey.soundIsOpen, SoundComponent.Instance.soundOn ? 1 + "" : 0 + "")
     }
 
     public static GetCurQuickActionNumValue(index) {

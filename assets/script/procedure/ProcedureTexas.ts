@@ -25,6 +25,7 @@ export default class ProcedureTexas extends ProcedureBase {
         GameCache.Instance.CurGame.Enter();
         GameCache.Instance.CurGame.SMAgency.ChangeGameState(TexasGameState.Launch);
     }
+
     override Leave() {
         super.Leave();
 
