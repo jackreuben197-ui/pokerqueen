@@ -7251,3 +7251,5 @@ UITexas_mainmenu_camera=视频
 UIHitGameTitle=暴击玩法即将开始
 UIMushroomGameTitle=蘑菇玩法即将开始
 UIChatButtonLabel=聊天
+UISwitchOpen=开启
+UISwitchClose=关闭

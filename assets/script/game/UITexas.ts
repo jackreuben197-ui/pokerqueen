@@ -108,6 +108,11 @@ export default class UITexas extends BaseScene {
     btn_audio: cc.Node = null;
     btn_camera: cc.Node = null;
     chatBtn: cc.Node = null;
+    // 远端音频/视频控制按钮
+    muteMicOpenBtn: cc.Node = null;
+    muteMicCloseBtn: cc.Node = null;
+    hideVideoOpenBtn: cc.Node = null;
+    hideVideoCloseBtn: cc.Node = null;
     // 视频控制按钮状态
     private _cameraOn: boolean = false;
     private _micOn: boolean = false;
@@ -287,6 +292,20 @@ export default class UITexas extends BaseScene {
         this.btn_audio = this.getChildNodeOrComponent("btn_audio");
         this.btn_camera = this.getChildNodeOrComponent("btn_camera");
         this.chatBtn = this.getChildNodeOrComponent("chatBtn");
+
+        // 远端音频/视频控制按钮（muteMicNode / hideVideoNode）
+        const muteMicNode = this.getChildNodeOrComponent("muteMicNode");
+        if (muteMicNode) {
+            const bg = muteMicNode.getChildByName("background");
+            this.muteMicOpenBtn = bg?.getChildByName("openBtn");
+            this.muteMicCloseBtn = bg?.getChildByName("closeBtn");
+        }
+        const hideVideoNode = this.getChildNodeOrComponent("hideVideoNode");
+        if (hideVideoNode) {
+            const bg = hideVideoNode.getChildByName("background");
+            this.hideVideoOpenBtn = bg?.getChildByName("openBtn");
+            this.hideVideoCloseBtn = bg?.getChildByName("closeBtn");
+        }
 
         this.seats_content = this.getChildNodeOrComponent("seats_content");
 
@@ -512,6 +531,12 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.btn_audio, this.click_btn_audio);
         this.setButtonClick(this.btn_camera, this.click_btn_camera);
         this.setButtonClick(this.chatBtn, this.click_chatBtn);
+
+        // 远端音频/视频控制按钮
+        this.setButtonClick(this.muteMicOpenBtn, this.click_muteMicOpen);
+        this.setButtonClick(this.muteMicCloseBtn, this.click_muteMicClose);
+        this.setButtonClick(this.hideVideoOpenBtn, this.click_hideVideoOpen);
+        this.setButtonClick(this.hideVideoCloseBtn, this.click_hideVideoClose);
         ///////////////////////////
 
         this.setButtonClick(this.Button_Delay, this.onClickDelay);
@@ -594,6 +619,8 @@ export default class UITexas extends BaseScene {
         this._cameraOn = false;
         this._micOn = false;
         this._syncVideoButtonVisuals();
+        // 远端音频/视频控制按钮初始状态（默认：功能开启 → 显示 closeBtn）
+        this._initRemoteMediaButtons();
     }
     //清理UI
     CleanUI() {
@@ -894,6 +921,70 @@ export default class UITexas extends BaseScene {
         this._cameraOn = false;
         this._micOn = false;
         this._syncVideoButtonVisuals();
+        this._initRemoteMediaButtons();
+    }
+
+    /**
+     * 初始化远端音频/视频控制按钮的显隐状态
+     * 进入房间时调用，确保 UI 与 AgoraManager 状态一致
+     * 非视频房间直接隐藏整个 muteMicNode / hideVideoNode
+     * 默认：远端音频/视频开启 → 显示 closeBtn（可点击关闭），隐藏 openBtn
+     */
+    private _initRemoteMediaButtons(): void {
+        const isVideoRoom = GameCache.Instance._videoModel !== VideoModel.NONE;
+        // 非视频房间：隐藏整个按钮节点
+        const muteMicNode = this.muteMicOpenBtn?.parent?.parent;
+        const hideVideoNode = this.hideVideoOpenBtn?.parent?.parent;
+        if (muteMicNode) muteMicNode.active = isVideoRoom;
+        if (hideVideoNode) hideVideoNode.active = isVideoRoom;
+        if (!isVideoRoom) return;
+
+        const agora = AgoraManager.Instance;
+        // 默认都是开启状态，所以显示 closeBtn（可关闭），隐藏 openBtn（可开启）
+        // 如果 AgoraManager 的全局标记是 muted，则反过来
+        const audioOn = !agora.isJoined || !agora.isRemoteAudioMuted;
+        if (this.muteMicOpenBtn) this.muteMicOpenBtn.active = !audioOn;
+        if (this.muteMicCloseBtn) this.muteMicCloseBtn.active = audioOn;
+
+        const videoOn = !agora.isJoined || !agora.isRemoteVideoMuted;
+        if (this.hideVideoOpenBtn) this.hideVideoOpenBtn.active = !videoOn;
+        if (this.hideVideoCloseBtn) this.hideVideoCloseBtn.active = videoOn;
+    }
+
+    /**
+     * 远端音频控制：开启（取消静音）
+     */
+    private click_muteMicOpen() {
+        if (this.muteMicOpenBtn) this.muteMicOpenBtn.active = false;
+        if (this.muteMicCloseBtn) this.muteMicCloseBtn.active = true;
+        AgoraManager.Instance.setRemoteAudioEnabled(true);
+    }
+
+    /**
+     * 远端音频控制：关闭（静音）
+     */
+    private click_muteMicClose() {
+        if (this.muteMicCloseBtn) this.muteMicCloseBtn.active = false;
+        if (this.muteMicOpenBtn) this.muteMicOpenBtn.active = true;
+        AgoraManager.Instance.setRemoteAudioEnabled(false);
+    }
+
+    /**
+     * 远端视频控制：开启（显示）
+     */
+    private async click_hideVideoOpen() {
+        if (this.hideVideoOpenBtn) this.hideVideoOpenBtn.active = false;
+        if (this.hideVideoCloseBtn) this.hideVideoCloseBtn.active = true;
+        await AgoraManager.Instance.setRemoteVideoEnabled(true);
+    }
+
+    /**
+     * 远端视频控制：关闭（隐藏）
+     */
+    private async click_hideVideoClose() {
+        if (this.hideVideoCloseBtn) this.hideVideoCloseBtn.active = false;
+        if (this.hideVideoOpenBtn) this.hideVideoOpenBtn.active = true;
+        await AgoraManager.Instance.setRemoteVideoEnabled(false);
     }
 
     private click_chatBtn() {
