@@ -2272,6 +2272,7 @@ export default class TexasGameProtocol {
 
         // 注册远端视频回调
         agora.onRemoteVideo = this._onRemoteVideo.bind(this);
+        agora.onRemoteVideoUnsubscribed = this._onRemoteVideoUnsubscribed.bind(this);
         agora.onUserLeft = this._onRemoteUserLeft.bind(this);
 
         // 注册重连回调：重连成功后重新渲染远端视频
@@ -2316,6 +2317,7 @@ export default class TexasGameProtocol {
 
         // 清除所有回调
         agora.onRemoteVideo = null;
+        agora.onRemoteVideoUnsubscribed = null;
         agora.onUserLeft = null;
         agora.onReconnected = null;
         agora.onError = null;
@@ -2448,6 +2450,26 @@ export default class TexasGameProtocol {
             }
         } catch (e) {
             console.warn('[VideoRoom] 远端用户离开处理异常, uid:', uid, e);
+        }
+    }
+
+    /**
+     * 远端视频被取消订阅回调（用户点击屏蔽远端视频时触发）
+     * 停止该座位的视频渲染，恢复显示头像
+     */
+    private _onRemoteVideoUnsubscribed(uid: number): void {
+        console.log('[VideoRoom] 远端视频取消订阅, uid:', uid);
+        try {
+            const seat = this.game?.listSeat?.find((s: Seat) => s.Player && s.Player.userID === uid);
+            if (!seat?.uirc?.Raw_Head?.node?.isValid) return;
+
+            const videoRender = seat.uirc.Raw_Head.node.getComponent(AgoraVideoRender);
+            if (videoRender) {
+                videoRender.stopRender();
+                console.log('[VideoRoom] 已停止远端视频渲染（取消订阅）, uid:', uid);
+            }
+        } catch (e) {
+            console.warn('[VideoRoom] 远端视频取消订阅处理异常, uid:', uid, e);
         }
     }
 

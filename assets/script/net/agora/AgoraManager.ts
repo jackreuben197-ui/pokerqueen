@@ -33,6 +33,18 @@ export default class AgoraManager {
     private _uid: number = 0;
     /** 是否已完成 AppId 有效性检测（首次 join 时执行一次） */
     private _appIdChecked: boolean = false;
+    /** 全局远端音频静音标记 */
+    private _allRemoteAudioMuted: boolean = false;
+    /** 全局远端视频隐藏标记 */
+    private _allRemoteVideoMuted: boolean = false;
+    /** 音量监控定时器 */
+    private _volumeMonitorTimer: number = null;
+    /** 当前正在说话的用户 uid，null 表示无人说话 */
+    private _speakingUid: number = null;
+    /** 音量轮询间隔(ms) */
+    private _volumeMonitorInterval: number = 300;
+    /** 判定为正在说话的音量阈值(0~1) */
+    private _speakingThreshold: number = 0.01;
 
     /** 远端用户加入回调 */
     public onUserJoined: (uid: number) => void = null;
@@ -42,8 +54,22 @@ export default class AgoraManager {
     public onRemoteAudio: (uid: number, track: any) => void = null;
     /** 远端视频轨道回调 */
     public onRemoteVideo: (uid: number, track: any) => void = null;
+    /** 远端视频被取消订阅回调（用于 UI 层清理渲染覆盖层） */
+    public onRemoteVideoUnsubscribed: (uid: number) => void = null;
     /** 错误回调 */
     public onError: (err: any) => void = null;
+    /** 当前说话者变化回调，uid 为 null 表示无人说话（包含自己） */
+    public onActiveSpeaker: (uid: number | null) => void = null;
+
+    /** 远端音频是否全局静音 */
+    public get isRemoteAudioMuted(): boolean {
+        return this._allRemoteAudioMuted;
+    }
+
+    /** 远端视频是否全局隐藏 */
+    public get isRemoteVideoMuted(): boolean {
+        return this._allRemoteVideoMuted;
+    }
 
     private constructor() {}
 
@@ -212,10 +238,19 @@ export default class AgoraManager {
         this._client.on('user-published', async (user: any, mediaType: string) => {
             console.log('[AgoraManager] 远端用户发布:', user.uid, mediaType);
             try {
+                // 全局远端视频已隐藏时，跳过视频订阅
+                if (mediaType === 'video' && this._allRemoteVideoMuted) {
+                    console.log('[AgoraManager] 远端视频已全局隐藏，跳过订阅 uid:', user.uid);
+                    return;
+                }
                 await this._client.subscribe(user, mediaType);
                 if (mediaType === 'audio') {
                     const audioTrack = user.audioTrack;
                     audioTrack?.play();
+                    // 全局远端音频已静音时，立即设置音量为0
+                    if (this._allRemoteAudioMuted) {
+                        audioTrack?.setVolume(0);
+                    }
                     this.onRemoteAudio?.(user.uid, audioTrack);
                 }
                 if (mediaType === 'video') {
@@ -314,8 +349,6 @@ export default class AgoraManager {
      * SDK 放弃时: RECONNECTING → DISCONNECTED
      */
     private _handleConnectionStateChange(curState: string, revState: string): void {
-        console.log('[AgoraManager] 连接状态变化:', revState, '->', curState);
-
         switch (curState) {
             case 'CONNECTED':
                 // 从 RECONNECTING 恢复 → SDK 内部重连成功，恢复视频渲染
@@ -353,6 +386,9 @@ export default class AgoraManager {
         this._joined = false;
         this._channelName = '';
         this._uid = 0;
+        this._allRemoteAudioMuted = false;
+        this._allRemoteVideoMuted = false;
+        this.stopVolumeMonitor();
 
         // 停止远端用户的音频播放（防止离开房间后仍在播放）
         try {
@@ -522,6 +558,148 @@ export default class AgoraManager {
     }
 
     /**
+     * 开关远端用户的音频（静音/恢复）
+     * @param enabled true=恢复声音, false=静音
+     * @param uid 指定远端用户 uid，不传则对所有远端用户生效
+     */
+    public setRemoteAudioEnabled(enabled: boolean, uid?: number): void {
+        if (!this._client?.remoteUsers) return;
+        if (uid === undefined) {
+            this._allRemoteAudioMuted = !enabled;
+        }
+        const targetUsers = uid !== undefined
+            ? this._client.remoteUsers.filter((u: any) => u.uid === uid)
+            : this._client.remoteUsers;
+        targetUsers.forEach((user: any) => {
+            if (user.audioTrack) {
+                user.audioTrack.setVolume(enabled ? 100 : 0);
+            }
+        });
+        console.log('[AgoraManager] 远端音频', enabled ? '已恢复' : '已静音', uid !== undefined ? 'uid:' + uid : '全部');
+    }
+
+    /**
+     * 开关远端用户的视频（隐藏/显示）
+     * @param enabled true=显示视频, false=隐藏视频
+     * @param uid 指定远端用户 uid，不传则对所有远端用户生效
+     */
+    public async setRemoteVideoEnabled(enabled: boolean, uid?: number): Promise<void> {
+        if (!this._client?.remoteUsers) return;
+        if (uid === undefined) {
+            this._allRemoteVideoMuted = !enabled;
+        }
+        const targetUsers = uid !== undefined
+            ? this._client.remoteUsers.filter((u: any) => u.uid === uid)
+            : this._client.remoteUsers;
+        for (const user of targetUsers) {
+            try {
+                if (enabled) {
+                    await this._client.subscribe(user, 'video');
+                    this.onRemoteVideo?.(user.uid, user.videoTrack);
+                } else {
+                    await this._client.unsubscribe(user, 'video');
+                    this.onRemoteVideoUnsubscribed?.(user.uid);
+                }
+            } catch (e) {
+                console.warn('[AgoraManager] 切换远端视频失败, uid:', user.uid, e);
+            }
+        }
+        console.log('[AgoraManager] 远端视频', enabled ? '已恢复' : '已隐藏', uid !== undefined ? 'uid:' + uid : '全部');
+    }
+
+    // ==================== 说话者检测（音量监控） ====================
+
+    /**
+     * 启动音量监控，定时检测所有用户（含自己）的音量，找出当前说话者
+     * @param interval 轮询间隔(ms)，默认 300
+     * @param threshold 判定正在说话的音量阈值(0~1)，默认 0.01
+     */
+    public startVolumeMonitor(interval?: number, threshold?: number): void {
+        this.stopVolumeMonitor();
+        if (interval !== undefined) {
+            this._volumeMonitorInterval = interval;
+        }
+        if (threshold !== undefined) {
+            this._speakingThreshold = threshold;
+        }
+        this._volumeMonitorTimer = window.setInterval(() => this._checkVolumeLevels(), this._volumeMonitorInterval);
+        console.log('[AgoraManager] 音量监控已启动, 间隔:', this._volumeMonitorInterval, 'ms, 阈值:', this._speakingThreshold);
+    }
+
+    /**
+     * 停止音量监控
+     */
+    public stopVolumeMonitor(): void {
+        if (this._volumeMonitorTimer !== null) {
+            window.clearInterval(this._volumeMonitorTimer);
+            this._volumeMonitorTimer = null;
+        }
+        if (this._speakingUid !== null) {
+            this._speakingUid = null;
+            this.onActiveSpeaker?.(null);
+        }
+    }
+
+    /**
+     * 获取当前正在说话的用户 uid，null 表示无人说话
+     */
+    public get speakingUid(): number | null {
+        return this._speakingUid;
+    }
+
+    /** 轮询检测所有用户的音量，找出最响的那个 */
+    private _checkVolumeLevels(): void {
+        if (!this._joined) {
+            this._notifySpeakerChange(null);
+            return;
+        }
+
+        let loudestUid: number | null = null;
+        let loudestVolume: number = 0;
+
+        // 检测远端用户
+        if (this._client?.remoteUsers) {
+            for (const user of this._client.remoteUsers) {
+                if (user.audioTrack) {
+                    try {
+                        const vol = user.audioTrack.getVolumeLevel();
+                        if (vol > loudestVolume) {
+                            loudestVolume = vol;
+                            loudestUid = user.uid;
+                        }
+                    } catch (_) { /* getVolumeLevel 调用失败跳过 */ }
+                }
+            }
+        }
+
+        // 检测自己（本地麦克风）
+        if (this._localAudioTrack) {
+            try {
+                const vol = this._localAudioTrack.getVolumeLevel();
+                if (vol > loudestVolume) {
+                    loudestVolume = vol;
+                    loudestUid = this._uid;
+                }
+            } catch (_) { /* getVolumeLevel 调用失败跳过 */ }
+        }
+
+        // 低于阈值视为无人说话
+        if (loudestVolume < this._speakingThreshold) {
+            loudestUid = null;
+        }
+
+        this._notifySpeakerChange(loudestUid);
+    }
+
+    /** 仅当说话者发生变化时才触发回调 */
+    private _notifySpeakerChange(uid: number | null): void {
+        if (this._speakingUid !== uid) {
+            this._speakingUid = uid;
+            this.onActiveSpeaker?.(uid);
+        }
+    }
+
+    /**
      * 播放远端用户的视频到指定 DOM 容器
      */
     public playRemoteVideo(uid: number, container: HTMLElement): void {
@@ -595,7 +773,9 @@ export default class AgoraManager {
         this.onUserLeft = null;
         this.onRemoteAudio = null;
         this.onRemoteVideo = null;
+        this.onRemoteVideoUnsubscribed = null;
         this.onError = null;
+        this.onActiveSpeaker = null;
         console.log('[AgoraManager] 已销毁');
     }
 }
