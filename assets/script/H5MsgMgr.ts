@@ -63,6 +63,7 @@ export default class H5MsgMgr {
      */
     init(): void {
         const self = this;
+        console.log(TAG, 'PackHead Init(encode/decode)');
         PacketHead.Init();
         // 方式1：bridge.js 检测到 window.CocosBridge 后直接调用
         // H5 现在直接传 JSON 对象，兼容旧版字符串

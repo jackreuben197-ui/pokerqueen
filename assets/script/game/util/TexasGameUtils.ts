@@ -78,6 +78,7 @@ export default class TexasGameUtils {
      */
     public LeaveRoom() {
         if (H5MsgMgr.Instance.handshakeDone || WebSocketClient.CheckOpen(true)) {
+            GameCache.Instance.isActiveLeaving = true;
             ProtocolAgency.Send<ClientMessageLeave.AsObject>({
                 Code: ProtocolCode.Protocol_Holdem_Leave,
                 RoomID: GameCache.Instance.room_id,
@@ -291,7 +292,7 @@ export default class TexasGameUtils {
 
         // GameCache.Instance.share_table = 0;
         // GameCache.Instance.limit_bring_in = 0
-
+        GameCache.Instance.isActiveLeaving = false;
         //#endregion
         
         // 通知 H5 层恢复显示

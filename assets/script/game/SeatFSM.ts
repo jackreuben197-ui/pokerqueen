@@ -288,7 +288,6 @@ export class SeatFSM {
     public OperationExecute(dt: number): void {
         if (!this.seat.isCountDown)
             return;
-
         this.seat.uirc.Head_CD_Mask.fillRange = (this.seat.optCurTime -= dt) / this.seat.optTotalTime;
         this.seat.uirc.Head_CD_Label.string = `${this.seat.optCurTime ^ 0}s`;
         if (this.seat.uirc.Head_CD_Mask.fillRange <= 0) {

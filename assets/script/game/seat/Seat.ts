@@ -20,7 +20,6 @@ import { GameCache } from "../GameCache";
 import { SeatFSM } from "../SeatFSM";
 import { SeatEmpty, SeatKeep, SeatSit, SeatWaitOther, SeatWaitStart } from "../SeatStateHandler";
 import SeatUIRC, { CardUIInfo } from "../SeatUIRC";
-import TexasGame from "../texas/TexasGame";
 import GameUtil, { RoomType, seat_info, some_pos } from "../util/GameUtil";
 
 /// </summary>
@@ -33,6 +32,8 @@ export enum VoiceprintState {
     Robot,//被验证是机器人
     Real//被验证是真人
 }
+
+const LN = '[Seat]';
 
 export default class Seat {
 
@@ -345,7 +346,7 @@ export default class Seat {
 
             let mLocalPos: cc.Vec3 = this.uirc.transSmallCardBacks.convertToNodeSpaceAR(targetPos);
 
-            console.log("this.listImageSmallCardBack.length >> ", this.listImageSmallCardBack.length);
+            console.log(LN, "this.listImageSmallCardBack.length >> ", this.listImageSmallCardBack.length);
 
             for (let i = 0, n = this.listImageSmallCardBack.length; i < n; i++) {
 
@@ -389,7 +390,7 @@ export default class Seat {
                 );
             }
             sequence.push(cc.delayTime(.5));
-
+            //@ts-ignore
             this.sequencePlayFoldAnimation.sequence.apply(this.sequencePlayFoldAnimation, sequence).call(() => {
                 this.uirc.transSmallCardBacks.position = this.seatUIInfo.card_back_pos;
                 for (let i = 0, n = this.listImageSmallCardBack.length; i < n; i++) {
@@ -730,7 +731,7 @@ export default class Seat {
         }
 
 
-        console.log("播放气泡")
+        console.log(LN, "播放气泡")
 
 
         if (this.uirc.textBubble.string != "") {
@@ -943,7 +944,7 @@ export default class Seat {
     /// </summary>
     public UpdateCards(isAllin: boolean = false): void {
 
-        console.log("---UpdateCards---", this.id);
+        console.log(LN, "---UpdateCards---", "seat:", this.id, 'isAllin', isAllin);
 
         if (GC.game.seatMoveStruct.moving) {
             GC.game.seatMoveStruct.cacheFuncs.push({ a: this, b: this.__UpdateCards, c: isAllin, d: "__UpdateCards" })
@@ -1289,7 +1290,7 @@ export default class Seat {
         this.uirc.Frame_Head.active = istrue;
         this.uirc.Text_NickName.node.active = istrue;
 
-        console.log("SetOperationHeadActive", istrue);
+        console.log(LN, "SetOperationHeadActive", istrue);
     }
 
 
@@ -1322,7 +1323,7 @@ export default class Seat {
     public StartCountDown(countDown: number, isInsruance: boolean = false): void {
 
 
-        console.log("StartCountDown :: ", countDown);
+        console.log(LN, "StartCountDown :: ", countDown);
 
         this.optCurTime = countDown;
 
@@ -1937,11 +1938,13 @@ export default class Seat {
     //显示头像CD
     ShowHeadCD() {
         this.uirc.Head_CD.active = true;
+        this.uirc.Head_CD_Label.node.active = true;
         this.isCountDown = true;
     }
     //隐藏头像CD
     HideHeadCD() {
         this.uirc.Head_CD.active = false;
+        this.uirc.Head_CD_Label.node.active = false;
         this.isCountDown = false;
     }
 
@@ -1959,7 +1962,7 @@ export default class Seat {
         //     this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[0]);
         // }
 
-        console.log("刷新下方筹码位置");
+        console.log(LN, "刷新下方筹码位置");
 
     }
     //刷新下注的筹码数

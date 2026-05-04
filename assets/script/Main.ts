@@ -104,8 +104,8 @@ export default class Main extends cc.Component {
         UIComponent.Instance.SetPrefabNode(PrefabUI.UIPreloading, Main.UIPreloading);
 
         this.scheduleOnce(() => {
-            console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
-            console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
+            console.log("[Main]屏幕分辨率:", cc.view.getFrameSize().toString());
+            console.log("[Main]逻辑分辨率:", cc.view.getVisibleSize().toString());
             MainUtils.refreshDiss(Main.Diss);
         }, 1);
 

@@ -7,7 +7,6 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import Main from "../../Main";
 import ProcedureManager from "../../manager/ProcedureManager";
 import SceneManager from "../../manager/SceneManager";
-import ToastManager from "../../manager/ToastManager";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { ServerErrorCode } from "../../net/websocket/ServerErrorCode";
 import { Def } from "../../protobuf/holdem/define_pb";
@@ -213,11 +212,16 @@ export default class TexasGameMessageHandler {
      * 离开房间消息返回
      * @param response 
      */
-    Protocol_Holdem_Leave_Handler(response: ServerMessageLeave.AsObject) {
+    Protocol_Holdem_Leave_Handler(response: ServerMessageLeave.AsObject, roomID: number, matchID: number) {
 
-        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_Leave_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_Leave_Handler`, roomID, matchID);
 
         if (response == null) return;
+
+        // 如果我正在进入则忽略此消息(非主动离开)
+        if (!GameCache.Instance.isActiveLeaving && roomID == GameCache.Instance.room_id && matchID == GameCache.Instance.match_id) {
+            return;
+        }
 
         if (response.status != 0) {
             console.warn(`Protocol_Holdem_Leave: status = ${response.status}`);
