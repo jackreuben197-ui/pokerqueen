@@ -272,7 +272,7 @@ export default class TexasGameUtils {
         // UIComponent.Instance.Remove(UIType.UITexasHumanYZ);
         // UIComponent.Instance.Remove(UIType.UIAgreeSecondPcs);
 
-        ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { mode: 1, game_enter_type: GameCache.Instance.enter_param.game_enter_type });
+        //ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { mode: 1, game_enter_type: GameCache.Instance.enter_param.game_enter_type });
         //#region 关键属性最后置空
         GameCache.Instance.CurrentRoomID = 0;
         GameCache.Instance.room_id = 0;

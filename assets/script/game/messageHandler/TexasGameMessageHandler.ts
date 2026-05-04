@@ -221,6 +221,7 @@ export default class TexasGameMessageHandler {
 
         if (response.status != 0) {
             console.warn(`Protocol_Holdem_Leave: status = ${response.status}`);
+            this.game.TexasGameUtils.ExitRoom();
             return;
         }
 
@@ -230,8 +231,8 @@ export default class TexasGameMessageHandler {
                 stayDuration: 1,
             },
             ()=>{
-            this.game.TexasGameUtils.ExitRoom();
-             }
+                this.game.TexasGameUtils.ExitRoom();
+            }
         );
     }
 
