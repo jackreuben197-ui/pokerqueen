@@ -89,6 +89,7 @@ import { AddClipsDataOut } from "../new_ui/UIBringOut";
 import { AddClipsData } from "../../crazyPoker/gameplay/common/view/chips/UIGameplayAddChipsAndDiamond";
 import { BringInChipsType } from "../../crazyPoker/gameplay/common/constant/BringInChipsType";
 import { HttpRoomBringOutProtocol } from "../../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringOutProtocol";
+import { VideoModel } from "../../crazyPoker/gameplay/common/constant/VideoModel";
 //const PBTypes = Def.Types;
 
 class SeatMoveStruct {
@@ -1217,6 +1218,9 @@ export default class TexasGame {
         this.jackpotFeature?.EnterGame();
         this.ShowCriticalInfo();
         this.RefreshRoomManagerStateAndStartButton();
+
+        // 视频房间重入：如果自己已坐下，自动开启本地摄像头
+        this._restoreVideoOnReenter();
     }
 
     //奔跑请求队列
@@ -5016,5 +5020,25 @@ export default class TexasGame {
     }
     public HideBtnDelay(isActive: boolean): void {
         this.uirc.Button_Delay.active = isActive;
+    }
+
+    // ==================== 视频重入恢复 ====================
+
+    /**
+     * 重入房间时，如果自己已坐下且是视频房间，自动开启摄像头
+     * 解决 F5 刷新后视频丢失的问题
+     */
+    private _restoreVideoOnReenter(): void {
+        if (GameCache.Instance._videoModel === VideoModel.NONE) return;
+
+        // 判断自己是否已坐下
+        const mySeat = this.listSeat?.find((s: Seat) => s.IsMySeat);
+        if (!mySeat || !mySeat.Player) return;
+
+        console.log('[VideoRoom] 重入房间，已坐下状态，自动开启摄像头');
+        // 延迟执行，等待 Agora 频道加入完成
+        setTimeout(() => {
+            this.TexasGameProtocol?.renderLocalVideoOnMySeat();
+        }, 2000);
     }
 }
