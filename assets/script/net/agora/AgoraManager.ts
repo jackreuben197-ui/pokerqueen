@@ -31,8 +31,6 @@ export default class AgoraManager {
     private _joined: boolean = false;
     private _channelName: string = '';
     private _uid: number = 0;
-    /** 是否已完成 AppId 有效性检测（首次 join 时执行一次） */
-    private _appIdChecked: boolean = false;
     /** 全局远端音频静音标记 */
     private _allRemoteAudioMuted: boolean = false;
     /** 全局远端视频隐藏标记 */
@@ -166,63 +164,6 @@ export default class AgoraManager {
         }
     }
 
-    /**
-     * 检测 appId + Token 服务是否正常
-     * 流程: 请求Token → 加入测试频道 → 离开
-     */
-    public async checkAppId(): Promise<boolean> {
-        console.log('========== [AgoraManager] 开始检测 AppId 有效性 ==========');
-        console.log('[AgoraManager] AppId:', this.appId);
-        console.log('[AgoraManager] SDK 版本:', (window as any).AgoraRTC.VERSION);
-
-        if (!this._client) {
-            console.error('[AgoraManager] Client 未初始化，无法检测');
-            return false;
-        }
-
-        const testChannel = '__appid_test_' + Date.now();
-        const testClient = (window as any).AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
-
-        // 第1步：从本地服务获取 Token
-        console.log('[AgoraManager] 第1步: 请求本地Token服务...');
-        const token = await this.fetchToken(testChannel, 0);
-        if (!token) {
-            console.log('========== [AgoraManager] AppId 检测失败 ❌ (Token服务不可用) ==========');
-            return false;
-        }
-        console.log('[AgoraManager] 第1步完成 ✅ Token服务正常');
-
-        // 第2步：用 Token 加入测试频道
-        console.log('[AgoraManager] 第2步: 用Token加入测试频道...');
-        try {
-            const uid = await testClient.join(this.appId, testChannel, token, 0);
-            console.log('[AgoraManager] 第2步完成 ✅ AppId + Token 均有效！');
-            console.log('[AgoraManager] 测试频道加入成功，分配 uid:', uid);
-            await testClient.leave();
-            console.log('[AgoraManager] 测试频道已离开，资源已释放');
-            console.log('========== [AgoraManager] AppId 检测通过 ✅✅✅ ==========');
-            return true;
-        } catch (e: any) {
-            const code = e?.code || 'UNKNOWN';
-            const msg = e?.message || String(e);
-            console.error('[AgoraManager] ❌ 加入频道失败');
-            console.error('[AgoraManager] 错误码:', code);
-            console.error('[AgoraManager] 错误信息:', msg);
-
-            if (code === 'CAN_NOT_GET_GATEWAY_SERVER' || msg.includes('static key')) {
-                console.error('[AgoraManager] 原因: 项目开启了App Certificate，需要动态Token');
-            } else if (code === 'INVALID_PARAMS' || msg.includes('invalid vendor key')) {
-                console.error('[AgoraManager] 原因: AppId 无效或格式错误');
-            } else if (code === 'TOKEN_EXPIRED') {
-                console.error('[AgoraManager] 原因: Token 已过期');
-            } else if (code === 'NETWORK_ERROR' || msg.includes('network')) {
-                console.warn('[AgoraManager] 原因: 网络连接失败');
-            }
-            console.log('========== [AgoraManager] AppId 检测失败 ❌ ==========');
-            return false;
-        }
-    }
-
     /** 注册客户端事件 */
     private _registerEvents(): void {
         this._client.on('user-joined', (user: any) => {
@@ -309,15 +250,6 @@ export default class AgoraManager {
         if (!this.appId) {
             console.error('[AgoraManager] appId 未配置');
             return false;
-        }
-
-        // 首次 join 时检测 AppId + Token 服务是否可用
-        if (!this._appIdChecked) {
-            this._appIdChecked = true;
-            const ok = await this.checkAppId();
-            if (!ok) {
-                console.warn('[AgoraManager] AppId 检测未通过，但仍尝试加入频道');
-            }
         }
 
         // 如果没传 token，自动从 Token 服务获取

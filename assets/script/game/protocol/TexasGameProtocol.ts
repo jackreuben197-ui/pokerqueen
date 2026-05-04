@@ -40,6 +40,7 @@ import { ServerMessageShowdown } from "../../protobuf/holdem/req_th_showdown_pb"
 import { ServerMessageShowPublicCards } from "../../protobuf/holdem/req_th_show_public_cards_pb";
 import { ServerMessageSquidInActive } from "../../protobuf/holdem/req_th_squid_in_active_pb";
 import { ServerMessageStoreChips } from "../../protobuf/holdem/req_th_store_chips_pb";
+import { ServerMessageUtilAntiCheatRoomVideo } from "../../protobuf/holdem/recv_util_anti_cheat_room_video_pb";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { CardType } from "../CardTypeUtil";
 import { CPlayer } from "../CPlayer";
@@ -60,6 +61,7 @@ import UIFriendMatch from "../../lobby/new_club/createMatch/UIFriendMatch";
 import AgoraManager from "../../net/agora/AgoraManager";
 import AgoraVideoRender from "../../net/agora/AgoraVideoRender";
 import { VideoModel } from "../../crazyPoker/gameplay/common/constant/VideoModel";
+import ToastManager from "../../manager/ToastManager";
 
 
 
@@ -107,6 +109,7 @@ export default class TexasGameProtocol {
         GC.notify.register(ProtocolCode.Protocol_Holdem_SquidInActive, this.HANDLER_REQ_SQUID_IN_ACTIVE, this); // 主动加入鱿鱼返回
         GC.notify.register(ProtocolCode.Protocol_Holdem_SquidIn, this.HANDLER_REQ_SQUID_IN, this); // 鱿鱼加入状态广播
         GC.notify.register(ProtocolCode.Protocol_Holdem_NextChange, this.HANDLER_REQ_NEXT_CHANGE, this); // 下一手配置变更
+        GC.notify.register(ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo, this.HANDLER_RANDOM_VIDEO_VERIFY, this); // 随机视频验证
     }
     public RemoveMsgHandler(): void {
         console.log(`TexasGame : RemoveMsgHandler`);
@@ -142,6 +145,9 @@ export default class TexasGameProtocol {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_SquidInActive, this.HANDLER_REQ_SQUID_IN_ACTIVE, this); // 主动加入鱿鱼返回
         GC.notify.remove(ProtocolCode.Protocol_Holdem_SquidIn, this.HANDLER_REQ_SQUID_IN, this); // 鱿鱼加入状态广播
         GC.notify.remove(ProtocolCode.Protocol_Holdem_NextChange, this.HANDLER_REQ_NEXT_CHANGE, this); // 下一手配置变更
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo, this.HANDLER_RANDOM_VIDEO_VERIFY, this); // 随机视频验证
+        // 清理随机验证倒计时
+        this._clearRandomVideoTimer();
     }
 
     /// <summary>
@@ -2556,6 +2562,82 @@ export default class TexasGameProtocol {
 
             // 重置按钮（视频不可用）
             this.game?.uirc?.resetVideoButtons();
+        }
+    }
+
+    // ==================== 随机视频验证 ====================
+
+    /** 随机验证倒计时定时器 */
+    private _randomVideoTimer: number = 0;
+
+    /**
+     * 收到 902 消息：服务器选中当前玩家进行随机视频验证
+     */
+    private async HANDLER_RANDOM_VIDEO_VERIFY(rec: ServerMessageUtilAntiCheatRoomVideo.AsObject): Promise<void> {
+        if (!rec) return;
+        console.log('[RandomVideo] 收到随机视频验证消息, status:', rec.status, 'roomType:', rec.roomType);
+
+        // 仅随机验证模式处理
+        if (GameCache.Instance._videoModel !== VideoModel.RANDOM) {
+            console.warn('[RandomVideo] 当前不是随机验证模式，忽略');
+            return;
+        }
+
+        // 如果已经在验证中，不重复触发
+        if (GameCache.Instance._randomVideoActive) {
+            console.log('[RandomVideo] 已在验证中，忽略重复消息');
+            return;
+        }
+
+        // 标记开始验证
+        GameCache.Instance._randomVideoActive = true;
+
+        // 计算结束时间（毫秒）
+        const duration = GameCache.Instance._antiCheatTimeLimit || 180;
+        GameCache.Instance._randomVideoEndTime = Date.now() + duration * 1000;
+
+        console.log('[RandomVideo] 开始随机验证，持续', duration, '秒');
+
+        // Toast 提示（带倒计时秒数）
+        const toastText = i18nMgr.Get('UIVideoModelverifyRandom01').replace('{0}', String(duration));
+        ToastManager.Instance.createToast(toastText);
+
+        // 强制开启摄像头并渲染到自己的头像
+        await this.renderLocalVideoOnMySeat();
+
+        // 同步按钮状态（禁用关闭按钮）
+        this.game?.uirc?.syncVideoButtonsFromAgora();
+
+        // 启动倒计时
+        this._startRandomVideoCountdown();
+    }
+
+    /**
+     * 启动随机验证倒计时
+     */
+    private _startRandomVideoCountdown(): void {
+        this._clearRandomVideoTimer();
+        this._randomVideoTimer = window.setInterval(() => {
+            const remaining = GameCache.Instance._randomVideoEndTime - Date.now();
+            if (remaining <= 0) {
+                // 倒计时结束
+                console.log('[RandomVideo] 验证倒计时结束，恢复手动控制');
+                this._clearRandomVideoTimer();
+                GameCache.Instance._randomVideoActive = false;
+                GameCache.Instance._randomVideoEndTime = 0;
+                // 摄像头保持开启，恢复关闭按钮
+                this.game?.uirc?.syncVideoButtonsFromAgora();
+            }
+        }, 1000);
+    }
+
+    /**
+     * 清理随机验证倒计时
+     */
+    private _clearRandomVideoTimer(): void {
+        if (this._randomVideoTimer) {
+            window.clearInterval(this._randomVideoTimer);
+            this._randomVideoTimer = 0;
         }
     }
 }

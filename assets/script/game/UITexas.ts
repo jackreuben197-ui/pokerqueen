@@ -832,6 +832,14 @@ export default class UITexas extends BaseScene {
             ToastManager.Instance.createToast("当前房间未开启语音");
             return;
         }
+        // 随机验证期间，视频+语音模式下不能关闭麦克风
+        if (GameCache.Instance._randomVideoActive && GameCache.Instance._videoVerifyType !== 2) {
+            const remainSec = Math.max(0, Math.ceil((GameCache.Instance._randomVideoEndTime - Date.now()) / 1000));
+            ToastManager.Instance.createToast(
+                i18nMgr.Get('UIVideoModelverifyRandom01').replace('{0}', String(remainSec))
+            );
+            return;
+        }
         const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
         if (!mySeat) {
             ToastManager.Instance.createToast("请先入座");
@@ -858,6 +866,21 @@ export default class UITexas extends BaseScene {
     private async click_btn_camera() {
         if (GameCache.Instance._videoModel === VideoModel.NONE) {
             ToastManager.Instance.createToast("当前房间未开启视频");
+            return;
+        }
+        if (GameCache.Instance._videoModel === VideoModel.FULL_TIME) {
+            ToastManager.Instance.createToast(i18nMgr.Get("UIVideoModelverifyFullTime02"));
+            return;
+        }
+        if (GameCache.Instance._sequenceVideoActive) {
+            ToastManager.Instance.createToast(i18nMgr.Get("UIVideoModelverifyOrder02"));
+            return;
+        }
+        if (GameCache.Instance._randomVideoActive) {
+            const remainSec = Math.max(0, Math.ceil((GameCache.Instance._randomVideoEndTime - Date.now()) / 1000));
+            ToastManager.Instance.createToast(
+                i18nMgr.Get('UIVideoModelverifyRandom02').replace('{0}', String(remainSec))
+            );
             return;
         }
         const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
@@ -928,7 +951,7 @@ export default class UITexas extends BaseScene {
      * 初始化远端音频/视频控制按钮的显隐状态
      * 进入房间时调用，确保 UI 与 AgoraManager 状态一致
      * 非视频房间直接隐藏整个 muteMicNode / hideVideoNode
-     * 默认：远端音频/视频开启 → 显示 closeBtn（可点击关闭），隐藏 openBtn
+     * 默认：远端音频/视频开启 → openBtn 可见（表示当前开着），closeBtn 隐藏
      */
     private _initRemoteMediaButtons(): void {
         const isVideoRoom = GameCache.Instance._videoModel !== VideoModel.NONE;
@@ -940,51 +963,50 @@ export default class UITexas extends BaseScene {
         if (!isVideoRoom) return;
 
         const agora = AgoraManager.Instance;
-        // 默认都是开启状态，所以显示 closeBtn（可关闭），隐藏 openBtn（可开启）
-        // 如果 AgoraManager 的全局标记是 muted，则反过来
-        const audioOn = !agora.isJoined || !agora.isRemoteAudioMuted;
-        if (this.muteMicOpenBtn) this.muteMicOpenBtn.active = !audioOn;
-        if (this.muteMicCloseBtn) this.muteMicCloseBtn.active = audioOn;
+        // 功能开启 → openBtn 可见；功能关闭 → closeBtn 可见
+        const audioOn = !agora.isRemoteAudioMuted;
+        if (this.muteMicOpenBtn) this.muteMicOpenBtn.active = audioOn;
+        if (this.muteMicCloseBtn) this.muteMicCloseBtn.active = !audioOn;
 
-        const videoOn = !agora.isJoined || !agora.isRemoteVideoMuted;
-        if (this.hideVideoOpenBtn) this.hideVideoOpenBtn.active = !videoOn;
-        if (this.hideVideoCloseBtn) this.hideVideoCloseBtn.active = videoOn;
+        const videoOn = !agora.isRemoteVideoMuted;
+        if (this.hideVideoOpenBtn) this.hideVideoOpenBtn.active = videoOn;
+        if (this.hideVideoCloseBtn) this.hideVideoCloseBtn.active = !videoOn;
     }
 
     /**
-     * 远端音频控制：开启（取消静音）
+     * 远端音频：openBtn 被点击 → 当前开着，点击后关闭（静音）
      */
     private click_muteMicOpen() {
         if (this.muteMicOpenBtn) this.muteMicOpenBtn.active = false;
         if (this.muteMicCloseBtn) this.muteMicCloseBtn.active = true;
-        AgoraManager.Instance.setRemoteAudioEnabled(true);
-    }
-
-    /**
-     * 远端音频控制：关闭（静音）
-     */
-    private click_muteMicClose() {
-        if (this.muteMicCloseBtn) this.muteMicCloseBtn.active = false;
-        if (this.muteMicOpenBtn) this.muteMicOpenBtn.active = true;
         AgoraManager.Instance.setRemoteAudioEnabled(false);
     }
 
     /**
-     * 远端视频控制：开启（显示）
+     * 远端音频：closeBtn 被点击 → 当前关闭，点击后开启（恢复声音）
+     */
+    private click_muteMicClose() {
+        if (this.muteMicCloseBtn) this.muteMicCloseBtn.active = false;
+        if (this.muteMicOpenBtn) this.muteMicOpenBtn.active = true;
+        AgoraManager.Instance.setRemoteAudioEnabled(true);
+    }
+
+    /**
+     * 远端视频：openBtn 被点击 → 当前开着，点击后关闭（隐藏视频）
      */
     private async click_hideVideoOpen() {
         if (this.hideVideoOpenBtn) this.hideVideoOpenBtn.active = false;
         if (this.hideVideoCloseBtn) this.hideVideoCloseBtn.active = true;
-        await AgoraManager.Instance.setRemoteVideoEnabled(true);
+        await AgoraManager.Instance.setRemoteVideoEnabled(false);
     }
 
     /**
-     * 远端视频控制：关闭（隐藏）
+     * 远端视频：closeBtn 被点击 → 当前关闭，点击后开启（恢复视频）
      */
     private async click_hideVideoClose() {
         if (this.hideVideoCloseBtn) this.hideVideoCloseBtn.active = false;
         if (this.hideVideoOpenBtn) this.hideVideoOpenBtn.active = true;
-        await AgoraManager.Instance.setRemoteVideoEnabled(false);
+        await AgoraManager.Instance.setRemoteVideoEnabled(true);
     }
 
     private click_chatBtn() {
