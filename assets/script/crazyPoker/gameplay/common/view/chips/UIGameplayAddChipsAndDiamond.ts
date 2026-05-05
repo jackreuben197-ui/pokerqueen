@@ -48,7 +48,7 @@ export class AddClipsData {
     /** 玩家剩余记分牌 */
     public _tableChips: number = 0;
     /** 藏钱记分牌 */
-    public _storeChips: number = 0;
+    public _storeChips?: number = 0;
     /** 钱包列表 */
     public _wallets: HttpRoomBringOutProtocol.Wallet[] = null;
     /** 0带入申请 1补充筹码 2菜单自动充值 3蘑菇 */
@@ -56,10 +56,12 @@ export class AddClipsData {
     /** 为true时 是点击返回游戏按钮触发的带入申请 */
     public _isBringIn: boolean = false;
     /** 匹配点击确定事件 */
-    public _matchAction: Function = null;
+    public _matchAction?: Function = null;
     /** 授信额度 */
     public _creditNum: number = 0;
 }
+
+const LN = '[UIGameplayAddChipsAndDiamondComponent]';
 
 /**
  * 核心玩法：带入筹码界面
@@ -112,7 +114,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
      * 滑动条上的需要的筹码
      */
     @property(cc.Label)
-    private textNeedCoin: cc.Label = null;
+    // private textNeedCoin: cc.Label = null;
     private textWallet: cc.Label = null;
 
     /**
@@ -160,6 +162,9 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
      */
     @property(cc.Label)
     public coinTipText: cc.Label = null;
+
+    @property(cc.Label)
+    public coinTipTextBottom: cc.Label = null;
 
     /** 
      * 带入筹码描述按钮
@@ -268,6 +273,9 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
     @property(cc.Node)
     private buttonSelectWallet: cc.Node = null;
 
+    @property(cc.Node)
+    private arrowDown: cc.Node = null;
+
     // 颜色常量
     private static readonly COLOR_GRAY = new cc.Color(128, 128, 128);
     private static readonly COLOR_WHITE = new cc.Color(255, 255, 255);
@@ -282,7 +290,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
 
         //     this.textCoin = this.getChildNodeOrComponent<cc.Label>("Text_Coin");
         //     this.selectWallet = this.getChildNodeOrComponent<cc.Node>("SeclectWallet");
-        //     this.right = this.getChildNodeOrComponent<cc.Node>("Right");
+        //     this.arrowDown = this.getChildNodeOrComponent<cc.Node>("Right");
         //     this.textTotalCoin = this.getChildNodeOrComponent<cc.Label>("funddetail_text_usdt");
         //     this.goldImage = this.getChildNodeOrComponent<cc.Sprite>("Image");
         //     this.textNeedCoin = this.getChildNodeOrComponent<cc.Label>("Text_NeedCoin");
@@ -428,6 +436,10 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
                     break;
             }
 
+            this.clueItemPrefab.active = false;
+            this.walletScrollView.node.active = false;
+            this.arrowDown.setRotation(0);
+
             this.initDiamond();
             this.setupSlider();
         }
@@ -440,14 +452,14 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
     private setupSlider(): void {
         let gameplayData = BaseGameplayDao.Instance.GetGameplayData();
 
-        console.log("setupSlider", this.addClipsData);
+        console.log(LN, "setupSlider", this.addClipsData);
         if (this.addClipsData == null) return;
 
         // 隐藏押金区域
         if (this.depositObj) this.depositObj.active = false;
         this.setClubDeposit();
 
-        console.log("setupSlider", GameCache.Instance.game_type);
+        console.log(LN, "setupSlider", GameCache.Instance.game_type);
 
         // 设置盲注文本
         if (this.checkIsAnte()) {
@@ -477,11 +489,11 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
         if (GameCache.Instance._bringInLimitType == 1 &&
             (this.addClipsData._storeChips + this.addClipsData._tableChips) > this.addClipsData._currentMaxRate * gameplayData._minBringIn) {
             currentMaxBring = this.addClipsData._storeChips;
-            if (this.textNeedCoin) this.textNeedCoin.string = StringHelper.GetLongString(this.addClipsData._storeChips);
+            // if (this.textNeedCoin) this.textNeedCoin.string = StringHelper.GetLongString(this.addClipsData._storeChips);
         } else {
-            if (this.textNeedCoin) this.textNeedCoin.string = StringHelper.GetLongString(
-                this.addClipsData._currentMinRate * gameplayData._minBringIn
-            );
+            // if (this.textNeedCoin) this.textNeedCoin.string = StringHelper.GetLongString(
+            //     this.addClipsData._currentMinRate * gameplayData._minBringIn
+            // );
             currentMaxBring = this.addClipsData._currentMaxRate * gameplayData._minBringIn - this.addClipsData._tableChips;
         }
 
@@ -805,7 +817,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
     private onValueChangedSliderCoin(arg0: number): void {
         let gameplayData = BaseGameplayDao.Instance.GetGameplayData();
 
-        console.log(`${this.constructor.name}: onValueChangedSliderCoin: ${arg0}`);
+        console.log(LN, `onValueChangedSliderCoin: ${arg0}`);
         if (this.isFirstClick && this.autoSliderMax) {
             this.autoSliderMax.progress = arg0;
         }
@@ -814,7 +826,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
         if (GameCache.Instance.game_type == GameType.MAHJONG) {
             anteNum = arg0 * this.addClipsData._smallBlind * this.rate / this.magnification;
         } else if (this.checkIsTexas()) {
-            console.log(`${this.constructor.name}: ${gameplayData._minBringIn} ${this.rate} ${this.magnification}`);
+            console.log(LN, `${gameplayData._minBringIn} ${this.rate} ${this.magnification}`);
 
             if (this.checkIsAnte()) {
                 anteNum = arg0 * gameplayData._minBringIn * this.rate * 2 / this.magnification;
@@ -822,7 +834,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
                 anteNum = arg0 * gameplayData._minBringIn * this.rate / this.magnification;
             }
         } else {
-            console.log(`${this.constructor.name}: ${gameplayData._minBringIn} ${this.sliderSpace} ${this.magnification}`);
+            console.log(LN, `${gameplayData._minBringIn} ${this.sliderSpace} ${this.magnification}`);
             anteNum = arg0 * gameplayData._minBringIn * this.sliderSpace / this.magnification;
         }
 
@@ -861,12 +873,12 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
             //     coinText = `${StringHelper.GetLongString(anteNum)}<color=#FFC706>${StringHelper.GetLongString(this.getFantasyDeposit())}</color>`;
             // }
 
-            console.log(`${this.constructor.name}: coinText: ${coinText}`);
+            console.log(LN, `coinText: ${coinText}`);
             this.textCoin.string = coinText;
         }
-        if (this.textNeedCoin) {
-            this.textNeedCoin.string = StringHelper.GetLongString(anteNum);
-        }
+        // if (this.textNeedCoin) {
+        //     this.textNeedCoin.string = StringHelper.GetLongString(anteNum);
+        // }
 
         this.setRecordFee();
     }
@@ -1031,11 +1043,11 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
             this.walletScrollView.node.active = !this.walletScrollView.node.active;
         }
 
-        if (this.right && this.walletScrollView) {
+        if (this.arrowDown && this.walletScrollView) {
             if (this.walletScrollView.node.active) {
-                this.right.setRotation(180);
+                this.arrowDown.setRotation(180);
             } else {
-                this.right.setRotation(0);
+                this.arrowDown.setRotation(0);
             }
         }
 
@@ -1087,15 +1099,14 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
      */
     private setupWalletList(): void {
         if (!this.addClipsData?._wallets) return;
-
+        this.mySelectWallet = null;
         let wallets = this.addClipsData._wallets;
         if (wallets.length == 1) {
-
             this.mySelectWallet = wallets[0];
             GameCache.Instance.ClubRandomID = this.mySelectWallet.club_random_id;
             this.updateTotalCoin(false, this.mySelectWallet.club_name, this.mySelectWallet.gold, this.addClipsData._creditNum);
-            if (this.right) this.right.active = false;
-            if (this.depositArea) this.depositArea.active = this.mySelectWallet.deposit_advance == 1 && this.isHaveDeposit();
+            // if (this.arrowDown) this.arrowDown.active = false;
+            // if (this.depositArea) this.depositArea.active = this.mySelectWallet.deposit_advance == 1 && this.isHaveDeposit();
         } else if (wallets.length > 1) {
             let curWallet = this.getClubInfo();
             if (curWallet == null) {
@@ -1105,28 +1116,29 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
                 this.emptySelectWallet.active = false;
                 this.mySelectWallet = curWallet;
                 this.updateTotalCoin(true, this.mySelectWallet.club_name, this.mySelectWallet.gold, this.addClipsData._creditNum);
-                if (this.right) this.right.setRotation(0);
+                //if (this.arrowDown) this.arrowDown.setRotation(0);
             }
 
-            if (this.right) this.right.active = true;
+            // if (this.arrowDown) this.arrowDown.active = true;
+            this.walletScrollView.content.removeAllChildren();
 
             // 创建钱包列表项
             for (let i = 0; i < wallets.length; i++) {
                 let walletItem = wallets[i];
                 let temp = cc.instantiate(this.clueItemPrefab);
-                temp.parent = this.walletScrollView.content;
-
-                console.log("wallet:", walletItem);
-
-                this.SetClubItemData(walletItem, temp);
-
-
-                temp.setScale(1, 1, 1);
+                temp.setPosition(0,0);
+                temp.setScale(1,1,1);
                 temp.active = true;
-
+                this.walletScrollView.content.addChild(temp);
+                // 强制 Layout 组件立即重新计算
+                let layout = this.walletScrollView.content.getComponent(cc.Layout);
+                if (layout) {
+                    layout.updateLayout(); 
+                }
+                console.log(LN, "wallet:", i,  walletItem.club_random_id);
+                this.SetClubItemData(walletItem, temp, i != wallets.length - 1);
                 let toggle = temp.getComponent(cc.Toggle);
                 let index = i;
-
                 // 处理选中状态
                 if (this.mySelectWallet != null && this.mySelectWallet.club_id == walletItem.club_id) {
                     toggle.isChecked = true;
@@ -1134,9 +1146,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
                     if (bgNode) bgNode.active = true;
                     this.currentSelect = index;
                 }
-
                 // 添加Toggle监听
-
                 toggle.node.on("toggle", (sender: cc.Toggle) => {
                     let bgNode = cc.find("bg", temp);
                     if (bgNode) bgNode.active = sender.isChecked;
@@ -1145,12 +1155,12 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
                         this.mySelectWallet = wallets[index];
                         this.updateTotalCoin(true, wallets[index].club_name, wallets[index].gold, this.addClipsData._creditNum);
                         this.walletScrollView.node.active = false;
-                        if (this.right && this.right.activeInHierarchy) {
-                            this.right.setRotation(this.walletScrollView.node.activeInHierarchy ? 180 : 0);
-                        }
+                        this.arrowDown.setRotation(0);
+                        // if (this.arrowDown && this.arrowDown.activeInHierarchy) {
+                        //     this.arrowDown.setRotation(this.walletScrollView.node.activeInHierarchy ? 180 : 0);
+                        // }
                     }
                 });
-
                 this.walletToggles.push(toggle);
             }
         }
@@ -1187,6 +1197,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
             this.coinTipText.string = this.isHaveDeposit()
                 ? `${i18nMgr.Get("UITexas_AddChips")}+${i18nMgr.Get("UIFantasy_dairuyajin")}`
                 : i18nMgr.Get("UITexas_AddChips");
+            this.coinTipTextBottom.string = i18nMgr.Get("UITexas_AddChips");
         }
 
         if (this.bringBtn) {
@@ -1307,7 +1318,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
         console.log("getRecordFeeData", this.addClipsData._creditNum);
         if (GameCache.Instance.gold_type != 1 && GameCache.Instance.gold_type != 2) {
             if (GameplayUtil.GetTableType() == TableType.CLUB_INNER) {
-                if (this.textTotalCoin) this.textTotalCoin.string = StringHelper.GetLongString(this.addClipsData._creditNum);
+                if (this.textTotalCoin) this.textTotalCoin.string = StringHelper.GetLongStringLocale(this.addClipsData._creditNum);
             } else {
                 // this.textTotalCoin.SetHandFormatNumber(GameCache.Instance._diamonds);
             }
@@ -1331,22 +1342,23 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
     /**
      * 设置俱乐部数据
      */
-    private SetClubItemData(walletItem: HttpRoomBringOutProtocol.Wallet, temp: cc.Node): void {
+    private SetClubItemData(walletItem: HttpRoomBringOutProtocol.Wallet, temp: cc.Node, addLine?: boolean): void {
         // 设置头像
-        let headImage = cc.find("spriteClubIcon", temp).getComponent(cc.Sprite);
+        let headImage = cc.find("cnamegrp/spriteClubIcon", temp).getComponent(cc.Sprite);
         WebImageHelper.SetHeadImage(headImage, walletItem.club_logo);
+
+        
+        // 设置名称
+        let nameLabel = cc.find("cnamegrp/labelClubName", temp).getComponent(cc.Label);
+        if (nameLabel) nameLabel.string = walletItem.club_name;
 
 
         // 设置ID
         let idLabel = cc.find("labelClubId", temp).getComponent(cc.Label);
-        if (idLabel) idLabel.string = "ID:" + walletItem.club_random_id;
-
-        // 设置名称
-        let nameLabel = cc.find("labelClubName", temp).getComponent(cc.Label);
-        if (nameLabel) nameLabel.string = walletItem.club_name;
+       if (idLabel) idLabel.string = walletItem.club_random_id.toString();
 
         // 设置余额标题
-        let labelBalanceTitle = cc.find("balance/labelBalanceTitle", temp).getComponent(cc.Label);
+        let labelBalanceTitle = cc.find("overlay/balance/labelBalanceTitle", temp).getComponent(cc.Label);
         if (labelBalanceTitle) {
             labelBalanceTitle.string = GameplayUtil.GetTableType() == TableType.CLUB_INNER
                 ? i18nMgr.Get("UIClubCreditLimit2")
@@ -1354,17 +1366,20 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
         }
 
         // 设置金币类型图标和数量
-        let goldTypeNode = cc.find("balance/New Sprite", temp);
-        if (goldTypeNode) {
-            let goldTypeSprite = goldTypeNode.getComponent(cc.Sprite);
-            if (goldTypeSprite) {
-                goldTypeSprite.spriteFrame = walletItem.gold_type == 1 ? this.unionCoinSpr : this.usdtSpr;
-            }
+        let goldTypeSprite = cc.find("overlay/balance/chipicon", temp).getComponent(cc.Sprite);
+        // if (goldTypeSprite) {
+        //     goldTypeSprite.spriteFrame = walletItem.gold_type == 1 ? this.unionCoinSpr : this.usdtSpr;
+        // }
 
+        let numLabel = cc.find("overlay/balance/labelBalance", temp).getComponent(cc.Label);
+        if (numLabel) numLabel.string = StringHelper.GetLongStringLocale(walletItem.gold);
+
+        let line = cc.find("overlay2", temp);
+        if (addLine) {
+            line.active = true
+        }else {
+            line.active = false;
         }
-
-        let numLabel = cc.find("balance/labelBalance", temp).getComponent(cc.Label);
-        if (numLabel) numLabel.string = StringHelper.GetLongString(walletItem.gold);
 
     }
 
@@ -1377,9 +1392,9 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
 
         console.log("updateTotalCoin", name, gold, credit);
         if (GameplayUtil.GetTableType() == TableType.CLUB_INNER) {
-            if (this.textTotalCoin) this.textTotalCoin.string = StringHelper.GetLongString(credit);
+            if (this.textTotalCoin) this.textTotalCoin.string = StringHelper.GetLongStringLocale(credit);
         } else {
-            if (this.textTotalCoin) this.textTotalCoin.string = StringHelper.GetLongString(gold);
+            if (this.textTotalCoin) this.textTotalCoin.string = StringHelper.GetLongStringLocale(gold);
         }
 
         GameCache.Instance.gold_type = gold;

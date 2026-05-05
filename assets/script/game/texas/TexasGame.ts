@@ -772,7 +772,7 @@ export default class TexasGame {
         }
     }
     UpdateRoomCommon(rec: ServerMessageEnterRoom.AsObject) {
-        cc.log("UpdateRoomCommon");
+        console.log(LN,"UpdateRoomCommon");
         this.ClearAllData();
         this.ClearAllPlayers(); // 清空玩家数据
         if (this.listSeat?.length) {
@@ -927,7 +927,7 @@ export default class TexasGame {
 
         for (let i = 0; i < rec.handInfo.potsList.length; i++) {
             this.pots.push(rec.handInfo.potsList[i].amount);
-            cc.log("排池子数据:", this.pots);
+            console.log(LN,"排池子数据:", this.pots);
         }
         if (this.waitBlind == 1) {
             this.ShowWaitBlindBtn();
@@ -1835,11 +1835,11 @@ export default class TexasGame {
 
     //座位运动结束的处理
     private AllSeatMoveEnd() {
-        cc.log("所有座位运动完毕");
+        console.log(LN,"所有座位运动完毕");
 
         while (this.seatMoveStruct.cacheFuncs?.length) {
             let f = this.seatMoveStruct.cacheFuncs.shift();
-            cc.log(f);
+            console.log(LN,f);
             f.b.call(f.a, f.c);
         }
 
@@ -1865,12 +1865,12 @@ export default class TexasGame {
 
         let mSeat: Seat = this.GetSeatByClientId(clientSeatId);
         if (null == mSeat) {
-            cc.log(`Sitdown 位置不存在 clientSeatId:${clientSeatId}`);
+            console.log(LN,`Sitdown 位置不存在 clientSeatId:${clientSeatId}`);
             return;
         }
 
         if (this.mainPlayer.seatID != -1) {
-            cc.log(
+            console.log(LN,
                 `Sitdown 你已在其他位置 seatID ${this.mainPlayer.seatID}, clientSeatId ${this.GetSeatByLocalSeatID(this.mainPlayer.seatID).ClientSeatId}`,
             );
             return;
@@ -1878,11 +1878,11 @@ export default class TexasGame {
 
         if (null != mSeat.Player) {
             if (mSeat.Player.userID == this.mainPlayer.userID) {
-                cc.log(`Sitdown 你已在该位置 clientSeatId:${clientSeatId}`);
+                console.log(LN,`Sitdown 你已在该位置 clientSeatId:${clientSeatId}`);
                 return;
             }
 
-            cc.log(`Sitdown 该位置有其他玩家 clientSeatId:${clientSeatId}`);
+            console.log(LN,`Sitdown 该位置有其他玩家 clientSeatId:${clientSeatId}`);
             return;
         }
 
@@ -3794,7 +3794,7 @@ export default class TexasGame {
     /// 清空公共牌UI
     /// </summary>
     public ClearPublicCardsUI() {
-        cc.log("ClearPublicCardsUI");
+        console.log(LN,"ClearPublicCardsUI");
         let PublicCardInfo: PublicCardInfo = null;
         for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
             PublicCardInfo = this.uirc.listCards[i];
@@ -3812,7 +3812,7 @@ export default class TexasGame {
     /// 清空公共牌UI
     /// </summary>
     public ClearSecondPublicCardsUI(): void {
-        cc.log("ClearSecondPublicCardsUI");
+        console.log(LN,"ClearSecondPublicCardsUI");
         let PublicCardInfo: PublicCardInfo = null;
         for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
             PublicCardInfo = this.uirc.listSecondCards[i];
@@ -3897,7 +3897,7 @@ export default class TexasGame {
                 _source: BringInChipsType.BRING_IN,
                 _isBringIn: true,
                 _creditNum: data.user_club_gold_credit,
-            } as AddClipsData
+            }
         );
     }
 
@@ -3984,7 +3984,7 @@ export default class TexasGame {
         });
     }
     protected ClearAllData() {
-        cc.log("清理所有数据");
+        console.log(LN,"清理所有数据");
         this.gamestatus = -1;
         GameCache.Instance.GameStatus = this.gamestatus;
         this.bigIndex = 0;
@@ -4111,7 +4111,7 @@ export default class TexasGame {
         this.ResetPots();
     }
     ClearAllPlayers() {
-        cc.log("清理所有玩家");
+        console.log(LN,"清理所有玩家");
 
         if (null != this.mainPlayer) {
             this.mainPlayer.Dispose();
