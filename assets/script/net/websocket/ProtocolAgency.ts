@@ -259,14 +259,6 @@ export default class ProtocolAgency extends cc.Component {
             return;
         }
 
-        if (code < 1000 &&
-            (code != ProtocolCode.Protocol_Holdem_Rooms ||
-                code != ProtocolCode.Protocol_Holdem_Rooms)
-        ) {// code != xxx || code != xxx 处理白名单放行
-            console.log(LN, 'drop code:', code);
-            return;
-        }
-
         let roomid_offset =
             PacketHead.FieldOffset.RoomID - PacketHead.FieldSize.DataLength;
         let matchid_offset =
