@@ -259,6 +259,14 @@ export default class ProtocolAgency extends cc.Component {
             return;
         }
 
+        if (code < 1000 &&
+            code != ProtocolCode.Protocol_Holdem_Rooms &&
+            code != ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo
+        ) {
+            console.log(LN, 'drop code:', code);
+            return;
+        }
+
         let roomid_offset =
             PacketHead.FieldOffset.RoomID - PacketHead.FieldSize.DataLength;
         let matchid_offset =

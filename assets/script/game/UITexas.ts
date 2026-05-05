@@ -840,14 +840,6 @@ export default class UITexas extends BaseScene {
             ToastManager.Instance.createToast("当前房间未开启语音");
             return;
         }
-        // 随机验证期间，视频+语音模式下不能关闭麦克风
-        if (GameCache.Instance._randomVideoActive && GameCache.Instance._videoVerifyType !== 2) {
-            const remainSec = Math.max(0, Math.ceil((GameCache.Instance._randomVideoEndTime - Date.now()) / 1000));
-            ToastManager.Instance.createToast(
-                i18nMgr.Get('UIVideoModelverifyRandom01').replace('{0}', String(remainSec))
-            );
-            return;
-        }
         const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
         if (!mySeat) {
             ToastManager.Instance.createToast("请先入座");
