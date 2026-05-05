@@ -716,6 +716,8 @@ export class GameCache {
     public _fromClubId: number = 0;
 
 
+    //  isActiveLeaving 
+    public isActiveLeaving: boolean = false;
 
 
     public static get Instance(): GameCache {
