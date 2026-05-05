@@ -10,7 +10,7 @@ git submodule update --init --recursive --remote
 # h5 code sync
 npm run sync:h5-game #pnpm run sync:h5-game
 # protocol sync (pb)
-npm run sync:protocol
+npm run sync:proto
 ```
 
 
