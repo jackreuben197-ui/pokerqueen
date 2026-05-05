@@ -8,9 +8,7 @@ import { Close_Obj, Open_Obj } from "./UIComponent";
 export class UIFormMgr {
 
     protected Name: string = "UIFormMgr";
-
-    uiMap = {};
-
+    uiMap: Record<string, UIBase> = {};
     currUI: UIBase = null;
     //已经打开的ui列表
     showUIs: UIBase[] = [];
@@ -27,10 +25,10 @@ export class UIFormMgr {
 
         this.UILayer = Main.Form;
 
-        this.CacheUILayer = Main.Cache_UI;
+        this.CacheUILayer = Main.CacheUI;
     }
 
-    find(uiDefine: { Name: string, Bundle: string, Path: string }): UIBase {
+    find(uiDefine: IUIDefine): UIBase {
         return this.uiMap[uiDefine.Name];
     }
 
@@ -38,52 +36,45 @@ export class UIFormMgr {
      * 打开一个窗体
      * @param param 携带的参数
      */
-
-    open(uiDefine: { Name: string, Bundle: string, Path: string }, param: any = null, obj: Open_Obj) {
-
+    open(uiDefine: IUIDefine, param: any = null, obj: Open_Obj) {
         if (this.currUI?.UIDefine.Name == uiDefine.Name) {
-            cc.log("当前面板已经存在:", uiDefine.Name);
+            console.warn(`[${this.Name}] open`, "当前面板已经存在:", uiDefine.Name);
             return;
         }
-
         let newUI = this.find(uiDefine);
-
         if (newUI) {
-
             this.lateOpen(newUI, param, obj);
-
-        } else {
-
-            ResManager.Load(uiDefine.Bundle, uiDefine.Path, cc.Prefab, (err, asset: cc.Prefab) => {
-                if (err) {
-                    cc.log("加载预制体", uiDefine.Bundle, uiDefine.Path, "发生错误", err);
-                    return;
-                }
-                let ui_node = cc.instantiate(asset);
-                newUI = ui_node.getComponent(UIBase);
-                if (!newUI) {
-                    console.log(uiDefine.Name, "缺少脚本");
-                }
-                this.uiMap[uiDefine.Name] = newUI;
-                this.lateOpen(newUI, param, obj);
-            });
+            return;
         }
+        ResManager.GetOrLoad<cc.Prefab>(uiDefine.Bundle, uiDefine.Path).then((asset) => {
+            let ui_node = cc.instantiate(asset);
+            newUI = ui_node.getComponent(UIBase);
+            if (!newUI) {
+                console.log(`[${this.Name}] open`,uiDefine.Name, "缺少脚本");
+                return;
+            }
+            this.uiMap[uiDefine.Name] = newUI;
+            this.lateOpen(newUI, param, obj);
+        }).catch(e => {
+            console.log(`[${this.Name}] open`, 'Get Resource Error', e);
+        })
     }
-    async close(uiDefine: { Name: string, Bundle: string, Path: string } = null, param: any = null, obj: Close_Obj) {
+
+    close(uiDefine: { Name: string, Bundle: string, Path: string } = null, param: any = null, obj: Close_Obj) {
         if (uiDefine) {
             for (let i = this.showUIs.length - 1; i >= 0; i--) {
                 let ui = this.showUIs[i];
                 if (ui.UIDefine.Name == uiDefine.Name) {
                     ui.close_animation = obj?.animation == null ? true : obj?.animation;
                     if (ui.close_animation) {
-                        await this.currUI.onClose(param);
+                        this.currUI.onClose(param);
                     } else {
                         this.currUI.onClose(param);
                     }
                     ui.node.parent = this.CacheUILayer;
                     this.showUIs.splice(i, 1);
                     this.currUI = this.showUIs[this.showUIs.length - 1];
-                    cc.log("close ui left count:", this.Name, this.showUIs.length);
+                    console.log(`[${this.Name}]`, "close ui left count:", this.Name, this.showUIs.length);
                     break;
                 }
             }
@@ -117,24 +108,18 @@ export class UIFormMgr {
             }
             this.currUI = ui;
             this.showUIs.push(ui);
-            cc.log("open ui count:", this.Name, this.showUIs.length);
+            console.log(`[${this.Name}]`, "lateOpen ui count:", this.Name, this.showUIs.length);
         }
     }
 
     public async closeAll() {
-        // while (this.showUIs.length) {
-        //     let ui = this.showUIs[this.showUIs.length - 1];
-        //     await this.close(ui.UIDefine, null, false)
-        // }
         while (this.showUIs.length) {
             let ui = this.showUIs.shift();
             ui.node.parent = this.CacheUILayer;
         }
         this.showUIs = [];
-
         this.currUI = null;
     }
-
 }
 
 export class UIBoardMgr extends UIFormMgr {
@@ -148,7 +133,7 @@ export class UIBoardMgr extends UIFormMgr {
     constructor() {
         super();
         this.UILayer = Main.Board;
-        this.CacheUILayer = Main.Cache_UI;
+        this.CacheUILayer = Main.CacheUI;
     }
 }
 export class UIDialogMgr extends UIFormMgr {
@@ -161,7 +146,7 @@ export class UIDialogMgr extends UIFormMgr {
     constructor() {
         super();
         this.UILayer = Main.Dialog;
-        this.CacheUILayer = Main.Cache_UI;
+        this.CacheUILayer = Main.CacheUI;
     }
 }
 export class UIPromptMgr extends UIFormMgr {
@@ -174,7 +159,7 @@ export class UIPromptMgr extends UIFormMgr {
     constructor() {
         super();
         this.UILayer = Main.Prompt;
-        this.CacheUILayer = Main.Cache_UI;
+        this.CacheUILayer = Main.CacheUI;
     }
 }
 
@@ -202,7 +187,7 @@ export class UICommonMgr {
             let bundle = cc.assetManager.getBundle(uiDefine.Bundle);
             let prefab: cc.Prefab = (bundle || cc.resources).get(uiDefine.Path, cc.Prefab);
             if (!prefab) {
-                cc.warn("缺少预制体资源:", uiDefine.Path);
+                console.warn('[UICommonMgr]', "缺少预制体资源:", uiDefine.Path);
                 return;
             }
             node = cc.instantiate(prefab);
@@ -215,7 +200,7 @@ export class UICommonMgr {
                 ui.show_animation = obj?.animation == null ? true : obj?.animation;
                 ui.onShow(param);
             }
-            return cc.log("ui已经开启");
+            return console.log('[UICommonMgr]',"ui已经开启");
         }
         node.parent = obj?.parentUI || Main.Dialog;
         let ui = node.getComponent(UIBase);

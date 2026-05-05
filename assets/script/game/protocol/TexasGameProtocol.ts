@@ -55,9 +55,6 @@ import UIOutChipsTipComponent from "../ui/UIOutChipsTipComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
 import MTTGame from "../texas/MTTGame";
 import { InsuranceData, WrapTriggedInsuranceData } from "../new_ui/UIInsurancePanel";
-import SceneManager from "../../manager/SceneManager";
-import UIBase from "../../ui/UIBase";
-import UIFriendMatch from "../../lobby/new_club/createMatch/UIFriendMatch";
 import AgoraManager from "../../net/agora/AgoraManager";
 import AgoraVideoRender from "../../net/agora/AgoraVideoRender";
 import { VideoModel } from "../../crazyPoker/gameplay/common/constant/VideoModel";
@@ -527,7 +524,7 @@ export default class TexasGameProtocol {
         cc.log("————————>立刻执行发牌");
         this.game.UpdateStartGameState();
     }
-    private __PlayDealAnimation(responseData) {
+    private __PlayDealAnimation(responseData: any) {
         this.game.ResetSeatMoveStruct();
         this.game.PlayDealAnimation(() => {
             cc.log("发牌结束");
@@ -1132,7 +1129,7 @@ export default class TexasGameProtocol {
         if (mainSeat != null) {
             let cacheCards: number[] = isFirst ? this.game.GetPublicCards(1) : this.game.GetPublicCards(2);
 
-            let highlightCards_ref = { highlightCards: null };
+            let highlightCards_ref = { highlightCards: [] as number[] };
             let cardType: CardType = this.game.GetCardType(highlightCards_ref, cacheCards);
             //let highlightCards = highlightCards_ref.highlightCards;
             mainSeat.UpdateCardType(cardType, mainSeatHightCards, true);
@@ -1198,9 +1195,10 @@ export default class TexasGameProtocol {
         let mCount = this.game.GetPublicCardsCount(1);
         let mCanPlayEndPublicCardsAnimation = mCount == 5 && !mOtherAllFold;
         if (mCanPlayEndPublicCardsAnimation) {
-            let highlightCards_ref = { highlightCards: null };
+            let highlightCards_ref = { highlightCards: [] as number[] };
             let cardType: CardType = this.game.GetCardType(highlightCards_ref, this.game.GetPublicCards(1));
             let highlightCards = highlightCards_ref.highlightCards;
+            
             for (let i = 0, n = this.game.uirc.listCards.length; i < n; i++) {
                 this.game.uirc.listCards[i].imageSelect.node.active = false;
                 for (let j = 0, m = highlightCards.length; j < m; j++) {

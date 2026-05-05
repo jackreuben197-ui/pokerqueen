@@ -7,7 +7,7 @@ import ProcedureManager from "../../manager/ProcedureManager";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
 import LobbySession from "../../session/LobbySession";
 import UIComponent from "../../ui/UIComponent";
-import { EnterRoomInfo, GameCache } from "../GameCache";
+import { GameCache } from "../GameCache";
 import Seat, { SeatUIInfo } from "../seat/Seat";
 import MTTGame from "../texas/MTTGame";
 import MTTOmahaGame4 from "../texas/MTTOmahaGame4";
@@ -343,13 +343,12 @@ export enum GameEnterType {
 }
 
 export default class GameUtil {
-    private static readonly normalOuts: number[] = [0, 30, 16, 10, 8, 6, 5, 4, 3.5, 3, 2.5, 2.2, 2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.5];
-    private static readonly omahaOuts: number[] = [0, 24, 12, 8, 6, 4.5, 4, 3.2, 2.7, 2.3, 2, 1.7, 1.5, 1.3, 1.2, 1.1, 1, 0.8, 0.7, 0.6, 0.5];
+
     public static OutsList = new Map<number, number[]>();
     //游戏实例Map
     public static GameInstanceMap = new Map<RoomType, TexasGame>();
     //游戏类型映射游戏类
-    public static GameMap: Map<RoomType, any> = null;
+    public static GameMap: Map<RoomType, typeof TexasGame> = null;
 
     //每套公共牌数量
     public static PublicCardMaxCount: number = 5;
@@ -363,7 +362,7 @@ export default class GameUtil {
 
         this.GameMap = new Map();
         //1.TexasGame基础
-        this.GameMap.set(RoomType.TexasHoldemStandardNoLimit, GM.GetDebugSwitch(3) ? MTTGame : TexasGame);// 普通
+        this.GameMap.set(RoomType.TexasHoldemStandardNoLimit, TexasGame);// 普通
         this.GameMap.set(RoomType.TexasHoldemStandardPotLimit, TexasGame);// 普通底池限注
         this.GameMap.set(RoomType.TexasHoldemSixPlusFixedNoLimit, TexasGame);// 普通短牌
         this.GameMap.set(RoomType.TexasHoldemSixPlusFixedPotLimit, TexasGame);// 普通短牌底池限注
@@ -426,26 +425,33 @@ export default class GameUtil {
         this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedPotLimit, MTTOmahaGame6);// MTT
         this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedAof, MTTOmahaGame6);// MTT
     }
-    private static GetGame(roomType: RoomType, Game_Cls: any) {
-        if (!Game_Cls) return null;
+
+    private static GetGame(roomType: RoomType):TexasGame{
         let game = GameUtil.GameInstanceMap.get(roomType);
-        if (!game) {
-            game = new Game_Cls();
-            GameUtil.GameInstanceMap.set(roomType, game);
+        if (game) {
+            return game;
         }
+        const Cls = this.GameMap.get(roomType)
+        if (!Cls) {
+            console.error('[GameUtil]', 'no cls for roomType:', roomType);
+            return null;
+        }
+        game = new Cls();
+        GameUtil.GameInstanceMap.set(roomType, game);
         return game;
     }
+
     //是否开放的房间类型
     public static IsOpenRoomType(roomType: number): boolean {
         this._SetGameMap();
         return !!this.GameMap.get(roomType);
     }
-    //实例游戏类(从缓存Map中拿去)
-    public static InstantiateTexasGame(roomType: RoomType) {
-        this._SetGameMap();
-        return this.GetGame(roomType, this.GameMap.get(roomType));
-    }
 
+    //实例游戏类(从缓存Map中拿去)
+    public static InstantiateTexasGame(roomType: RoomType): TexasGame {
+        this._SetGameMap();
+        return this.GetGame(roomType);
+    }
 
     //座位位置配置
     public static pos_config: { [key: number]: seat_info[] } = {
@@ -1018,47 +1024,47 @@ export default class GameUtil {
         return outs[selectOuts];
     }
 
-    /**
-     * 
-     * @param enter_room_info 
-     * @param delay 进入延迟时间
-     * @param fromUI 
-     * @returns 
-     */
-    public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, enter_param: any = null) {
-        //, fromUIs?: UIDefineType[]) {
-        //注释掉  2023/3/20
-        // if (!GameCache.Instance.hasClub) {
-        //     UIComponent.Instance.ToastLanguage("error2005");
-        //     return;
-        // }
-        let room_type: number = enter_room_info.room_type;
-        //未开放房间类型
-        if (!GameUtil.IsOpenRoomType(room_type)) {
-            cc.log("未开放的房间类型:", room_type);
-            UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
-            return;
-        }
-        if (WebSocketClient.CheckOpen() || H5MsgMgr.Instance.handshakeDone) {
-            if (RoomType[room_type]) {
-                let response = await LobbySession.APIWebUserRoominsur(enter_room_info.rid).catch((e) => {
-                    console.log(e);
-                });
+    // /**
+    //  * 
+    //  * @param enter_room_info 
+    //  * @param delay 进入延迟时间
+    //  * @param fromUI 
+    //  * @returns 
+    //  */
+    // public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, enter_param: any = null) {
+    //     //, fromUIs?: UIDefineType[]) {
+    //     //注释掉  2023/3/20
+    //     // if (!GameCache.Instance.hasClub) {
+    //     //     UIComponent.Instance.ToastLanguage("error2005");
+    //     //     return;
+    //     // }
+    //     let room_type: number = enter_room_info.room_type;
+    //     //未开放房间类型
+    //     if (!GameUtil.IsOpenRoomType(room_type)) {
+    //         cc.log("未开放的房间类型:", room_type);
+    //         UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
+    //         return;
+    //     }
+    //     if (WebSocketClient.CheckOpen() || H5MsgMgr.Instance.handshakeDone) {
+    //         if (RoomType[room_type]) {
+    //             let response = await LobbySession.APIWebUserRoominsur(enter_room_info.rid).catch((e) => {
+    //                 console.log(e);
+    //             });
 
-                if (response) {
-                    //GC.data.lobby.roomList.selected = this._data;
+    //             if (response) {
+    //                 //GC.data.lobby.roomList.selected = this._data;
 
-                    GameCache.Instance.InitEnterRoomInfo(enter_room_info);
+    //                 GameCache.Instance.InitEnterRoomInfo(enter_room_info);
 
-                    ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enter_param);
-                    //{ fromUIs: fromUIs });
-                }
-            } else {
-                console.warn("房间类型未解析:", enter_room_info.room_type);
-                UIComponent.Instance.Toast(`room_type:${enter_room_info.room_type} is error`);
-            }
-        }
-    }
+    //                 ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enter_param);
+    //                 //{ fromUIs: fromUIs });
+    //             }
+    //         } else {
+    //             console.warn("房间类型未解析:", enter_room_info.room_type);
+    //             UIComponent.Instance.Toast(`room_type:${enter_room_info.room_type} is error`);
+    //         }
+    //     }
+    // }
 
     public static EnterMTTRoom(param: any = null) {
 

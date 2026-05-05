@@ -17,7 +17,7 @@ export class Sequence<T> {
     private _isPlaying: boolean = false;
 
 
-    private _mainTarget = null;
+    private _mainTarget: T = null;
 
     private _targets: any[] = [];
 
@@ -26,7 +26,7 @@ export class Sequence<T> {
     constructor(target: T) {
         this._tween = cc.tween(this._mainTarget = target);
     }
-    AddTarget(target) {
+    AddTarget(target:T) {
         if (!this._targets.includes(target)) this._targets.push(target);
     }
     AddChildComplete(cc: Function) {

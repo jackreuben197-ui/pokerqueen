@@ -48,15 +48,7 @@ export class StringHelper {
                 return `${million}M`;
             }
         }
-
-
-
-
-
     }
-
-
-
 
 
     static GetSignedLongString(num: number): string {
@@ -76,12 +68,18 @@ export class StringHelper {
     // static Format(str: string, replace: string = ""): string {
     //     return str.replace("{0}", replace);
     // }
-    static Format(str: string, replaces: string[] | number[]): string {
+    static FormatString(str: string, ...replaces:(string|number)[]): string {
         for (let i = 0; i < replaces.length; i++) {
             str = str.replace(`{${i}}`, `${replaces[i]}`);
         }
         return str;
+    }
 
+    static Format(str: string, replaces:(string|number)[]): string {
+        for (let i = 0; i < replaces.length; i++) {
+            str = str.replace(`{${i}}`, `${replaces[i]}`);
+        }
+        return str;
     }
 
     static Replace(str: string, replaces: string): string {

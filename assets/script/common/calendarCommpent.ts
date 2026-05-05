@@ -142,8 +142,8 @@ export default class calendarCommpent extends UIBase {
         this.dayContent.y = index * 130 + this._starOff;
         this.setOp(this.dayContent, index)
     }
-    initItem(node, num) {
-        node.getChildByName('num').getComponent(cc.Label).string = num
+    initItem(node:cc.Node, num:number) {
+        node.getChildByName('num').getComponent(cc.Label).string = String(num)
     }
     isLeapYear() {
         let date = new Date(this._selectYear, 1, 29);
@@ -166,8 +166,8 @@ export default class calendarCommpent extends UIBase {
         }
         return num
     }
-    setOp(node, _index) {
-        node.children.forEach((item: cc.Node, index) => {
+    setOp(node: cc.Node, _index: number) {
+        node.children.forEach((item: cc.Node, index: number) => {
             item.opacity = index == _index ? 255 : 150
         })
     }

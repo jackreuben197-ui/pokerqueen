@@ -3,7 +3,7 @@ import { ClubCache } from "../frame/data/club/ClubCache";
 import GC from "../frame/GameControl";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { UIMineModel } from "../lobby/UIMineModel";
+import { UIMineModel } from "../uimodel/UIMineModel";
 import { WebUserRoomBringin, WWW } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -158,7 +158,7 @@ export default class SeatUIRC extends UIBase {
     Text_BubbleInsuranceCountDown: cc.Label = null;
 
     ///////////////////////////////////
-    protected lateLoad(): void {
+    protected override lateLoad(): void {
         super.lateLoad();
         this.Head = this.getChildNodeOrComponent("Head");
 
@@ -334,7 +334,7 @@ export default class SeatUIRC extends UIBase {
         // this.voiceprintList.Add(VoiceprintVoting);
     }
 
-    protected update(dt: number): void {
+    protected override update(dt: number): void {
         //刷新带入申请中倒计时
 
         if (this.seat?.Player && this.seat.Player.KeepSeatLeftTime > 0) {
@@ -352,7 +352,7 @@ export default class SeatUIRC extends UIBase {
         }
     }
 
-    protected regiterTouchEvents(): void {
+    protected override regiterTouchEvents(): void {
         for (let i = 0; i < this.imageCards.length; i++) {
             this.setButtonClick(this.imageCards[i].imageCard, this.onClickCard);
         }
@@ -365,7 +365,7 @@ export default class SeatUIRC extends UIBase {
     }
 
     private onClickCancelReserveSeat(): void {
-        UIMineModel.mInstance.ObtainUserInfo((pDto) => {
+        UIMineModel.mInstance.ObtainUserInfo((pDto: any) => {
             UIMineModel.mInstance.UIRefreshGoldEvent(); //更新完金币ui
             this.ClickCancelReserveSeat();
         }); //更新用户金币数量
@@ -431,7 +431,7 @@ export default class SeatUIRC extends UIBase {
         }
     }
     onClickEmpty() {
-        UIMineModel.mInstance.ObtainUserInfo((pDto) => {
+        UIMineModel.mInstance.ObtainUserInfo((pDto: any) => {
             if (pDto.user.forbid_bring_in == 1) {
                 UIComponent.open<UIDialogParam>(UIDefine.UIDialogComponent, {
                     title: "",

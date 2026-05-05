@@ -226,7 +226,7 @@ export class GameCache {
     /// <summary>
     /// 是否是猎人赛
     /// </summary>
-    public mtt_Hunter_game = null;
+    public mtt_Hunter_game: boolean = false;
     /// <summary>
     /// 重购的级别, 0为关
     /// </summary>
@@ -375,7 +375,7 @@ export class GameCache {
     public NormalReturnProfitSwitch: number = 2;//返水
     public AndroidMTTEntranceMode: number = 2;//androidMTT开关 1 开 ，2 关
     public AndroidPayMode: number = 2;//android内购开关 1 开 ，2 关
-    public isTestflight = null;//苹果testflight（暂时） "IsAppStore"
+    //public isTestflight = null;//苹果testflight（暂时） "IsAppStore"
     //#endregion
     public FCMToken: string = null;
 
@@ -391,7 +391,7 @@ export class GameCache {
     public FriendsTableCode: string = null;//朋友桌邀请码
     public FriendsTableLimitBringIn: boolean = false;//朋友桌公会桌是否控制带入
 
-    public BringCheckRoomIdMap = {};
+    public BringCheckRoomIdMap:Record<number,boolean> = {};
 
 
     public anti_cheat_type: number = 0;//防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
@@ -722,15 +722,17 @@ export class GameCache {
     public _multiLanguage: any = null;
 
     //存储bb开关的状态 room_id || match_id
-    private bb_status_map = {};
+    private bb_status_map:Record<number, boolean> = {};
 
-    public curSelectWalletType;//当前选择钱包类别，1 基金，2 玩家钱包
+    public curSelectWalletType: number;//当前选择钱包类别，1 基金，2 玩家钱包
     /** 
      * 来自哪个俱乐部Id
      */
     public _fromClubId: number = 0;
 
 
+    //  isActiveLeaving 
+    public isActiveLeaving: boolean = false;
 
 
     public static get Instance(): GameCache {
@@ -742,8 +744,8 @@ export class GameCache {
             const value = cc.sys.localStorage.getItem("SecuritySettingRooms") || "";
             this.securitySettingRoomsPrivate = value
                 .split(",")
-                .map(v => Number(v))
-                .filter(v => Number.isFinite(v) && v > 0);
+                .map((v:string) => Number(v))
+                .filter((v:number) => Number.isFinite(v) && v > 0);
         }
         return this.securitySettingRoomsPrivate;
     }
@@ -772,103 +774,103 @@ export class GameCache {
         this.CurGame = GameUtil.InstantiateTexasGame(this.room_type);
     }
 
-    InitEnterRoomInfo(room_info: EnterRoomInfo) {
+    // InitEnterRoomInfo(room_info: EnterRoomInfo) {
 
 
-        console.log('GameCache -> InitEnterRoomInfo)');
+    //     console.log('GameCache -> InitEnterRoomInfo)');
 
-        const subConfigs = room_info.sub_configs || [];
-        const sub0 = (subConfigs && subConfigs.length > 0) ? subConfigs[0] : null;
-        const roomAdminAny = (room_info as any).room_admin ?? (room_info as any).roomAdmin ?? null;
-        const roomAdminFlag = roomAdminAny?.is_admin ?? roomAdminAny?.isAdmin;
-        const creatorRandomId = Number((room_info as any).creator_random_id ?? (room_info as any).creatorRandomId ?? 0);
-        const creatorId = Number((room_info as any).creator_id ?? (room_info as any).creatorId ?? 0);
+    //     const subConfigs = room_info.sub_configs || [];
+    //     const sub0 = (subConfigs && subConfigs.length > 0) ? subConfigs[0] : null;
+    //     const roomAdminAny = (room_info as any).room_admin ?? (room_info as any).roomAdmin ?? null;
+    //     const roomAdminFlag = roomAdminAny?.is_admin ?? roomAdminAny?.isAdmin;
+    //     const creatorRandomId = Number((room_info as any).creator_random_id ?? (room_info as any).creatorRandomId ?? 0);
+    //     const creatorId = Number((room_info as any).creator_id ?? (room_info as any).creatorId ?? 0);
 
-        GameCache.Instance.serviceId = room_info.service_id;
-        GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(room_info.name);
-        GameCache.Instance.room_squid_sub_base = sub0?.sqb || 0;
-        GameCache.Instance.room_squid_base =
-            (room_info.squid_base || 0) > 0 ? room_info.squid_base : GameCache.Instance.room_squid_sub_base;
-        GameCache.Instance.room_squid_mode = room_info.squid_mode || 0;
-        GameCache.Instance.room_squid_head = room_info.squid_head || 0;
-        GameCache.Instance.room_squid_tail = room_info.squid_tail || 0;
-        GameCache.Instance.room_squid_max = room_info.squid_max || 0;
-        GameCache.Instance.room_squid_on =
-            room_info.squid_on ?? ((GameCache.Instance.room_squid_base > 0 || GameCache.Instance.room_squid_sub_base > 0) ? 1 : 0);
-        GameCache.Instance.room_squid_open_number = sub0?.ppcl || room_info.squid_player_count || 2;
-        GameCache.Instance.room_squid_extra_count = Number(room_info.squid_extra_count || 0);
-        GameCache.Instance.room_squid_count_rate = (room_info.squid_count_rate || [])
-            .map((cfg: any) => ({ count: Number(cfg?.count || 0), rate: Number(cfg?.rate || 0) }))
-            .filter(cfg => cfg.count > 0 && cfg.rate > 0)
-            .sort((a, b) => a.count - b.count);
-        GameCache.Instance.room_mushroom_mode = room_info.mushroom_mode || 0;
-        GameCache.Instance.room_mushroom_base = room_info.mushroom_base || 0;
-        GameCache.Instance.room_critical_hit =
-            room_info.critical_hit ?? sub0?.critical_hit ?? sub0?.criticalHit ?? 0;
-        GameCache.Instance.room_critical_hit_round =
-            room_info.rounds ?? 0;
-        GameCache.Instance.room_critical_hit_ante =
-            sub0?.ante ?? sub0?.an ?? room_info.sub_game_play_ante ?? 0;
-        GameCache.Instance.room_call_time = Number(room_info.call_time || 0);
-        GameCache.Instance.room_call_time_winline = Number(room_info.call_time_winline || 0);
-        GameCache.Instance.room_call_time_count = Number(room_info.call_time_count || 0);
-        GameCache.Instance.room_view_player_cards = Number(room_info.view_player_cards ?? room_info.viewPlayerCards ?? 0);
-        const jackpotConfigRaw = room_info.jackpot_config ?? room_info.jackpotConfig ?? null;
-        if (typeof jackpotConfigRaw === "string") {
-            try {
-                GameCache.Instance.room_jackpot_config = JSON.parse(jackpotConfigRaw);
-            } catch {
-                GameCache.Instance.room_jackpot_config = null;
-            }
-        } else {
-            GameCache.Instance.room_jackpot_config = jackpotConfigRaw || null;
-        }
-        GameCache.Instance.jackPot_on = Number(room_info.jackpot || 0);
-        GameCache.Instance.jackPot_id = Number(room_info.jackpot_id ?? room_info.jackpotId ?? 0);
-        GameCache.Instance.jackPot_gold = Number(room_info.jackpot_gold ?? room_info.jackpotGold ?? 0);
-        GameCache.Instance.jackPot_parent_gold = Number(
-            room_info.jackpot_parent_gold
-            ?? room_info.jackpotParentGold
-            ?? GameCache.Instance.jackPot_gold
-            ?? 0
-        );
-        GameCache.Instance.jackPot_fund = GameCache.Instance.jackPot_parent_gold;
-        GameCache.Instance.room_random_seat = Number(room_info.random_seat || 0);
-        GameCache.Instance.room_seated_messaging = Number(room_info.seated_messaging || 0);
-        GameCache.Instance.room_min_players = Number((room_info as any).min_players ?? (room_info as any).minPlayers ?? 0);
-        GameCache.Instance.room_autostart_min_players = Number((room_info as any).autostart_min_players ?? (room_info as any).autostartMinPlayers ?? 0);
-        if (roomAdminFlag !== undefined && roomAdminFlag !== null) {
-            GameCache.Instance.room_is_manager = roomAdminFlag === true || Number(roomAdminFlag) === 1;
-        } else {
-            GameCache.Instance.room_is_manager =
-                (creatorRandomId > 0 && creatorRandomId === Number(GameCache.Instance.nUserId || 0)) ||
-                (creatorId > 0 && creatorId === Number(GameCache.Instance.userId || 0));
-        }
-        GameCache.Instance._enterRoomType = room_info.room_type;
-        GameCache.Instance.room_type = room_info.room_type;
-        GameCache.Instance.game_type = room_info.game_type;
-        GameCache.Instance.poker_type = room_info.poker_type;
-        GameCache.Instance.bet_type = room_info.limit_bet_type;
-        GameCache.Instance.room_id = room_info.rid;
-        GameCache.Instance.seat_count = room_info.seat_count;
-        GameCache.Instance.straddle = room_info.straddle_on;
-        GameCache.Instance.insurance = room_info.insurance_on > 0;
-        GameCache.Instance.muck_switch = room_info.muck_on;
-        GameCache.Instance.voiceprint_verify_on = room_info.voiceprint_verify_on;
-        GameCache.Instance.voiceprint_verify_duration = room_info.voiceprint_verify_duration;
-        GameCache.Instance.origin_type = room_info.origin_type || 0;
-        GameCache.Instance.share_table = room_info.share_table || 0;
-        //GameCache.Instance.limit_bring_in = room_info.limit_bring_in || 0
-        //GameCache.Instance.invitation_code = room_info.invitation_code;
-        GameCache.Instance.gold_type = room_info.gold_type || 0;
-        GameCache.Instance.anti_cheat_type = room_info.anti_cheat_type || 0;
+    //     GameCache.Instance.serviceId = room_info.service_id;
+    //     GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(room_info.name);
+    //     GameCache.Instance.room_squid_sub_base = sub0?.sqb || 0;
+    //     GameCache.Instance.room_squid_base =
+    //         (room_info.squid_base || 0) > 0 ? room_info.squid_base : GameCache.Instance.room_squid_sub_base;
+    //     GameCache.Instance.room_squid_mode = room_info.squid_mode || 0;
+    //     GameCache.Instance.room_squid_head = room_info.squid_head || 0;
+    //     GameCache.Instance.room_squid_tail = room_info.squid_tail || 0;
+    //     GameCache.Instance.room_squid_max = room_info.squid_max || 0;
+    //     GameCache.Instance.room_squid_on =
+    //         room_info.squid_on ?? ((GameCache.Instance.room_squid_base > 0 || GameCache.Instance.room_squid_sub_base > 0) ? 1 : 0);
+    //     GameCache.Instance.room_squid_open_number = sub0?.ppcl || room_info.squid_player_count || 2;
+    //     GameCache.Instance.room_squid_extra_count = Number(room_info.squid_extra_count || 0);
+    //     GameCache.Instance.room_squid_count_rate = (room_info.squid_count_rate || [])
+    //         .map((cfg: any) => ({ count: Number(cfg?.count || 0), rate: Number(cfg?.rate || 0) }))
+    //         .filter(cfg => cfg.count > 0 && cfg.rate > 0)
+    //         .sort((a, b) => a.count - b.count);
+    //     GameCache.Instance.room_mushroom_mode = room_info.mushroom_mode || 0;
+    //     GameCache.Instance.room_mushroom_base = room_info.mushroom_base || 0;
+    //     GameCache.Instance.room_critical_hit =
+    //         room_info.critical_hit ?? sub0?.critical_hit ?? sub0?.criticalHit ?? 0;
+    //     GameCache.Instance.room_critical_hit_round =
+    //         room_info.rounds ?? 0;
+    //     GameCache.Instance.room_critical_hit_ante =
+    //         sub0?.ante ?? sub0?.an ?? room_info.sub_game_play_ante ?? 0;
+    //     GameCache.Instance.room_call_time = Number(room_info.call_time || 0);
+    //     GameCache.Instance.room_call_time_winline = Number(room_info.call_time_winline || 0);
+    //     GameCache.Instance.room_call_time_count = Number(room_info.call_time_count || 0);
+    //     GameCache.Instance.room_view_player_cards = Number(room_info.view_player_cards ?? room_info.viewPlayerCards ?? 0);
+    //     const jackpotConfigRaw = room_info.jackpot_config ?? room_info.jackpotConfig ?? null;
+    //     if (typeof jackpotConfigRaw === "string") {
+    //         try {
+    //             GameCache.Instance.room_jackpot_config = JSON.parse(jackpotConfigRaw);
+    //         } catch {
+    //             GameCache.Instance.room_jackpot_config = null;
+    //         }
+    //     } else {
+    //         GameCache.Instance.room_jackpot_config = jackpotConfigRaw || null;
+    //     }
+    //     GameCache.Instance.jackPot_on = Number(room_info.jackpot || 0);
+    //     GameCache.Instance.jackPot_id = Number(room_info.jackpot_id ?? room_info.jackpotId ?? 0);
+    //     GameCache.Instance.jackPot_gold = Number(room_info.jackpot_gold ?? room_info.jackpotGold ?? 0);
+    //     GameCache.Instance.jackPot_parent_gold = Number(
+    //         room_info.jackpot_parent_gold
+    //         ?? room_info.jackpotParentGold
+    //         ?? GameCache.Instance.jackPot_gold
+    //         ?? 0
+    //     );
+    //     GameCache.Instance.jackPot_fund = GameCache.Instance.jackPot_parent_gold;
+    //     GameCache.Instance.room_random_seat = Number(room_info.random_seat || 0);
+    //     GameCache.Instance.room_seated_messaging = Number(room_info.seated_messaging || 0);
+    //     GameCache.Instance.room_min_players = Number((room_info as any).min_players ?? (room_info as any).minPlayers ?? 0);
+    //     GameCache.Instance.room_autostart_min_players = Number((room_info as any).autostart_min_players ?? (room_info as any).autostartMinPlayers ?? 0);
+    //     if (roomAdminFlag !== undefined && roomAdminFlag !== null) {
+    //         GameCache.Instance.room_is_manager = roomAdminFlag === true || Number(roomAdminFlag) === 1;
+    //     } else {
+    //         GameCache.Instance.room_is_manager =
+    //             (creatorRandomId > 0 && creatorRandomId === Number(GameCache.Instance.nUserId || 0)) ||
+    //             (creatorId > 0 && creatorId === Number(GameCache.Instance.userId || 0));
+    //     }
+    //     GameCache.Instance._enterRoomType = room_info.room_type;
+    //     GameCache.Instance.room_type = room_info.room_type;
+    //     GameCache.Instance.game_type = room_info.game_type;
+    //     GameCache.Instance.poker_type = room_info.poker_type;
+    //     GameCache.Instance.bet_type = room_info.limit_bet_type;
+    //     GameCache.Instance.room_id = room_info.rid;
+    //     GameCache.Instance.seat_count = room_info.seat_count;
+    //     GameCache.Instance.straddle = room_info.straddle_on;
+    //     GameCache.Instance.insurance = room_info.insurance_on > 0;
+    //     GameCache.Instance.muck_switch = room_info.muck_on;
+    //     GameCache.Instance.voiceprint_verify_on = room_info.voiceprint_verify_on;
+    //     GameCache.Instance.voiceprint_verify_duration = room_info.voiceprint_verify_duration;
+    //     GameCache.Instance.origin_type = room_info.origin_type || 0;
+    //     GameCache.Instance.share_table = room_info.share_table || 0;
+    //     //GameCache.Instance.limit_bring_in = room_info.limit_bring_in || 0
+    //     //GameCache.Instance.invitation_code = room_info.invitation_code;
+    //     GameCache.Instance.gold_type = room_info.gold_type || 0;
+    //     GameCache.Instance.anti_cheat_type = room_info.anti_cheat_type || 0;
 
-        GameCache.Instance.FriendsTableCode = room_info.invitation_code;
-        GameCache.Instance.FriendsTableLimitBringIn = room_info.limit_bring_in > 0;
+    //     GameCache.Instance.FriendsTableCode = room_info.invitation_code;
+    //     GameCache.Instance.FriendsTableLimitBringIn = room_info.limit_bring_in > 0;
 
-        GameCache.Instance.ClubID = room_info.club_id;
-        GameCache.Instance.TribeId = room_info.tribe_id;
-    }
+    //     GameCache.Instance.ClubID = room_info.club_id;
+    //     GameCache.Instance.TribeId = room_info.tribe_id;
+    // }
 
     //获取bb开关
     get bb_on() {
@@ -883,69 +885,69 @@ export class GameCache {
 
 
 }
-export interface EnterRoomInfo {
-    service_id?;
-    name?;
-    room_type?;
-    game_type?;
-    poker_type?;
-    limit_bet_type?;
-    rid?;
-    seat_count?;
-    straddle_on?;
-    insurance_on?;
-    muck_on?;
-    voiceprint_verify_on?;
-    voiceprint_verify_duration?;
-    origin_type?;
-    limit_bring_in?;
-    invitation_code?;
-    share_table?;
-    gold_type?;
-    anti_cheat_type?;
-    club_id?;
-    tribe_id?;
-    squid_on?;
-    squid_base?;
-    squid_mode?;
-    squid_head?;
-    squid_tail?;
-    squid_max?;
-    squid_extra_count?;
-    squid_count_rate?: { count?: number, rate?: number }[];
-    mushroom_mode?;
-    mushroom_base?;
-    critical_hit?;
-    call_time?;
-    call_time_winline?;
-    call_time_count?;
-    view_player_cards?;
-    viewPlayerCards?;
-    jackpot_config?;
-    jackpotConfig?;
-    random_seat?;
-    seated_messaging?;
-    min_players?;
-    minPlayers?;
-    autostart_min_players?;
-    autostartMinPlayers?;
-    room_admin?: { is_admin?: number | boolean };
-    roomAdmin?: { isAdmin?: number | boolean };
-    creator_random_id?;
-    creatorRandomId?;
-    creator_id?;
-    creatorId?;
-    sub_game_play_ante?;
-    rounds?;
-    sub_configs?;
-    squid_player_count?;
-    jackpot?;
-    jackpot_id?;
-    jackpotId?;
-    jackpot_gold?;
-    jackpotGold?;
-    jackpot_parent_gold?;
-    jackpotParentGold?;
+// export interface EnterRoomInfo {
+//     service_id?;
+//     name?;
+//     room_type?;
+//     game_type?;
+//     poker_type?;
+//     limit_bet_type?;
+//     rid?;
+//     seat_count?;
+//     straddle_on?;
+//     insurance_on?;
+//     muck_on?;
+//     voiceprint_verify_on?;
+//     voiceprint_verify_duration?;
+//     origin_type?;
+//     limit_bring_in?;
+//     invitation_code?;
+//     share_table?;
+//     gold_type?;
+//     anti_cheat_type?;
+//     club_id?;
+//     tribe_id?;
+//     squid_on?;
+//     squid_base?;
+//     squid_mode?;
+//     squid_head?;
+//     squid_tail?;
+//     squid_max?;
+//     squid_extra_count?;
+//     squid_count_rate?: { count?: number, rate?: number }[];
+//     mushroom_mode?;
+//     mushroom_base?;
+//     critical_hit?;
+//     call_time?;
+//     call_time_winline?;
+//     call_time_count?;
+//     view_player_cards?;
+//     viewPlayerCards?;
+//     jackpot_config?;
+//     jackpotConfig?;
+//     random_seat?;
+//     seated_messaging?;
+//     min_players?;
+//     minPlayers?;
+//     autostart_min_players?;
+//     autostartMinPlayers?;
+//     room_admin?: { is_admin?: number | boolean };
+//     roomAdmin?: { isAdmin?: number | boolean };
+//     creator_random_id?;
+//     creatorRandomId?;
+//     creator_id?;
+//     creatorId?;
+//     sub_game_play_ante?;
+//     rounds?;
+//     sub_configs?;
+//     squid_player_count?;
+//     jackpot?;
+//     jackpot_id?;
+//     jackpotId?;
+//     jackpot_gold?;
+//     jackpotGold?;
+//     jackpot_parent_gold?;
+//     jackpotParentGold?;
 
-}
+// }
 (window as any).GameCache = GameCache;

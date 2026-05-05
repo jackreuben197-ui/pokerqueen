@@ -2,7 +2,7 @@ import ComTabToggles, { ETabToggle } from "../../common/ComTabToggles";
 import List from "../../common/List";
 import TabNode from "../../common/tabNode";
 import { EMttRealTimeTabType } from "../../config/EEnumConfig";
-import { mttRealTimeTabConfig } from "../../frame/config/tabConfig";
+// import { mttRealTimeTabConfig } from "../../frame/config/tabConfig";
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import TimeHelper from "../../helper/TimeHelper";
@@ -14,6 +14,8 @@ import MttRealTimeBlindsNode from "./MttRealTimeBlindsNode";
 import MttRealTimeRankItem from "./MttRealTimeRankItem";
 import MttRealTimeRewardNode from "./MttRealTimeRewardNode";
 import MttRealTimeTablesNode from "./MttRealTimeTablesNode";
+
+const mttRealTimeTabConfig =  { data: ["UITexasReport_Label_AllBarSK", "UITexasReport_Label_AllBarPZ", "UITexasReport_Label_AllBarJL", "UITexasReport_Label_AllBarMZ"], defaultIndex: 0, defaultWidth: 1060, defaultHeight: 133 }
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -100,45 +102,45 @@ export default class MttRealTime extends UIBase {
     // }
 
     onShow(param: any, fromUI: any): void {
-        super.onShow(param, fromUI);
-        this.unscheduleAllCallbacks();
-        this._tabViewInitStatus.clear();
+        // super.onShow(param, fromUI);
+        // this.unscheduleAllCallbacks();
+        // this._tabViewInitStatus.clear();
 
-        GC.data.mtt.realTime.reqRankList();
-        this.tabNode.initData(mttRealTimeTabConfig, this.onToggle, this)
-        this.pageNum.string = `${GC.data.mtt.realTime.curPage + 1}/${GC.data.mtt.realTime.totlePage + 1}`
-        this.initRoomTime();
+        // GC.data.mtt.realTime.reqRankList();
+        // this.tabNode.initData(mttRealTimeTabConfig, this.onToggle, this)
+        // this.pageNum.string = `${GC.data.mtt.realTime.curPage + 1}/${GC.data.mtt.realTime.totlePage + 1}`
+        // this.initRoomTime();
     }
 
-    onToggle = (index: number) => {
-        this._tabViewParents.forEach((node, t) => {
-            this.setActive(node, index == t);
-        })
+    // onToggle = (index: number) => {
+    //     this._tabViewParents.forEach((node, t) => {
+    //         this.setActive(node, index == t);
+    //     })
 
-        let item = this._tabVievs.get(index);
-        if (!item && !this._tabViewLoadStatus.get(index)) {
-            this._tabViewLoadStatus.set(index, true);
+    //     let item = this._tabVievs.get(index);
+    //     if (!item && !this._tabViewLoadStatus.get(index)) {
+    //         this._tabViewLoadStatus.set(index, true);
 
-            this.loadPrefab([
-                "main/mtt/realTime/MttRealTimeActionNode",
-                "main/mtt/realTime/MttRealTimeTablesNode",
-                "main/mtt/realTime/MttRealTimeRewardNode",
-                "main/mtt/realTime/MttRealTimeBlindsNode",
-            ][index], node => {
-                this._tabViewLoadStatus.set(index, false);
-                let scprpt = [MttRealTimeActionNode, MttRealTimeTablesNode, MttRealTimeRewardNode, MttRealTimeBlindsNode][index];
-                item = node.getComponent(scprpt);
-                this._tabVievs.set(index, item);
-                node.parent = this._tabViewParents.get(index);
-                if (!this._tabViewInitStatus.get(index)) {
-                    item?.initData();
-                }
-            })
-        } else if (!this._tabViewInitStatus.get(index)) {
-            item?.initData();
+    //         this.loadPrefab([
+    //             "main/mtt/realTime/MttRealTimeActionNode",
+    //             "main/mtt/realTime/MttRealTimeTablesNode",
+    //             "main/mtt/realTime/MttRealTimeRewardNode",
+    //             "main/mtt/realTime/MttRealTimeBlindsNode",
+    //         ][index], node => {
+    //             this._tabViewLoadStatus.set(index, false);
+    //             let scprpt = [MttRealTimeActionNode, MttRealTimeTablesNode, MttRealTimeRewardNode, MttRealTimeBlindsNode][index];
+    //             item = node.getComponent(scprpt);
+    //             this._tabVievs.set(index, item);
+    //             node.parent = this._tabViewParents.get(index);
+    //             if (!this._tabViewInitStatus.get(index)) {
+    //                 item?.initData();
+    //             }
+    //         })
+    //     } else if (!this._tabViewInitStatus.get(index)) {
+    //         item?.initData();
 
-        }
-    }
+    //     }
+    // }
     initRoomTime() {
         GC.data.mtt.list.list.forEach(item => {
             if (item.match_id == GameCache.Instance.match_id) {

@@ -24,7 +24,6 @@ export default class WebImageHelper {
         }
         else {
             rawImage.spriteFrame = defaultImage || AssetContext.getAsset("default_avatar_r");
-
             if (url == null || url == "" || url == "-1" || ~url.indexOf("awanptesting.com")) return;
 
             cc.assetManager.loadRemote(url, { ext: '.png' }, (err, asset: cc.Texture2D) => {
@@ -32,7 +31,6 @@ export default class WebImageHelper {
                 // 设置packable为false,用于防止图片被打包
                 asset.packable = false;
                 if (err) {
-
                 } else {
                     let spriteframe = new cc.SpriteFrame(asset);
                     rawImage.spriteFrame = spriteframe;

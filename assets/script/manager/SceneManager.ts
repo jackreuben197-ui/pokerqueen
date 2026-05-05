@@ -10,7 +10,7 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class SceneManager {
 
-    uiMap = {};
+    sceneMap = new Map<string, cc.Node>();
     currUI: cc.Node = null;
 
     //加载的UI层级
@@ -23,7 +23,7 @@ export default class SceneManager {
     }
     constructor() {
         this.UILayer = Main.Scene;
-        this.CacheUILayer = Main.Cache_UI;
+        this.CacheUILayer = Main.CacheUI;
     }
 
     /**
@@ -31,40 +31,24 @@ export default class SceneManager {
      * currExitParams 当前场景退出的参数
      * newEnterParams 新场景进入的参数
      */
-    switchScene<T>(uiDefine: { Bundle: string, Path: string }, currExitParams: any = null, newEnterParams: T = null) {
-
-        let bundleName = uiDefine.Bundle + uiDefine.Path;
-
-        let newUI = this.uiMap[bundleName];
-
+    async switchScene<T>(scene: IUIDefine, currExitParams: any = null, newEnterParams: T = null):Promise<void>{
+        let sceneKey = scene.Bundle + scene.Path;
+        let newUI = this.sceneMap.get(sceneKey);
         if (newUI) {
-
             this._doScene(newUI, currExitParams, newEnterParams);
-
-        } else {
-
-            let r_assset = ResManager.LoadAsset(uiDefine.Bundle, uiDefine.Path);
-
-            if (r_assset) {
-                newUI = cc.instantiate(r_assset);
-                this._doScene(newUI, currExitParams, newEnterParams);
-                this.uiMap[bundleName] = newUI;
-            } else {
-                ResManager.Load(uiDefine.Bundle, uiDefine.Path, cc.Prefab, (err, asset: cc.Prefab) => {
-                    if (err) {
-                        console.log("加载场景", uiDefine.Bundle, uiDefine.Path, "发生错误", err);
-                        return;
-                    }
-                    newUI = cc.instantiate(asset);
-                    this._doScene(newUI, currExitParams, newEnterParams);
-                    this.uiMap[bundleName] = newUI;
-                });
-            }
-
+            return;
         }
+        try {
+            const asset = await ResManager.GetOrLoad<cc.Prefab>(scene.Bundle, scene.Path);
+            newUI = cc.instantiate(asset);
+            this.sceneMap.set(sceneKey, newUI);
+            this._doScene(newUI, currExitParams, newEnterParams);
+        }catch(e){
+             console.log('switchScene, GetOrLoad error', e)
+        };
     }
-    private _doScene(newUI: cc.Node, currExitParams: any = null, newEnterParams: any = null) {
 
+    private _doScene(newUI: cc.Node, currExitParams: any = null, newEnterParams: any = null) {
         if (this.currUI) {
             this.currUI.parent = this.CacheUILayer;
             this.currUI.getComponent(BaseScene)?.Exit(currExitParams);
@@ -80,7 +64,7 @@ export default class SceneManager {
     //移除场景记录
     public removeScene(uiDefine: { Bundle: string, Path: string }) {
         let bundleName = uiDefine.Bundle + uiDefine.Path;
-        this.uiMap[bundleName] = null;
+        this.sceneMap.delete(bundleName);
     }
 
     /**

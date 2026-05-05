@@ -11,7 +11,7 @@ import AgoraManager from "./net/agora/AgoraManager";
 import H5MsgMgr from "./H5MsgMgr";
 import LobbyRoomListItem from "./frame/data/lobby/LobbyRoomListItem";
 import ProcedureManager from "./manager/ProcedureManager";
-import { ResManager, Bundle_Resources } from "./manager/ResManager";
+import { ResManager, BUNDLE_RESOURCES } from "./manager/ResManager";
 import CCTools from "./tools/CCTools";
 import TelegramUtils from "./tools/TelegramUtils";
 import { ProcedureEnum } from "./define/EIDefine";
@@ -191,7 +191,7 @@ function loadSoundResources(): void {
             _soundLoaded = false;
             return;
         }
-        ResManager.AssetForeach(assets, Bundle_Resources);
+        ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
         console.log('[H5Bridge] 声音资源加载完成, 共', assets.length, '个资源');
     });
 }
@@ -212,7 +212,7 @@ function loadGameResources(): void {
             _gameResLoaded = false;
             return;
         }
-        ResManager.AssetForeach(assets, Bundle_Resources);
+        ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
         console.log('[H5Bridge] 游戏资源加载完成, 共', assets.length, '个资源');
     });
 }
@@ -267,8 +267,6 @@ export async function registerH5Listeners(): Promise<void> {
 
         // === 4. 设置 Token（WS 由 H5 层代理，CC 层不直接连接） ===
         LoginSession.Token = token;
-
-        console.log('roomData ${roomData}', roomData);
 
         // === 5. 填充 GameCache（从缓存房间数据） ===
         const gc = GameCache.Instance;
@@ -377,44 +375,44 @@ export async function registerH5Listeners(): Promise<void> {
     // });
 
     // 监听服务器推送的房间变更通知（code 140），实时更新缓存
-    GC.notify.register(
-        ProtocolCode.Protocol_Holdem_RoomChangeNotify,
-        (rec: { room?: any; changeType: number; roomChange?: any }) => {
-            if (!rec || !rec.room) return;
+    // GC.notify.register(
+    //     ProtocolCode.Protocol_Holdem_RoomChangeNotify,
+    //     (rec: { room?: any; changeType: number; roomChange?: any }) => {
+    //         if (!rec || !rec.room) return;
 
-            const roomListModel = GC.data.lobby.roomList;
-            const list = (roomListModel as any)._list as LobbyRoomListItem[];
-            if (!list) return;
+    //         const roomListModel = GC.data.lobby.roomList;
+    //         const list = (roomListModel as any)._list as LobbyRoomListItem[];
+    //         if (!list) return;
 
-            const rid = rec.room.rid;
-            const existIndex = list.findIndex((r) => r.rid === rid);
+    //         const rid = rec.room.rid;
+    //         const existIndex = list.findIndex((r) => r.rid === rid);
 
-            if (rec.changeType === 1) {
-                // 新增房间
-                if (existIndex === -1) {
-                    list.push(new LobbyRoomListItem(rec.room));
-                    console.log('[H5Bridge] RoomChangeNotify 新增房间:', rid);
-                }
-            } else if (rec.changeType === 2) {
-                // 更新房间
-                if (rec.room.status === 5) {
-                    // 房间已结束，从缓存中移除
-                    if (existIndex !== -1) {
-                        list.splice(existIndex, 1);
-                        console.log('[H5Bridge] RoomChangeNotify 房间已结束，移除:', rid);
-                    }
-                } else if (existIndex !== -1) {
-                    list[existIndex] = new LobbyRoomListItem(rec.room);
-                    console.log('[H5Bridge] RoomChangeNotify 更新房间:', rid);
-                } else {
-                    // 缓存中不存在，按新增处理
-                    list.push(new LobbyRoomListItem(rec.room));
-                    console.log('[H5Bridge] RoomChangeNotify 更新时缓存未命中，已补入:', rid);
-                }
-            }
-        },
-        null,
-    );
+    //         if (rec.changeType === 1) {
+    //             // 新增房间
+    //             if (existIndex === -1) {
+    //                 list.push(new LobbyRoomListItem(rec.room));
+    //                 console.log('[H5Bridge] RoomChangeNotify 新增房间:', rid);
+    //             }
+    //         } else if (rec.changeType === 2) {
+    //             // 更新房间
+    //             if (rec.room.status === 5) {
+    //                 // 房间已结束，从缓存中移除
+    //                 if (existIndex !== -1) {
+    //                     list.splice(existIndex, 1);
+    //                     console.log('[H5Bridge] RoomChangeNotify 房间已结束，移除:', rid);
+    //                 }
+    //             } else if (existIndex !== -1) {
+    //                 list[existIndex] = new LobbyRoomListItem(rec.room);
+    //                 console.log('[H5Bridge] RoomChangeNotify 更新房间:', rid);
+    //             } else {
+    //                 // 缓存中不存在，按新增处理
+    //                 list.push(new LobbyRoomListItem(rec.room));
+    //                 console.log('[H5Bridge] RoomChangeNotify 更新时缓存未命中，已补入:', rid);
+    //             }
+    //         }
+    //     },
+    //     null,
+    // );
 
 
     /**

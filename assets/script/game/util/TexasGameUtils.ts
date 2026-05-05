@@ -49,7 +49,7 @@ export default class TexasGameUtils {
             GameCache.Instance.match_id = UIMTTModel.Instance.MttInfo.mtt.match_id;
             GameCache.Instance.seat_count = UIMTTModel.Instance.MttInfo.mtt.seat_count;
             GameCache.Instance.mtt_Hunter_game = UIMTTModel.Instance.MttInfo.mtt.hunter_on > 0;
-            GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(UIMTTModel.Instance.MttInfo.mtt.name);
+            // GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(UIMTTModel.Instance.MttInfo.mtt.name);
             matchId = GameCache.Instance.match_id;
             roomId = GameCache.Instance.room_id;
             mttPartialBringIn = UIMTTModel.Instance.PartialBringIn;
@@ -78,6 +78,7 @@ export default class TexasGameUtils {
      */
     public LeaveRoom() {
         if (H5MsgMgr.Instance.handshakeDone || WebSocketClient.CheckOpen(true)) {
+            GameCache.Instance.isActiveLeaving = true;
             ProtocolAgency.Send<ClientMessageLeave.AsObject>({
                 Code: ProtocolCode.Protocol_Holdem_Leave,
                 RoomID: GameCache.Instance.room_id,
@@ -272,7 +273,7 @@ export default class TexasGameUtils {
         // UIComponent.Instance.Remove(UIType.UITexasHumanYZ);
         // UIComponent.Instance.Remove(UIType.UIAgreeSecondPcs);
 
-        ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { mode: 1, game_enter_type: GameCache.Instance.enter_param.game_enter_type });
+        //ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { mode: 1, game_enter_type: GameCache.Instance.enter_param.game_enter_type });
         //#region 关键属性最后置空
         GameCache.Instance.CurrentRoomID = 0;
         GameCache.Instance.room_id = 0;
@@ -291,7 +292,7 @@ export default class TexasGameUtils {
 
         // GameCache.Instance.share_table = 0;
         // GameCache.Instance.limit_bring_in = 0
-
+        GameCache.Instance.isActiveLeaving = false;
         //#endregion
         
         // 通知 H5 层恢复显示

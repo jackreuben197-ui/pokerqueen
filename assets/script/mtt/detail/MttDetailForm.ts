@@ -9,8 +9,8 @@ import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { LobbyControl } from "../../lobby/control/LobbyControl";
-import { UIMineModel } from "../../lobby/UIMineModel";
+import { LobbyControl } from "../../uimodel/LobbyControl";
+import { UIMineModel } from "../../uimodel/UIMineModel";
 import HttpRequest from "../../net/https/HttpRequest";
 import { WebRoomCenterMttDetailS, WebRoomCenterMttHranks, WebRoomCenterMttMyawArd, WebRoomCenterMttRanks, WebRoomCenterMttRealPrize, WebRoomCenterMttRooms } from "../../net/https/WebRequest";
 import { MTTJoinAction, UIMTTModel } from "../../new_mtt/UIMTTModel";
@@ -71,13 +71,13 @@ export default class MttDetailForm extends BaseForm {
         this.panel_dialog = this.getChildNodeOrComponent("panel_dialog");
         let panel_root: cc.Node = this.getChildNodeOrComponent("panel_root");
         this.panel_dialog.active = false;
-        this.loadPrefab(UIDefine.UIMttSignDialogComponent.Path, (node: cc.Node) => {
-            node.parent = panel_root;
-            let baseScript = node.getComponent(UIMttSignDialogComponent);
-            this.panel_dialog2 = baseScript;
-            baseScript.onShow();
-            this.panel_dialog2.setVisible(false);
-        })
+        // this.loadPrefab(UIDefine.UIMttSignDialogComponent.Path, (node: cc.Node) => {
+        //     node.parent = panel_root;
+        //     let baseScript = node.getComponent(UIMttSignDialogComponent);
+        //     this.panel_dialog2 = baseScript;
+        //     baseScript.onShow();
+        //     this.panel_dialog2.setVisible(false);
+        // })
 
         let btn_addMtt: cc.Node = this.getChildNodeOrComponent("btn_addMtt");
         btn_addMtt.on(cc.Node.EventType.TOUCH_END, this.OnClickSignBtn, this);

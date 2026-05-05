@@ -15,20 +15,20 @@ export default class DataManager {
         return DataManager._instance;
     }
 
-    lobby: LobbyData = null;
+    // lobby: LobbyData = null;
     user: UserInfoData = null;
-    wallet: WalletData = null;
-    languageTemp: LanguageTemplateData = null;
-    rate: RateData = null;
-    mtt: MttData = null;
-    club: ClubData = null;
+    // wallet: WalletData = null;
+    // languageTemp: LanguageTemplateData = null;
+    // rate: RateData = null;
+    // mtt: MttData = null;
+    // club: ClubData = null;
     init() {
-        this.lobby = new LobbyData();
+        // this.lobby = new LobbyData();
         this.user = new UserInfoData();
-        this.wallet = new WalletData();
-        this.languageTemp = new LanguageTemplateData();
-        this.rate = new RateData();
-        this.mtt = new MttData();
-        this.club = new ClubData();
+        // this.wallet = new WalletData();
+        // this.languageTemp = new LanguageTemplateData();
+        // this.rate = new RateData();
+        // this.mtt = new MttData();
+        // this.club = new ClubData();
     }
 }

@@ -18,41 +18,41 @@ export default class TexasSMAgency {
 
         if (!this.GameSMStates) {
 
-            this.GameSMStates = new Map<TexasGameState, any>();
+            this.GameSMStates = new Map<TexasGameState, StateHandler>();
 
-            this.GameSMStates[TexasGameState.NetworkException] = new TexasGameStateHandlerNetworkException;
+            this.GameSMStates.set(TexasGameState.NetworkException, new TexasGameStateHandlerNetworkException);
 
-            this.GameSMStates[TexasGameState.Launch] = new TexasGameStateHandlerLaunch;
+            this.GameSMStates.set(TexasGameState.Launch, new TexasGameStateHandlerLaunch);
 
-            this.GameSMStates[TexasGameState.Init] = new TexasGameStateHandlerInit;
+            this.GameSMStates.set(TexasGameState.Init, new TexasGameStateHandlerInit);
 
-            this.GameSMStates[TexasGameState.Exit] = new TexasGameStateHandlerExit;
+            this.GameSMStates.set(TexasGameState.Exit, new TexasGameStateHandlerExit);
 
-            this.GameSMStates[TexasGameState.ExchangeRoom] = new TexasGameStateHandlerExchangeRoom;
+            this.GameSMStates.set(TexasGameState.ExchangeRoom, new TexasGameStateHandlerExchangeRoom);
 
-            this.GameSMStates[TexasGameState.NotStart] = new TexasGameStateHandlerNotStart;
+            this.GameSMStates.set(TexasGameState.NotStart, new TexasGameStateHandlerNotStart);
 
-            this.GameSMStates[TexasGameState.WaitHandStart] = new TexasGameStateHandlerWaitHandStart;
+            this.GameSMStates.set(TexasGameState.WaitHandStart, new TexasGameStateHandlerWaitHandStart);
 
-            this.GameSMStates[TexasGameState.HandStarted] = new TexasGameStateHandlerHandStarted;
+            this.GameSMStates.set(TexasGameState.HandStarted, new TexasGameStateHandlerHandStarted);
 
-            this.GameSMStates[TexasGameState.HandPreflop] = new TexasGameStateHandlerHandPreflop;
+            this.GameSMStates.set(TexasGameState.HandPreflop, new TexasGameStateHandlerHandPreflop);
 
-            this.GameSMStates[TexasGameState.HandFlop] = new TexasGameStateHandlerHandFlop;
+            this.GameSMStates.set(TexasGameState.HandFlop, new TexasGameStateHandlerHandFlop);
 
-            this.GameSMStates[TexasGameState.HandTurn] = new TexasGameStateHandlerHandTurn;
+            this.GameSMStates.set(TexasGameState.HandTurn, new TexasGameStateHandlerHandTurn);
 
-            this.GameSMStates[TexasGameState.HandRiver] = new TexasGameStateHandlerHandRiver;
+            this.GameSMStates.set(TexasGameState.HandRiver, new TexasGameStateHandlerHandRiver);
 
-            this.GameSMStates[TexasGameState.HandShowdown] = new TexasGameStateHandlerHandShowdown;
+            this.GameSMStates.set(TexasGameState.HandShowdown, new TexasGameStateHandlerHandShowdown);
 
-            this.GameSMStates[TexasGameState.HandEnd] = new TexasGameStateHandlerHandEnd;
+            this.GameSMStates.set(TexasGameState.HandEnd, new TexasGameStateHandlerHandEnd);
 
-            this.GameSMStates[TexasGameState.Complete] = new TexasGameStateHandlerComplete;
+            this.GameSMStates.set(TexasGameState.Complete, new TexasGameStateHandlerComplete);
 
-            this.GameSMStates[TexasGameState.Cancel] = new TexasGameStateHandlerCancel;
+            this.GameSMStates.set(TexasGameState.Cancel, new TexasGameStateHandlerCancel);
 
-            this.GameSMStates[TexasGameState.Unknown] = new TexasGameStateHandlerUnknown;
+            this.GameSMStates.set(TexasGameState.Unknown, new TexasGameStateHandlerUnknown);
 
         }
     }
@@ -62,7 +62,7 @@ export default class TexasSMAgency {
             // 状态未变更
             return;
         }
-        let stateHandler: StateHandler = this.GameSMStates[state];
+        let stateHandler: StateHandler = this.GameSMStates.get(state);
         if (stateHandler == null) {
             console.log(`ChangeGameState: unrecognized state: ${TexasGameState[state]}`);
             return;

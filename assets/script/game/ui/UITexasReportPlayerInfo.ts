@@ -2,7 +2,7 @@ import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
-import { LobbyControl } from "../../lobby/control/LobbyControl";
+import { LobbyControl } from "../../uimodel/LobbyControl";
 import {
     WebStatsOtherUserStats,
     WebUserInfo,
@@ -122,7 +122,7 @@ export default class UITexasReportPlayerInfo extends UIBase {
         this.listen(GGEvent.Refresh_UserName, this.refreshUserName);
     }
 
-    refreshHeadImg(headStr) {
+    refreshHeadImg(headStr: string) {
         let img_head: cc.Sprite = this.getChildNodeOrComponent(
             "img_head",
             cc.Sprite,
@@ -133,7 +133,7 @@ export default class UITexasReportPlayerInfo extends UIBase {
         });
     }
 
-    refreshUserName(nameStr) {
+    refreshUserName(nameStr:string) {
         let lbl_nickname = this.getChildNodeOrComponent("lbl_name", cc.Label);
         lbl_nickname.string = StringHelper.LengthNick(nameStr);
     }

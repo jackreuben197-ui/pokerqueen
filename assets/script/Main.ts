@@ -10,17 +10,19 @@
  * 入口函数
  */
 import { GameConfig } from "./config/GameConfig";
-import GC from "./frame/GameControl";
+// import GC from "./frame/GameControl";
 import OrientationComponent from "./funcomponent/OrientationComponent";
 import ReconnectComponent from "./funcomponent/ReconnectComponent";
 // import { GM } from "./gm/GMAPI";
 import ProcedureManager from "./manager/ProcedureManager";
 import SoundComponent from "./sound/SoundComponent";
 import CCTools from "./tools/CCTools";
-import TelegramUtils from "./tools/TelegramUtils";
+// import TelegramUtils from "./tools/TelegramUtils";
 import UIComponent, { PrefabUI } from "./ui/UIComponent";
 import H5MsgMgr from "./H5MsgMgr";
 import * as MainUtils from "./MainUtils";
+import UpdateComponent from "./funcomponent/UpdateComponent";
+import DataManager from "./frame/manager/DataManager";
 ///////////////////////////////////////////////
 cc.macro.ENABLE_TRANSPARENT_CANVAS = false;
 const { ccclass, property } = cc._decorator;
@@ -50,27 +52,27 @@ export default class Main extends cc.Component {
 
     static ShowSeatID: number;//显示seat id
 
-    async onLoad() {
+    override async onLoad() {
 
         // 关闭左下角 FPS / DrawCall 统计信息
         cc.debug.setDisplayStats(false);
 
         // 初始化 Telegram WebApp SDK（必须在最开始）
-        TelegramUtils.Instance;
+        // TelegramUtils.Instance;
 
-        // 输出 Telegram 调试信息（在 log 被禁用之前）
-        if (TelegramUtils.Instance.isInTelegram) {
-            TelegramUtils.Instance.printDebugInfo();
-        }
+        // // 输出 Telegram 调试信息（在 log 被禁用之前）
+        // if (TelegramUtils.Instance.isInTelegram) {
+        //     TelegramUtils.Instance.printDebugInfo();
+        // }
 
         if (!CCTools.getQueryString("log") && GameConfig.IS_PUBLISHED) {
             console.log = function () { }
         }
         console.log("游戏启动", cc.sys.os);
 
-        GC.init();
+        DataManager.instance.init();
 
-        GC.localStore.keyPre = CCTools.getQueryString("player") || "";
+        // GC.localStore.keyPre = CCTools.getQueryString("player") || "";
 
         Main.instance = this;
         //设置是否代理模式(根据地址栏配置proxy字段)
@@ -102,12 +104,12 @@ export default class Main extends cc.Component {
         UIComponent.Instance.SetPrefabNode(PrefabUI.UIPreloading, Main.UIPreloading);
 
         this.scheduleOnce(() => {
-            console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
-            console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
+            console.log("[Main]屏幕分辨率:", cc.view.getFrameSize().toString());
+            console.log("[Main]逻辑分辨率:", cc.view.getVisibleSize().toString());
             MainUtils.refreshDiss(Main.Diss);
         }, 1);
 
-        GC.uc.AddComponent(new OrientationComponent);
+        UpdateComponent.Instance.AddComponent(new OrientationComponent);
 
         SoundComponent.Instance.initSound();
 
@@ -120,11 +122,10 @@ export default class Main extends cc.Component {
         // 启动握手：设置 __CC_READY__，等待 H5 发来 h5Ready，回复 ccAck
         H5MsgMgr.Instance.startHandshake();
     }
-    protected update(dt: number): void {
-        GC.uc.Update(dt);
+    protected override update(dt: number): void {
+        UpdateComponent.Instance.Update(dt);
     }
-    start() {
-        console.log("start test");
+    override start() {
         ProcedureManager.Init();
     }
 }

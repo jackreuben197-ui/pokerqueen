@@ -9,9 +9,8 @@ import { i18nMgr } from "../i18n/i18nMgr";
 
 
 
-import { Bundle_Resources, Bundle_Texas } from "../manager/ResManager";
+import { BUNDLE_RESOURCES, BUNDLE_TEXAS } from "../manager/ResManager";
 import MttAgainBuy from "../mtt/detail/MttAgainBuy";
-
 
 import GlobalSession from "../session/GlobalSession";
 import StorageKey from "../session/StorageKey";
@@ -95,18 +94,27 @@ export default class UITexas extends BaseScene {
     //桌面主容器
     main: cc.Node = null;
 
-    //桌上边缘按钮
+    // 设置
     btn_menu: cc.Node = null;
+    // 消息
     btn_msg: cc.Node = null;
-    btn_report: cc.Node = null;
-    btn_poker: cc.Node = null;
+    // 客服
     btn_im: cc.Node = null;
     table_add_chip: cc.Node = null;
     // main_menu 按钮
+    // 战绩
+    btn_report: cc.Node = null;
+    // 牌谱
+    btn_poker: cc.Node = null;
+    // 表情
     btn_emoji: cc.Node = null;
+    // 效果
     btn_effect: cc.Node = null;
+    // 音效
     btn_audio: cc.Node = null;
+    // 视频
     btn_camera: cc.Node = null;
+    // 聊天
     chatBtn: cc.Node = null;
     // 远端音频/视频控制按钮
     muteMicOpenBtn: cc.Node = null;
@@ -266,10 +274,11 @@ export default class UITexas extends BaseScene {
     //#endregion
 
     ///////////////////////////////////
-    update(dt: number) {
+    override update(dt: number) {
         this.game?.Update(dt);
     }
-    protected lateLoad(): void {
+
+    protected override lateLoad(): void {
 
         this.name = "UITexas";
 
@@ -295,13 +304,13 @@ export default class UITexas extends BaseScene {
 
         // 远端音频/视频控制按钮（muteMicNode / hideVideoNode）
         const muteMicNode = this.getChildNodeOrComponent("muteMicNode");
-        if (muteMicNode) {
+        if (muteMicNode && muteMicNode instanceof cc.Node) {
             const bg = muteMicNode.getChildByName("background");
             this.muteMicOpenBtn = bg?.getChildByName("openBtn");
             this.muteMicCloseBtn = bg?.getChildByName("closeBtn");
         }
         const hideVideoNode = this.getChildNodeOrComponent("hideVideoNode");
-        if (hideVideoNode) {
+        if (hideVideoNode && hideVideoNode instanceof cc.Node) {
             const bg = hideVideoNode.getChildByName("background");
             this.hideVideoOpenBtn = bg?.getChildByName("openBtn");
             this.hideVideoCloseBtn = bg?.getChildByName("closeBtn");
@@ -317,8 +326,11 @@ export default class UITexas extends BaseScene {
         this.Image_ReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
         this.Image_InsuranceTips = this.getChildNodeOrComponent("Image_InsuranceTips");
 
+        // 座位管理
         this.seats_content = this.getChildNodeOrComponent("seats_content");
         this.Seat_Temp = this.getChildNodeOrComponent("Seat_Temp");
+
+        // 鱿鱼
         this.RemainingSquidCount = this.main?.getChildByName("RemainingSquidCount");
         this.RemainingSquidLabelCount = this.RemainingSquidCount
             ?.getChildByName("RemainingSquidLabel")
@@ -484,8 +496,8 @@ export default class UITexas extends BaseScene {
         this.UIAgreeSecondPcs_Com = this.AddComponents(PrefabUI.UIAgreeSecondPcsComponent, this.UIAgreeSecondPcs_Con);
         //8.MTT重购面板
         this.MttAgainBuy_Con = this.getChildNodeOrComponent("UIMttSignDialog_Con");
-        //this.UIMttSignDialog_Com = this.AddComponents(PrefabUI.UIMttSignDialogComponent, this.UIMttSignDialog_Con, false, Bundle_Resources);
-        this.MttAgainBuy = this.AddComponents(PrefabUI.MttAgainBuy, this.MttAgainBuy_Con, false, Bundle_Resources);
+        //this.UIMttSignDialog_Com = this.AddComponents(PrefabUI.UIMttSignDialogComponent, this.UIMttSignDialog_Con, false, BUNDLE_RESOURCES);
+        this.MttAgainBuy = this.AddComponents(PrefabUI.MttAgainBuy, this.MttAgainBuy_Con, false, BUNDLE_RESOURCES);
         //////////////////////////////////////////////////////////////////////
         //////////////////初始化杂类
         //隐藏座位模板
@@ -498,7 +510,7 @@ export default class UITexas extends BaseScene {
 
 
     //从预制体添加到容器
-    AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = Bundle_Texas) {
+    private AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = BUNDLE_TEXAS) {
         let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, bundle);
         let com = null;
         if (prefab) {
@@ -514,7 +526,7 @@ export default class UITexas extends BaseScene {
         }
         return com;
     }
-    protected regiterTouchEvents(): void {
+    protected override regiterTouchEvents(): void {
 
         this.setButtonClick(this.btn_menu, this.click_side_button);
         this.setButtonClick(this.btn_msg, this.click_side_button);
@@ -557,28 +569,24 @@ export default class UITexas extends BaseScene {
 
     }
 
-
-    Enter(param: { game_enter_type: GameEnterType, isLookOn: boolean }): void {
-
+    // Enter Called by SceneManager.switchScene & enter
+    override Enter(param: { game_enter_type: GameEnterType, isLookOn: boolean }): void {
         super.Enter(param);
-
         this.AdaptiveMain();
-
         this.game = GameCache.Instance.CurGame;
-
+        // 设置UI对象
         this.game.uirc = this;
-
+        // 设置公共牌位置
         this.game.InitPublicLocalPos();
-
+        // 是否是观看(MTT)
         this.game.IsLookOn = param?.isLookOn ?? false;
-
+        // 设置桌布类型
         this.game.SetDeskType(this.game.deskType);
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
-
         this.EnterInitUI();
-
     }
+
     //适配
     AdaptiveMain() {
         //高度小于目标进行缩放
@@ -674,7 +682,7 @@ export default class UITexas extends BaseScene {
         //关闭战绩
         UIComponent.close(UIDefine.UITexasHistoryComponent);
     }
-    Exit(param: any): void {
+    override Exit(param: any): void {
         super.Exit(param);
     }
     /// <param name="num"></param>几张
@@ -682,7 +690,7 @@ export default class UITexas extends BaseScene {
     /// <param name="paynum"></param>赔付金额
     public async ShowInsuranceTip(num: number, premium: number, paynum: number) {
         this.Image_InsuranceTips.active = true;
-        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = `${i18nMgr.Get("UILobby_Menu_menu_btn_my")}......\n` + StringHelper.Format(i18nMgr.Get("UIInsurance_tips001"), [num.toString(), StringHelper.GetLongString(premium), StringHelper.GetLongString(paynum)]);
+        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = `${i18nMgr.Get("UILobby_Menu_menu_btn_my")}......\n` + StringHelper.FormatString(i18nMgr.Get("UIInsurance_tips001"), num, StringHelper.GetLongString(premium), StringHelper.GetLongString(paynum));
         await TimeHelper.Sleep(2000);
         if (this.Image_InsuranceTips.activeInHierarchy) {
             this.Image_InsuranceTips.active = false;
@@ -787,7 +795,7 @@ export default class UITexas extends BaseScene {
 
     public async ShowInsuranceTipJieSuan(paynum: number) {
         this.Image_InsuranceTips.active = true;
-        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = StringHelper.Format(i18nMgr.Get("UIInsurance_tips003"), [StringHelper.GetLongString(paynum)]);
+        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = StringHelper.FormatString(i18nMgr.Get("UIInsurance_tips003"), StringHelper.GetLongString(paynum));
         await TimeHelper.Sleep(2000);
         if (this.Image_InsuranceTips.activeInHierarchy) {
             this.Image_InsuranceTips.active = false;

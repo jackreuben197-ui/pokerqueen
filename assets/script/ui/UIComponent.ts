@@ -2,7 +2,7 @@
 import { IUIDefine, UIType } from "../define/EIDefine";
 import { i18nMgr } from "../i18n/i18nMgr";
 import Main from "../Main";
-import ToastManager from "../manager/ToastManager";
+import ToastManager, {IToastConfig} from "../manager/ToastManager";
 import UIBase from "../ui/UIBase";
 import { UIBoardMgr, UICommonMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from "./UIMgr";
 
@@ -74,12 +74,12 @@ export default class UIComponent {
         this.prefab_node_map.get(prefab_name)?.getComponent(prefab_name);
     }
 
-    Toast(content?: string) {
+    Toast(content?: string, customConfig?: IToastConfig, cb?: () => void) {
         if (content) {
-            ToastManager.Instance.createToast(content);
+            ToastManager.Instance.createToast(content, customConfig, cb);
         } else {
             //提示暂未开放
-            ToastManager.Instance.createToast(i18nMgr.Get("adaptation10301"));
+            ToastManager.Instance.createToast(i18nMgr.Get("adaptation10301"),customConfig, cb);
         }
     }
     ToastLanguage(content?: string) {

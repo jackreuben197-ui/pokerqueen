@@ -6,7 +6,7 @@ import TimeHelper from "../helper/TimeHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { UIClubModel } from "../lobby/labor/UIClubModel";
+import { UIClubModel } from "../uimodel/UIClubModel";
 import { WebOrgFriendRoomList, APITexasSituationMushRound, APITexasSituationSquidRound, WWW } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -15,7 +15,7 @@ import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessageLeave } from "../protobuf/holdem/req_th_leave_pb";
 import { ClientMessageObservers } from "../protobuf/holdem/req_th_observers_pb";
 import { ClientMessagePlayerJackpotSummary, ServerMessagePlayerJackpotSummary } from "../protobuf/holdem/req_th_player_jackpot_summary_pb";
-import { ClientMessageRoomers } from "../protobuf/holdem/req_th_roomers_pb";
+import { ClientMessageRoomers, ServerMessageRoomers } from "../protobuf/holdem/req_th_roomers_pb";
 import UIBase from "../ui/UIBase";
 import UIComponent from "../ui/UIComponent";
 import Main from "../Main";
@@ -275,7 +275,7 @@ export default class UITexasReportComponent extends UIBase {
     }
 
 
-    ProtocolHoldemRoomersHandler(response: ServerMessageLeave.AsObject) {
+    ProtocolHoldemRoomersHandler(response: ServerMessageRoomers.AsObject) {
         if (response == null) {
             return;
         }
@@ -362,7 +362,7 @@ export default class UITexasReportComponent extends UIBase {
         this.RequestRoomers();
         this.RequestObservers();
     }
-    async UpdateViewList(RoomersData) {
+    async UpdateViewList(RoomersData: any) {
         //玩家 
         this.tInfo_0 = []
         this.tInfo_1 = []
@@ -415,45 +415,45 @@ export default class UITexasReportComponent extends UIBase {
                 }
             })
         } else {
-            let parms = {
-                name: "",
-                ante_min: 0,
-                ante_max: 0,
-                sb_min: 10,
-                sb_max: 100000,
-                tribe_id: 0,
-                start_time_s: 0,
-                start_time_e: 0,
-                enter_time_s: 0,
-                enter_time_e: 0,
-                game_type: [],
-                poker_type: [0, 2],
-                limit_bet_type: [],
-                order: ["sb_asc"],
+            // let parms = {
+            //     name: "",
+            //     ante_min: 0,
+            //     ante_max: 0,
+            //     sb_min: 10,
+            //     sb_max: 100000,
+            //     tribe_id: 0,
+            //     start_time_s: 0,
+            //     start_time_e: 0,
+            //     enter_time_s: 0,
+            //     enter_time_e: 0,
+            //     game_type: [],
+            //     poker_type: [0, 2],
+            //     limit_bet_type: [],
+            //     order: ["sb_asc"],
 
-            }
-            UIClubModel.mInstance.WebOrgClubRoom(parms).then((roomsInfoData: any) => {
-                roomsInfoData.data.records.forEach(item => {
-                    if (item.rid == GameCache.Instance.room_id) {
-                        if (item.start_time == null) {
-                            return;
-                        }
-                        let deadLineTime = TimeHelper.RFC3339TimeConvertToUTCTime(item.start_time)
-                        let roomLeftTime = deadLineTime / 1000 + item.play_duration - new Date().getTime() / 1000
-                        if (roomLeftTime > 0) {
-                            this.mRoomLeaveTime = roomLeftTime;
-                            let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.Label);
-                            textTitle.string = TimeHelper.ShowRemainingSemicolon2(this.mRoomLeaveTime);
-                            this.ShowLeaveTimer();
-                        }
-                    }
-                })
-            })
+            // }
+            // UIClubModel.mInstance.WebOrgClubRoom(parms).then((roomsInfoData: any) => {
+            //     roomsInfoData.data.records.forEach(item => {
+            //         if (item.rid == GameCache.Instance.room_id) {
+            //             if (item.start_time == null) {
+            //                 return;
+            //             }
+            //             let deadLineTime = TimeHelper.RFC3339TimeConvertToUTCTime(item.start_time)
+            //             let roomLeftTime = deadLineTime / 1000 + item.play_duration - new Date().getTime() / 1000
+            //             if (roomLeftTime > 0) {
+            //                 this.mRoomLeaveTime = roomLeftTime;
+            //                 let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.Label);
+            //                 textTitle.string = TimeHelper.ShowRemainingSemicolon2(this.mRoomLeaveTime);
+            //                 this.ShowLeaveTimer();
+            //             }
+            //         }
+            //     })
+            // })
         }
 
     }
 
-    async UpdateObViewList(RoomersData) {
+    async UpdateObViewList(RoomersData: any) {
         if (!RoomersData || !RoomersData.observersList) {
             if (this.people_content) this.people_content.removeAllChildren();
             if (this.peopelNum) this.peopelNum.string = '0';
@@ -471,14 +471,14 @@ export default class UITexasReportComponent extends UIBase {
 
             let icon = tItem.getChildByName('icon')
             WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
-            tItem['user_id'] = RoomersData.observersList[index].userRid
+            const uid = RoomersData.observersList[index].userRid
             if (!RoomersData.observersList[index].isOnline && GameCache.Instance.origin_type == 4) {
                 tItem.opacity = 50
             } else {
                 tItem.opacity = 255
             }
             this.bindClick(tItem, () => {
-                UIComponent.open(UIDefine.UITexasReportPlayerInfo, [tItem['user_id'], false, null]);
+                UIComponent.open(UIDefine.UITexasReportPlayerInfo, [uid, false, null]);
 
             })
 

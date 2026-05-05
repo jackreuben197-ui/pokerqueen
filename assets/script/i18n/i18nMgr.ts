@@ -42,9 +42,9 @@ export class i18nMgr {
     //     en: "sl_K8cPNvxU",
     // }
 
-    // public static isCN() {
-    //     return this.language == "cn";
-    // }
+    public static isCN() {
+        return this.language == "cn";
+    }
 
     public static initLanguage() {
         this.language = GC.localStore.getItem(StorageKey.LANGUAGE) || GameConfig.DEFAULT_LANGUAGE;

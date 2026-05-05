@@ -5,7 +5,6 @@ import { RoomType } from "../game/util/GameUtil";
 import { TexasGameState } from "../game/TexasGameState";
 
 import ProcedureBase from "./ProcedureBase";
-import ProcedureConfig from "./ProcedureConfig";
 import GC from "../frame/GameControl";
 import H5MsgMgr from "../H5MsgMgr";
 import UIComponent from "../ui/UIComponent";
@@ -17,19 +16,17 @@ import ReconnectComponent from "../funcomponent/ReconnectComponent";
  */
 export default class ProcedureTexas extends ProcedureBase {
 
-    Name: string = "ProcedureTexas";
+    override Name: string = "ProcedureTexas";
 
-    lateEnter(param?: any) {
+    override lateEnter(param?: any) {
         super.lateEnter(param);
         // H5 桥接模式下可能跳过了 ProcedureConfig，确保 Network 已初始化
-        if (!GameConfig.Network) {
-            ProcedureConfig.setNetwork();
-        }
         GameCache.Instance.InitTexasGame();
         GameCache.Instance.CurGame.Enter();
         GameCache.Instance.CurGame.SMAgency.ChangeGameState(TexasGameState.Launch);
     }
-    Leave() {
+
+    override Leave() {
         super.Leave();
 
         // if (GameCache.Instance.CurGame.isMTT) {
@@ -42,8 +39,6 @@ export default class ProcedureTexas extends ProcedureBase {
 
         GameCache.Instance.CurGame.Dispose();
         GameCache.Instance.CurGame = null;
-
-        GC.data.lobby.reqLobbyGroupData();
 
         ReconnectComponent.Instance.ChangeStatus(1);
 

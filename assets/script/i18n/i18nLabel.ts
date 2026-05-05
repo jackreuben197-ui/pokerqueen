@@ -10,7 +10,7 @@ export class i18nLabel extends cc.Component {
     @property
     private i18n_string: string = "";
 
-    start() {
+    override start() {
         i18nMgr._addOrDelLabel(this, true);
         this._resetValue();
     }
@@ -70,7 +70,7 @@ export class i18nLabel extends cc.Component {
         this.setEndValue();
     }
 
-    onDestroy() {
+    override onDestroy() {
         i18nMgr._addOrDelLabel(this, false);
     }
 }

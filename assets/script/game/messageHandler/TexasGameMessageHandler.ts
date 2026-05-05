@@ -7,7 +7,6 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import Main from "../../Main";
 import ProcedureManager from "../../manager/ProcedureManager";
 import SceneManager from "../../manager/SceneManager";
-import ToastManager from "../../manager/ToastManager";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { ServerErrorCode } from "../../net/websocket/ServerErrorCode";
 import { Def } from "../../protobuf/holdem/define_pb";
@@ -37,6 +36,7 @@ import { TexasGameState } from "../TexasGameState";
 import { GamePlaySubType } from "../ui/UITexasGameEnd";
 import GameUtil, { RoomType } from "../util/GameUtil";
 
+const LN = '[TexasGameMessageHandler]'
 
 export default class TexasGameMessageHandler {
 
@@ -44,7 +44,7 @@ export default class TexasGameMessageHandler {
     }
 
     public RegisterMessageHandler() {
-        cc.log("RegisterMessageHandler");
+        console.log(LN, "RegisterMessageHandler");
         GC.notify.register(ProtocolCode.Protocol_Holdem_EnterRoom, this.Protocol_Holdem_EnterRoom_Handler, this);
         GC.notify.register(ProtocolCode.Protocol_Holdem_Leave, this.Protocol_Holdem_Leave_Handler, this);
 
@@ -130,9 +130,9 @@ export default class TexasGameMessageHandler {
     /// 进入房间 消息回调
     /// </summary>
     /// <param name="response"></param>
-    Protocol_Holdem_EnterRoom_Handler(response: ServerMessageEnterRoom.AsObject) {
+    async Protocol_Holdem_EnterRoom_Handler(response: ServerMessageEnterRoom.AsObject) {
 
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_EnterRoom_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_EnterRoom_Handler`);
 
         if (response == null) return;
 
@@ -141,7 +141,7 @@ export default class TexasGameMessageHandler {
 
         let isMTT: boolean = this.game.isMTT;
 
-        console.log("当前游戏是比赛:", isMTT);
+        console.log(LN, "当前游戏是比赛:", isMTT);
 
         //GameCache.Instance.enter_room_res = response;
 
@@ -158,7 +158,7 @@ export default class TexasGameMessageHandler {
                 // 缓存房间id
                 GameCache.Instance.room_id = response.mttRoom.roomId;
                 //matchId;
-                console.log(`Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.Instance.room_id}`);
+                console.log(LN, `Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.Instance.room_id}`);
             }
 
             if (ProcedureManager.currProcedure.id == ProcedureEnum.Texas) {
@@ -191,13 +191,13 @@ export default class TexasGameMessageHandler {
 
             }
 
-            SceneManager.Instance.switchScene(UIDefine.UITexas, null, GameCache.Instance.enter_param);
+            await SceneManager.Instance.switchScene(UIDefine.UITexas, null, GameCache.Instance.enter_param);
 
             this.game.SMAgency.ChangeGameState(TexasGameState.Init, response);
 
         }
         else if (response.status == ServerErrorCode.Gameplay_AutoSeatReturnToInvalidGame && isMTT) {
-            console.log(`Protocol_Holdem_EnterRoom_Handler: response.state : ServerErrorCode.Gameplay_AutoSeatReturnToInvalidGame`);
+            console.log(LN, `Protocol_Holdem_EnterRoom_Handler: response.state : ServerErrorCode.Gameplay_AutoSeatReturnToInvalidGame`);
             // 进入ExchangeRoom状态，等待换房
             this.game.SMAgency.ChangeGameState(TexasGameState.ExchangeRoom, null);
         }
@@ -212,20 +212,32 @@ export default class TexasGameMessageHandler {
      * 离开房间消息返回
      * @param response 
      */
-    Protocol_Holdem_Leave_Handler(response: ServerMessageLeave.AsObject) {
+    Protocol_Holdem_Leave_Handler(response: ServerMessageLeave.AsObject, roomID: number, matchID: number) {
 
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_Leave_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_Leave_Handler`, roomID, matchID);
 
         if (response == null) return;
 
-        if (response.status != 0) {
-            console.warn(`Protocol_Holdem_Leave: status = ${response.status}`);
+        // 如果我正在进入则忽略此消息(非主动离开)
+        if (!GameCache.Instance.isActiveLeaving && roomID == GameCache.Instance.room_id && matchID == GameCache.Instance.match_id) {
             return;
         }
 
-        // UIComponent.Instance.Toast(i18nMgr.Get(`LeaveReason${Def.LeaveReason.LR_ACTIVE}`));
-        this.game.TexasGameUtils.ExitRoom();
+        if (response.status != 0) {
+            console.warn(`Protocol_Holdem_Leave: status = ${response.status}`);
+            this.game.TexasGameUtils.ExitRoom();
+            return;
+        }
 
+        UIComponent.Instance.Toast(
+            i18nMgr.Get(`LeaveReason${Def.LeaveReason.LR_ACTIVE}`), 
+            {
+                stayDuration: 1,
+            },
+            ()=>{
+                this.game.TexasGameUtils.ExitRoom();
+            }
+        );
     }
 
     /**
@@ -233,7 +245,7 @@ export default class TexasGameMessageHandler {
      * @param response 
      */
     Protocol_Holdem_SeatedOthers_Handler(response: ServerMessageSeatedOthers.AsObject) {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_SeatedOthers_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_SeatedOthers_Handler`);
         // 协议层会先更新座位数据，这里下一帧再刷新开始按钮，避免回调顺序导致人数未更新
         setTimeout(() => {
             this.game?.UpdateStartGameState?.();
@@ -245,7 +257,7 @@ export default class TexasGameMessageHandler {
     /// <param name="response"></param>
     Protocol_Holdem_Seated_Handler(response: ServerMessageSeated.AsObject) {
 
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_Seated_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_Seated_Handler`);
         // 协议层会先更新自己座位数据，这里下一帧再刷新开始按钮，避免回调顺序导致人数未更新
         setTimeout(() => {
             this.game?.UpdateStartGameState?.();
@@ -254,13 +266,13 @@ export default class TexasGameMessageHandler {
     }
 
     Protocol_Holdem_JackpotGoldChange_Handler(response: ServerMessageJackpotGoldChange.AsObject) {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_JackpotGoldChange_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_JackpotGoldChange_Handler`);
         if (!response) return;
         this.game?.OnJackpotGoldChange?.(response);
     }
 
     Protocol_Holdem_JackpotAward_Handler(response: ServerMessageJackpotAward.AsObject) {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_JackpotAward_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_JackpotAward_Handler`);
         if (!response) return;
         this.game?.OnJackpotAward?.(response);
     }
@@ -270,7 +282,7 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     private Protocol_Holdem_StandupActive_Handler(response: ServerMessageStandupActive.AsObject): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_StandupActive_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_StandupActive_Handler`);
         if (response == null) {
             return;
         }
@@ -289,7 +301,7 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     private Protocol_Holdem_Standup_Handler(response: ServerMessageStandup.AsObject): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_Standup_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_Standup_Handler`);
 
         if (response == null) {
             return;
@@ -333,7 +345,7 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     private Protocol_Holdem_PostStatusChange_Handler(response: ServerMessagePostStatusChange.AsObject): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_PostStatusChange_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_PostStatusChange_Handler`);
     }
 
     /// <summary>
@@ -341,7 +353,7 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     public Protocol_Holdem_StartInfo_Handler(response: ServerMessageStartInfo.AsObject): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_StartInfo_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_StartInfo_Handler`);
         if (response == null) {
             return;
         }
@@ -354,7 +366,7 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     public Protocol_Holdem_LeaveNotification_Handler(response: ServerMessageLeaveNotification.AsObject): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_LeaveNotification_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_LeaveNotification_Handler`);
 
         if (response == null) {
             return;
@@ -415,25 +427,25 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     public Protocol_Holdem_AddOn_Handler(): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_AddOn_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_AddOn_Handler`);
     }
     /// <summary>
     /// 桌子上额外买入(非MTT) 消息回调
     /// </summary>
     /// <param name="response"></param>
     public Protocol_Holdem_BringIn_Handler(): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_BringIn_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_BringIn_Handler`);
     }
 
     public Protocol_Holdem_UpBlind_Handler(response: any): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_UpBlind_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_UpBlind_Handler`);
     }
     /// <summary>
     /// 一手结束清理桌面 消息回调
     /// </summary>
     /// <param name="response"></param>
     private Protocol_Holdem_HandClear_Handler(response: ServerMessageHandClear.AsObject): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_HandClear_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_HandClear_Handler`);
 
         if (response == null) {
             return;
@@ -444,27 +456,27 @@ export default class TexasGameMessageHandler {
         throw new Error("Method not implemented.");
     }
     Protocol_Holdem_BuyInsurance_Handler(Protocol_Holdem_BuyInsurance: ProtocolCode, Protocol_Holdem_BuyInsurance_Handler: any, arg2: this) {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_BuyInsurance_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_BuyInsurance_Handler`);
     }
 
 
 
     Protocol_Holdem_InsuranceTrigged_Handler(response: any): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_InsuranceTrigged_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_InsuranceTrigged_Handler`);
     }
     /// <summary>
     /// 加时（其他人接收）消息回调
     /// </summary>
     /// <param name="response"></param>
     Protocol_Holdem_AddTimeOthers_Handler(response: any): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_AddTimeOthers_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_AddTimeOthers_Handler`);
     }
     /// <summary>
     /// 结果通知 消息回调
     /// </summary>
     /// <param name="response"></param>
     private Protocol_Holdem_Winner_Handler(response: ServerMessageWinner.AsObject): void {
-        cc.log(`# MSG_CALLBACK: Protocol_Holdem_Winner_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_Winner_Handler`);
 
         if (response == null) {
             return;
@@ -476,14 +488,14 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     Protocol_Holdem_KeepSeat_Handler(response: any): void {
-        cc.log(`# MSG_CALLBACK: Protocol_Holdem_KeepSeat_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_KeepSeat_Handler`);
     }
     /// <summary>
     /// 所有人收到主动/自动行为（包括自己） 消息回调
     /// </summary>
     /// <param name="response"></param>
     private Protocol_Holdem_ActionAll_Handler(response: any): void {
-        cc.log(`# MSG_CALLBACK: Protocol_Holdem_ActionAll_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_ActionAll_Handler`);
     }
 
     /// <summary>
@@ -491,7 +503,7 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     Protocol_Holdem_ChipsChange_Handler(response: any): void {
-        cc.log(`# MSG_CALLBACK: Protocol_Holdem_ChipsChange_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_ChipsChange_Handler`);
     }
 
     /// <summary>
@@ -499,7 +511,7 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     private Protocol_Holdem_SidePots_Handler(response: any): void {
-        cc.log(`# MSG_CALLBACK: Protocol_Holdem_SidePots_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_SidePots_Handler`);
     }
 
     /// <summary>
@@ -507,7 +519,7 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     private Protocol_Holdem_PublicCards_Handler(response: ServerMessagePublicCards.AsObject): void {
-        cc.log(`# MSG_CALLBACK: Protocol_Holdem_PublicCards_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_PublicCards_Handler`);
         if (response == null) {
             return;
         }
@@ -539,7 +551,7 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     Protocol_Holdem_Showcards_Handler(response: any): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_Showcards_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_Showcards_Handler`);
     }
 
     /// <summary>
@@ -547,27 +559,27 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     Protocol_Holdem_StoreChips_Handler(response: any): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_StoreChips_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_StoreChips_Handler`);
     }
     Protocol_Holdem_AgreePost_Handler(response: any): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_AgreePost_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_AgreePost_Handler`);
     }
     Protocol_Holdem_BuyInsuranceActive_Handler(response: any): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_BuyInsuranceActive_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_BuyInsuranceActive_Handler`);
     }
     /// <summary>
     /// 要求亮明未使用的公共牌 消息回调
     /// </summary>
     /// <param name="response"></param>
     Protocol_Holdem_ShowPublicCards_Handler(response: any): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_ShowPublicCards_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_ShowPublicCards_Handler`);
     }
     /// <summary>
     /// 其他人收到有人看公共牌 消息回调
     /// </summary>
     /// <param name="response"></param>
     Protocol_Holdem_ShowPublicCardsOthers_Handler(response: any) {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_ShowPublicCardsOthers_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_ShowPublicCardsOthers_Handler`);
     }
 
     /// <summary>
@@ -575,28 +587,28 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     private Protocol_Holdem_KeepSeatActive_Handler(response: any): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_KeepSeatActive_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_KeepSeatActive_Handler`);
     }
     /// <summary>
     /// 设置自动带入额度(自动每手带入） 消息回调
     /// </summary>
     /// <param name="response"></param>
     Protocol_Holdem_SetAutoOnTable_Handler(response: any): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_SetAutoOnTable_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_SetAutoOnTable_Handler`);
     }
     /// <summary>
     /// 主动行为 消息回调
     /// </summary>
     /// <param name="response"></param>
     Protocol_Holdem_Action_Handler(response: any): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_Action_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_Action_Handler`);
     }
     /// <summary>
     /// 加时 消息回调
     /// </summary>
     /// <param name="response"></param>
     Protocol_Holdem_AddTime_Handler(response: any): void {
-        console.log(`# MSG_CALLBACK: Protocol_Holdem_AddTime_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_AddTime_Handler`);
     }
 
     /// <summary>
@@ -604,7 +616,7 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     private Protocol_Holdem_Showdown_Handler(response: any): void {
-        cc.log(`# MSG_CALLBACK: Protocol_Holdem_Showdown_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_Showdown_Handler`);
     }
 
     /// <summary>
@@ -612,7 +624,7 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     private Protocol_Holdem_Error_Handler(response: ServerMessageError.AsObject): void {
-        cc.log(`# MSG_CALLBACK: Protocol_Holdem_Error_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_Error_Handler`);
         if (response == null) {
             return;
         }

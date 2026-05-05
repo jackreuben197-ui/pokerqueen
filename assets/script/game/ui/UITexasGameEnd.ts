@@ -110,7 +110,7 @@ export default class UITexasGameEnd extends UIBase {
         this.gamePlaySubType = this.ResolveGamePlaySubType(param);
         this.RefreshSubTypeUI();
 
-        this.SetFindLabelText("TitleNameTxt", GC.data.languageTemp.temp.getName(param.roomName));
+        this.SetFindLabelText("TitleNameTxt", param.roomName);
         this.SetFindLabelText("TitleIDTxt", "ID:" + this.mRoomId);
         this.SetFindLabelText("LeaveTxt", TimeHelper.TimeToString(TimeHelper.Now, "MM/dd HH:mm"));
         this.SetFindLabelText("Text_Type", StringHelper.GetRoomTypeNameByType(param.game_type, param.poker_type, param.bet_type));

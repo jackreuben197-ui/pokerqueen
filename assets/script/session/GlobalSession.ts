@@ -29,7 +29,7 @@ export default class GlobalSession {
         WebSocketClient.Close();
         GC.uc.RemoveAll();
         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
-        ProcedureManager.StartProcedure(ProcedureEnum.Login, { logout: true });
+        //ProcedureManager.StartProcedure(ProcedureEnum.Login, { logout: true });
     }
 
 }

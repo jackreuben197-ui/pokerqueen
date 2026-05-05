@@ -7,7 +7,7 @@ import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import { i18nLabel } from "../../i18n/i18nLabel";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
+import { WalletType } from "../../config/TexasConfig";
 import ToastManager from "../../manager/ToastManager";
 import {
     WebOrgClubUserInfo,

@@ -9,7 +9,7 @@ export default class BaseComponent extends Base {
     private _path: string = "";
     private _clickNodes: Array<cc.Node> = [];
     private _view: any = {};
-    onLoad() {
+    override onLoad() {
         super.onLoad();
         this.lateLoad();
         this.regiterTouchEvents();
@@ -20,15 +20,15 @@ export default class BaseComponent extends Base {
 
     onShow(...param: any) {
         this._param = param && param[0];
-        this.UIDefine && cc.log("::", this.UIDefine.Name, "onShow()");
-        this.regiterDispatchEvent();
+        this.UIDefine && console.log("[UI][BaseComponent]", this.UIDefine.Name, "onShow()");
+        // this.regiterDispatchEvent();
     }
 
-    start() {
+    override start() {
         super.start();
     }
 
-    onEnable() {
+    override onEnable() {
         super.onEnable();
     }
 
@@ -183,7 +183,7 @@ export default class BaseComponent extends Base {
     }
     /***  touches end */
     onClose(param?: any) {
-        this.UIDefine && cc.log("::", this.UIDefine.Name, "onClose()");
+        this.UIDefine && cc.log("[UI][BaseComponent]", this.UIDefine.Name, "onClose()");
         this.stopAllThings();
         this.unregiterAllDispatchEvent();
         this.lateClose(param);
@@ -201,11 +201,11 @@ export default class BaseComponent extends Base {
         this.node.stopAllActions();
     }
 
-    onDisable() {
+    override onDisable() {
 
     }
 
-    onDestroy() {
+    override onDestroy() {
         // 停止所有注册
         this.unscheduleAllCallbacks();
         // 移除所有监听
