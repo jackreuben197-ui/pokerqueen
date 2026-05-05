@@ -90,6 +90,8 @@ import { AddClipsData } from "../../crazyPoker/gameplay/common/view/chips/UIGame
 import { BringInChipsType } from "../../crazyPoker/gameplay/common/constant/BringInChipsType";
 import { HttpRoomBringOutProtocol } from "../../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringOutProtocol";
 import { VideoModel } from "../../crazyPoker/gameplay/common/constant/VideoModel";
+import AgoraManager from "../../net/agora/AgoraManager";
+import ToastManager from "../../manager/ToastManager";
 //const PBTypes = Def.Types;
 
 class SeatMoveStruct {
@@ -1863,7 +1865,7 @@ export default class TexasGame {
     /// 坐下
     /// </summary>
     /// <param name="clientSeatId"></param>
-    public Sitdown(clientSeatId: number, isEmptyClick: boolean = false): void {
+    public async Sitdown(clientSeatId: number, isEmptyClick: boolean = false): Promise<void> {
         //test
         //this.CurlimitOutChip = RoomInfo.RetainType.RT_AUTO;
 
@@ -1888,6 +1890,29 @@ export default class TexasGame {
 
             cc.log(`Sitdown 该位置有其他玩家 clientSeatId:${clientSeatId}`);
             return;
+        }
+
+        // 视频房间：坐下前先请求浏览器摄像头权限
+        console.log('[Sitdown] 视频权限检查 videoModel=' + GameCache.Instance._videoModel + ', agoraIsJoined=' + AgoraManager.Instance.isJoined);
+        if (GameCache.Instance._videoModel !== VideoModel.NONE) {
+            const agora = AgoraManager.Instance;
+            if (agora.isJoined) {
+                try {
+                    console.log('[Sitdown] 请求浏览器摄像头权限...');
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    // 权限通过，立即释放 stream（Agora 的 enableCamera 会自己创建 track）
+                    console.log('[Sitdown] 摄像头权限通过，释放 stream');
+                    stream.getTracks().forEach(t => t.stop());
+                } catch (e) {
+                    // 权限被拒绝
+                    console.log('[Sitdown] 摄像头权限被拒绝:', e);
+                    ToastManager.Instance.createToast("必须同意浏览器的视频权限才能成功坐在视频桌");
+                    setTimeout(() => {
+                        this.TexasGameUtils.LeaveRoom();
+                    }, 3000);
+                    return;
+                }
+            }
         }
 
         this.cacheSitdownSeatId = mSeat.seatID;
