@@ -127,17 +127,13 @@ export default class Main extends cc.Component {
         H5MsgMgr.Instance.startHandshake();
 
         // 监听窗口大小变化（F12 开关、窗口拖拽等）
-        // 让引擎跟踪 window.innerWidth/Height，resize 时自动更新 _frameSize
-        cc.view.resizeWithBrowserSize(true);
         window.addEventListener('resize', this._onWindowResize.bind(this));
     }
     /**
      * 窗口大小变化时重新适配（防抖 200ms）
      *
-     * resizeWithBrowserSize(true) 已让引擎跟踪 window.innerWidth/Height，
-     * 但预览模式下容器 DOM（#content / #GameDiv）不会自动缩小，
-     * 需要手动更新，然后通过设置 fitHeight/fitWidth 触发 Canvas 组件的
-     * fitCanvasToWindow() 重新计算画布缩放。
+     * 不使用 resizeWithBrowserSize（会和 Canvas.fitCanvasToWindow 互相覆盖导致 _frameSize 过时），
+     * 而是手动更新容器 DOM，直接设置 _frameSize 并调用 setDesignResolutionSize。
      */
     private _onWindowResize(): void {
         clearTimeout(this._resizeTimer);
@@ -146,7 +142,7 @@ export default class Main extends cc.Component {
             const h = window.innerHeight;
             console.log('[Main] 窗口 resize，重新适配', w, h);
 
-            // 预览模式：容器 DOM 不会自动跟随窗口，手动更新
+            // 更新容器 DOM（预览模式下容器不会自动跟随窗口）
             const content = document.getElementById('content');
             if (content) {
                 content.style.width = w + 'px';
@@ -163,14 +159,14 @@ export default class Main extends cc.Component {
                 (wraps[i] as HTMLElement).style.height = h + 'px';
             }
 
-            // 重新计算 fitWidth / fitHeight
-            // 设置 fitHeight/fitWidth 会触发 Canvas.fitCanvasToWindow()
-            ProcedureInit.updateFitMode();
+            // 等一帧让 DOM 重排完成，再更新引擎画布
+            requestAnimationFrame(() => {
+                ProcedureInit.updateFitMode();
 
-            // 刷新出界遮挡层
-            if (Main.Diss && Main.Diss.isValid) {
-                MainUtils.refreshDiss(Main.Diss);
-            }
+                if (Main.Diss && Main.Diss.isValid) {
+                    MainUtils.refreshDiss(Main.Diss);
+                }
+            });
         }, 200);
     }
 
