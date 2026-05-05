@@ -27,7 +27,7 @@ try {
 
     // 2. 拷贝
     copyFiles(holdemSrc, holdemDst);
-    copyFiles(cowboySrc, cowboyDst);
+    // copyFiles(cowboySrc, cowboyDst);
     
     console.log('\n[SUCCESS] 协议同步完成！');
 } catch (e) {
