@@ -25,10 +25,18 @@ export default class ProcedureInit extends ProcedureBase {
      * 设置适配
      */
     private setFit(): void {
+        ProcedureInit.updateFitMode();
+    }
+
+    /**
+     * 根据当前窗口宽高比重新计算 fitWidth / fitHeight
+     * 初始化和窗口 resize 时都需要调用
+     */
+    static updateFitMode(): void {
         let framesize = cc.view.getFrameSize();
         let w_h_r = framesize.width / framesize.height;
 
-        console.log('[Procedure]',"屏幕实际分辨率", framesize.width, framesize.height);
+        console.log('[Procedure]', "屏幕实际分辨率", framesize.width, framesize.height);
 
         if (w_h_r > 0.63) {
             cc.Canvas.instance.fitHeight = true;

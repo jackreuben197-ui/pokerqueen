@@ -280,7 +280,14 @@ export default class TexasGameProtocol {
         }
         // 视频房间：坐下后渲染本地摄像头到自己的头像
         if (GameCache.Instance._videoModel !== VideoModel.NONE) {
-            this.renderLocalVideoOnMySeat();
+            this.renderLocalVideoOnMySeat().then(ok => {
+                if (!ok) {
+                    ToastManager.Instance.createToast("无法开启摄像头，请检查浏览器权限后重新入座");
+                    setTimeout(() => {
+                        this.game.TexasGameUtils.LeaveRoom();
+                    }, 3000);
+                }
+            });
         }
 
         //房间坐下时时添加firebase事件触发
@@ -2343,28 +2350,28 @@ export default class TexasGameProtocol {
     /**
      * 自己坐下后渲染本地摄像头到自己的头像
      */
-    public async renderLocalVideoOnMySeat(): Promise<void> {
+    public async renderLocalVideoOnMySeat(): Promise<boolean> {
         const agora = AgoraManager.Instance;
-        if (!agora.isJoined) return;
+        if (!agora.isJoined) return false;
 
         // 开启本地摄像头并发布视频（Agora 内部调用 getUserMedia 创建 track）
         const cameraOk = await agora.enableCamera();
         if (!cameraOk) {
             console.error('[VideoRoom] 开启摄像头失败');
-            return;
+            return false;
         }
 
         // 复用 Agora 已创建的 localVideoTrack，不再重复调 getUserMedia
         const rawTrack = agora.localVideoTrack?.getMediaStreamTrack?.();
         if (!rawTrack) {
             console.error('[VideoRoom] 获取本地视频 MediaStreamTrack 失败');
-            return;
+            return false;
         }
 
         const mySeat = this.game.listSeat.find((s: Seat) => s.IsMySeat);
         if (!mySeat || !mySeat.uirc?.Raw_Head) {
             console.warn('[VideoRoom] 未找到自己的座位或头像节点');
-            return;
+            return false;
         }
 
         const headNode = mySeat.uirc.Raw_Head.node;
@@ -2389,6 +2396,7 @@ export default class TexasGameProtocol {
             };
             this.game.uirc?.syncVideoButtonsFromAgora();
         }
+        return rendered;
     }
 
     /**

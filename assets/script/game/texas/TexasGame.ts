@@ -1892,26 +1892,22 @@ export default class TexasGame {
             return;
         }
 
-        // 视频房间：坐下前先请求浏览器摄像头权限
-        console.log('[Sitdown] 视频权限检查 videoModel=' + GameCache.Instance._videoModel + ', agoraIsJoined=' + AgoraManager.Instance.isJoined);
+        // 视频房间：坐下前先请求浏览器摄像头权限（不依赖 Agora 频道状态）
         if (GameCache.Instance._videoModel !== VideoModel.NONE) {
-            const agora = AgoraManager.Instance;
-            if (agora.isJoined) {
-                try {
-                    console.log('[Sitdown] 请求浏览器摄像头权限...');
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                    // 权限通过，立即释放 stream（Agora 的 enableCamera 会自己创建 track）
-                    console.log('[Sitdown] 摄像头权限通过，释放 stream');
-                    stream.getTracks().forEach(t => t.stop());
-                } catch (e) {
-                    // 权限被拒绝
-                    console.log('[Sitdown] 摄像头权限被拒绝:', e);
-                    ToastManager.Instance.createToast("必须同意浏览器的视频权限才能成功坐在视频桌");
-                    setTimeout(() => {
-                        this.TexasGameUtils.LeaveRoom();
-                    }, 3000);
-                    return;
-                }
+            try {
+                console.log('[Sitdown] 请求浏览器摄像头权限...');
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                // 权限通过，立即释放 stream（Agora 的 enableCamera 会自己创建 track）
+                console.log('[Sitdown] 摄像头权限通过，释放 stream');
+                stream.getTracks().forEach(t => t.stop());
+            } catch (e) {
+                // 权限被拒绝
+                console.log('[Sitdown] 摄像头权限被拒绝:', e);
+                ToastManager.Instance.createToast("必须同意浏览器的视频权限才能成功坐在视频桌");
+                setTimeout(() => {
+                    this.TexasGameUtils.LeaveRoom();
+                }, 3000);
+                return;
             }
         }
 
