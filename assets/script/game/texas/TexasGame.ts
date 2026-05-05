@@ -101,7 +101,7 @@ class SeatMoveStruct {
     public move_cp_count: number;
 
     //this func param id标记 id flag
-    public cacheFuncs: { a?: Object; b?: Function; c?: any; d?: string }[] = null;
+    public cacheFuncs: { a?: any; b?: Function; c?: any; d?: string }[] = null;
 
     constructor() {
         this.reset();

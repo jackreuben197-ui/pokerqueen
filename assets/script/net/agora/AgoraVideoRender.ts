@@ -85,22 +85,6 @@ export default class AgoraVideoRender extends cc.Component {
         this._frameInterval = 1 / this.targetFps;
     }
 
-    /** 渲染本地摄像头（通过 Agora 已创建的 track，不重复开摄像头） */
-    public async renderLocalCamera(): Promise<boolean> {
-        try {
-            const track = await AgoraManager.Instance.getLocalVideoTrack();
-            if (!track) {
-                console.error('[AgoraVideoRender] 获取 Agora 本地视频Track失败');
-                return false;
-            }
-            this._ownsStream = true;
-            return this._startWithStream(new MediaStream([track]));
-        } catch (e) {
-            console.error('[AgoraVideoRender] 渲染本地摄像头失败:', e);
-            return false;
-        }
-    }
-
     /** 用已有的 MediaStreamTrack 渲染 */
     public async renderFromTrack(track: MediaStreamTrack): Promise<boolean> {
         if (!track) {

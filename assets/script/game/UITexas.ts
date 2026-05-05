@@ -303,14 +303,14 @@ export default class UITexas extends BaseScene {
         this.chatBtn = this.getChildNodeOrComponent("chatBtn");
 
         // 远端音频/视频控制按钮（muteMicNode / hideVideoNode）
-        const muteMicNode = this.getChildNodeOrComponent("muteMicNode");
-        if (muteMicNode && muteMicNode instanceof cc.Node) {
+        const muteMicNode = this.getChildNodeOrComponent("muteMicNode") as cc.Node;
+        if (muteMicNode) {
             const bg = muteMicNode.getChildByName("background");
             this.muteMicOpenBtn = bg?.getChildByName("openBtn");
             this.muteMicCloseBtn = bg?.getChildByName("closeBtn");
         }
-        const hideVideoNode = this.getChildNodeOrComponent("hideVideoNode");
-        if (hideVideoNode && hideVideoNode instanceof cc.Node) {
+        const hideVideoNode = this.getChildNodeOrComponent("hideVideoNode") as cc.Node;
+        if (hideVideoNode) {
             const bg = hideVideoNode.getChildByName("background");
             this.hideVideoOpenBtn = bg?.getChildByName("openBtn");
             this.hideVideoCloseBtn = bg?.getChildByName("closeBtn");

@@ -2256,6 +2256,12 @@ export default class TexasGameProtocol {
 
         const agora = AgoraManager.Instance;
 
+        // 防御性清理：确保上一次 LeaveVideoChannel（可能未被 await）已完成
+        if (agora.isJoined) {
+            console.warn('[VideoRoom] 上一次频道尚未离开，先执行清理');
+            await this.LeaveVideoChannel();
+        }
+
         if (!agora.isSDKReady) {
             console.warn('[VideoRoom] Agora SDK 未加载，跳过');
             return;
@@ -2370,6 +2376,9 @@ export default class TexasGameProtocol {
             videoRender.targetFps = 15;
         }
 
+        // 先清回调，防止 stopRender 触发旧的 onRenderStopped 干扰新渲染
+        videoRender.onRenderStopped = null;
+
         const rendered = await videoRender.renderFromTrack(rawTrack);
         console.log('[VideoRoom] 本地视频渲染:', rendered ? '成功' : '失败');
         if (rendered) {
@@ -2434,8 +2443,16 @@ export default class TexasGameProtocol {
             videoRender.targetFps = 15;
         }
 
+        // 已在渲染同一个 uid，不重复触发
+        if (videoRender.isRendering) {
+            console.log('[VideoRoom] 远端视频已在渲染中, uid:', uid);
+            return;
+        }
+
         videoRender.renderRemoteUser(uid).then(ok => {
             console.log('[VideoRoom] 远端视频渲染 uid:', uid, ok ? '成功' : '失败');
+        }).catch(e => {
+            console.warn('[VideoRoom] 远端视频渲染异常, uid:', uid, e);
         });
     }
 
@@ -2513,9 +2530,11 @@ export default class TexasGameProtocol {
                     const vr = headNode.getComponent(AgoraVideoRender);
                     if (vr && !vr.isRendering) {
                         const rawTrack = AgoraManager.Instance.localVideoTrack.getMediaStreamTrack?.();
-                        if (rawTrack) {
+                        if (rawTrack && rawTrack.readyState !== 'ended') {
                             vr.renderFromTrack(rawTrack).then(ok => {
                                 console.log('[VideoRoom] 重连后本地视频恢复:', ok ? '成功' : '失败');
+                            }).catch(e => {
+                                console.warn('[VideoRoom] 重连后本地视频恢复异常:', e);
                             });
                         }
                     }
@@ -2623,6 +2642,14 @@ export default class TexasGameProtocol {
                 this._clearRandomVideoTimer();
                 GameCache.Instance._randomVideoActive = false;
                 GameCache.Instance._randomVideoEndTime = 0;
+
+                // 检查玩家是否还在座位上，如果已站起/离开则关闭摄像头
+                const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
+                if (!mySeat) {
+                    console.log('[RandomVideo] 玩家已不在座位，关闭摄像头');
+                    AgoraManager.Instance.disableCamera().catch(() => {});
+                }
+
                 // 摄像头保持开启，恢复关闭按钮
                 this.game?.uirc?.syncVideoButtonsFromAgora();
             }

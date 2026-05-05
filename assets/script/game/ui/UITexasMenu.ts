@@ -1,5 +1,5 @@
 import { EventName } from "../../config/EventName";
-import { GameConfig, TextColor } from "../../config/GameConfig";
+import { GameConfig } from "../../config/GameConfig";
 import { CommonDefine } from "../../define/CommonDefine";
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
@@ -190,7 +190,7 @@ export default class UITexasMenu extends UIBasePlus {
         if (!node) return;
         node.getChildByName("click").getComponent(cc.Button).interactable = boo;
         node.getChildByName("label").color = cc.Color.BLACK.fromHEX(
-            boo ? TextColor.Color7 : TextColor.Color3,
+            boo ? "#EEF5FF" : "#757CAB",
         );
     }
 
