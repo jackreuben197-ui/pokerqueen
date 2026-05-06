@@ -610,6 +610,64 @@ export default class UITexas extends BaseScene {
 
             this.main.height = view_height;
         }
+
+        // 延迟到下一帧计算座位偏移，确保 Widget 布局已完成
+        this.scheduleOnce(() => {
+            this.adjustSeatYOffset();
+            // 偏移量计算完后，刷新已有座位的实际位置
+            this.applySeatOffset();
+        }, 0);
+    }
+
+    /**
+     * 小屏适配：根据 main_menu 上边缘计算所有座位的 y 偏移量
+     * 确保 seat 0（最底部头像）不被 main_menu 遮挡，
+     * 同时保证最上方头像不超出屏幕顶部
+     */
+    private adjustSeatYOffset() {
+        some_pos.seatYOffset = 0;
+
+        const mainMenu = this.getChildNodeOrComponent("main_menu") as cc.Node;
+        if (!mainMenu || !this.seats_content) return;
+
+        // 用 getBoundingBoxToWorld 获取 main_menu 在世界坐标系中的实际包围盒
+        const menuBox = mainMenu.getBoundingBoxToWorld();
+        const menuTopWorldY = menuBox.y + menuBox.height;
+
+        // seat 0 中心点的世界坐标
+        const seat0LocalPos = some_pos.all_seat_pos[0];
+        const seat0WorldPos = this.seats_content.convertToWorldSpaceAR(seat0LocalPos);
+        const seat0WorldY = seat0WorldPos.y;
+
+        // 世界坐标中 main_menu 上边缘与 seat 0 中心的重叠量
+        const overlapWorld = menuTopWorldY - seat0WorldY;
+        if (overlapWorld <= 0) return; // 无重叠
+
+        // 将世界坐标的重叠量转换为 seats_content 本地坐标
+        const mainScale = this.main.scaleY;
+        const overlapLocal = overlapWorld / mainScale;
+        const margin = 30;
+        let offset = overlapLocal + margin;
+
+        // 校验顶部座位：seat 4/5/6 的 y = -440，上移后不能超出屏幕
+        const topSeatY = some_pos.all_seat_pos[5].y; // -440（最高）
+        const topSeatNewY = topSeatY + offset;
+        // seats_content 的 y=0 是顶部（anchor 0.5/1），座位中心不能超过 0
+        if (topSeatNewY > 0) {
+            offset = offset - topSeatNewY; // clamp 到刚好不超出
+        }
+
+        some_pos.seatYOffset = offset;
+    }
+
+    /**
+     * 将已创建的座位重新定位（应用 seatYOffset）
+     */
+    private applySeatOffset() {
+        if (!this.game?.listSeat) return;
+        for (const seat of this.game.listSeat) {
+            seat.UpdateSeatUIInfo(seat.ClientSeatId);
+        }
     }
     //进入初始UI
     EnterInitUI() {
@@ -862,6 +920,8 @@ export default class UITexas extends BaseScene {
             }
         }
         this._syncVideoButtonVisuals();
+        // 麦克风状态变更后刷新所有 MicIcon
+        this.game?.TexasGameProtocol?.refreshMicIcons();
     }
     private async click_btn_camera() {
         if (GameCache.Instance._videoModel === VideoModel.NONE) {

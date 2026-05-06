@@ -59,6 +59,7 @@ import AgoraManager from "../../net/agora/AgoraManager";
 import AgoraVideoRender from "../../net/agora/AgoraVideoRender";
 import { VideoModel } from "../../crazyPoker/gameplay/common/constant/VideoModel";
 import ToastManager from "../../manager/ToastManager";
+import { MicIconState } from "../SeatUIRC";
 
 
 
@@ -191,6 +192,8 @@ export default class TexasGameProtocol {
         this.game.UpdateStartGameState();
         // 视频房间：检查该玩家是否已有远端视频流
         this.TryRenderRemoteVideoForSeat(mSeat);
+        // 刷新麦克风图标（新人坐下可能需要显示静音图标）
+        this._refreshAllMicIcons();
     }
     /// <summary>
     /// 自己坐下
@@ -305,6 +308,8 @@ export default class TexasGameProtocol {
         // valuesMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
         // AppsFlyerHelper.GameEnterEvent(valuesMap);
         this.game.UpdateStartGameState();
+        // 刷新麦克风图标（自己坐下后更新静音/喇叭状态）
+        this._refreshAllMicIcons();
     }
     /// <summary>
     /// 补盲状态变化
@@ -2299,8 +2304,15 @@ export default class TexasGameProtocol {
         // 注册错误回调：SDK 放弃重连时清理 UI 状态
         agora.onError = this._onAgoraError.bind(this);
 
+        // 注册音量监控回调：检测谁在说话，更新麦克风图标
+        agora.onActiveSpeaker = this._onActiveSpeaker.bind(this);
+        agora.startVolumeMonitor();
+
         // 渲染已在座位上的远端玩家视频
         this._renderAllExistingRemoteVideos();
+
+        // 初始化所有座位的麦克风图标状态
+        this._refreshAllMicIcons();
 
         console.log('[VideoRoom] 频道就绪，等待远端视频');
     }
@@ -2339,6 +2351,11 @@ export default class TexasGameProtocol {
         agora.onUserLeft = null;
         agora.onReconnected = null;
         agora.onError = null;
+        agora.onActiveSpeaker = null;
+        agora.stopVolumeMonitor();
+
+        // 清理所有座位的麦克风图标
+        this._hideAllMicIcons();
 
         // 重置视频按钮状态
         this.game?.uirc?.resetVideoButtons();
@@ -2591,6 +2608,62 @@ export default class TexasGameProtocol {
     }
 
     // ==================== 随机视频验证 ====================
+
+    /**
+     * 音量监控回调：当前说话者变化时更新所有座位的麦克风图标
+     * @param uid 说话者的 uid，null 表示无人说话
+     */
+    private _onActiveSpeaker(uid: number | null): void {
+        this._refreshAllMicIcons(uid);
+    }
+
+    /**
+     * 刷新所有座位的麦克风图标状态（供 UITexas 麦克风开关后调用）
+     */
+    public refreshMicIcons(): void {
+        this._refreshAllMicIcons();
+    }
+
+    /**
+     * 刷新所有座位的麦克风图标状态
+     * @param speakingUid 当前说话者 uid（null=无人说话），不传则从 AgoraManager 获取
+     */
+    private _refreshAllMicIcons(speakingUid?: number | null): void {
+        const agora = AgoraManager.Instance;
+        if (!agora.isJoined) return;
+
+        const activeUid = speakingUid !== undefined ? speakingUid : agora.speakingUid;
+        const remoteUsers = agora.getRemoteUsers();
+
+        this.game?.listSeat?.forEach((seat: Seat) => {
+            if (!seat?.Player || !seat.uirc) return;
+
+            const playerUid = seat.Player.userID;
+            const isMySeat = seat.IsMySeat;
+
+            if (activeUid === playerUid) {
+                seat.uirc.setMicIconState(MicIconState.SPEAKING);
+            } else if (isMySeat) {
+                seat.uirc.setMicIconState(
+                    agora.localAudioTrack ? MicIconState.HIDDEN : MicIconState.MUTED
+                );
+            } else {
+                const remoteUser = remoteUsers.find(u => u.uid === playerUid);
+                seat.uirc.setMicIconState(
+                    remoteUser?.hasAudio ? MicIconState.HIDDEN : MicIconState.MUTED
+                );
+            }
+        });
+    }
+
+    /** 隐藏所有座位的麦克风图标（离开频道时调用） */
+    private _hideAllMicIcons(): void {
+        this.game?.listSeat?.forEach((seat: Seat) => {
+            if (seat?.uirc) {
+                seat.uirc.setMicIconState(MicIconState.HIDDEN);
+            }
+        });
+    }
 
     /** 随机验证倒计时定时器 */
     private _randomVideoTimer: number = 0;
