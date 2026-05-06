@@ -54,7 +54,7 @@ import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIDialogContentSizeLimit from "../../ui/dialog/UIDialogContentSizeLimit";
-import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
+import { UIConfirmDialogParam } from "../../crazyPoker/gameplay/common/view/common/UIConfirmDialog";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import TexasGameMessageHandler from "../messageHandler/TexasGameMessageHandler";
 // import { AddClipsData } from "../new_ui/UIBringIn";
@@ -2128,8 +2128,8 @@ export default class TexasGame {
             if (anteNumber > UITexasModel.mInstance.GetGoldByClubID(club_id)) {
                 //多钱包有其他支付
                 if (fromBring?.wallets.length > 1) {
-                    UIComponent.open<UISuperDialogType>(
-                        UIDefine.UISuperDialog,
+                    UIComponent.open<UIConfirmDialogParam>(
+                        UIDefine.UIComfirmDialog,
                         {
                             content: i18nMgr.Get("ServerErrorCode_20004"),
 
@@ -2171,8 +2171,8 @@ export default class TexasGame {
                         },
                     );
                 } else {
-                    UIComponent.open<UISuperDialogType>(
-                        UIDefine.UISuperDialog,
+                    UIComponent.open<UIConfirmDialogParam>(
+                        UIDefine.UIComfirmDialog,
                         {
                             content: i18nMgr.Get("ServerErrorCode_20004"),
 
@@ -2265,6 +2265,7 @@ export default class TexasGame {
                 // });
                 UIComponent.Instance.Toast("声纹认证暂未开启");
             } else {
+                console.log(LN, 'seated bringin', anteNumber);
                 ProtocolAgency.Send<ClientMessageSeated.AsObject>({
                     Code: ProtocolCode.Protocol_Holdem_Seated,
                     RoomID: GameCache.Instance.room_id,
@@ -2304,7 +2305,7 @@ export default class TexasGame {
             (GameUtil.GetFriendsOrClubTable() == 1 ||
                 GameUtil.GetFriendsOrClubTable() == 2) &&
             GameCache.Instance.FriendsTableLimitBringIn;
-
+        console.log(LN, 'only bringin', anteNumber, applyBringIn);
         ProtocolAgency.Send<ClientMessageBringIn.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_BringIn,
             RoomID: GameCache.Instance.room_id,
@@ -3916,7 +3917,7 @@ export default class TexasGame {
                 _smallBlind: this.smallBlind,
                 _currentMinRate: this.currentMinRate,
                 _currentMaxRate: this.currentMaxRate,
-                _totalCoin: GC.data.user.info.gold,
+                //_totalCoin: GC.data.user.info.gold,
                 _tableChips: this.mainPlayer.chips,
                 _wallets: data.wallet,
                 _source: BringInChipsType.BRING_IN,
@@ -4273,7 +4274,7 @@ export default class TexasGame {
             //         noAnimation: true,
             //     });
 
-            UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+            UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
                 this: this,
                 //title: i18nMgr.Get("WalletServiceCharge_eeydpBno"),
                 //"退出游戏，在这手牌结束后将自动站起",
@@ -4470,78 +4471,78 @@ export default class TexasGame {
             .getComponent(cc.Label).string = StringHelper.GetLongString(chips);
     }
 
-    public UpdateMenu() {
-        let menu = this.uirc.UITexasMenu;
+    // public UpdateMenu() {
+    //     let menu = this.uirc.UITexasMenu;
 
-        this.refreshCoinAndChip(menu);
+    //     this.refreshCoinAndChip(menu);
 
-        menu.clearOptions();
+    //     menu.clearOptions();
 
-        let show = [3, 4, 10]; //设置|规则|离开
+    //     let show = [3, 4, 10]; //设置|规则|离开
 
-        if (this.UserSitdown()) //已坐下
-        {
-            show.push(0, 6, 9); // 站起 | 带入 | 离座留桌
+    //     if (this.UserSitdown()) //已坐下
+    //     {
+    //         show.push(0, 6, 9); // 站起 | 带入 | 离座留桌
 
-            //menu.MenuButtons_Dic.Button_Standup.node.active = true;
-            //menu.MenuButtons_Dic.Button_AddChips.node.active = true;
+    //         //menu.MenuButtons_Dic.Button_Standup.node.active = true;
+    //         //menu.MenuButtons_Dic.Button_AddChips.node.active = true;
 
-            if (
-                this.mainPlayer.chips >=
-                GameCache.Instance.carry_small * (this.currentMaxRate + 1)
-            ) {
-                menu.setOptionInteractable(6, false);
-            } else {
-                menu.setOptionInteractable(6, true);
-            }
+    //         if (
+    //             this.mainPlayer.chips >=
+    //             GameCache.Instance.carry_small * (this.currentMaxRate + 1)
+    //         ) {
+    //             menu.setOptionInteractable(6, false);
+    //         } else {
+    //             menu.setOptionInteractable(6, true);
+    //         }
 
-            if (
-                this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL &&
-                this.gamestatus >= 1 &&
-                this.gamestatus < 7
-            ) {
-                //menu.MenuButtons_Dic.Button_TakeOut.node.active = true;
-                show.push(7);
-                //this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_TakeOut.node, true);
-                menu.setOptionInteractable(7, true);
-            } else if (
-                this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL &&
-                this.gamestatus != 1 &&
-                this.gamestatus < 7
-            ) {
-                show.push(7);
-                menu.setOptionInteractable(7, false);
-            } else {
-                //menu.MenuButtons_Dic.Button_TakeOut.node.active = false;
-                //menu.MenuButtons_Dic.Button_TakeOut.node.getComponent(cc.Button).interactable = false;
-            }
+    //         if (
+    //             this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL &&
+    //             this.gamestatus >= 1 &&
+    //             this.gamestatus < 7
+    //         ) {
+    //             //menu.MenuButtons_Dic.Button_TakeOut.node.active = true;
+    //             show.push(7);
+    //             //this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_TakeOut.node, true);
+    //             menu.setOptionInteractable(7, true);
+    //         } else if (
+    //             this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL &&
+    //             this.gamestatus != 1 &&
+    //             this.gamestatus < 7
+    //         ) {
+    //             show.push(7);
+    //             menu.setOptionInteractable(7, false);
+    //         } else {
+    //             //menu.MenuButtons_Dic.Button_TakeOut.node.active = false;
+    //             //menu.MenuButtons_Dic.Button_TakeOut.node.getComponent(cc.Button).interactable = false;
+    //         }
 
-            //menu.MenuButtons_Dic.Button_LeaveDesk.node.active = true;
+    //         //menu.MenuButtons_Dic.Button_LeaveDesk.node.active = true;
 
-            if (
-                this.gamestatus != 1
-            ) //游戏没开始的时候，座离桌按钮显示不可点击状态   !HasStarted()
-            {
-                //this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, false);
-                menu.setOptionInteractable(9, false);
-            } else {
-                menu.setOptionInteractable(9, true);
-                //this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, true);
-            }
+    //         if (
+    //             this.gamestatus != 1
+    //         ) //游戏没开始的时候，座离桌按钮显示不可点击状态   !HasStarted()
+    //         {
+    //             //this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, false);
+    //             menu.setOptionInteractable(9, false);
+    //         } else {
+    //             menu.setOptionInteractable(9, true);
+    //             //this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, true);
+    //         }
 
-            if (
-                !this.isMTT &&
-                this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO
-            ) {
-                //this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO
-                show.push(5);
-            }
-        }
-        show.forEach((index) => {
-            let option = menu.getOption(index);
-            if (option.node) option.node.active = true;
-        });
-    }
+    //         if (
+    //             !this.isMTT &&
+    //             this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO
+    //         ) {
+    //             //this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO
+    //             show.push(5);
+    //         }
+    //     }
+    //     show.forEach((index) => {
+    //         let option = menu.getOption(index);
+    //         if (option.node) option.node.active = true;
+    //     });
+    // }
     protected __MenuButtonInteractable(node: cc.Node, interactable: boolean) {
         node.getChildByName("Text").color = cc.Color.WHITE;
         node.getChildByName("Text").opacity = interactable ? 178 : 70;

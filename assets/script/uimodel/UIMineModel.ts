@@ -32,7 +32,7 @@ export class UIMineModel {
                     this.modifyHeadTime = tDto.data.user.mat;
                     GameCache.Instance.modifyNickNum = tDto.data.user.mnt;
                     // GameCache.Instance.gold = tDto.data.user.gold;
-                    GC.data.user.info.gold = tDto.data.user.gold;
+                    // GC.data.user.info.gold = tDto.data.user.gold;
                     // GameCache.Instance.isTestflight = tDto.data.user.province;
                     this.UIRefreshGoldEvent();
                     GC.notify.post(EventName.myGoldChange);

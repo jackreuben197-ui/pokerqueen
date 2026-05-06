@@ -503,7 +503,7 @@ export default class TexasGameMessageHandler {
     /// </summary>
     /// <param name="response"></param>
     Protocol_Holdem_ChipsChange_Handler(response: any): void {
-        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_ChipsChange_Handler`);
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_ChipsChange_Handler`, response);
     }
 
     /// <summary>
