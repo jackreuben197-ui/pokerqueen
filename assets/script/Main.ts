@@ -23,6 +23,7 @@ import H5MsgMgr from "./H5MsgMgr";
 import * as MainUtils from "./MainUtils";
 import UpdateComponent from "./funcomponent/UpdateComponent";
 import DataManager from "./frame/manager/DataManager";
+import ProcedureInit from "./procedure/ProcedureInit";
 ///////////////////////////////////////////////
 cc.macro.ENABLE_TRANSPARENT_CANVAS = false;
 const { ccclass, property } = cc._decorator;
@@ -51,6 +52,9 @@ export default class Main extends cc.Component {
     ////////////////////////////////////调试开关
 
     static ShowSeatID: number;//显示seat id
+
+    /** resize 防抖定时器 */
+    private _resizeTimer: number = 0;
 
     override async onLoad() {
 
@@ -121,7 +125,51 @@ export default class Main extends cc.Component {
 
         // 启动握手：设置 __CC_READY__，等待 H5 发来 h5Ready，回复 ccAck
         H5MsgMgr.Instance.startHandshake();
+
+        // 监听窗口大小变化（F12 开关、窗口拖拽等）
+        window.addEventListener('resize', this._onWindowResize.bind(this));
     }
+    /**
+     * 窗口大小变化时重新适配（防抖 200ms）
+     *
+     * 不使用 resizeWithBrowserSize（会和 Canvas.fitCanvasToWindow 互相覆盖导致 _frameSize 过时），
+     * 而是手动更新容器 DOM，直接设置 _frameSize 并调用 setDesignResolutionSize。
+     */
+    private _onWindowResize(): void {
+        clearTimeout(this._resizeTimer);
+        this._resizeTimer = window.setTimeout(() => {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            console.log('[Main] 窗口 resize，重新适配', w, h);
+
+            // 更新容器 DOM（预览模式下容器不会自动跟随窗口）
+            const content = document.getElementById('content');
+            if (content) {
+                content.style.width = w + 'px';
+                content.style.height = h + 'px';
+            }
+            const gameDiv = document.getElementById('GameDiv');
+            if (gameDiv) {
+                gameDiv.style.width = w + 'px';
+                gameDiv.style.height = h + 'px';
+            }
+            const wraps = document.getElementsByClassName('contentWrap');
+            for (let i = 0; i < wraps.length; i++) {
+                (wraps[i] as HTMLElement).style.width = w + 'px';
+                (wraps[i] as HTMLElement).style.height = h + 'px';
+            }
+
+            // 等一帧让 DOM 重排完成，再更新引擎画布
+            requestAnimationFrame(() => {
+                ProcedureInit.updateFitMode();
+
+                if (Main.Diss && Main.Diss.isValid) {
+                    MainUtils.refreshDiss(Main.Diss);
+                }
+            });
+        }, 200);
+    }
+
     protected override update(dt: number): void {
         UpdateComponent.Instance.Update(dt);
     }

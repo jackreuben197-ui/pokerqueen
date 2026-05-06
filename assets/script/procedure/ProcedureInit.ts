@@ -25,15 +25,34 @@ export default class ProcedureInit extends ProcedureBase {
      * 设置适配
      */
     private setFit(): void {
-        let framesize = cc.view.getFrameSize();
-        let w_h_r = framesize.width / framesize.height;
+        ProcedureInit.updateFitMode();
+    }
 
-        console.log('[Procedure]',"屏幕实际分辨率", framesize.width, framesize.height);
+    /**
+     * 根据当前窗口宽高比重新计算适配模式并直接应用
+     * 不依赖 getFrameSize()（它在 Canvas 组件和 resizeWithBrowserSize 互相覆盖时返回过时值），
+     * 而是直接读 window.innerWidth/Height，手动更新 _frameSize，再调用 setDesignResolutionSize。
+     */
+    static updateFitMode(): void {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const w_h_r = w / h;
+
+        console.log('[Procedure]', "窗口实际分辨率", w, h);
+
+        // 直接写入引擎的 _frameSize，避免被 Canvas.fitCanvasToWindow 用旧容器值覆盖
+        const view = cc.view as any;
+        view._frameSize.width = w;
+        view._frameSize.height = h;
+
+        const canvas = cc.Canvas.instance;
+        const designW = canvas.designResolution.width;
+        const designH = canvas.designResolution.height;
 
         if (w_h_r > 0.63) {
-            cc.Canvas.instance.fitHeight = true;
+            cc.view.setDesignResolutionSize(designW, designH, cc.ResolutionPolicy.FIXED_HEIGHT);
         } else {
-            cc.Canvas.instance.fitWidth = true;
+            cc.view.setDesignResolutionSize(designW, designH, cc.ResolutionPolicy.FIXED_WIDTH);
         }
     }
     /**

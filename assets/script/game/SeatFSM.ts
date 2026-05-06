@@ -4,6 +4,7 @@ import GlobalSession from "../session/GlobalSession";
 import { GameCache } from "./GameCache";
 import Seat, { VoiceprintState } from "./seat/Seat";
 import { SeatEmpty, SeatSit, SeatStandup, SeatWaitStart } from "./SeatStateHandler";
+import { VideoModel } from "../crazyPoker/gameplay/common/constant/VideoModel";
 
 
 
@@ -280,6 +281,9 @@ export class SeatFSM {
             }
             this.seat.UpdateImageBackActive();
             GC.sound.Play('sfx_desk_player_turn');
+
+            // 麦序模式：轮到自己操作时自动开启摄像头
+            this._sequenceOpenCamera();
             return;
         }
         this.seat.StartCountDown(GameCache.Instance.CurGame.GetOpTime());
@@ -301,10 +305,48 @@ export class SeatFSM {
             if (GameCache.Instance.voiceprint_verify_on == 1) {
                 //VoiceMoveToDefault();
             }
+            // 麦序模式：操作结束，标记为可手动关闭（摄像头保持开启）
+            this._sequenceOperationEnd();
         }
         this.seat.StopCountDown();
     }
     //#endregion
+
+    // ==================== 麦序模式视频控制 ====================
+
+    /**
+     * 麦序模式：轮到自己操作时自动开启摄像头
+     */
+    private async _sequenceOpenCamera(): Promise<void> {
+        if (GameCache.Instance._videoModel !== VideoModel.SEQUENCE) return;
+
+        const game = GameCache.Instance.CurGame;
+        if (!game?.TexasGameProtocol) return;
+
+        // 标记麦序操作中（禁止手动关闭）
+        GameCache.Instance._sequenceVideoActive = true;
+
+        console.log('[SequenceVideo] 轮到操作，自动开启摄像头');
+        await game.TexasGameProtocol.renderLocalVideoOnMySeat();
+
+        // 同步按钮状态
+        game.uirc?.syncVideoButtonsFromAgora();
+    }
+
+    /**
+     * 麦序模式：操作结束，摄像头保持开启但允许手动关闭
+     */
+    private _sequenceOperationEnd(): void {
+        if (GameCache.Instance._videoModel !== VideoModel.SEQUENCE) return;
+        if (!GameCache.Instance._sequenceVideoActive) return;
+
+        console.log('[SequenceVideo] 操作结束，恢复手动控制');
+        GameCache.Instance._sequenceVideoActive = false;
+
+        // 同步按钮状态（摄像头保持开启，但允许关闭）
+        const game = GameCache.Instance.CurGame;
+        game?.uirc?.syncVideoButtonsFromAgora();
+    }
 
 
     //#region 购买保险

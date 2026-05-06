@@ -29,10 +29,9 @@ export default class AgoraManager {
     private _localAudioTrack: any = null;
     private _localVideoTrack: any = null;
     private _joined: boolean = false;
+    private _joining: boolean = false;
     private _channelName: string = '';
     private _uid: number = 0;
-    /** 是否已完成 AppId 有效性检测（首次 join 时执行一次） */
-    private _appIdChecked: boolean = false;
     /** 全局远端音频静音标记 */
     private _allRemoteAudioMuted: boolean = false;
     /** 全局远端视频隐藏标记 */
@@ -143,7 +142,7 @@ export default class AgoraManager {
      * @param channel 频道名
      * @param uid 用户 ID
      */
-    public async fetchToken(channel: string, uid: number = 0): Promise<string | null> {
+    private async fetchToken(channel: string, uid: number = 0): Promise<string | null> {
         try {
             const response = await WWW.Instance.CommonAPI({
                 web_class: WebMiscAgoraToken,
@@ -163,63 +162,6 @@ export default class AgoraManager {
         } catch (e: any) {
             console.error('[AgoraManager] Token 获取失败:', e?.message || e);
             return null;
-        }
-    }
-
-    /**
-     * 检测 appId + Token 服务是否正常
-     * 流程: 请求Token → 加入测试频道 → 离开
-     */
-    public async checkAppId(): Promise<boolean> {
-        console.log('========== [AgoraManager] 开始检测 AppId 有效性 ==========');
-        console.log('[AgoraManager] AppId:', this.appId);
-        console.log('[AgoraManager] SDK 版本:', (window as any).AgoraRTC.VERSION);
-
-        if (!this._client) {
-            console.error('[AgoraManager] Client 未初始化，无法检测');
-            return false;
-        }
-
-        const testChannel = '__appid_test_' + Date.now();
-        const testClient = (window as any).AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
-
-        // 第1步：从本地服务获取 Token
-        console.log('[AgoraManager] 第1步: 请求本地Token服务...');
-        const token = await this.fetchToken(testChannel, 0);
-        if (!token) {
-            console.log('========== [AgoraManager] AppId 检测失败 ❌ (Token服务不可用) ==========');
-            return false;
-        }
-        console.log('[AgoraManager] 第1步完成 ✅ Token服务正常');
-
-        // 第2步：用 Token 加入测试频道
-        console.log('[AgoraManager] 第2步: 用Token加入测试频道...');
-        try {
-            const uid = await testClient.join(this.appId, testChannel, token, 0);
-            console.log('[AgoraManager] 第2步完成 ✅ AppId + Token 均有效！');
-            console.log('[AgoraManager] 测试频道加入成功，分配 uid:', uid);
-            await testClient.leave();
-            console.log('[AgoraManager] 测试频道已离开，资源已释放');
-            console.log('========== [AgoraManager] AppId 检测通过 ✅✅✅ ==========');
-            return true;
-        } catch (e: any) {
-            const code = e?.code || 'UNKNOWN';
-            const msg = e?.message || String(e);
-            console.error('[AgoraManager] ❌ 加入频道失败');
-            console.error('[AgoraManager] 错误码:', code);
-            console.error('[AgoraManager] 错误信息:', msg);
-
-            if (code === 'CAN_NOT_GET_GATEWAY_SERVER' || msg.includes('static key')) {
-                console.error('[AgoraManager] 原因: 项目开启了App Certificate，需要动态Token');
-            } else if (code === 'INVALID_PARAMS' || msg.includes('invalid vendor key')) {
-                console.error('[AgoraManager] 原因: AppId 无效或格式错误');
-            } else if (code === 'TOKEN_EXPIRED') {
-                console.error('[AgoraManager] 原因: Token 已过期');
-            } else if (code === 'NETWORK_ERROR' || msg.includes('network')) {
-                console.warn('[AgoraManager] 原因: 网络连接失败');
-            }
-            console.log('========== [AgoraManager] AppId 检测失败 ❌ ==========');
-            return false;
         }
     }
 
@@ -306,25 +248,22 @@ export default class AgoraManager {
             console.warn('[AgoraManager] 已在频道中，请先 leave()');
             return false;
         }
+        if (this._joining) {
+            console.warn('[AgoraManager] 正在加入频道中，请勿重复调用');
+            return false;
+        }
         if (!this.appId) {
             console.error('[AgoraManager] appId 未配置');
             return false;
         }
 
-        // 首次 join 时检测 AppId + Token 服务是否可用
-        if (!this._appIdChecked) {
-            this._appIdChecked = true;
-            const ok = await this.checkAppId();
-            if (!ok) {
-                console.warn('[AgoraManager] AppId 检测未通过，但仍尝试加入频道');
-            }
-        }
+        this._joining = true;
 
         // 如果没传 token，自动从 Token 服务获取
         let actualToken = token;
         if (!actualToken) {
             actualToken = await this.fetchToken(channel, uid || 0);
-            if (!actualToken) return false;
+            if (!actualToken) { this._joining = false; return false; }
         }
 
         console.log('[AgoraManager] 准备加入频道, appId:', this.appId, 'channel:', channel, 'uid:', uid, 'token长度:', actualToken?.length, 'token前20字符:', actualToken?.substring(0, 20));
@@ -339,6 +278,8 @@ export default class AgoraManager {
             console.error('[AgoraManager] 加入频道失败:', e);
             this.onError?.(e);
             return false;
+        } finally {
+            this._joining = false;
         }
     }
 
@@ -460,23 +401,6 @@ export default class AgoraManager {
     }
 
     /**
-     * 取消发布指定类型的本地轨道（不断开，仅停止向频道发布）
-     */
-    public async unpublish(mediaType: 'audio' | 'video'): Promise<void> {
-        if (!this._joined || !this._client) return;
-        try {
-            if (mediaType === 'video' && this._localVideoTrack) {
-                await this._client.unpublish([this._localVideoTrack]);
-            }
-            if (mediaType === 'audio' && this._localAudioTrack) {
-                await this._client.unpublish([this._localAudioTrack]);
-            }
-        } catch (e) {
-            console.warn('[AgoraManager] unpublish 失败:', e);
-        }
-    }
-
-    /**
      * 开启摄像头并发布视频
      * @param container 视频渲染的 DOM 容器
      */
@@ -496,7 +420,10 @@ export default class AgoraManager {
             if (container) {
                 this._localVideoTrack.play(container);
             }
-            await this._client.publish([this._localVideoTrack]);
+            // 已发布过的 track 不重复 publish，避免 ALREADY_PUBLISHED 错误
+            if (!this._localVideoTrack._isPublished) {
+                await this._client.publish([this._localVideoTrack]);
+            }
             console.log('[AgoraManager] 摄像头已开启');
             return true;
         } catch (e: any) {
@@ -525,36 +452,6 @@ export default class AgoraManager {
         this._localVideoTrack?.close();
         this._localVideoTrack = null;
         console.log('[AgoraManager] 摄像头已关闭');
-    }
-
-    /**
-     * 同时开启麦克风和摄像头
-     */
-    public async enableAudioAndVideo(cameraContainer?: HTMLElement): Promise<boolean> {
-        if (!this._joined) return false;
-        if (!this.isMediaDevicesSupported) {
-            console.error('[AgoraManager] 浏览器不支持音视频设备，请使用 HTTPS 访问');
-            return false;
-        }
-        try {
-            if (!this._localAudioTrack) {
-                this._localAudioTrack = await (window as any).AgoraRTC.createMicrophoneAudioTrack();
-            }
-            if (!this._localVideoTrack) {
-                this._localVideoTrack = await (window as any).AgoraRTC.createCameraVideoTrack({
-                    encoderConfig: { width: 240, height: 240, frameRate: 15, bitrateMax: 300 },
-                });
-            }
-            if (cameraContainer) {
-                this._localVideoTrack.play(cameraContainer);
-            }
-            await this._client.publish([this._localAudioTrack, this._localVideoTrack]);
-            console.log('[AgoraManager] 音视频已开启并发布');
-            return true;
-        } catch (e) {
-            console.error('[AgoraManager] 开启音视频失败:', e);
-            return false;
-        }
     }
 
     /**
@@ -699,44 +596,7 @@ export default class AgoraManager {
         }
     }
 
-    /**
-     * 播放远端用户的视频到指定 DOM 容器
-     */
-    public playRemoteVideo(uid: number, container: HTMLElement): void {
-        const remoteUser = this._client?.remoteUsers?.find((u: any) => u.uid === uid);
-        if (remoteUser?.videoTrack) {
-            remoteUser.videoTrack.play(container);
-        }
-    }
-
     // ==================== 视频 Track 暴露（供 AgoraVideoRender 使用） ====================
-
-    /**
-     * 获取本地摄像头的 MediaStreamTrack
-     * 如果 Track 不存在会自动创建（不需要加入频道）
-     */
-    public async getLocalVideoTrack(): Promise<MediaStreamTrack | null> {
-        if (!this.isSDKReady) {
-            console.error('[AgoraManager] SDK 未加载');
-            return null;
-        }
-        if (!this.isMediaDevicesSupported) {
-            console.error('[AgoraManager] 浏览器不支持摄像头（缺少 getUserMedia）');
-            return null;
-        }
-        if (!this._localVideoTrack) {
-            try {
-                this._localVideoTrack = await (window as any).AgoraRTC.createCameraVideoTrack({
-                    encoderConfig: { width: 240, height: 240, frameRate: 15, bitrateMax: 300 },
-                });
-                console.log('[AgoraManager] 自动创建本地视频Track');
-            } catch (e) {
-                console.error('[AgoraManager] 创建摄像头Track失败:', e);
-                return null;
-            }
-        }
-        return this._localVideoTrack.getMediaStreamTrack() || null;
-    }
 
     /**
      * 获取远端用户的视频 MediaStreamTrack

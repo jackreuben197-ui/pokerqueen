@@ -89,6 +89,9 @@ import { AddClipsDataOut } from "../new_ui/UIBringOut";
 import { AddClipsData } from "../../crazyPoker/gameplay/common/view/chips/UIGameplayAddChipsAndDiamond";
 import { BringInChipsType } from "../../crazyPoker/gameplay/common/constant/BringInChipsType";
 import { HttpRoomBringOutProtocol } from "../../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringOutProtocol";
+import { VideoModel } from "../../crazyPoker/gameplay/common/constant/VideoModel";
+import AgoraManager from "../../net/agora/AgoraManager";
+import ToastManager from "../../manager/ToastManager";
 //const PBTypes = Def.Types;
 
 class SeatMoveStruct {
@@ -100,7 +103,7 @@ class SeatMoveStruct {
     public move_cp_count: number;
 
     //this func param id标记 id flag
-    public cacheFuncs: { a?: Object; b?: Function; c?: any; d?: string }[] = null;
+    public cacheFuncs: { a?: any; b?: Function; c?: any; d?: string }[] = null;
 
     constructor() {
         this.reset();
@@ -1217,6 +1220,9 @@ export default class TexasGame {
         this.jackpotFeature?.EnterGame();
         this.ShowCriticalInfo();
         this.RefreshRoomManagerStateAndStartButton();
+
+        // 视频房间重入：如果自己已坐下，自动开启本地摄像头
+        this._restoreVideoOnReenter();
     }
 
     //奔跑请求队列
@@ -1859,7 +1865,7 @@ export default class TexasGame {
     /// 坐下
     /// </summary>
     /// <param name="clientSeatId"></param>
-    public Sitdown(clientSeatId: number, isEmptyClick: boolean = false): void {
+    public async Sitdown(clientSeatId: number, isEmptyClick: boolean = false): Promise<void> {
         //test
         //this.CurlimitOutChip = RoomInfo.RetainType.RT_AUTO;
 
@@ -1884,6 +1890,25 @@ export default class TexasGame {
 
             console.log(LN,`Sitdown 该位置有其他玩家 clientSeatId:${clientSeatId}`);
             return;
+        }
+
+        // 视频房间：坐下前先请求浏览器摄像头权限（不依赖 Agora 频道状态）
+        if (GameCache.Instance._videoModel !== VideoModel.NONE) {
+            try {
+                console.log('[Sitdown] 请求浏览器摄像头权限...');
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                // 权限通过，立即释放 stream（Agora 的 enableCamera 会自己创建 track）
+                console.log('[Sitdown] 摄像头权限通过，释放 stream');
+                stream.getTracks().forEach(t => t.stop());
+            } catch (e) {
+                // 权限被拒绝
+                console.log('[Sitdown] 摄像头权限被拒绝:', e);
+                ToastManager.Instance.createToast("必须同意浏览器的视频权限才能成功坐在视频桌");
+                setTimeout(() => {
+                    this.TexasGameUtils.LeaveRoom();
+                }, 3000);
+                return;
+            }
         }
 
         this.cacheSitdownSeatId = mSeat.seatID;
@@ -5014,5 +5039,25 @@ export default class TexasGame {
     }
     public HideBtnDelay(isActive: boolean): void {
         this.uirc.Button_Delay.active = isActive;
+    }
+
+    // ==================== 视频重入恢复 ====================
+
+    /**
+     * 重入房间时，如果自己已坐下且是视频房间，自动开启摄像头
+     * 解决 F5 刷新后视频丢失的问题
+     */
+    private _restoreVideoOnReenter(): void {
+        if (GameCache.Instance._videoModel === VideoModel.NONE) return;
+
+        // 判断自己是否已坐下
+        const mySeat = this.listSeat?.find((s: Seat) => s.IsMySeat);
+        if (!mySeat || !mySeat.Player) return;
+
+        console.log('[VideoRoom] 重入房间，已坐下状态，自动开启摄像头');
+        // 延迟执行，等待 Agora 频道加入完成
+        setTimeout(() => {
+            this.TexasGameProtocol?.renderLocalVideoOnMySeat();
+        }, 2000);
     }
 }

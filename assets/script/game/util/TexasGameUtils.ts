@@ -287,6 +287,11 @@ export default class TexasGameUtils {
 
         GameCache.Instance.origin_type = 0;
 
+        // 清理视频验证状态，防止退出房间后残留到其他房间
+        GameCache.Instance._randomVideoActive = false;
+        GameCache.Instance._randomVideoEndTime = 0;
+        GameCache.Instance._sequenceVideoActive = false;
+
         GameCache.Instance.FriendsTableCode = null;
         GameCache.Instance.share_table = 0;
 

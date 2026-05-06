@@ -77,6 +77,17 @@ export default class UITexasSettingComponent extends UIBase {
             UIComponent.close(this.UIDefine);
         }, this);
 
+        // 点击面板外部区域关闭（根节点 = 全屏遮罩，Image_Dialog = 面板内容）
+        let imageDialog = this.getChildNodeOrComponent("Image_Dialog") as cc.Node;
+        if (imageDialog) {
+            imageDialog.on(cc.Node.EventType.TOUCH_END, (e: cc.Event.EventTouch) => {
+                e.stopPropagation(); // 阻止冒泡，点击面板内容不关闭
+            }, this);
+        }
+        this.node.on(cc.Node.EventType.TOUCH_END, () => {
+            UIComponent.close(this.UIDefine);
+        }, this);
+
         let closeVoice = cc.find('Background/closeVoice', this.Toggle_Voice);
         let openVoice = cc.find('Background/openVoice', this.Toggle_Voice);
 

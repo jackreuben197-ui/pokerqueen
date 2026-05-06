@@ -697,6 +697,21 @@ export class GameCache {
     public _videoVerifyType: number = 0;
 
     /**
+     * 随机验证：是否正在强制验证中
+     */
+    public _randomVideoActive: boolean = false;
+
+    /**
+     * 随机验证：倒计时结束时间戳（毫秒）
+     */
+    public _randomVideoEndTime: number = 0;
+
+    /**
+     * 麦序模式：当前是否正在自己的操作轮次中（视频不可关闭）
+     */
+    public _sequenceVideoActive: boolean = false;
+
+    /**
      * 白名单
      */
     public _isWhiteList: boolean = false;

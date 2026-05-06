@@ -260,9 +260,9 @@ export default class ProtocolAgency extends cc.Component {
         }
 
         if (code < 1000 &&
-            (code != ProtocolCode.Protocol_Holdem_Rooms ||
-                code != ProtocolCode.Protocol_Holdem_Rooms)
-        ) {// code != xxx || code != xxx 处理白名单放行
+            code != ProtocolCode.Protocol_Holdem_Rooms &&
+            code != ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo
+        ) {
             console.log(LN, 'drop code:', code);
             return;
         }

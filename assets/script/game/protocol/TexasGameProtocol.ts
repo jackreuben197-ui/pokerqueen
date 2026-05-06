@@ -40,6 +40,7 @@ import { ServerMessageShowdown } from "../../protobuf/holdem/req_th_showdown_pb"
 import { ServerMessageShowPublicCards } from "../../protobuf/holdem/req_th_show_public_cards_pb";
 import { ServerMessageSquidInActive } from "../../protobuf/holdem/req_th_squid_in_active_pb";
 import { ServerMessageStoreChips } from "../../protobuf/holdem/req_th_store_chips_pb";
+import { ServerMessageUtilAntiCheatRoomVideo } from "../../protobuf/holdem/recv_util_anti_cheat_room_video_pb";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { CardType } from "../CardTypeUtil";
 import { CPlayer } from "../CPlayer";
@@ -57,6 +58,7 @@ import { InsuranceData, WrapTriggedInsuranceData } from "../new_ui/UIInsurancePa
 import AgoraManager from "../../net/agora/AgoraManager";
 import AgoraVideoRender from "../../net/agora/AgoraVideoRender";
 import { VideoModel } from "../../crazyPoker/gameplay/common/constant/VideoModel";
+import ToastManager from "../../manager/ToastManager";
 
 
 
@@ -104,6 +106,7 @@ export default class TexasGameProtocol {
         GC.notify.register(ProtocolCode.Protocol_Holdem_SquidInActive, this.HANDLER_REQ_SQUID_IN_ACTIVE, this); // 主动加入鱿鱼返回
         GC.notify.register(ProtocolCode.Protocol_Holdem_SquidIn, this.HANDLER_REQ_SQUID_IN, this); // 鱿鱼加入状态广播
         GC.notify.register(ProtocolCode.Protocol_Holdem_NextChange, this.HANDLER_REQ_NEXT_CHANGE, this); // 下一手配置变更
+        GC.notify.register(ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo, this.HANDLER_RANDOM_VIDEO_VERIFY, this); // 随机视频验证
     }
     public RemoveMsgHandler(): void {
         console.log(`TexasGame : RemoveMsgHandler`);
@@ -139,6 +142,9 @@ export default class TexasGameProtocol {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_SquidInActive, this.HANDLER_REQ_SQUID_IN_ACTIVE, this); // 主动加入鱿鱼返回
         GC.notify.remove(ProtocolCode.Protocol_Holdem_SquidIn, this.HANDLER_REQ_SQUID_IN, this); // 鱿鱼加入状态广播
         GC.notify.remove(ProtocolCode.Protocol_Holdem_NextChange, this.HANDLER_REQ_NEXT_CHANGE, this); // 下一手配置变更
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo, this.HANDLER_RANDOM_VIDEO_VERIFY, this); // 随机视频验证
+        // 清理随机验证倒计时
+        this._clearRandomVideoTimer();
     }
 
     /// <summary>
@@ -274,7 +280,14 @@ export default class TexasGameProtocol {
         }
         // 视频房间：坐下后渲染本地摄像头到自己的头像
         if (GameCache.Instance._videoModel !== VideoModel.NONE) {
-            this.renderLocalVideoOnMySeat();
+            this.renderLocalVideoOnMySeat().then(ok => {
+                if (!ok) {
+                    ToastManager.Instance.createToast("无法开启摄像头，请检查浏览器权限后重新入座");
+                    setTimeout(() => {
+                        this.game.TexasGameUtils.LeaveRoom();
+                    }, 3000);
+                }
+            });
         }
 
         //房间坐下时时添加firebase事件触发
@@ -2250,6 +2263,12 @@ export default class TexasGameProtocol {
 
         const agora = AgoraManager.Instance;
 
+        // 防御性清理：确保上一次 LeaveVideoChannel（可能未被 await）已完成
+        if (agora.isJoined) {
+            console.warn('[VideoRoom] 上一次频道尚未离开，先执行清理');
+            await this.LeaveVideoChannel();
+        }
+
         if (!agora.isSDKReady) {
             console.warn('[VideoRoom] Agora SDK 未加载，跳过');
             return;
@@ -2331,28 +2350,28 @@ export default class TexasGameProtocol {
     /**
      * 自己坐下后渲染本地摄像头到自己的头像
      */
-    public async renderLocalVideoOnMySeat(): Promise<void> {
+    public async renderLocalVideoOnMySeat(): Promise<boolean> {
         const agora = AgoraManager.Instance;
-        if (!agora.isJoined) return;
+        if (!agora.isJoined) return false;
 
         // 开启本地摄像头并发布视频（Agora 内部调用 getUserMedia 创建 track）
         const cameraOk = await agora.enableCamera();
         if (!cameraOk) {
             console.error('[VideoRoom] 开启摄像头失败');
-            return;
+            return false;
         }
 
         // 复用 Agora 已创建的 localVideoTrack，不再重复调 getUserMedia
         const rawTrack = agora.localVideoTrack?.getMediaStreamTrack?.();
         if (!rawTrack) {
             console.error('[VideoRoom] 获取本地视频 MediaStreamTrack 失败');
-            return;
+            return false;
         }
 
         const mySeat = this.game.listSeat.find((s: Seat) => s.IsMySeat);
         if (!mySeat || !mySeat.uirc?.Raw_Head) {
             console.warn('[VideoRoom] 未找到自己的座位或头像节点');
-            return;
+            return false;
         }
 
         const headNode = mySeat.uirc.Raw_Head.node;
@@ -2364,6 +2383,9 @@ export default class TexasGameProtocol {
             videoRender.targetFps = 15;
         }
 
+        // 先清回调，防止 stopRender 触发旧的 onRenderStopped 干扰新渲染
+        videoRender.onRenderStopped = null;
+
         const rendered = await videoRender.renderFromTrack(rawTrack);
         console.log('[VideoRoom] 本地视频渲染:', rendered ? '成功' : '失败');
         if (rendered) {
@@ -2374,6 +2396,7 @@ export default class TexasGameProtocol {
             };
             this.game.uirc?.syncVideoButtonsFromAgora();
         }
+        return rendered;
     }
 
     /**
@@ -2428,8 +2451,16 @@ export default class TexasGameProtocol {
             videoRender.targetFps = 15;
         }
 
+        // 已在渲染同一个 uid，不重复触发
+        if (videoRender.isRendering) {
+            console.log('[VideoRoom] 远端视频已在渲染中, uid:', uid);
+            return;
+        }
+
         videoRender.renderRemoteUser(uid).then(ok => {
             console.log('[VideoRoom] 远端视频渲染 uid:', uid, ok ? '成功' : '失败');
+        }).catch(e => {
+            console.warn('[VideoRoom] 远端视频渲染异常, uid:', uid, e);
         });
     }
 
@@ -2507,9 +2538,11 @@ export default class TexasGameProtocol {
                     const vr = headNode.getComponent(AgoraVideoRender);
                     if (vr && !vr.isRendering) {
                         const rawTrack = AgoraManager.Instance.localVideoTrack.getMediaStreamTrack?.();
-                        if (rawTrack) {
+                        if (rawTrack && rawTrack.readyState !== 'ended') {
                             vr.renderFromTrack(rawTrack).then(ok => {
                                 console.log('[VideoRoom] 重连后本地视频恢复:', ok ? '成功' : '失败');
+                            }).catch(e => {
+                                console.warn('[VideoRoom] 重连后本地视频恢复异常:', e);
                             });
                         }
                     }
@@ -2554,6 +2587,90 @@ export default class TexasGameProtocol {
 
             // 重置按钮（视频不可用）
             this.game?.uirc?.resetVideoButtons();
+        }
+    }
+
+    // ==================== 随机视频验证 ====================
+
+    /** 随机验证倒计时定时器 */
+    private _randomVideoTimer: number = 0;
+
+    /**
+     * 收到 902 消息：服务器选中当前玩家进行随机视频验证
+     */
+    private async HANDLER_RANDOM_VIDEO_VERIFY(rec: ServerMessageUtilAntiCheatRoomVideo.AsObject): Promise<void> {
+        if (!rec) return;
+        console.log('[RandomVideo] 收到随机视频验证消息, status:', rec.status, 'roomType:', rec.roomType);
+
+        // 仅随机验证模式处理
+        if (GameCache.Instance._videoModel !== VideoModel.RANDOM) {
+            console.warn('[RandomVideo] 当前不是随机验证模式，忽略');
+            return;
+        }
+
+        // 如果已经在验证中，不重复触发
+        if (GameCache.Instance._randomVideoActive) {
+            console.log('[RandomVideo] 已在验证中，忽略重复消息');
+            return;
+        }
+
+        // 标记开始验证
+        GameCache.Instance._randomVideoActive = true;
+
+        // 计算结束时间（毫秒）
+        const duration = GameCache.Instance._antiCheatTimeLimit || 180;
+        GameCache.Instance._randomVideoEndTime = Date.now() + duration * 1000;
+
+        console.log('[RandomVideo] 开始随机验证，持续', duration, '秒');
+
+        // Toast 提示（带倒计时秒数）
+        const toastText = i18nMgr.Get('UIVideoModelverifyRandom01').replace('{0}', String(duration));
+        ToastManager.Instance.createToast(toastText);
+
+        // 强制开启摄像头并渲染到自己的头像
+        await this.renderLocalVideoOnMySeat();
+
+        // 同步按钮状态（禁用关闭按钮）
+        this.game?.uirc?.syncVideoButtonsFromAgora();
+
+        // 启动倒计时
+        this._startRandomVideoCountdown();
+    }
+
+    /**
+     * 启动随机验证倒计时
+     */
+    private _startRandomVideoCountdown(): void {
+        this._clearRandomVideoTimer();
+        this._randomVideoTimer = window.setInterval(() => {
+            const remaining = GameCache.Instance._randomVideoEndTime - Date.now();
+            if (remaining <= 0) {
+                // 倒计时结束
+                console.log('[RandomVideo] 验证倒计时结束，恢复手动控制');
+                this._clearRandomVideoTimer();
+                GameCache.Instance._randomVideoActive = false;
+                GameCache.Instance._randomVideoEndTime = 0;
+
+                // 检查玩家是否还在座位上，如果已站起/离开则关闭摄像头
+                const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
+                if (!mySeat) {
+                    console.log('[RandomVideo] 玩家已不在座位，关闭摄像头');
+                    AgoraManager.Instance.disableCamera().catch(() => {});
+                }
+
+                // 摄像头保持开启，恢复关闭按钮
+                this.game?.uirc?.syncVideoButtonsFromAgora();
+            }
+        }, 1000);
+    }
+
+    /**
+     * 清理随机验证倒计时
+     */
+    private _clearRandomVideoTimer(): void {
+        if (this._randomVideoTimer) {
+            window.clearInterval(this._randomVideoTimer);
+            this._randomVideoTimer = 0;
         }
     }
 }
