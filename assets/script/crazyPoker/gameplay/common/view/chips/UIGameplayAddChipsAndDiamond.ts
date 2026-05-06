@@ -1,7 +1,5 @@
 import { GameCache } from "../../../../../game/GameCache";
-import GameUtil from "../../../../../game/util/GameUtil";
 import { i18nMgr } from "../../../../../i18n/i18nMgr";
-import BaseFormPlus from "../../../../../ui/form/BaseFormPlus";
 import { BringInChipsType } from "../../constant/BringInChipsType";
 import { GameType, PokerType } from "../../constant/LogicTypeConf";
 import { RoomOriginType } from "../../constant/RoomOriginType";
@@ -43,8 +41,8 @@ export class AddClipsData {
     public _currentMinRate: number = 0;
     /** 当前最大带入倍数 */
     public _currentMaxRate: number = 0;
-    /** 总UC币 */
-    public _totalCoin: number = 0;
+    // /** 总UC币 */
+    // public _totalCoin: number = 0;
     /** 玩家剩余记分牌 */
     public _tableChips: number = 0;
     /** 藏钱记分牌 */
@@ -399,7 +397,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
             this.rate = 50;
         }
 
-        if (obj != null) {
+        if (obj) {
             this.addClipsData = obj as AddClipsData;
             this.isFirstClick = true;
             this.currentSelect = -1;
@@ -438,10 +436,12 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
 
             this.clueItemPrefab.active = false;
             this.walletScrollView.node.active = false;
-            this.arrowDown.setRotation(0);
+            this.arrowDown.angle = -0;
 
             this.initDiamond();
             this.setupSlider();
+            // 钱包列表
+            this.setupWalletList();
         }
     }
 
@@ -609,8 +609,6 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
             return;
         }
 
-        // 钱包列表
-        this.setupWalletList();
     }
 
 
@@ -1045,9 +1043,9 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
 
         if (this.arrowDown && this.walletScrollView) {
             if (this.walletScrollView.node.active) {
-                this.arrowDown.setRotation(180);
+                this.arrowDown.angle = -180;
             } else {
-                this.arrowDown.setRotation(0);
+                this.arrowDown.angle = -0;
             }
         }
 
@@ -1099,6 +1097,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
      */
     private setupWalletList(): void {
         if (!this.addClipsData?._wallets) return;
+        console.log(LN, "wallet:",this.addClipsData?._wallets);
         this.mySelectWallet = null;
         let wallets = this.addClipsData._wallets;
         if (wallets.length == 1) {
@@ -1155,7 +1154,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
                         this.mySelectWallet = wallets[index];
                         this.updateTotalCoin(true, wallets[index].club_name, wallets[index].gold, this.addClipsData._creditNum);
                         this.walletScrollView.node.active = false;
-                        this.arrowDown.setRotation(0);
+                        this.arrowDown.angle = -0;
                         // if (this.arrowDown && this.arrowDown.activeInHierarchy) {
                         //     this.arrowDown.setRotation(this.walletScrollView.node.activeInHierarchy ? 180 : 0);
                         // }

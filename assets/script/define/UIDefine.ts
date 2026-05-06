@@ -1212,8 +1212,14 @@ export const UIDefine: Record<string, IUIDefine> = {
         Bundle: 'texas',
         Path: "purple_prefab/ui/UIGameplayAddChipsAndDiamond",
         DisAdaptScreen: true,
-    }
-
+    },
+    //确认对话框
+    UIConfirmDialog: {
+        UIType: UIType.Dialog,
+        Name: "UIConfirmDialog",
+        Bundle: 'texas',
+        Path: "purple_prefab/ui/UIConfirmDialog",
+    },
 
 
 }
