@@ -8,7 +8,9 @@
     "verify:code": "npm run check:ts && npm run cocos:build:web",
     "agora:token": "node scripts/agora-token-server.js",
     "sync:template": "node scripts/sync-template.js",
-    "merge:i18n": "node scripts/merge-i18n.js"
+    "merge:i18n": "node scripts/merge-i18n.js",
+    "sync:h5-game": "node scripts/sync-h5-game.js",
+    "sync:proto": "node scripts/sync-proto.js"
   },
   "dependencies": {
     "@types/gapi": "^0.0.43",
@@ -20,6 +22,6 @@
   "devDependencies": {
     "@types/node": "^18.0.4",
     "agora-token": "^2.0.5",
-    "typescript": "^5.8.2"
+    "typescript": "^6.0.3"
   }
 }

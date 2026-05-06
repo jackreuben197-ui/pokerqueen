@@ -12,11 +12,25 @@ export class StringHelper {
     static GetLongString(num: number | string): string {
         num = +num;
         let n: number = num / 100;
-        let str: string = `${n}`;
-        if (~str.indexOf(".") && str.split(".")[1].length > 2) {
+        if (!Number.isInteger(n)) {
             return n.toFixed(2);
         }
-        return str;
+        // let str: string = `${n}`;
+        // if (~str.indexOf(".") && str.split(".")[1].length > 2) {
+        //     return n.toFixed(2);
+        // }
+        return n.toString();
+    }
+
+    static GetLongStringLocale(num: number): string {
+        if (num % 100 != 0) {
+            const n: number = num / 100;
+            return n.toLocaleString('en-US', { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            });
+        }
+        return (num / 100).toLocaleString('en-US');
     }
 
     public static GetLongStringUnit(num: number): string {

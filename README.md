@@ -1,5 +1,20 @@
 # pokerqueen
 
+## 子模块更新 
+
+git submodule update --init --recursive --remote
+
+## 同步Hybrid代码
+
+```shell
+# h5 code sync
+npm run sync:h5-game #pnpm run sync:h5-game
+# protocol sync (pb)
+npm run sync:proto
+```
+
+
+
 ## SSH密匙使用方法
 1.
 ```
