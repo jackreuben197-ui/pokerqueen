@@ -206,6 +206,9 @@ export default class AgoraManager {
 
         this._client.on('user-unpublished', (user: any, mediaType: string) => {
             console.log('[AgoraManager] 远端用户取消发布:', user.uid, mediaType);
+            if (mediaType === 'video') {
+                this.onRemoteVideoUnsubscribed?.(user.uid);
+            }
         });
 
         this._client.on('connection-state-change', (curState: string, revState: string) => {

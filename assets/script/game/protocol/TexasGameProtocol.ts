@@ -2570,10 +2570,11 @@ export default class TexasGameProtocol {
             videoRender.targetFps = 15;
         }
 
-        // 已在渲染同一个 uid，不重复触发
+        // 先停掉旧的渲染（可能是上一轮的最后一帧残留），再重新渲染
         if (videoRender.isRendering) {
-            console.log('[VideoRoom] 远端视频已在渲染中, uid:', uid);
-            return;
+            console.log('[VideoRoom] 远端视频已在渲染中，先停止再重新渲染, uid:', uid);
+            videoRender.onRenderStopped = null;
+            videoRender.stopRender();
         }
 
         videoRender.renderRemoteUser(uid).then(ok => {
