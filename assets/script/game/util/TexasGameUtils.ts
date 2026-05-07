@@ -301,8 +301,7 @@ export default class TexasGameUtils {
         //#endregion
         
         // 通知 H5 层恢复显示
-        ProcedureManager.StartProcedure(ProcedureEnum.Idle);
-        H5MsgMgr.sendToH5('h5Show', 1);
+        ProcedureManager.StartProcedure(ProcedureEnum.Return);
     }
 
     //得到 当前 在场玩家     不包括自己

@@ -36,7 +36,9 @@ export enum ProcedureEnum {
     //进入牌桌
     EnterTexas = 7,
     //牌桌
-    Texas = 8
+    Texas = 8,
+    //返回H5
+    Return = 99
 }
 /**
  * UI 渐入渐出样式

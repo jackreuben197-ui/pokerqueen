@@ -17,7 +17,6 @@ import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { ClientMessageAddTime } from "../../protobuf/holdem/req_th_add_time_pb";
 import { UIDefine } from "../../define/UIDefine";
 import Main from "../../Main";
-import { UIMineModel } from "../../lobby/UIMineModel";
 import { StringHelper } from "../../helper/StringHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { ClientMessageAutoOpActive } from "../../protobuf/holdem/req_th_auto_op_active_pb";
@@ -408,7 +407,7 @@ export default class MTTGame extends TexasGame {
     /// 坐下
     /// </summary>
     /// <param name="clientSeatId"></param>
-    public override Sitdown(clientSeatId: number, isclick: boolean = false) {
+    public override async Sitdown(clientSeatId: number, isclick: boolean = false): Promise<void>  {
         return;
     }
     public override onClickAddOn() {
@@ -638,35 +637,35 @@ export default class MTTGame extends TexasGame {
     }
 
     //刷新边菜单
-    public override UpdateMenu() {
-        let menu = this.uirc.UITexasMenu;
+    // public override UpdateMenu() {
+    //     let menu = this.uirc.UITexasMenu;
 
-        this.refreshCoinAndChip(menu);
+    //     this.refreshCoinAndChip(menu);
 
-        //buttonRule.transform.Find("Text").GetComponent<Text>().text = LanguageManager.Get("UITexas_RuleOfTips");
+    //     //buttonRule.transform.Find("Text").GetComponent<Text>().text = LanguageManager.Get("UITexas_RuleOfTips");
 
-        menu.clearOptions();
+    //     menu.clearOptions();
 
-        let show = [3, 10]; //设置|离开
+    //     let show = [3, 10]; //设置|离开
 
-        if (this.UserSitdown()) //已坐下
-        {
-            show.push(8);
+    //     if (this.UserSitdown()) //已坐下
+    //     {
+    //         show.push(8);
 
-            menu.setOptionInteractable(8, !this.uirc.Button_CancelTrust.active);
-        }
+    //         menu.setOptionInteractable(8, !this.uirc.Button_CancelTrust.active);
+    //     }
 
-        if (this.gameStarted) {
-            menu.setOptionInteractable(8, true);
-        } else {
-            menu.setOptionInteractable(8, false);
-        }
+    //     if (this.gameStarted) {
+    //         menu.setOptionInteractable(8, true);
+    //     } else {
+    //         menu.setOptionInteractable(8, false);
+    //     }
 
-        show.forEach((index) => {
-            let option = menu.getOption(index);
-            option.node.active = true;
-        });
-    }
+    //     show.forEach((index) => {
+    //         let option = menu.getOption(index);
+    //         option.node.active = true;
+    //     });
+    // }
 
     //更新addon 按钮状态
     public ShowAddOnBtn() {

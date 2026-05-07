@@ -1,9 +1,11 @@
 import { GameCache } from "../../../game/GameCache";
 import ProtocolAgency from "../../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../../net/websocket/ProtocolCode";
-import { ClientMessageRooms } from "../../../protobuf/holdem/req_rpc_rooms_pb";
+import { ClientMessageRooms, ServerMessageRooms } from "../../../protobuf/holdem/req_rpc_rooms_pb";
 import { AntiCheatType } from "../../gameplay/common/constant/AntiCheatType";
 import AGameplayEntrance, { LoadIndicator } from "./AGameplayEntrance";
+import ProcedureManager from "../../../manager/ProcedureManager";
+import { ProcedureEnum } from "../../../define/EIDefine";
 
 /**
  * @description 德州玩法入口
@@ -35,23 +37,12 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
     protected override async messageLayerEnterAsync(isEnterForeground: boolean): Promise<boolean> {
         console.log(`${this.constructor.name}: messageLayerEnterAsync: ${this.tableId}, isEnterForeground=${isEnterForeground}`);
 
-        // 等待房间信息返回（由 ProcedureEnterTexas.OnMsgHoldemRooms 触发）
-
-        this.RequestRoomInfo();
-
-        try {
-            this._roomInfo = await this._roomInfoPromise;
-        }
-        catch (error) {
-            console.error(`${this.constructor.name}: messageLayerEnterAsync: wait room info failed, ${error}`);
+        // C#: int status = await RequestRoomInfoAsync();
+        const roomStatus: number = await this.requestRoomInfoAsync();
+        if (roomStatus != 0) {
+            console.error(`${this.constructor.name}: messageLayerEnterAsync: requestRoomInfoAsync failed: ${roomStatus}`);
             return false;
         }
-
-        // 检查房间状态
-        // const checkRoomStatus: boolean = await this.checkCanEnterForRoomStatus();
-        // if (!checkRoomStatus) {
-        //     return false;
-        // }
 
         // 检查是否可以进入
         const isCanEnter: boolean = await this.checkCanEnterAsync(isEnterForeground);
@@ -78,40 +69,51 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
     }
 
     /**
-     * 请求房间信息
+     * 请求房间信息 - 发送协议并等待响应
+     * C#: public virtual async ETTask<int> RequestRoomInfoAsync()
+     * @returns 0-成功, 非0-失败
      */
-    private async requestRoomInfoAsync(): Promise<number> {
-        // TODO: 发送请求房间信息协议
-        return 0;
-    }
+    public async requestRoomInfoAsync(): Promise<number> {
+        // // C#: _protoRoomInfo = new Protocol_Holdem_Rooms() { request = new ClientMessageRooms() { ... } }
+        // // 每次调用创建新的 Promise, 等待服务端响应
+        // this._roomInfoPromise = new Promise<RoomRecord.AsObject>((resolve, reject) => {
+        //     this._roomInfoResolve = resolve;
+        //     this._roomInfoReject = reject;
+        // });
 
-    /**
-     * 请求房间信息
-     */
-    RequestRoomInfo() {
+        // 发送请求房间信息协议
+        // const sendObj = {
+        //     Code: ProtocolCode.Protocol_Holdem_Rooms,
+        //     RoomID: 0,
+        //     MatchID: 0,
+        //     Body: {
+        //         roomIdList: [this._roomId],
+        //     },
+        // };
 
-        let send_obj = {
-            Code: ProtocolCode.Protocol_Holdem_Rooms,
-            RoomID: 0,
-            MatchID: 0,
-            Body: {
+        const resp = await ProtocolAgency.SendAsync<ClientMessageRooms.AsObject, ServerMessageRooms.AsObject>(ProtocolCode.Protocol_Holdem_Rooms, {
                 roomIdList: [this._roomId],
-                // roomIdList: [12],
                 rpcId: 1,
-            },
+            });
+
+        // 等待响应 (由 ProcedureEnterTexas.onMsgHoldemRooms 调用 _roomInfoResolve)
+        try {
+            if (resp.status != 0) {
+                console.error(`${this.constructor.name}: requestRoomInfoAsync: ${resp.status}`);
+                return -1;
+            }
+            if (resp.roomsList == null || resp.roomsList.length == 0) {
+                console.error(`${this.constructor.name}: requestRoomInfoAsync: room not exist`);
+                return -1
+            }
+
+            this._roomInfo = resp.roomsList[0];
+            return 0;
         }
-
-        ProtocolAgency.Send<ClientMessageRooms.AsObject>(send_obj);
-
-    }
-
-    /**
-     * 根据房间状态检查是否可以进入
-     */
-    private async checkCanEnterForRoomStatus(): Promise<boolean> {
-        // TODO: 根据房间状态判断是否可以进入
-        // 状态 3 = 强制关闭, 4 = ?
-        return true;
+        catch (error) {
+            console.error(`${this.constructor.name}: requestRoomInfoAsync: wait room info failed, ${error}`);
+            return -1;
+        }
     }
 
     /**
@@ -378,7 +380,8 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
      * @param isUseCache 是否使用缓存
      */
     public override async requestEnterAsync(isUseCache: boolean): Promise<number> {
-        // TODO: 请求进入德州房间
+        // 请求进入德州房间
+        ProcedureManager.StartProcedure(ProcedureEnum.Texas, GameCache.Instance.enter_param);
         return 0;
     }
 }

@@ -143,8 +143,6 @@ export default class TexasGameMessageHandler {
 
         console.log(LN, "当前游戏是比赛:", isMTT);
 
-        //GameCache.Instance.enter_room_res = response;
-
         ReconnectComponent.Instance.ChangeStatus(2);
 
         //判断重连进行牌桌场景清理
@@ -184,13 +182,15 @@ export default class TexasGameMessageHandler {
                     case 3://MTT
                         //UIComponent.Instance.CloseNoAnimation(UIDefine.MttDetailForm);
                         // UIComponent.Instance.CloseNoAnimation(UIDefine.MttListForm);
-                        UIComponent.Instance.CloseNoAnimation(UIDefine.UIMTTDetail);
-                        UIComponent.Instance.CloseNoAnimation(UIDefine.UIMTTList);
+                        // UIComponent.Instance.CloseNoAnimation(UIDefine.UIMTTDetail);
+                        // UIComponent.Instance.CloseNoAnimation(UIDefine.UIMTTList);
                         break;
                 }
 
             }
-
+            if (isMTT) {
+                return;
+            }
             await SceneManager.Instance.switchScene(UIDefine.UITexas, null, GameCache.Instance.enter_param);
 
             this.game.SMAgency.ChangeGameState(TexasGameState.Init, response);

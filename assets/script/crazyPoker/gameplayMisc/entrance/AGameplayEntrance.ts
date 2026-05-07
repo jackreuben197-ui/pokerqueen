@@ -29,58 +29,6 @@ export enum LoadIndicator {
  */
 export default abstract class AGameplayEntrance {
 
-    // ==================== 静态方法 ====================
-
-    /**
-     * 判断是否为常规德州玩法
-     * @param roomType 玩法类型
-     */
-    private static _isRegularTexasGameplay(roomType: number): boolean {
-        // 德州类型: 0-63
-        return roomType >= 0 && roomType < 256;
-    }
-
-    /**
-     * 判断是否为MTT德州玩法
-     * @param roomType 玩法类型
-     */
-    private static _isMttTexasGameplay(roomType: number): boolean {
-        // MTT德州类型: 512-575
-        return roomType >= 512 && roomType < 723;
-    }
-
-    /**
-     * 判断是否为牛仔玩法
-     * @param roomType 玩法类型
-     */
-    private static _isCowboyGameplay(roomType: number): boolean {
-        return roomType === RoomType.GameNiuZai;
-    }
-
-    /**
-     * 生成指定玩法类型的入口对象
-     * @param roomType 玩法类型
-     * @param matchId 比赛id，非mtt传0
-     * @param roomId 房间id
-     */
-    public static Factory(roomType: number, matchId: number, roomId: number): AGameplayEntrance {
-        if (this._isRegularTexasGameplay(roomType)) {
-            return new TexasGameplayEntrance(roomType, matchId, roomId);
-        }
-
-        if (this._isMttTexasGameplay(roomType)) {
-            // TODO: MTT玩法入口
-            // return new MttTexasGameplayEntrance(roomType, matchId, roomId);
-        }
-
-        if (this._isCowboyGameplay(roomType)) {
-            // TODO: 牛仔玩法入口
-            // return new CowboyGameplayEntrance(roomType, matchId, roomId);
-        }
-
-        throw new Error(`Unknown room type: ${roomType}`);
-    }
-
     // ==================== 属性 ====================
 
     /**
@@ -106,13 +54,16 @@ export default abstract class AGameplayEntrance {
      * 比赛id
      */
     public get matchId(): number {
-        return 0;
+        return this._matchId;
     }
 
     /**
      * 房间id - mtt比赛玩法过程中roomId可能会变动，允许派生类型修改
      */
     public _roomId: number = 0;
+
+
+    private _matchId: number = 0;
 
     /**
      * 是否需要吐司；产品认为，进入房间时仅能有一个吐司存在
@@ -160,25 +111,9 @@ export default abstract class AGameplayEntrance {
      */
     public _isPassFaceVerification: boolean = false;
 
-    /**
-     * 房间细节信息
-     */
-    public _roomInfo: RoomRecord.AsObject = null;
 
-    /**
-     * 等待房间信息返回的 Promise
-     */
-    public _roomInfoPromise: Promise<RoomRecord.AsObject> = null;
+    public _roomInfo: RoomRecord.AsObject = null; 
 
-    /**
-     * 房间信息 Promise 的 resolve 函数
-     */
-    public _roomInfoResolve: (value: RoomRecord.AsObject) => void = null;
-
-    /**
-     * 房间信息 Promise 的 reject 函数
-     */
-    public _roomInfoReject: (reason?: any) => void = null;
 
     // ==================== 构造函数 ====================
 
@@ -191,12 +126,8 @@ export default abstract class AGameplayEntrance {
     constructor(roomType: number, matchId: number, roomId: number) {
         this._roomType = roomType;
         this._roomId = roomId;
+        this._matchId = matchId;
 
-        // 初始化房间信息 Promise
-        this._roomInfoPromise = new Promise<RoomRecord.AsObject>((resolve, reject) => {
-            this._roomInfoResolve = resolve;
-            this._roomInfoReject = reject;
-        });
     }
 
     // ==================== 抽象方法 ====================

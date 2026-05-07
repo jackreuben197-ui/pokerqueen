@@ -39,10 +39,5 @@ export default class ProcedureTexas extends ProcedureBase {
 
         GameCache.Instance.CurGame.Dispose();
         GameCache.Instance.CurGame = null;
-
-        ReconnectComponent.Instance.ChangeStatus(1);
-
-        // 通知 H5 层恢复显示
-        H5MsgMgr.sendToH5('h5Show', 1);
     }
 }

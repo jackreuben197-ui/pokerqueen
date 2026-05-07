@@ -13,9 +13,57 @@ import WebSocketClient from "./WebSocketClient";
 const { ccclass, property } = cc._decorator;
 
 const LN = '[ProtocolAgency]'
+
+export interface IProtocolRpc {
+    rpcId: number;
+}
 @ccclass
 export default class ProtocolAgency extends cc.Component {
     public static gTimeStamp : number = 0;
+
+    private static _rpcIdSeed: number = 0;
+
+    private static _pendingRequests = new Map<number, (data: any) => void>();
+
+    private static _getAvailableRpcId(): number {
+        this._rpcIdSeed = (this._rpcIdSeed + 1) % 0xffffffff;  // uint.MaxValue
+        if (this._rpcIdSeed == 0) {
+            this._rpcIdSeed = 1;
+        }
+        return this._rpcIdSeed;
+    }
+
+    public static _getRpcId(data: any): number | null {
+        if (data && typeof data === 'object' && 'rpcId' in data && typeof data.rpcId === 'number') {
+            return data.rpcId;
+        }
+        return null;
+    }
+
+    static async SendAsync<T extends IProtocolRpc,V extends IProtocolRpc>(code:number, param:T, roomID:number = 0, matchID:number = 0): Promise<V> {
+        return new Promise((resolve, reject) => {
+            
+            // 重置 rpcid
+            param.rpcId = this._getAvailableRpcId();
+            this._pendingRequests.set(param.rpcId, (data: V)=> {
+                console.log(LN, 'RPCID(complete):', param.rpcId);
+                resolve(data);
+            });
+            console.log(LN, 'RPCID:', param.rpcId);
+            this.Send<T>({
+                Code: code,
+                RoomID: roomID,
+                MatchID: matchID,
+                Body: param,
+            })
+            setTimeout(() => {
+                if (this._pendingRequests.has(code)) {
+                    this._pendingRequests.delete(code);
+                    reject(new Error(`请求超时: ${code}`));
+                }
+            }, 3000); // 3秒超时
+        })
+    }
 
     static Send<Client_AsObject>(param: {
         Code: number;
@@ -261,6 +309,7 @@ export default class ProtocolAgency extends cc.Component {
 
         if (code < 1000 &&
             code != ProtocolCode.Protocol_Holdem_Rooms &&
+            code != ProtocolCode.Protocol_Holdem_MttDetail &&
             code != ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo
         ) {
             console.log(LN, 'drop code:', code);
@@ -339,6 +388,19 @@ export default class ProtocolAgency extends cc.Component {
                 `>>>>> protocol receive : ${protocol_name}`,
                 `RoomID:${roomid},MatchID:${matchid},body:${JSON.stringify(body)}`,
             );
+        }
+        
+        const rpcId = this._getRpcId(body);
+        // 检查是否有 SendAsync 在等这个 code
+        if (rpcId && this._pendingRequests.has(rpcId)) {
+            const resolve = this._pendingRequests.get(rpcId);
+            // 移除映射（防止重复触发）
+            this._pendingRequests.delete(rpcId);
+            // 关键：把数据传回给 SendAsync 里的 resolve
+            if (resolve) {
+                resolve(body); 
+            }
+            return;
         }
         
         // 
