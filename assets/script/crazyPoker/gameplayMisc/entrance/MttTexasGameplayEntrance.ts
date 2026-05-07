@@ -7,6 +7,10 @@ import { MTTRecord } from "../../../protobuf/holdem/define_pb";
 import { ClientMessageMttDetail, ServerMessageMttDetail } from "../../../protobuf/holdem/req_rpc_mtt_detail_pb";
 import AGameplayEntrance, { LoadIndicator } from "./AGameplayEntrance";
 import { MttPlayerStatus } from '../../gameplay/texas/constants/Constants';
+import { AntiCheatType } from "../../gameplay/common/constant/AntiCheatType";
+import { VideoModel } from "../../gameplay/common/constant/VideoModel";
+import { WebRoomCenterDelayTimeBlindLevelQuery } from "../../../net/https/web_request/WebRequestRoomCenter"
+// import { UIMTTModel } from "../../../new_mtt/UIMTTModel";
 
 /**
  * @description 德州MTT玩法入口
@@ -212,9 +216,6 @@ export default class MttTexasGameplayEntrance extends AGameplayEntrance {
         // C#: MttPlayerStatus mttPlayerStatus = (MttPlayerStatus)_mttDetails.StateCode;
         const mttPlayerStatus: MttPlayerStatus = this._mttDetails.stateCode || 0;
 
-        // MttPlayerStatus 枚举定义
-        // C#: default: return false;
-
         switch (mttPlayerStatus) {
             case MttPlayerStatus.CAN_JOIN:
                 await this.handlePartialBringInAsync(0, 0);
@@ -240,11 +241,11 @@ export default class MttTexasGameplayEntrance extends AGameplayEntrance {
      */
     public async handlePartialBringInAsync(curChips: number, storeChips: number): Promise<void> {
         // C#: 比赛是否允许部分带入
-        const isEnablePartial: boolean = this._mttDetails?.state?.partialEnable || false;
-        const initChips: number = this._mttDetails?.mtt?.initialScore || 0;
-        const startTime: string = this._mttDetails?.mtt?.startTime || "";
-        const upBlindInterval: number = this._mttDetails?.mtt?.upblindInterval || 0;
-        const rebuyMaxBlindLevel: number = this._mttDetails?.mtt?.maxRebuyBl || 0;
+        const isEnablePartial: boolean = this._mttDetails.state?.partialEnable;
+        const initChips: number = this._mttDetails.mtt.initialScore;
+        const startTime: string = this._mttDetails.mtt.startTime;
+        const upBlindInterval: number = this._mttDetails.mtt.upblindInterval;
+        const rebuyMaxBlindLevel: number = this._mttDetails.mtt.maxRebuyBl;
 
         console.log(`${this.constructor.name}: handlePartialBringInAsync: isEnablePartial=${isEnablePartial}, storeChips=${storeChips}`);
 
@@ -384,76 +385,86 @@ export default class MttTexasGameplayEntrance extends AGameplayEntrance {
         super.cacheGlobalDataBeforeLoad(isClear);
 
         // C#: MTTRecord mtt = _mttDetails.Mtt; MTTMore more = _mttDetails.More;
-        const mtt: any = this._mttDetails?.mtt;
-        const more: any = this._mttDetails?.more;
+        const mtt = this._mttDetails.mtt;
+        const more = this._mttDetails.more;
 
         console.log(`${this.constructor.name}: cacheGlobalDataBeforeLoad: matchId=${this.matchId}, isClear=${isClear}`);
 
-        // C#: GameCache.Instance._roomName = isClear ? default : UILoginModel.Instance.GetRoomNameByKey(mtt.Name);
+        // C#: 
+        // GameCache.Instance._roomName = isClear ? default : UILoginModel.Instance.GetRoomNameByKey(mtt.Name);
         // TODO: 需要 UILoginModel.Instance.GetRoomNameByKey
-        GameCache.Instance.roomName = isClear ? "" : (mtt?.name || "");
-        GameCache.Instance.seat_count = isClear ? 0 : (mtt?.seatCount || 0);
+        GameCache.Instance.roomName = isClear ? "" : mtt.name ;
+        GameCache.Instance.seat_count = isClear ? 0 : mtt.seatCount ;
         // C#: GameCache.Instance._wheelTemplateId = isClear ? default : (int)_roomInfo.WheelTemplateId;
-        GameCache.Instance.game_type = isClear ? 0 : (mtt?.gameType || 0);
-        GameCache.Instance.poker_type = isClear ? 0 : (mtt?.pokerType || 0);
-        GameCache.Instance.bet_type = isClear ? 0 : (mtt?.limitBetType || 0);
+        GameCache.Instance.game_type = isClear ? 0 : mtt.gameType ;
+        GameCache.Instance.poker_type = isClear ? 0 : mtt.pokerType ;
+        GameCache.Instance.bet_type = isClear ? 0 : mtt.limitBetType ;
 
         // MTT 特有字段
-        // C#: GameCache.Instance._mttRebuyLevel = isClear ? default : (int)mtt.MaxRebuyBl;
-        // C#: GameCache.Instance._mttAddCloseRebuyLevel = isClear ? default : mtt.AddonEndBl;
-        // C#: GameCache.Instance._mttAddopRebuyLevel = isClear ? default : mtt.AddonBeginBl;
-        // C#: GameCache.Instance._mttCurBlindLevel = isClear ? default : (int)more.Bl;
-        // C#: GameCache.Instance._mttForceCloseTime = isClear ? default : mtt.ForceCloseTime;
-        // TODO: 添加 _mttRebuyLevel, _mttAddCloseRebuyLevel, _mttAddopRebuyLevel 等字段到 GameCache
-        // TODO: 添加 _mttCurBlindLevel, _mttForceCloseTime 等字段到 GameCache
+        GameCache.Instance._mttRebuyLevel = isClear ? 0 : mtt.maxRebuyBl;
+        GameCache.Instance._mttAddCloseRebuyLevel = isClear ? 0 : mtt.addonEndBl;
+        GameCache.Instance._mttAddopRebuyLevel = isClear ? 0 : mtt.addonBeginBl;
+        GameCache.Instance._mttCurBlindLevel = isClear ? 0 : more.bl;
+        GameCache.Instance._mttForceCloseTime = isClear ? 0 : mtt.forceCloseTime;
+        GameCache.Instance._texasData._tribeId = isClear ? 0 : mtt.tribeId ;
+        GameCache.Instance._tableSkin = isClear ? "" : mtt.tableclothTag;
+        GameCache.Instance._isMttHunterGame = isClear ? false : mtt.hunterOn != 0;
+        GameCache.Instance._chatType = isClear ? 0 : mtt.chatType ;
+        GameCache.Instance._limitDelayTimes = isClear ? 0 : mtt.limitDelayTimes ;
+        GameCache.Instance._isRoomManager = isClear ? false : this._mttDetails.isAdmin ;
+        GameCache.Instance._mttSourceType = isClear ? 0 : mtt.originType;
+        GameCache.Instance._delayTimeType = isClear ? 0 : mtt.delayTimeType;
 
-        // C#: GameCache.Instance._texasData._tribeId = isClear ? default : mtt.TribeId;
-        GameCache.Instance._texasData._tribeId = isClear ? 0 : (mtt?.tribeId || 0);
-        GameCache.Instance._tableSkin = isClear ? "" : (mtt?.tableclothTag || "");
-        // C#: GameCache.Instance._isMttHunterGame = isClear ? default : mtt.HunterOn != 0;
-        // TODO: 添加 _isMttHunterGame 字段到 GameCache
-        GameCache.Instance._chatType = isClear ? 0 : (mtt?.chatType || 0);
-        GameCache.Instance._limitDelayTimes = isClear ? 0 : (mtt?.limitDelayTimes || 0);
-        GameCache.Instance._isRoomManager = isClear ? false : (this._mttDetails?.isAdmin || false);
-        // C#: GameCache.Instance._mttSourceType = isClear ? default : (RoomOriginType)mtt.OriginType;
-        // TODO: 添加 _mttSourceType 字段到 GameCache
-        // C#: GameCache.Instance._delayTimeType = isClear ? default : mtt.DelayTimeType;
-        // TODO: 添加 _delayTimeType 字段到 GameCache
+        // if (!isClear) {
+        //     // C#: 构建盲注延迟时间表 _mttBlindDelayTimes
+        //     // for (int index = 0; index < mtt.BlindLevelDelayTimeTable.count; index++) { ... }
+        //     // TODO: 构建 _mttBlindDelayTimes 列表
 
-        if (!isClear) {
-            // C#: 构建盲注延迟时间表 _mttBlindDelayTimes
-            // for (int index = 0; index < mtt.BlindLevelDelayTimeTable.count; index++) { ... }
-            // TODO: 构建 _mttBlindDelayTimes 列表
-
-            // C#: UIMatchMTTModel.Instance.SetMttInfo(_mttDetails);
-            // TODO: 调用 UIMatchMTTModel.Instance.SetMttInfo
-        } else {
-            // C#: GameCache.Instance._mttBlindDelayTimes = default;
-            // TODO: 清空 _mttBlindDelayTimes
+        //     // C#: UIMatchMTTModel.Instance.SetMttInfo(_mttDetails);
+        //     // TODO: 调用 UIMatchMTTModel.Instance.SetMttInfo
+        // } else {
+        //     // C#: GameCache.Instance._mttBlindDelayTimes = default;
+        //     // TODO: 清空 _mttBlindDelayTimes
+        // }
+        if (!isClear)
+        {
+            GameCache.Instance._mttBlindDelayTimes = new Array<typeof WebRoomCenterDelayTimeBlindLevelQuery.BlindLevel>();
+            for (let index = 0; index < mtt.blindLevelDelayTimeTableList.length; index++)
+            {
+                let temp = index;
+                GameCache.Instance._mttBlindDelayTimes.push({
+                    level: mtt.blindLevelDelayTimeTableList[temp].level,
+                    ante: mtt.blindLevelDelayTimeTableList[temp].ante,
+                    small_blind: mtt.blindLevelDelayTimeTableList[temp].smallBlind,
+                    delay_times: mtt.blindLevelDelayTimeTableList[temp].delayTimes,
+                });
+            }
+            //UIMatchMTTModel.Instance.SetMttInfo(_mttDetails);
+            //UIMTTModel.MttInfo = this._mttDetails;
         }
-
-        // C#: GameCache.Instance._mttMaxDelayTimes = isClear ? default : (int)mtt.MaxDelayTimes;
-        // TODO: 添加 _mttMaxDelayTimes 字段到 GameCache
-
-        // C#: GameCache.Instance._mttAutoDelayTime = isClear ? default : mtt.AutoDelayTime;
-        // TODO: 添加 _mttAutoDelayTime 字段到 GameCache
+        else
+        {
+            GameCache.Instance._mttBlindDelayTimes = new Array<typeof WebRoomCenterDelayTimeBlindLevelQuery.BlindLevel>();
+        }
+        GameCache.Instance._mttMaxDelayTimes = isClear ? 0 : mtt.maxDelayTimes;
+        GameCache.Instance._mttAutoDelayTime = isClear ? 0 : mtt.autoDelayTime;
 
         // 反作弊配置
-        // C#: GameCache.Instance._antiCheatType = isClear ? default : (AntiCheatType)mtt.AntiCheatType;
-        // TODO: 添加 _antiCheatType 字段到 GameCache 并设置 AntiCheatType 枚举
-        // C#: if (AntiCheatType.VIDEO) GameCache.Instance._videoModel = (VideoModel)mtt.AntiCheatVideoType;
-        // TODO: 视频模式处理
+        GameCache.Instance._antiCheatType = isClear ? 0 : mtt.antiCheatType;
+        if (AntiCheatType.VIDEO) GameCache.Instance._videoModel = mtt.antiCheatVideoType;
 
-        // C#: GameCache.Instance._normalAntiCheatOrderType / _normalAntiCheatOrderMicType
+
+        GameCache.Instance._normalAntiCheatOrderType = mtt.antiCheatOrderMicType;
+        GameCache.Instance._normalAntiCheatOrderMicType = mtt.antiCheatOrderMicType;
         // TODO: 反作弊顺序类型处理
 
-        // C#: GameCache.Instance._sngInvitationCode = isClear ? default : mtt.SngInvitationCode;
-        // C#: GameCache.Instance._antiCheatTimeLimit = isClear ? default : (int)mtt.AntiCheatTimelimit;
-        // C#: GameCache.Instance._videoVerifyType = isClear ? default : (VideoVerifyType)mtt.VideoVerifyType;
+        GameCache.Instance._sngInvitationCode = isClear ? '' : mtt.sngInvitationCode;
+        GameCache.Instance._antiCheatTimeLimit = isClear ? 0 : mtt.antiCheatTimelimit;
+        GameCache.Instance._videoVerifyType = isClear ? 0 : mtt.videoVerifyType;
 
         // MTT默认开启视频桌特效  & 默认不开启视频节能模式
-        // C#: GameCache.Instance._videoEffectType = isClear ? default : 1;
-        // C#: GameCache.Instance._videoPowerSaving = isClear ? default : 2;
+        GameCache.Instance._videoEffectType = isClear ? 0 : 1;
+        GameCache.Instance._videoPowerSaving = isClear ? 0 : 2;
         GameCache.Instance._videoEffectType = isClear ? 0 : 1;
         GameCache.Instance._videoPowerSaving = isClear ? 0 : 2;
     }

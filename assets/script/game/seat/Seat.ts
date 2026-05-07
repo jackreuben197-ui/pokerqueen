@@ -10,7 +10,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { UIMTTModel } from "../../new_mtt/UIMTTModel";
+// import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 import { Def } from "../../protobuf/holdem/define_pb";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import { CardType, CardTypeUtil } from "../CardTypeUtil";
@@ -1904,10 +1904,10 @@ export default class Seat {
         this.uirc.Image_CoinShadow.active = value > 0;
         this.uirc.Image_CoinShadow.getChildByName("Text").getComponent(cc.Label).string = StringHelper.GetLongString(value);
 
-        if (UIMTTModel.Instance.MttInfo.mtt != null) {
-            this.uirc.Image_CoinShadow.getChildByName("uc").active = UIMTTModel.Instance.MttInfo.mtt.gold_type == 1;
-            this.uirc.Image_CoinShadow.getChildByName("gc").active = UIMTTModel.Instance.MttInfo.mtt.gold_type == 2;
-        }
+        // if (UIMTTModel.Instance.MttInfo.mtt != null) {
+        //     this.uirc.Image_CoinShadow.getChildByName("uc").active = UIMTTModel.Instance.MttInfo.mtt.gold_type == 1;
+        //     this.uirc.Image_CoinShadow.getChildByName("gc").active = UIMTTModel.Instance.MttInfo.mtt.gold_type == 2;
+        // }
     }
 
     //////////////////////////////////////

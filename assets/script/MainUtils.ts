@@ -297,9 +297,6 @@ export async function registerH5Listeners(): Promise<void> {
         // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
         ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
         console.log('[H5Bridge] enterTable 已启动进桌流程, room_id:', roomData.rid, 'room:', roomData.name);
-
-        // === 7. 通知 H5 层隐藏自身，让出 CC 层牌桌显示 ===
-        H5MsgMgr.sendToH5('h5Hide', 1);
     });
 
     registerTexasMtt();
@@ -437,6 +434,7 @@ export async function registerH5Listeners(): Promise<void> {
             const enterPram = { game_enter_type: GameEnterType.MTT, isLookOn: false };
             // === 5. 填充 GameCache ===
             GameCache.Instance.match_id = matchInfo.match_id;
+            GameCache.Instance.room_id = 0;
             GameCache.Instance.room_type = matchInfo.type;
             GameCache.Instance.enter_param = enterPram;
 

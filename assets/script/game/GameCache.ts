@@ -746,6 +746,19 @@ export class GameCache {
     //  isActiveLeaving 
     public isActiveLeaving: boolean = false;
 
+    //
+    public _mttRebuyLevel: number = 0;
+    public _mttAddCloseRebuyLevel: number = 0;
+    public _mttAddopRebuyLevel: number = 0;
+    public _mttCurBlindLevel: number = 0;
+    public _mttForceCloseTime: number = 0;
+    public _isMttHunterGame: boolean = false;
+    public _mttSourceType: number = 0;
+    public _delayTimeType: number = 0;
+    public _mttMaxDelayTimes: number = 0;
+    public _mttAutoDelayTime:number = 0;
+    public _sngInvitationCode: string = '';
+    public _mttBlindDelayTimes: Array<typeof WebRoomCenterDelayTimeBlindLevelQuery.BlindLevel> = [];
 
     public static get Instance(): GameCache {
         return (this as any).instance ??= new GameCache;

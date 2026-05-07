@@ -46,13 +46,13 @@ export default class TexasGameUtils {
 
         if (roomType >= RoomType.MTTTexasHoldemStandardNoLimit) {
             //MTT
-            GameCache.Instance.match_id = UIMTTModel.Instance.MttInfo.mtt.match_id;
-            GameCache.Instance.seat_count = UIMTTModel.Instance.MttInfo.mtt.seat_count;
-            GameCache.Instance.mtt_Hunter_game = UIMTTModel.Instance.MttInfo.mtt.hunter_on > 0;
+            // GameCache.Instance.match_id = UIMTTModel.Instance.MttInfo.mtt.match_id;
+            // GameCache.Instance.seat_count = UIMTTModel.Instance.MttInfo.mtt.seat_count;
+            // GameCache.Instance.mtt_Hunter_game = UIMTTModel.Instance.MttInfo.mtt.hunter_on > 0;
             // GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(UIMTTModel.Instance.MttInfo.mtt.name);
             matchId = GameCache.Instance.match_id;
             roomId = GameCache.Instance.room_id;
-            mttPartialBringIn = UIMTTModel.Instance.PartialBringIn;
+            mttPartialBringIn = 0;
             observer = GameCache.Instance.CurGame.IsLookOn;
         }
 
@@ -70,13 +70,16 @@ export default class TexasGameUtils {
             MatchID: matchId,
             Body: body as any,
         });
-
         console.log(`EnterRoom: room_id=${roomId}, match_id=${matchId}`);
     }
     /**
      * 离开房间
      */
     public LeaveRoom() {
+        if (GameCache.Instance.match_id > 0) {
+            this.ExitRoom(); // 直接离开 不做处理
+            return;
+        }
         if (H5MsgMgr.Instance.handshakeDone || WebSocketClient.CheckOpen(true)) {
             GameCache.Instance.isActiveLeaving = true;
             ProtocolAgency.Send<ClientMessageLeave.AsObject>({
