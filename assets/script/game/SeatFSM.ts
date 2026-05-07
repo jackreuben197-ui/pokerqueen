@@ -5,6 +5,7 @@ import { GameCache } from "./GameCache";
 import Seat, { VoiceprintState } from "./seat/Seat";
 import { SeatEmpty, SeatSit, SeatStandup, SeatWaitStart } from "./SeatStateHandler";
 import { VideoModel } from "../crazyPoker/gameplay/common/constant/VideoModel";
+import { MicIconState } from "./SeatUIRC";
 
 
 
@@ -91,6 +92,9 @@ export class SeatFSM {
         this.seat.ClearMushroomTag();
         this.seat.ClearSquidTag();
         this.seat.UpdateVoiceprintState(VoiceprintState.None);
+
+        // 进入空座位时隐藏麦克风图标，防止退出房间后重入时残留
+        this.seat.uirc.setMicIconState(MicIconState.HIDDEN);
 
         this.seat.HideReturnGame();
 
@@ -316,36 +320,21 @@ export class SeatFSM {
 
     /**
      * 麦序模式：轮到自己操作时自动开启摄像头
+     * 注：实际开关视频由 TexasGameProtocol.onSequenceOperatorChange 统一管理，
+     *     此方法仅在 FSM 触发时机与协议时序不一致时做兜底。
      */
     private async _sequenceOpenCamera(): Promise<void> {
-        if (GameCache.Instance._videoModel !== VideoModel.SEQUENCE) return;
-
-        const game = GameCache.Instance.CurGame;
-        if (!game?.TexasGameProtocol) return;
-
-        // 标记麦序操作中（禁止手动关闭）
-        GameCache.Instance._sequenceVideoActive = true;
-
-        console.log('[SequenceVideo] 轮到操作，自动开启摄像头');
-        await game.TexasGameProtocol.renderLocalVideoOnMySeat();
-
-        // 同步按钮状态
-        game.uirc?.syncVideoButtonsFromAgora();
+        // 麦序模式下视频开关已由 TexasGameProtocol.onSequenceOperatorChange 统一管理
+        // 此处不再重复操作，仅保留作为 FSM 入口
     }
 
     /**
-     * 麦序模式：操作结束，摄像头保持开启但允许手动关闭
+     * 麦序模式：操作结束时的 FSM 退出回调
+     * 注：视频关闭由 TexasGameProtocol.onSequenceOperatorChange 在下一个操作者切换时统一处理
      */
     private _sequenceOperationEnd(): void {
-        if (GameCache.Instance._videoModel !== VideoModel.SEQUENCE) return;
-        if (!GameCache.Instance._sequenceVideoActive) return;
-
-        console.log('[SequenceVideo] 操作结束，恢复手动控制');
-        GameCache.Instance._sequenceVideoActive = false;
-
-        // 同步按钮状态（摄像头保持开启，但允许关闭）
-        const game = GameCache.Instance.CurGame;
-        game?.uirc?.syncVideoButtonsFromAgora();
+        // 麦序模式下视频开关已由 TexasGameProtocol.onSequenceOperatorChange 统一管理
+        // 此处不再操作，仅保留作为 FSM 退出入口
     }
 
 

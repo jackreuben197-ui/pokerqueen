@@ -24,6 +24,9 @@ import TexasGame from "../texas/TexasGame";
 
 export class some_pos {
 
+    // 小屏适配：所有座位的 y 偏移量（正值上移）
+    public static seatYOffset: number = 0;
+
     //所有座位位置
     public static readonly all_seat_pos = [
         cc.v3(0, -2270), //  0 下中

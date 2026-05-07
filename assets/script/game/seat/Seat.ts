@@ -209,7 +209,9 @@ export default class Seat {
         this.PlayerCount = GameCache.Instance.seat_count;
         this.ClientSeatId = dir;
         this.seatUIInfo = info;
-        this.ui.setPosition(info.seat_pos);
+        // 小屏适配：加上 y 偏移量，防止底部头像被 main_menu 遮挡
+        const pos = cc.v3(info.seat_pos.x, info.seat_pos.y + some_pos.seatYOffset, info.seat_pos.z);
+        this.ui.setPosition(pos);
         this.uirc.imageBanker.setPosition(info.bank_pos);
         this.uirc.transSmallCardBacks.setPosition(info.card_back_pos);
         this.uirc.transCurRoundHaveBet.setPosition(info.bet_pos);
@@ -776,7 +778,7 @@ export default class Seat {
     /// 获取左边或者右边气泡
     /// </summary>
     /// <returns></returns>
-    private GetRorL(): boolean {
+    public GetRorL(): boolean {
         let isR = false;
         switch (this.ClientSeatId) {
             case 0:

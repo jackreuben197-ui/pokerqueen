@@ -339,8 +339,7 @@ export async function registerH5Listeners(): Promise<void> {
             console.warn('[H5Bridge] syncLanguage 缺少 locale 字段');
             return;
         }
-        console.log('[H5Bridge] syncLanguage:', locale, '当前:', i18nMgr.language);
-        i18nMgr.setLanguage(locale);
+        console.log('[H5Bridge] syncLanguage:', locale, '忽略，CC 层固定简体中文');
     });
     H5MsgMgr.Instance.on('syncUserClub', (payload) => {
         console.log('[H5Bridge] 同步俱乐部信息:', payload);
@@ -356,6 +355,28 @@ export async function registerH5Listeners(): Promise<void> {
             ClubCache.setClubData(clubList[0]);
         }
         console.log('[H5Bridge] syncUserClub 缓存完成, 共', clubList.length, '个俱乐部');
+    });
+    H5MsgMgr.Instance.on('syncGlobalConfig', (payload) => {
+        console.log('[H5Bridge] 同步全局配置:', JSON.stringify(payload?.raw));
+        const config = payload?.raw;
+        if (!config || typeof config !== 'object') {
+            console.warn('[H5Bridge] syncGlobalConfig 数据异常：缺少 payload.raw');
+            return;
+        }
+        GameCache.Instance._globalConfig = config;
+        console.log('[H5Bridge] syncGlobalConfig 缓存完成, 字段:', Object.keys(config).join(', '));
+        // 打印 anti_cheat_video_config 详细内容（可能是 JSON 字符串，需解析）
+        const acvRaw = config.anti_cheat_video_config;
+        if (acvRaw) {
+            try {
+                const parsed = typeof acvRaw === 'string' ? JSON.parse(acvRaw) : acvRaw;
+                console.log('[H5Bridge] anti_cheat_video_config:', JSON.stringify(parsed, null, 2));
+            } catch {
+                console.log('[H5Bridge] anti_cheat_video_config (原始):', acvRaw);
+            }
+        } else {
+            console.log('[H5Bridge] anti_cheat_video_config: 字段为空或不存在');
+        }
     });
     // H5MsgMgr.Instance.on('syncRoomsList', (payload) => {
     //     console.log('[H5Bridge] 同步房间列表:', payload);

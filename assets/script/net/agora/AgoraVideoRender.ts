@@ -58,6 +58,9 @@ export default class AgoraVideoRender extends cc.Component {
     private _frameInterval: number = 0;
     private _frameAccum: number = 0;
     private _lastLogTime: number = 0;
+    /** 连续渲染帧异常计数，超过阈值才放弃 */
+    private _consecutiveErrors: number = 0;
+    private static readonly MAX_CONSECUTIVE_ERRORS = 30;
     /** 渲染异常或被停止时的回调，上层借此同步 UI 状态 */
     public onRenderStopped: (() => void) | null = null;
 
@@ -115,6 +118,7 @@ export default class AgoraVideoRender extends cc.Component {
         this._isCancelled = false;
         this._stream = stream;
         this._frameAccum = 0;
+        this._consecutiveErrors = 0;
 
         // 1. 创建隐藏的 video 元素
         this._video = document.createElement('video');
@@ -295,9 +299,14 @@ export default class AgoraVideoRender extends cc.Component {
 
         try {
             this._renderFrame();
+            this._consecutiveErrors = 0;
         } catch (e) {
-            console.warn('[AgoraVideoRender] 渲染帧异常:', (e as Error).message);
-            this.stopRender();
+            this._consecutiveErrors++;
+            if (this._consecutiveErrors >= AgoraVideoRender.MAX_CONSECUTIVE_ERRORS) {
+                console.warn('[AgoraVideoRender] 连续渲染帧异常达', this._consecutiveErrors, '次，停止渲染:', (e as Error).message);
+                this.stopRender();
+            }
+            // 未达阈值时仅打日志，下一帧继续尝试
         }
     }
 

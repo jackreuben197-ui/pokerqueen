@@ -48,12 +48,29 @@ export class CardUIInfo {
 
 const { ccclass, property } = cc._decorator;
 
+/** 麦克风图标状态 */
+export enum MicIconState {
+    /** 不显示图标 */
+    HIDDEN = 0,
+    /** 正在说话（喇叭图标） */
+    SPEAKING = 1,
+    /** 麦克风被禁止 */
+    MUTED = 2,
+}
+
 @ccclass
 export default class SeatUIRC extends UIBase {
     ///////////////////////////////////
     /**
      * 节点|组件 定义
      */
+
+    @property({ tooltip: '正在说话时显示的喇叭图标', type: cc.SpriteFrame })
+    speakingIcon: cc.SpriteFrame = null;
+
+    @property({ tooltip: '麦克风被禁止时显示的图标', type: cc.SpriteFrame })
+    micMutedIcon: cc.SpriteFrame = null;
+
     Head: cc.Node = null;
     imageHeadFrame: cc.Node = null;
     imageEmpty: cc.Sprite = null;
@@ -65,6 +82,11 @@ export default class SeatUIRC extends UIBase {
     //头像灰色蒙版
     Gray_Head: cc.Node = null;
 
+    //麦克风状态图标（动态创建）
+    MicIcon: cc.Node = null;
+    MicIconSprite: cc.Sprite = null;
+    /** 当前麦克风图标状态 */
+    private _micIconState: MicIconState = MicIconState.HIDDEN;
     //座位上下名字和筹码
     Nick_Coin: cc.Node = null;
     table_sprite_line: cc.Node = null;
@@ -170,6 +192,9 @@ export default class SeatUIRC extends UIBase {
         this.Frame_Head = this.getChildNodeOrComponent("Frame_Head");
         this.Raw_Head = this.getChildNodeOrComponent("Raw_Head", cc.Sprite);
         this.Gray_Head = this.getChildNodeOrComponent("Gray_Head");
+
+        // 动态创建麦克风状态图标
+        this._createMicIcon();
 
         this.Nick_Coin = this.getChildNodeOrComponent("Nick_Coin");
         this.table_sprite_line = this.getChildNodeOrComponent("table_sprite_line");
@@ -332,6 +357,82 @@ export default class SeatUIRC extends UIBase {
         // this.voiceprintList.Add(VoiceprintRobot);
         // this.voiceprintList.Add(VoiceprintReal);
         // this.voiceprintList.Add(VoiceprintVoting);
+    }
+
+    /**
+     * 动态创建麦克风状态图标节点，挂在 Frame_Head 下
+     * 位置在 setMicIconState 时根据座位方向更新
+     */
+    private _createMicIcon(): void {
+        if (!this.Frame_Head) return;
+
+        // 挂在 Head 节点（Frame_Head 的父级）上，避免被 Frame_Head 的 Mask 裁剪
+        const parentNode = this.Head || this.Frame_Head.parent || this.Frame_Head;
+        this.MicIcon = new cc.Node('MicIcon');
+        this.MicIconSprite = this.MicIcon.addComponent(cc.Sprite);
+        this.MicIcon.setContentSize(82, 82);
+        this.MicIcon.active = false; // 默认隐藏
+        parentNode.addChild(this.MicIcon);
+    }
+
+    /**
+     * 设置麦克风图标状态
+     * @param state HIDDEN=不显示, SPEAKING=正在说话, MUTED=麦克风被禁止
+     */
+    public setMicIconState(state: MicIconState): void {
+        if (!this.MicIcon) return;
+        this._micIconState = state;
+
+        switch (state) {
+            case MicIconState.SPEAKING:
+                if (this.speakingIcon) {
+                    this.MicIconSprite.spriteFrame = this.speakingIcon;
+                    this.MicIcon.active = true;
+                } else {
+                    this.MicIcon.active = false;
+                }
+                break;
+            case MicIconState.MUTED:
+                if (this.micMutedIcon) {
+                    this.MicIconSprite.spriteFrame = this.micMutedIcon;
+                    this.MicIcon.active = true;
+                } else {
+                    this.MicIcon.active = false;
+                }
+                break;
+            case MicIconState.HIDDEN:
+            default:
+                this.MicIcon.active = false;
+                break;
+        }
+
+        // 每次设置状态时更新图标位置（ClientSeatId 在 UpdateSeatUIInfo 后才确定）
+        this._updateMicIconPosition();
+    }
+
+    /** 根据座位左右侧更新 MicIcon 的位置（基于 Frame_Head 在 Head 下的坐标） */
+    private _updateMicIconPosition(): void {
+        if (!this.MicIcon || !this.Frame_Head) return;
+
+        const headPos = this.Frame_Head.getPosition();
+        const headSize = this.Frame_Head.getContentSize();
+        const iconSize = this.MicIcon.getContentSize();
+        const gap = 4; // 图标与头像边缘的间距
+        const isRight = this.seat?.GetRorL() ?? false;
+
+        this.MicIcon.y = headPos.y;
+        if (isRight) {
+            // 右侧座位：图标在头像左侧，往右缩 30px
+            this.MicIcon.x = headPos.x - headSize.width / 2 - iconSize.width / 2 - gap + 50;
+        } else {
+            // 左侧座位：图标在头像右侧，往左缩 50px
+            this.MicIcon.x = headPos.x + headSize.width / 2 + iconSize.width / 2 + gap - 50;
+        }
+    }
+
+    /** 获取当前麦克风图标状态 */
+    public get micIconState(): MicIconState {
+        return this._micIconState;
     }
 
     protected override update(dt: number): void {

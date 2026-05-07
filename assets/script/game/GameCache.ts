@@ -702,6 +702,13 @@ export class GameCache {
     public _videoVerifyType: number = 0;
 
     /**
+     * H5 层同步的全局配置（syncGlobalConfig 消息的 payload.raw）
+     * 字段参考 GlobalConfigData：operating_model / recharge_gold / mtt_switch / apple_pay_switch 等
+     * 通过 GameCache.Instance._globalConfig.xxx 读取
+     */
+    public _globalConfig: { [key: string]: any } = null;
+
+    /**
      * 随机验证：是否正在强制验证中
      */
     public _randomVideoActive: boolean = false;

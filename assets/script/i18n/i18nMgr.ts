@@ -47,7 +47,8 @@ export class i18nMgr {
     }
 
     public static initLanguage() {
-        this.language = GC.localStore.getItem(StorageKey.LANGUAGE) || GameConfig.DEFAULT_LANGUAGE;
+        // 强制简体中文，忽略本地缓存
+        this.language = "cn";
         this.LanguageObject = LanguageAllObject[this.language];
     }
 
