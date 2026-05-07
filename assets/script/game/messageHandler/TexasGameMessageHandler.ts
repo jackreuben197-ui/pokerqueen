@@ -130,7 +130,7 @@ export default class TexasGameMessageHandler {
     /// 进入房间 消息回调
     /// </summary>
     /// <param name="response"></param>
-    async Protocol_Holdem_EnterRoom_Handler(response: ServerMessageEnterRoom.AsObject) {
+    async Protocol_Holdem_EnterRoom_Handler(response: ServerMessageEnterRoom.AsObject, roomId: number, matchId: number) {
 
         console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_EnterRoom_Handler`);
 
@@ -154,6 +154,7 @@ export default class TexasGameMessageHandler {
 
             if (isMTT) {
                 // 缓存房间id
+                console.log(LN, response.mttRoom, roomId);
                 GameCache.Instance.room_id = response.mttRoom.roomId;
                 //matchId;
                 console.log(LN, `Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.Instance.room_id}`);
@@ -186,13 +187,8 @@ export default class TexasGameMessageHandler {
                         // UIComponent.Instance.CloseNoAnimation(UIDefine.UIMTTList);
                         break;
                 }
-
-            }
-            if (isMTT) {
-                return;
             }
             await SceneManager.Instance.switchScene(UIDefine.UITexas, null, GameCache.Instance.enter_param);
-
             this.game.SMAgency.ChangeGameState(TexasGameState.Init, response);
 
         }

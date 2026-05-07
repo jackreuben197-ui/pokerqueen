@@ -13,6 +13,7 @@ import { DialogType } from "../mtt/detail/UIMttSignDialogComponent";
 import HttpRequest from "../net/https/HttpRequest";
 import { WebPropUserBuyProp, WebPropUserCheckPropInfo, WebRoomCenterMttBuyin, WebRoomCenterMttDetailS, WebRoomCenterMttRebuy } from "../net/https/WebRequest";
 import { ServerErrorCode } from "../net/websocket/ServerErrorCode";
+import { ServerMessageMttDetail } from "../protobuf/holdem/req_rpc_mtt_detail_pb";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 
 
@@ -71,7 +72,7 @@ export class UIMTTModel {
     _actionResultCallback: any = null;
     _args: any = null;
     _actionExceptionCallback: any = null;
-    //MttInfo: typeof WebRoomCenterMttDetailS.Response.data;
+    // MttInfo: ServerMessageMttDetail.AsObject;
     PartialBringIn: number = 0;
 
     public HandleMTTJoinAction(

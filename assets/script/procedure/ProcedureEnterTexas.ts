@@ -33,13 +33,8 @@ export default class ProcedureEnterTexas extends ProcedureBase {
     override lateEnter<T>(param?: T) {
         super.lateEnter(param);
         if (!param) console.log('[ProcedureEnterTexas]', 'miss param');
-        // const gep = param as GameEnterParam;
-        // if (gep.game_enter_type == GameEnterType.MTT) {
-        //      GC.notify.register(ProtocolCode.Protocol_Holdem_MttDetail, this.onMsgHoldemRooms, this);
-        // }else{
-        // GC.notify.register(ProtocolCode.Protocol_Holdem_Rooms, this.onMsgHoldemRooms, this);
-        
-        
+        // === 7. 通知 H5 层隐藏自身，让出 CC 层牌桌显示 ===
+        H5MsgMgr.sendToH5('h5Hide', 1);
         //显示房间进入loading
         UIComponent.Instance.ShowUI<PreloadParams>(
             PrefabUI.UIPreloading, 
