@@ -31,7 +31,7 @@ import UIMTTTimeComponent from "./ui/UIMTTTimeComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
 import UIOutChipsTipComponent from "./ui/UIOutChipsTipComponent";
 import UITexasMenu from "./ui/UITexasMenu";
-import GameUtil, { GameEnterType } from "./util/GameUtil";
+import GameUtil, { GameEnterType, some_pos } from "./util/GameUtil";
 import Seat from "./seat/Seat";
 import ToastManager from "../manager/ToastManager";
 import AgoraManager from "../net/agora/AgoraManager";

@@ -209,6 +209,9 @@ export default class AgoraManager {
             if (mediaType === 'video') {
                 this.onRemoteVideoUnsubscribed?.(user.uid);
             }
+            if (mediaType === 'audio') {
+                this.onRemoteAudio?.(user.uid, null);
+            }
         });
 
         this._client.on('connection-state-change', (curState: string, revState: string) => {
