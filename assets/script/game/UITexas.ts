@@ -37,6 +37,13 @@ import ToastManager from "../manager/ToastManager";
 import AgoraManager from "../net/agora/AgoraManager";
 import AgoraVideoRender from "../net/agora/AgoraVideoRender";
 import { VideoModel } from "../crazyPoker/gameplay/common/constant/VideoModel";
+import { AddClipsData } from "../crazyPoker/gameplay/common/view/chips/UIGameplayAddChipsAndDiamond";
+import { BringInChipsType } from "../crazyPoker/gameplay/common/constant/BringInChipsType";
+import { WWW } from "../net/https/WebRequestBase";
+import { WebUserRoomBringin } from "../net/https/web_request/WebRequestUser";
+
+
+const LN = '[UI][UITexas]';
 
 export class PlayerBarrageRecord {
     public name: string;
@@ -279,11 +286,8 @@ export default class UITexas extends BaseScene {
     }
 
     protected override lateLoad(): void {
-
         this.name = "UITexas";
-
         super.lateLoad();
-
         this.sp_table_bg = this.getChildNodeOrComponent("sp_table_bg", cc.Sprite);
         this.sp_table_face = this.getChildNodeOrComponent("sp_table_face", cc.Sprite);
         this.main = this.getChildNodeOrComponent("main");
@@ -315,21 +319,15 @@ export default class UITexas extends BaseScene {
             this.hideVideoOpenBtn = bg?.getChildByName("openBtn");
             this.hideVideoCloseBtn = bg?.getChildByName("closeBtn");
         }
-
         this.seats_content = this.getChildNodeOrComponent("seats_content");
-
-
         this.textRoomInfo = this.getChildNodeOrComponent("Text_RoomInfo", cc.Label);
-
         this.Image_WaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this._buttonShare = this.Image_WaitForStartTips.getChildByName("ShareButton");
         this.Image_ReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
         this.Image_InsuranceTips = this.getChildNodeOrComponent("Image_InsuranceTips");
-
         // 座位管理
         this.seats_content = this.getChildNodeOrComponent("seats_content");
         this.Seat_Temp = this.getChildNodeOrComponent("Seat_Temp");
-
         // 鱿鱼
         this.RemainingSquidCount = this.main?.getChildByName("RemainingSquidCount");
         this.RemainingSquidLabelCount = this.RemainingSquidCount
@@ -407,28 +405,18 @@ export default class UITexas extends BaseScene {
             this.JackpotAnimRoot.active = false;
             this.JackpotAnimRoot.getComponent(cc.Animation)?.stop();
         }
-
         //this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
-
         this.Text_AlreadAnte = this.getChildNodeOrComponent("Text_AlreadAnte", cc.Label);
-
-
         this.transPots = this.getChildNodeOrComponent("Pots");
         this.transPot = this.getChildNodeOrComponent("Pot");
         this.transAllPot = this.getChildNodeOrComponent("AllPot");
-
-
-
-
         this.Button_Delay = this.getChildNodeOrComponent("Button_Delay");
         this.Button_SeeMorePublic = this.getChildNodeOrComponent("Button_SeeMorePublic");
         this.Image_SeeMorePublicTips = this.getChildNodeOrComponent("Image_SeeMorePublicTips");
         this.textSeeMorePublicTips = this.getChildNodeOrComponent("Text_SeeMorePublicTips", cc.Label);
-
         this.textSeeMorePublic = this.getChildNodeOrComponent("Text_SeeMorePublic", cc.Label);
         this.textSeeMorePublicGold = this.getChildNodeOrComponent("Text_SeeMorePublicGold", cc.Label);
-
         //托管
         this.Button_CancelTrust = this.getChildNodeOrComponent("Button_CancelTrust");
         this.Text_CancelTrust = this.getChildNodeOrComponent("Text_CancelTrust", cc.Label);
@@ -443,8 +431,6 @@ export default class UITexas extends BaseScene {
         //this.Button_BringIn = this.getChildNodeOrComponent("Button_BringIn");
         //朋友桌邀请码
         this.Text_InvateCode = this.getChildNodeOrComponent("Text_InvateCode", cc.Label);
-
-
         //////////////////公共牌数据（第一套和第二套 ui,id,每套牌5张）
         this.listCards = [];
         this.listSecondCards = [];
@@ -461,10 +447,7 @@ export default class UITexas extends BaseScene {
             pot.parent = this.transPots;
             this.listPotInfo.push(new PotInfo(pot));
         }
-
-
         //////////////////装载容器
-
         //1.MTT比赛倒计时
         this.UIMTTTime_Con = this.getChildNodeOrComponent("UIMTTTime_Con");
         this.UIMTTTime_Com = this.AddComponents(PrefabUI.UIMTTTimeComponent, this.UIMTTTime_Con);
@@ -520,12 +503,12 @@ export default class UITexas extends BaseScene {
                 com.node.parent = parent;
                 com.node.active = show;
                 if (show) {
-
                 }
             }
         }
         return com;
     }
+
     protected override regiterTouchEvents(): void {
 
         this.setButtonClick(this.btn_menu, this.click_side_button);
@@ -687,6 +670,7 @@ export default class UITexas extends BaseScene {
         this._syncVideoButtonVisuals();
         // 远端音频/视频控制按钮初始状态（默认：功能开启 → 显示 closeBtn）
         this._initRemoteMediaButtons();
+        this.refreshViewOnSitAndStandup(this.game.UserSitdown());
     }
     //清理UI
     CleanUI() {
@@ -740,6 +724,16 @@ export default class UITexas extends BaseScene {
         //关闭战绩
         UIComponent.close(UIDefine.UITexasHistoryComponent);
     }
+
+    // refreshViewOnSitAndStandup 因为站起/坐下更新视图
+    public refreshViewOnSitAndStandup(sit: boolean) {
+        if (sit) {
+            this.setActive(this.table_add_chip, true);
+            return;
+        }
+        this.setActive(this.table_add_chip, false);
+    }
+
     override Exit(param: any): void {
         super.Exit(param);
     }
@@ -780,11 +774,61 @@ export default class UITexas extends BaseScene {
         });
     }
 
+    public showAddChipDialog() {
+        console.log(LN, 'click_bringin table type:', GameUtil.GetFriendsOrClubTable());
+        if (GameUtil.GetFriendsOrClubTable() == 3) {
+            WWW.Instance.CommonAPI({
+                web_class: WebUserRoomBringin,
+                api_id: GameCache.Instance.room_id,
+            }).then(
+                (res: any) => {
 
-
-    // public ShowBringIn() {
-    //     this.setActive(this.Button_BringIn, true);
-    // }
+                    // UIComponent.Instance.ShowUI<AddClipsData>(
+                    //     PrefabUI.UIBringIn,
+                    //     {
+                    //         bigBlind: GameCache.Instance.CurGame.bigBlind,
+                    //         smallBlind: GameCache.Instance.CurGame.smallBlind,
+                    //         currentMinRate:
+                    //             GameCache.Instance.CurGame.currentMinRate,
+                    //         currentMaxRate:
+                    //             GameCache.Instance.CurGame.currentMaxRate,
+                    //         totalCoin: GC.data.user.info.gold,
+                    //         tableChips:
+                    //             GameCache.Instance.CurGame.mainPlayer.chips,
+                    //         wallets: [res.data],
+                    //         fromMenu: true,
+                    //     },
+                    // );
+                
+                    UIComponent.open<AddClipsData>(UIDefine.UIGameplayAddChipsAndDiamond,
+                    {
+                        _bigBlind: GameCache.Instance.CurGame.bigBlind,
+                        _smallBlind: GameCache.Instance.CurGame.smallBlind,
+                        _currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+                        _currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                        _tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
+                        _wallets: [res.data],
+                        _source: BringInChipsType.BRING_IN,
+                        _isBringIn: false,
+                        _creditNum: 0,
+                    }
+                );
+                },
+                (res: any) => {},
+            );
+        } else {
+            console.log(LN, 'click_bringin 1,2:');
+            // UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIBringIn, {
+            //     bigBlind: GameCache.Instance.CurGame.bigBlind,
+            //     smallBlind: GameCache.Instance.CurGame.smallBlind,
+            //     currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+            //     currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+            //     totalCoin: GC.data.user.info.gold,
+            //     tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
+            //     fromMenu: true,
+            // });
+        }
+    }
 
     public ShowMenu(): void {
         //this.UITexasMenu_Com?.onShow();
@@ -1077,6 +1121,6 @@ export default class UITexas extends BaseScene {
         UIComponent.open(UIDefine.UIBlank_dialog, { title: "客服界面" });
     }
     private click_table_add_chip() {
-        UIComponent.open(UIDefine.UIBlank_dialog, { title: "增加筹码" });
+        this.showAddChipDialog();
     }
 }

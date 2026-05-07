@@ -723,13 +723,9 @@ export default class TexasGame {
     }
     //更新房间数据
     public UpdateRoom(obj: ServerMessageEnterRoom.AsObject) {
-
         this.UpdateRoomCommon(obj);
-
         GameCache.Instance._texasData._isCriticalHitOpen = obj.handInfo.criticalHitOpen;
         GameCache.Instance._texasData._curCriticalHitRound = obj.handInfo.conRounds;
-
-
     }
 
     /**
@@ -774,6 +770,7 @@ export default class TexasGame {
             });
         }
     }
+
     UpdateRoomCommon(rec: ServerMessageEnterRoom.AsObject) {
         console.log(LN,"UpdateRoomCommon");
         this.ClearAllData();
@@ -787,7 +784,6 @@ export default class TexasGame {
             this.InitOperationPos();
             this.HideAllPots();
         }
-
         this.mainPlayer = new CPlayer(GameCache.Instance.nUserId);
         this.mainPlayer.sex = GameCache.Instance.sex;
         this.mainPlayer.headPic = GameCache.Instance.headPic;
@@ -1215,9 +1211,9 @@ export default class TexasGame {
         }
 
         this.roomReqList = [
-            { name: "UpdateMsgBtnSprite", func: this.UpdateMsgBtnSprite },
-            { name: "ReqDiamondConfig_2", func: this.ReqDiamondConfig_2 },
-            { name: "ReqDiamondConfig_8", func: this.ReqDiamondConfig_8 },
+            // { name: "UpdateMsgBtnSprite", func: this.UpdateMsgBtnSprite },
+            // { name: "ReqDiamondConfig_2", func: this.ReqDiamondConfig_2 },
+            // { name: "ReqDiamondConfig_8", func: this.ReqDiamondConfig_8 },
         ];
         this.RunRoomReqlist();
         this.bombPotFeature?.EnterGame();
@@ -1891,7 +1887,6 @@ export default class TexasGame {
                 console.log(LN,`Sitdown 你已在该位置 clientSeatId:${clientSeatId}`);
                 return;
             }
-
             console.log(LN,`Sitdown 该位置有其他玩家 clientSeatId:${clientSeatId}`);
             return;
         }
@@ -1925,8 +1920,6 @@ export default class TexasGame {
 
                 // 将 res 转换为 ResponseData
                 let response = res as HttpRoomBringOutProtocol.ResponseData;
-
-
                 if (response.code == 0 && response.data.last_bring_out != null) {
                     let fee = res.data.last_bring_out.fee;
                     let bring_out = res.data.last_bring_out.to_wallet;

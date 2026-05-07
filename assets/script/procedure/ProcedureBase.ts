@@ -1,5 +1,4 @@
 import { ProcedureEnum } from "../define/EIDefine";
-
 export default class ProcedureBase {
 
     Name: string = "ProcedureBase";
@@ -10,19 +9,19 @@ export default class ProcedureBase {
     }
 
     //ignoreEnter 跳过进入的处理,特殊回退进程用到
-    Enter(param?: any) {
+    Enter<T>(param?: T) {
         console.log('[Procedure]', this.Name, "Enter()", "param:", param);
         this.param = param;
         // if (param?.ignoreEnter) {
         //     return;
         // }
-        this.lateEnter(param);
+        this.lateEnter<T>(param);
     }
     Leave() {
         console.log('[Procedure]', this.Name, "Leave()");
     }
 
-    protected lateEnter(param?: any) {
+    protected lateEnter<T>(param?: T) {
 
     }
 }

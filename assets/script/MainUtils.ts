@@ -21,6 +21,7 @@ import PacketHead from "./net/websocket/PacketHead";
 import ProtocolAgency from "./net/websocket/ProtocolAgency";
 import { ProtocolCode } from "./net/websocket/ProtocolCode";
 import { i18nMgr } from "./i18n/i18nMgr";
+import { GameEnterType } from "./game/util/GameUtil";
 
 // ==================== SDK 动态加载 ====================
 
@@ -447,10 +448,16 @@ export async function registerH5Listeners(): Promise<void> {
                 console.error('[H5Bridge] enterMtt 数据异常：缺少 payload.matchInfo');
                 return;
             }
-
+            const enterPram = { game_enter_type: GameEnterType.MTT, isLookOn: false };
             // === 5. 填充 GameCache ===
             GameCache.Instance.match_id = matchInfo.match_id;
+            GameCache.Instance.room_type = matchInfo.type;
+            GameCache.Instance.enter_param = enterPram;
 
+            // === 6. 启动进入牌桌流程 ===
+            // EnterTexas → 加载资源 → Texas procedure → TexasGameUtils.EnterRoom()
+            // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
+            ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enterPram);
             console.log('[H5Bridge] enterMtt 缓存完成, matchId', GameCache.Instance.match_id, ',开始进入mtt');
         });
     }

@@ -32,6 +32,11 @@ export enum PrefabUI {
     UIInsurancePanel = "UIInsurancePanel",//保险面板
 
 }
+
+export function isPrefabUI(value: any): value is PrefabUI {
+    return typeof value === 'number'; // 或者更严谨地检查是否在 Enum 范围内
+}
+
 (window as any).PrefabUI = PrefabUI;
 //打开面板追加参数
 export interface Open_Obj {

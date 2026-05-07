@@ -22,6 +22,7 @@ export enum ProtocolCode {
     Protocol_Holdem_SystemMessage = Code.MSG_S_SYSTEM_MESSAGE, // Code: 108 系统发布通用消息(全体)
     Protocol_Holdem_RoomChangeNotify = Code.MSG_S_ROOM_CHANGE_NOTIFY, // Code: 140 房间变更通知(1=新增,2=更新)
     Protocol_Holdem_Rooms = Code.MSG_R_ROOMS, // Code: 202
+    Protocol_Holdem_MttDetail = Code.MSG_R_MTT_DETAIL, // Code: 204
     
     /**
      * 房间相关(HEAD有roomid+matchid)

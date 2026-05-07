@@ -273,6 +273,7 @@ export default class TexasGameProtocol {
         //     this.game.ResetSeatUIInfo(seat.ClientSeatId);
         // }
         this.game.ResetSeatUIInfo(seat.ClientSeatId);
+        this.game.uirc.refreshViewOnSitAndStandup(true);
         if (this.game.squidEnabled) {
             this.game.RefreshSquidMarks();
             this.game.UpdateRoomDes();

@@ -8,6 +8,11 @@ import TexasGameplayData from "../crazyPoker/gameplay/texas/data/TexasGameplayDa
 import { AntiCheatType } from "../crazyPoker/gameplay/common/constant/AntiCheatType";
 import { VideoModel } from "../crazyPoker/gameplay/common/constant/VideoModel";
 
+export interface GameEnterParam { 
+    game_enter_type: GameEnterType, 
+    isLookOn: boolean 
+}
+
 export class GameCache {
 
     public CurrentRoomID: number = 0;
@@ -408,7 +413,7 @@ export class GameCache {
 
 
     //存儲進入房間的參數
-    enter_param: { game_enter_type: GameEnterType, isLookOn: boolean } = null;
+    enter_param: GameEnterParam = null;
 
     /** 
      * 房间记录信息
