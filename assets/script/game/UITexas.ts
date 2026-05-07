@@ -932,8 +932,9 @@ export default class UITexas extends BaseScene {
             ToastManager.Instance.createToast(i18nMgr.Get("UIVideoModelverifyFullTime02"));
             return;
         }
-        if (GameCache.Instance._sequenceVideoActive) {
-            ToastManager.Instance.createToast(i18nMgr.Get("UIVideoModelverifyOrder02"));
+        // 麦序模式：无论是否在操作，都不允许手动切换摄像头
+        if (GameCache.Instance._videoModel === VideoModel.SEQUENCE) {
+            ToastManager.Instance.createToast(i18nMgr.Get("UICantOpenVideoOnMicSeq"));
             return;
         }
         if (GameCache.Instance._randomVideoActive) {

@@ -1142,10 +1142,14 @@ export default class TexasGame {
                     }
                 }
                 mSeat.FsmLogicComponent.SM.ChangeState(SeatOperation.Instance);
+                // 麦序模式：重进房间时恢复操作者视频状态
+                this.TexasGameProtocol.onSequenceOperatorChange(this.operationID);
             }
         } else {
             this.HideOperationPanel();
             this.HideAutoOperationPanel();
+            // 麦序模式：无操作者时关闭视频
+            this.TexasGameProtocol.onSequenceOperatorChange(-1);
         }
         //刷新池子
         this.UpdatePots();
