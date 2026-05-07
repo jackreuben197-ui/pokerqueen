@@ -4221,8 +4221,7 @@ export default class TexasGame {
     //点击退出按钮响应
     public onClickExit() {
         this.uirc.HideMenu(false);
-
-        if (this.mainPlayer?.isPlaying) {
+        if (this.mainPlayer?.isPlaying && GameCache.Instance.match_id == 0) {
             let content = CPErrorCode.LanguageDescription(20003);
             let commit = CPErrorCode.LanguageDescription(10012);
             let cancel = CPErrorCode.LanguageDescription(10013);
@@ -4257,20 +4256,6 @@ export default class TexasGame {
                 }
             }
 
-            // UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
-            //     {
-            //         type: UIDialogComponent.DialogType.CommitCancel,
-            //         title: "",
-            //         //"退出游戏，在这手牌结束后将自动站起",
-            //         content: CPErrorCode.LanguageDescription(20003),
-            //         contentCommit: CPErrorCode.LanguageDescription(10012),
-            //         contentCancel: CPErrorCode.LanguageDescription(10013),
-            //         actionCommit: () => {
-            //             this.CallbackExit();
-            //         },
-            //         noAnimation: true,
-            //     });
-
             UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
                 this: this,
                 //title: i18nMgr.Get("WalletServiceCharge_eeydpBno"),
@@ -4288,7 +4273,6 @@ export default class TexasGame {
      * 响应退出二次确认
      */
     public CallbackExit() {
-        GameCache.Instance.match_id = 0;
         this.TexasGameUtils.LeaveRoom();
     }
     //点击加时
