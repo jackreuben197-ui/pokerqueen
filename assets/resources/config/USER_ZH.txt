@@ -7264,3 +7264,4 @@ UIChatButtonLabel=聊天
 UISwitchOpen=开启
 UISwitchClose=关闭
 UIVideoModelverifyRandomCountDown={0}秒后将开启视频验证
+UICantOpenVideoOnMicSeq=麦序模式下无法关闭视频

@@ -2306,6 +2306,9 @@ export default class TexasGameProtocol {
         agora.onRemoteVideoUnsubscribed = this._onRemoteVideoUnsubscribed.bind(this);
         agora.onUserLeft = this._onRemoteUserLeft.bind(this);
 
+        // 注册远端音频回调：远端开关麦克风时刷新图标状态
+        agora.onRemoteAudio = this._onRemoteAudio.bind(this);
+
         // 注册重连回调：重连成功后重新渲染远端视频
         agora.onReconnected = this._onAgoraReconnected.bind(this);
 
@@ -2367,6 +2370,7 @@ export default class TexasGameProtocol {
         agora.onRemoteVideo = null;
         agora.onRemoteVideoUnsubscribed = null;
         agora.onUserLeft = null;
+        agora.onRemoteAudio = null;
         agora.onReconnected = null;
         agora.onError = null;
         agora.onActiveSpeaker = null;
@@ -2542,6 +2546,14 @@ export default class TexasGameProtocol {
      * 远端用户发布视频回调
      * 无条件渲染远端视频到对应座位，麦序模式的可见性由 _sequenceSyncRemoteVideos 统一管理
      */
+    /**
+     * 远端音频发布回调：远端用户开关麦克风时刷新图标状态
+     */
+    private _onRemoteAudio(uid: number, track: any): void {
+        console.log('[VideoRoom] 收到远端音频, uid:', uid, 'hasTrack:', !!track);
+        this._refreshAllMicIcons();
+    }
+
     private _onRemoteVideo(uid: number, track: any): void {
         console.log('[VideoRoom] 收到远端视频, uid:', uid);
         this._renderRemoteVideoOnSeat(uid);
@@ -2570,10 +2582,11 @@ export default class TexasGameProtocol {
             videoRender.targetFps = 15;
         }
 
-        // 已在渲染同一个 uid，不重复触发
+        // 先停掉旧的渲染（可能是上一轮的最后一帧残留），再重新渲染
         if (videoRender.isRendering) {
-            console.log('[VideoRoom] 远端视频已在渲染中, uid:', uid);
-            return;
+            console.log('[VideoRoom] 远端视频已在渲染中，先停止再重新渲染, uid:', uid);
+            videoRender.onRenderStopped = null;
+            videoRender.stopRender();
         }
 
         videoRender.renderRemoteUser(uid).then(ok => {
