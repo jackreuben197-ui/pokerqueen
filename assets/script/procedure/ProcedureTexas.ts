@@ -6,6 +6,7 @@ import { TexasGameState } from "../game/TexasGameState";
 
 import ProcedureBase from "./ProcedureBase";
 import GC from "../frame/GameControl";
+import StorageKey from "../session/StorageKey";
 import H5MsgMgr from "../H5MsgMgr";
 import UIComponent from "../ui/UIComponent";
 import { UIDefine } from "../define/UIDefine";
@@ -24,6 +25,14 @@ export default class ProcedureTexas extends ProcedureBase {
         GameCache.Instance.InitTexasGame();
         GameCache.Instance.CurGame.Enter();
         GameCache.Instance.CurGame.SMAgency.ChangeGameState(TexasGameState.Launch);
+
+        // 标记牌桌资源已加载过，下次启动不再显示首次加载提示
+        if (GC.localStore.getItem(StorageKey.TextureResourceLoaded) !== 1) {
+            GC.localStore.setItem(StorageKey.TextureResourceLoaded, 1);
+        }
+        // 隐藏首次加载提示（覆盖同会话内反复进桌的场景）
+        const firstloadLabel = cc.find('Canvas/Block - 遮挡/UIPreloading/progress_node/firstload_label');
+        if (firstloadLabel) firstloadLabel.active = false;
     }
 
     override Leave() {
