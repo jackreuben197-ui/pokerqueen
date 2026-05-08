@@ -41,6 +41,7 @@ import { ServerMessageShowPublicCards } from "../../protobuf/holdem/req_th_show_
 import { ServerMessageSquidInActive } from "../../protobuf/holdem/req_th_squid_in_active_pb";
 import { ServerMessageStoreChips } from "../../protobuf/holdem/req_th_store_chips_pb";
 import { ServerMessageUtilAntiCheatRoomVideo } from "../../protobuf/holdem/recv_util_anti_cheat_room_video_pb";
+import { ServerMessageVideoMaskChange } from "../../protobuf/holdem/recv_th_video_mask_change_pb";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { CardType } from "../CardTypeUtil";
 import { CPlayer } from "../CPlayer";
@@ -60,6 +61,8 @@ import AgoraVideoRender from "../../net/agora/AgoraVideoRender";
 import { VideoModel } from "../../crazyPoker/gameplay/common/constant/VideoModel";
 import ToastManager from "../../manager/ToastManager";
 import { MicIconState } from "../SeatUIRC";
+import { WebUserSetVideoMask } from "../../net/https/web_request/WebRequestUser";
+import { WWW } from "../../net/https/WebRequestBase";
 
 
 
@@ -108,6 +111,7 @@ export default class TexasGameProtocol {
         GC.notify.register(ProtocolCode.Protocol_Holdem_SquidIn, this.HANDLER_REQ_SQUID_IN, this); // 鱿鱼加入状态广播
         GC.notify.register(ProtocolCode.Protocol_Holdem_NextChange, this.HANDLER_REQ_NEXT_CHANGE, this); // 下一手配置变更
         GC.notify.register(ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo, this.HANDLER_RANDOM_VIDEO_VERIFY, this); // 随机视频验证
+        GC.notify.register(ProtocolCode.Protocol_Holdem_VideoMaskChange, this.HANDLER_REQ_VIDEO_MASK_CHANGE, this); // 视频窗花变更
     }
     public RemoveMsgHandler(): void {
         console.log(`TexasGame : RemoveMsgHandler`);
@@ -144,6 +148,7 @@ export default class TexasGameProtocol {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_SquidIn, this.HANDLER_REQ_SQUID_IN, this); // 鱿鱼加入状态广播
         GC.notify.remove(ProtocolCode.Protocol_Holdem_NextChange, this.HANDLER_REQ_NEXT_CHANGE, this); // 下一手配置变更
         GC.notify.remove(ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo, this.HANDLER_RANDOM_VIDEO_VERIFY, this); // 随机视频验证
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_VideoMaskChange, this.HANDLER_REQ_VIDEO_MASK_CHANGE, this); // 视频窗花变更
         // 清理随机验证倒计时
         this._clearRandomVideoTimer();
     }
@@ -154,6 +159,9 @@ export default class TexasGameProtocol {
     /// <param name="response"></param>
     protected HANDLER_REQ_GAME_RECV_SEAT_DOWN(rec: ServerMessageSeatedOthers.AsObject) {
         if (rec == null) return;
+        console.log('[VideoMask] 别人坐下, videoMaskId:', rec.videoMaskId, 'userRid:', rec.userRid);
+        // videoMaskId > 4 时客户端统一归为 1
+        if (rec.videoMaskId > 4) rec.videoMaskId = 1;
         let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.seatId));
         if (null == mSeat) return;
         if (null != mSeat.Player) {
@@ -182,6 +190,7 @@ export default class TexasGameProtocol {
         mPlayer.squidRoundSeated = mPlayer.inSquid;
         mPlayer.squidCount = 0;
         mPlayer.squidEscaped = false;
+        mPlayer.videoMaskId = rec.videoMaskId || 0;
         mSeat.Player = mPlayer;
         mSeat.isBank = false;
         mSeat.FsmLogicComponent.SM.ChangeState(SeatSitAnimation.Instance);
@@ -208,6 +217,9 @@ export default class TexasGameProtocol {
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
             return;
         }
+        console.log('[VideoMask] 自己坐下, videoMaskId:', rec.videoMaskId);
+        // videoMaskId > 4 时客户端统一归为 1
+        if (rec.videoMaskId > 4) rec.videoMaskId = 1;
         this.game.mainPlayer.chips = rec.chips;
         this.game.mainPlayer.leavelChips = rec.accountChips;
         // GameCache.Instance.gold = rec.accountChips;
@@ -225,6 +237,7 @@ export default class TexasGameProtocol {
         this.game.mainPlayer.squidRoundSeated = rec.squidRoundSeated || this.game.mainPlayer.inSquid;
         this.game.mainPlayer.squidEscaped = false;
         this.game.mainPlayer.squidCount = 0;
+        this.game.mainPlayer.videoMaskId = rec.videoMaskId || 0;
         this.game.squidTotalLimit = rec.squidTotalLimit || this.game.squidTotalLimit;
 
         this.game.mainPlayer.KeepSeatLeftTime = rec.keepSeatLeftTime;
@@ -2382,6 +2395,9 @@ export default class TexasGameProtocol {
         // 重置视频按钮状态
         this.game?.uirc?.resetVideoButtons();
 
+        // 清理窗花纹理缓存
+        AgoraVideoRender.clearMaskCache();
+
         await agora.leave();
         console.log('[VideoRoom] 已离开视频频道');
     }
@@ -2516,6 +2532,8 @@ export default class TexasGameProtocol {
                 this.game?.uirc?.syncVideoButtonsFromAgora();
             };
             this.game.uirc?.syncVideoButtonsFromAgora();
+            // 设置窗花贴纸
+            videoRender.setVideoMaskId(this.game.mainPlayer.videoMaskId);
         }
         return rendered;
     }
@@ -2591,6 +2609,9 @@ export default class TexasGameProtocol {
 
         videoRender.renderRemoteUser(uid).then(ok => {
             console.log('[VideoRoom] 远端视频渲染 uid:', uid, ok ? '成功' : '失败');
+            if (ok && seat?.Player) {
+                videoRender.setVideoMaskId(seat.Player.videoMaskId);
+            }
         }).catch(e => {
             console.warn('[VideoRoom] 远端视频渲染异常, uid:', uid, e);
         });
@@ -2916,6 +2937,75 @@ export default class TexasGameProtocol {
         if (this._randomVideoCountdownTimer) {
             window.clearTimeout(this._randomVideoCountdownTimer);
             this._randomVideoCountdownTimer = 0;
+        }
+    }
+
+    // ==================== 窗花贴纸设置 ====================
+
+    /**
+     * 请求服务器修改自己的窗花贴纸
+     * 服务器收到后会通过 1133 消息广播给房间内所有人
+     * @param videoMaskId 新的贴纸ID（0=取消贴纸）
+     */
+    public async requestSetVideoMask(videoMaskId: number): Promise<boolean> {
+        try {
+            const response = await WWW.Instance.CommonAPI({
+                web_class: WebUserSetVideoMask,
+                body: {
+                    video_mask_id: videoMaskId,
+                },
+            });
+            if (response?.code === 0 || response?.code === 200) {
+                console.log('[VideoMask] 设置窗花成功, videoMaskId:', videoMaskId);
+                // 立即更新本地数据
+                this.game.mainPlayer.videoMaskId = videoMaskId;
+                // 如果视频正在渲染，同步刷新窗花显示
+                const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
+                if (mySeat?.uirc?.Raw_Head?.node?.isValid) {
+                    const vr = mySeat.uirc.Raw_Head.node.getComponent(AgoraVideoRender);
+                    if (vr) {
+                        vr.setVideoMaskId(videoMaskId);
+                    }
+                }
+                return true;
+            } else {
+                console.warn('[VideoMask] 设置窗花失败:', response);
+                return false;
+            }
+        } catch (e) {
+            console.error('[VideoMask] 设置窗花请求异常:', e);
+            return false;
+        }
+    }
+
+    /**
+     * 收到 1133 视频窗花变更广播（某人修改了窗花，服务器广播给房间内所有人）
+     * 消息字段：userId, userRid, videoMaskId
+     */
+    protected HANDLER_REQ_VIDEO_MASK_CHANGE(rec: ServerMessageVideoMaskChange.AsObject) {
+        if (rec == null) return;
+        console.log('[VideoMask] 收到窗花变更广播, userRid:', rec.userRid, 'videoMaskId:', rec.videoMaskId);
+
+        // 自己的变更已经在 requestSetVideoMask 里本地处理过了，跳过
+        if (rec.userRid === this.game.mainPlayer.userID) return;
+
+        // videoMaskId > 4 时客户端统一归为 1
+        let maskId = rec.videoMaskId || 0;
+        if (maskId > 4) maskId = 1;
+
+        // 找到对应座位
+        const seat = this.game?.GetSeatByUserId(rec.userRid);
+        if (!seat?.Player) return;
+
+        // 更新玩家数据
+        seat.Player.videoMaskId = maskId;
+
+        // 如果该座位的视频正在渲染，刷新窗花显示
+        if (seat.uirc?.Raw_Head?.node?.isValid) {
+            const vr = seat.uirc.Raw_Head.node.getComponent(AgoraVideoRender);
+            if (vr?.isRendering) {
+                vr.setVideoMaskId(maskId);
+            }
         }
     }
 }

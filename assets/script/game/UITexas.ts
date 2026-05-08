@@ -935,8 +935,51 @@ export default class UITexas extends BaseScene {
     private click_btn_emoji() {
         UIComponent.open(UIDefine.UIBlank_dialog, { title: "表情" });
     }
-    private click_btn_effect() {
-        UIComponent.open(UIDefine.UIBlank_dialog, { title: "特效" });
+    private async click_btn_effect() {
+        // 非视频房间
+        if (GameCache.Instance._videoModel === VideoModel.NONE) {
+            ToastManager.Instance.createToast(i18nMgr.Get("UIEffectNoVideo"));
+            return;
+        }
+        // 节能模式未开启
+        if (GameCache.Instance._videoPowerSaving !== 1) {
+            ToastManager.Instance.createToast(i18nMgr.Get("UIEffectNoPowerSaving"));
+            return;
+        }
+        // 摄像头未开启
+        const headNode = this.game?.listSeat?.find((s: Seat) => s.IsMySeat)?.uirc?.Raw_Head?.node;
+        const vr = headNode?.getComponent(AgoraVideoRender);
+        if (!vr?.isRendering) {
+            ToastManager.Instance.createToast(i18nMgr.Get("UIEffectNoCamera"));
+            return;
+        }
+
+        const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
+        if (!mySeat) {
+            ToastManager.Instance.createToast("请先入座");
+            return;
+        }
+
+        // videoMaskId 循环 +1，大于4回到1
+        const oldMaskId = this.game.mainPlayer.videoMaskId || 0;
+        let newMaskId = oldMaskId + 1;
+        if (newMaskId > 4) newMaskId = 1;
+
+        // 立即更新本地数据和窗花显示（乐观更新）
+        this.game.mainPlayer.videoMaskId = newMaskId;
+        if (headNode?.isValid) {
+            if (vr) vr.setVideoMaskId(newMaskId);
+        }
+
+        // 请求服务器广播窗花变更，失败时回滚
+        const ok = await this.game.TexasGameProtocol?.requestSetVideoMask(newMaskId);
+        if (!ok) {
+            this.game.mainPlayer.videoMaskId = oldMaskId;
+            if (headNode?.isValid) {
+                const vrNow = headNode.getComponent(AgoraVideoRender);
+                if (vrNow) vrNow.setVideoMaskId(oldMaskId);
+            }
+        }
     }
     private async click_btn_audio() {
         if (GameCache.Instance._videoModel === VideoModel.NONE) {
@@ -1030,6 +1073,17 @@ export default class UITexas extends BaseScene {
             this.btn_audio.opacity = this._micOn ? 255 : 128;
             const sprite = this.btn_audio.getComponent(cc.Sprite);
             if (sprite) this.setSpriteShowGray(sprite, !this._micOn);
+        }
+        // 窗花按钮：视频房间 + 节能模式开启 + 本地视频正在渲染
+        if (this.btn_effect) {
+            const headNode = this.game?.listSeat?.find((s: Seat) => s.IsMySeat)?.uirc?.Raw_Head?.node;
+            const vr = headNode?.getComponent(AgoraVideoRender);
+            const effectEnabled = GameCache.Instance._videoModel !== VideoModel.NONE
+                && GameCache.Instance._videoPowerSaving === 1
+                && vr?.isRendering === true;
+            this.btn_effect.opacity = effectEnabled ? 255 : 128;
+            const sprite = this.btn_effect.getComponent(cc.Sprite);
+            if (sprite) this.setSpriteShowGray(sprite, !effectEnabled);
         }
     }
 

@@ -281,6 +281,7 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         GameCache.Instance._antiCheatTimeLimit = isClear ? 0 : this._roomInfo.antiCheatTimelimit;
         GameCache.Instance._videoEffectType = isClear ? 0 : this._roomInfo.videoEffectType;
         GameCache.Instance._videoPowerSaving = isClear ? 0 : this._roomInfo.powerSaving;
+        console.log('[VideoMask] 节能模式(窗花) power_saving:', GameCache.Instance._videoPowerSaving, '(1=开,2=关)');
         GameCache.Instance._videoVerifyType = isClear ? 0 : this._roomInfo.videoVerifyType;
 
         // 保险赔率表 - TODO: 需要GameUtil._outsList实现

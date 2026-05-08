@@ -84,6 +84,9 @@ export class CPlayer {
     /** 是否在本轮鱿鱼开始前已落座（用于等待标记判断） */
     public squidRoundSeated: boolean = false;
 
+    /** 视频窗花贴纸ID（0=无贴纸） */
+    public videoMaskId: number = 0;
+
 
     constructor(public id: number) {
         this.seatID = -1;
@@ -204,6 +207,8 @@ export class CPlayer {
         this.squidCount = 0;
         this.squidEscaped = false;
         this.squidRoundSeated = false;
+
+        this.videoMaskId = 0;
 
     }
 
