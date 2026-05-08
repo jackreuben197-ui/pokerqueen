@@ -58,6 +58,10 @@ export type AddClipsData = {
      * 指定最小带入额（含押金），单位同 bigBlind
      */
     minBringIn?: number;
+    /**
+     * 是否返桌
+     */
+    returnOrNew?: boolean;
 };
 
 @ccclass
@@ -113,6 +117,7 @@ export default class UIBringIn extends UIBasePlus {
     //wallet_select: number = 0;
 
     wallets: any[] = null;
+    return_or_new: boolean = false; //是否返桌
 
     reqList: any = null;
     diamond_wallet_data: any = null;
@@ -131,6 +136,7 @@ export default class UIBringIn extends UIBasePlus {
             this.selected_wallet = null;
             this.ownCoin = 0;
             this.wallets = data.wallets;
+            this.return_or_new = data.returnOrNew;
 
             this.diamond_wallet_data = null;
             this.recordFeeData = null;
@@ -267,6 +273,7 @@ export default class UIBringIn extends UIBasePlus {
                     wallets: this.wallets,
                     selected_wallet: this.selected_wallet,
                 },
+                this.return_or_new,
             );
         } else {
             if (
@@ -372,7 +379,7 @@ export default class UIBringIn extends UIBasePlus {
         );
     }
 
-    private GetRecordFeeData(type) {
+    private GetRecordFeeData(type: any) {
         if (type != 3 && type != 4) {
             return;
         }

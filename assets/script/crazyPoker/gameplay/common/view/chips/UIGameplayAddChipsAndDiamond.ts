@@ -57,6 +57,8 @@ export class AddClipsData {
     public _matchAction?: Function = null;
     /** 授信额度 */
     public _creditNum: number = 0;
+    /** 是否返桌 */
+    public _returnOrNew: boolean = false;
 }
 
 const LN = '[UIGameplayAddChipsAndDiamondComponent]';
@@ -990,7 +992,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBasePlus {
                 own: this,
                 wallets: this.addClipsData._wallets,
                 selected_wallet: this.mySelectWallet,
-            },);
+            },this.addClipsData._returnOrNew);
             // GameCache.Instance._autoRechargeData = new AutoRechargeData();
             // GameCache.Instance._autoRechargeData._isOpen = autoToggleIson;
             // GameCache.Instance._autoRechargeData._min = maxValue;

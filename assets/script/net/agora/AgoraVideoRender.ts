@@ -18,6 +18,7 @@
  *   targetFps:    目标帧率
  */
 import AgoraManager from "./AgoraManager";
+import { GameCache } from "../../game/GameCache";
 
 const { ccclass, property } = cc._decorator;
 
@@ -49,6 +50,16 @@ export default class AgoraVideoRender extends cc.Component {
     private _overlayNode: cc.Node = null;
     /** 覆盖层上的 Sprite 组件 */
     private _videoSprite: cc.Sprite = null;
+
+    /** 窗花贴纸覆盖层节点（叠在 VideoOverlay 之上） */
+    private _maskNode: cc.Node = null;
+    /** 窗花 Sprite 组件 */
+    private _maskSprite: cc.Sprite = null;
+    /** 当前座位玩家的 videoMaskId */
+    private _videoMaskId: number = 0;
+
+    /** 已加载的窗花纹理缓存 key=maskId, value=SpriteFrame */
+    private static _maskCache: Map<number, cc.SpriteFrame> = new Map();
 
     private _stream: MediaStream = null;
     private _isRendering: boolean = false;
@@ -83,6 +94,13 @@ export default class AgoraVideoRender extends cc.Component {
         this._overlayNode.active = false; // 默认隐藏
 
         this._videoSprite = this._overlayNode.addComponent(cc.Sprite);
+
+        // 窗花覆盖层：叠在 VideoOverlay 之上
+        this._maskNode = new cc.Node('VideoMask');
+        this._maskNode.parent = this.node;
+        this._maskNode.setContentSize(this.node.getContentSize());
+        this._maskNode.active = false;
+        this._maskSprite = this._maskNode.addComponent(cc.Sprite);
 
         this._gl = (cc.game as any)._renderContext;
         this._frameInterval = 1 / this.targetFps;
@@ -204,7 +222,6 @@ export default class AgoraVideoRender extends cc.Component {
         // 5. 显示视频覆盖层
         this._overlayNode.setContentSize(cw, ch);
         this._overlayNode.active = true;
-        this._overlayNode.setSiblingIndex(this.node.childrenCount - 1);
         this._videoSprite.spriteFrame = this._spriteFrame;
 
         if (this.mirror) {
@@ -212,6 +229,10 @@ export default class AgoraVideoRender extends cc.Component {
         }
 
         this._isRendering = true;
+
+        // 6. 视频渲染成功后，尝试显示窗花覆盖层
+        this._applyVideoMask();
+
         console.log('[AgoraVideoRender] 开始渲染 (video direct), video:', vw, 'x', vh,
             'overlay:', cw, 'x', ch, 'fps:', this.targetFps);
         return true;
@@ -264,6 +285,11 @@ export default class AgoraVideoRender extends cc.Component {
         if (this._overlayNode) {
             this._overlayNode.active = false;
             this._overlayNode.scaleX = 1; // 重置镜像
+        }
+
+        // 5. 隐藏窗花覆盖层
+        if (this._maskNode) {
+            this._maskNode.active = false;
         }
     }
 
@@ -341,5 +367,72 @@ export default class AgoraVideoRender extends cc.Component {
             this._overlayNode.destroy();
             this._overlayNode = null;
         }
+        if (this._maskNode) {
+            this._maskNode.destroy();
+            this._maskNode = null;
+        }
+    }
+
+    // ==================== 窗花贴纸相关 ====================
+
+    /**
+     * 设置当前座位的 videoMaskId（由上层在坐下/变更时调用）
+     */
+    public setVideoMaskId(maskId: number): void {
+        this._videoMaskId = maskId;
+        // 如果视频正在渲染中，立即刷新窗花显示
+        if (this._isRendering) {
+            this._applyVideoMask();
+        }
+    }
+
+    /**
+     * 根据条件显示/隐藏窗花覆盖层
+     * 条件：房间 power_saving=1 且 videoMaskId>0
+     */
+    private _applyVideoMask(): void {
+        if (!this._maskNode) return;
+
+        // 不满足条件则隐藏
+        if (GameCache.Instance._videoPowerSaving !== 1 || !this._videoMaskId) {
+            this._maskNode.active = false;
+            return;
+        }
+
+        // 尝试从缓存获取
+        const cached = AgoraVideoRender._maskCache.get(this._videoMaskId);
+        if (cached && cached.isValid) {
+            this._maskSprite.spriteFrame = cached;
+            this._maskNode.active = true;
+            this._maskNode.setSiblingIndex(this.node.childrenCount - 1);
+            return;
+        }
+
+        // 从 resources 加载纹理
+        const captureMaskId = this._videoMaskId;
+        const path = `videomask/vm${captureMaskId}`;
+        cc.resources.load(path, cc.Texture2D, (err, texture: cc.Texture2D) => {
+            if (err || !texture) {
+                console.warn('[AgoraVideoRender] 窗花纹理加载失败:', path, err?.message);
+                return;
+            }
+            // 加载期间组件可能已销毁、停止渲染或切换了 maskId
+            if (!(this as any).isValid || !this._isRendering || this._videoMaskId !== captureMaskId) return;
+
+            const spriteFrame = new cc.SpriteFrame(texture);
+            AgoraVideoRender._maskCache.set(captureMaskId, spriteFrame);
+            if (this._maskNode?.isValid && this._maskSprite) {
+                this._maskSprite.spriteFrame = spriteFrame;
+                this._maskNode.active = true;
+                this._maskNode.setSiblingIndex(this.node.childrenCount - 1);
+            }
+        });
+    }
+
+    /**
+     * 清理窗花纹理缓存（退房时调用）
+     */
+    public static clearMaskCache(): void {
+        AgoraVideoRender._maskCache.clear();
     }
 }
