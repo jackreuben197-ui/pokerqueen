@@ -2119,6 +2119,7 @@ export default class TexasGame {
         club_id = 0,
         club_random_id = 0,
         fromBring: { wallets: any; selected_wallet: any; own: any } = null,
+        returnOrNew: boolean = false,
     ) {
         //大厅桌
         if (GameUtil.GetFriendsOrClubTable() == 3) {
@@ -2262,7 +2263,7 @@ export default class TexasGame {
                 // });
                 UIComponent.Instance.Toast("声纹认证暂未开启");
             } else {
-                console.log(LN, 'seated bringin', anteNumber);
+                console.log(LN, 'seated bringin', anteNumber, "returnOrNew:", returnOrNew);
                 ProtocolAgency.Send<ClientMessageSeated.AsObject>({
                     Code: ProtocolCode.Protocol_Holdem_Seated,
                     RoomID: GameCache.Instance.room_id,
@@ -2276,7 +2277,7 @@ export default class TexasGame {
                         bringIn: anteNumber, //rec.Chips
                         autoOnTable: autoOnTable,
                         autoUseWallet: autoUseWallet,
-                        returnOrNew: 0,
+                        returnOrNew: returnOrNew ? 1 : 0,
                         store: 0,
                         applyBringIn:
                             (GameUtil.GetFriendsOrClubTable() == 1 ||
@@ -3920,6 +3921,7 @@ export default class TexasGame {
                 _source: BringInChipsType.BRING_IN,
                 _isBringIn: true,
                 _creditNum: data.user_club_gold_credit,
+                _returnOrNew: data.return_table,
             }
         );
     }

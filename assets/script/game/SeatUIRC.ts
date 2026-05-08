@@ -494,6 +494,7 @@ export default class SeatUIRC extends UIBase {
                             tableChips: this.seat.Player.chips,
                             wallets: [res.data],
                             minBringIn: GameCache.Instance.CurGame.GetMinBringInWithMush(),
+                            returnOrNew: res.return_table,
                             }
                         )
                     },

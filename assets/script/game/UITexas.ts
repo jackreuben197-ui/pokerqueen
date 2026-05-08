@@ -811,6 +811,7 @@ export default class UITexas extends BaseScene {
                         _source: BringInChipsType.BRING_IN,
                         _isBringIn: false,
                         _creditNum: 0,
+                        _returnOrNew: false,
                     }
                 );
                 },
