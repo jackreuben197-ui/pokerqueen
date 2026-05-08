@@ -7,12 +7,6 @@ import { SeatEmpty, SeatSit, SeatStandup, SeatWaitStart } from "./SeatStateHandl
 import { VideoModel } from "../crazyPoker/gameplay/common/constant/VideoModel";
 import { MicIconState } from "./SeatUIRC";
 
-
-
-
-
-
-
 export class SeatFSM {
 
     constructor(public id: number, public seat: Seat) {
@@ -23,7 +17,6 @@ export class SeatFSM {
     public IdleEnter(): void {
         //设置座位节点激活显示
         this.seat.ui.active = true;
-
     }
     public IdleExecute(): void {
     }

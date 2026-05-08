@@ -195,8 +195,8 @@ export default class TexasGameBombPot {
         const raw = cc.sys.localStorage.getItem(JOINED_ROOMS_KEY) || "";
         return raw
             .split(",")
-            .map(v => Number(v))
-            .filter(v => Number.isFinite(v) && v > 0);
+            .map( (v :string) => Number(v))
+            .filter((v: number) => Number.isFinite(v) && v > 0);
     }
 }
 

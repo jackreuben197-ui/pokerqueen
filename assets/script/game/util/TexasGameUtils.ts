@@ -278,7 +278,7 @@ export default class TexasGameUtils {
 
         //ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { mode: 1, game_enter_type: GameCache.Instance.enter_param.game_enter_type });
         //#region 关键属性最后置空
-        GameCache.Instance.CurrentRoomID = 0;
+        GameCache.Instance._currentRoomID = 0;
         GameCache.Instance.room_id = 0;
         GameCache.Instance.match_id = 0;
         GameCache.Instance.room_type = 0;

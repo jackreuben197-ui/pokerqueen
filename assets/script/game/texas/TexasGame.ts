@@ -1,4 +1,3 @@
-import { GameConfig } from "../../config/GameConfig";
 import TexasConfig from "../../config/TexasConfig";
 import { UIDefine } from "../../define/UIDefine";
 import DiamondModel from "../../diamond/DiamondModel";
@@ -23,15 +22,6 @@ import {
     WWW,
     WebGetDiamondConfig,
 } from "../../net/https/WebRequest";
-// import { APIOrgClubUserInfo,
-//      API_CLUB_APPLY_LIST,
-//      Web_Org_Club_Search_By_Id,
-//      Web_RoomSitApplyRecords,
-
-//      Web_User_Room,
-//      Web_User_Room_Bringin,
-//      WWW,
-//      Web_GetDiamondConfig } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { Def, RoomInfo } from "../../protobuf/holdem/define_pb";
@@ -40,7 +30,7 @@ import { ClientMessageAction } from "../../protobuf/holdem/req_th_action_pb";
 import { ClientMessageAddTime } from "../../protobuf/holdem/req_th_add_time_pb";
 import { ClientMessageAgreePost } from "../../protobuf/holdem/req_th_agree_post_pb";
 import { ClientMessageBringIn } from "../../protobuf/holdem/req_th_bring_in_pb";
-import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_th_enter_room_pb";
+import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/holdem/req_th_enter_room_pb";
 import { ClientMessageKeepSeatActive } from "../../protobuf/holdem/req_th_keep_seat_active_pb";
 import { ClientMessageSeated } from "../../protobuf/holdem/req_th_seated_pb";
 import { ClientMessageSetAutoOnTable } from "../../protobuf/holdem/req_th_set_auto_on_table_pb";
@@ -48,16 +38,14 @@ import { ClientMessageShowPublicCards } from "../../protobuf/holdem/req_th_show_
 import { ClientMessageSquidInActive } from "../../protobuf/holdem/req_th_squid_in_active_pb";
 import { ClientMessageStandupActive } from "../../protobuf/holdem/req_th_stand_up_active_pb";
 import { ClientMessageStoreChips } from "../../protobuf/holdem/req_th_store_chips_pb";
+import * as protobuf_holdem_define_pb from "../../protobuf/holdem/define_pb"; 
 import GlobalSession from "../../session/GlobalSession";
-import LobbySession from "../../session/LobbySession";
 import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
-import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIDialogContentSizeLimit from "../../ui/dialog/UIDialogContentSizeLimit";
 import { UIConfirmDialogParam } from "../../crazyPoker/gameplay/common/view/common/UIConfirmDialog";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import TexasGameMessageHandler from "../messageHandler/TexasGameMessageHandler";
-// import { AddClipsData } from "../new_ui/UIBringIn";
 import { HistoryInfoData } from "../new_ui/UITexasHistory";
 import TexasGameProtocol from "../protocol/TexasGameProtocol";
 import Seat, { SeatUIInfo } from "../seat/Seat";
@@ -74,15 +62,11 @@ import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
 import { GameCache } from "./../GameCache";
 import { SeatEmpty, SeatIdle, SeatOperation } from "./../SeatStateHandler";
-
 import { TexasGameState } from "./../TexasGameState";
 import { GameState } from "../../crazyPoker/gameplay/common/constant/TexasGameStatus";
 import TexasBusiness from "./business/TexasBusiness";
-
 import TexasSMAgency from "./../TexasSMAgency";
-import UIOperationComponent, {
-    OperationData,
-} from "./../ui/UIOperationComponent";
+import { OperationData } from "./../ui/UIOperationComponent";
 import UITexas, { PotInfo, PublicCardInfo } from "./../UITexas";
 import { UITexasModel } from "./../UITexasModel";
 import { AddClipsDataOut } from "../new_ui/UIBringOut";
@@ -118,7 +102,6 @@ class SeatMoveStruct {
 const LN = '[TexasGame]';
 
 export default class TexasGame {
-    protected Seat_Cls = Seat;
     //座位UI节点缓存池
     private seatUI_pool: cc.Node[] = [];
     private mushroomFeature: TexasGameMushroom = null;
@@ -189,6 +172,9 @@ export default class TexasGame {
     /// 已发出第二套公共牌
     /// </summary>
     //public cards_2: number[] = null;
+    public get id(): string {
+        return `${GameCache.Instance.room_id}-${GameCache.Instance.match_id}-${GameCache.Instance.room_type}`;
+    }
 
     /// <summary>
     /// 大盲
@@ -598,6 +584,9 @@ export default class TexasGame {
 
     Update(dt: number) { }
 
+    // Enter (called by procedureManager.startProcedure(Texas))
+    // StateMachine.Start then to launchState(EnterRoom => send enterRoom)
+    // enterRoom(Callback: switchScene & to initState)
     Enter() {
         this.listSeat = [];
         this.pots = [];
@@ -619,13 +608,13 @@ export default class TexasGame {
         return this.sequencePlayDealAnimation;
     }
 
-    public RegiterEnterRoom() {
-        GC.notify.register(
-            ProtocolCode.Protocol_Holdem_EnterRoom,
-            this.TexasGameMessageHandler.Protocol_Holdem_EnterRoom_Handler,
-            this.TexasGameMessageHandler,
-        );
-    }
+    // public RegiterEnterRoom() {
+    //     GC.notify.register(
+    //         ProtocolCode.Protocol_Holdem_EnterRoom,
+    //         this.TexasGameMessageHandler.Protocol_Holdem_EnterRoom_Handler,
+    //         this.TexasGameMessageHandler,
+    //     );
+    // }
     public UnRegiterEnterRoom() {
         GC.notify.remove(
             ProtocolCode.Protocol_Holdem_EnterRoom,
@@ -719,13 +708,48 @@ export default class TexasGame {
     }
 
     public EnterRoom() {
-        this.TexasGameUtils.EnterRoom();
+        // this.TexasGameUtils.EnterRoom();
+        // GC.notify.register(
+        //     ProtocolCode.Protocol_Holdem_EnterRoom,
+        //     this.TexasGameMessageHandler.Protocol_Holdem_EnterRoom_Handler,
+        //     this.TexasGameMessageHandler,
+        // );
+        const roomId = GameCache.Instance.room_id;
+        const matchId = GameCache.Instance.match_id;
+        const mttPartialBringIn = 0;
+        const observer = this.IsLookOn;
+
+        // if (roomType >= RoomType.MTTTexasHoldemStandardNoLimit) {
+        //     //MTT
+        //     // GameCache.Instance.match_id = UIMTTModel.Instance.MttInfo.mtt.match_id;
+        //     // GameCache.Instance.seat_count = UIMTTModel.Instance.MttInfo.mtt.seat_count;
+        //     // GameCache.Instance.mtt_Hunter_game = UIMTTModel.Instance.MttInfo.mtt.hunter_on > 0;
+        //     // GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(UIMTTModel.Instance.MttInfo.mtt.name);
+        //     matchId = GameCache.Instance.match_id;
+        //     roomId = GameCache.Instance.room_id;
+        //     mttPartialBringIn = 0;
+        //     observer = GameCache.Instance.CurGame.IsLookOn;
+        // }
+
+        const body = {
+            room: { roomId: roomId, matchId: matchId },
+            gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
+            mttPartialBringIn: mttPartialBringIn,
+            observer: observer,
+            wantSeat: protobuf_holdem_define_pb.Def.WantSeatType.WST_BOTH,
+        };
+
+        ProtocolAgency.Send<ClientMessageEnterRoom.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_EnterRoom,
+            RoomID: roomId,
+            MatchID: matchId,
+            Body: body as any,
+        });
+        console.log(LN, `EnterRoom: room_id=${roomId}, match_id=${matchId}, observer=${observer}`);
     }
     //更新房间数据
     public UpdateRoom(obj: ServerMessageEnterRoom.AsObject) {
         this.UpdateRoomCommon(obj);
-        GameCache.Instance._texasData._isCriticalHitOpen = obj.handInfo.criticalHitOpen;
-        GameCache.Instance._texasData._curCriticalHitRound = obj.handInfo.conRounds;
     }
 
     /**
@@ -797,15 +821,16 @@ export default class TexasGame {
             // Unity 对齐：MyInfo 仅使用 squidRoundSeated，玩法状态由 Players/HandInfo 同步
             this.mainPlayer.squidRoundSeated = (rec.myInfo as any).squidRoundSeated || false;
         }
-
-        const roomInfoAny = rec.roomInfo as any;
-        const bombpotFlag = Number(roomInfoAny?.bombpot || roomInfoAny?.bombPot || 0) > 0;
-        const byRule = !!roomInfoAny?.ignorePreflop && !!roomInfoAny?.isAlwaysSecondPcs;
-        this.isBombPot = bombpotFlag || byRule;
+        const roomInfoAny = rec.roomInfo;
+        const byRule = !!roomInfoAny.ignorePreflop && !!roomInfoAny.isAlwaysSecondPcs;
+        this.isBombPot = byRule;
 
         this.cacheUniqueId = rec.roomInfo.uniqueId;
         this.gamestatus = rec.gameStatus;
         GameCache.Instance.GameStatus = this.gamestatus;
+        //暴击数据
+        GameCache.Instance._texasData._isCriticalHitOpen = rec.handInfo.criticalHitOpen;
+        GameCache.Instance._texasData._curCriticalHitRound = rec.handInfo.conRounds;
 
         this.bigIndex = this.GetLocalSeatID(rec.handInfo.bbSeatId);
         this.smallIndex = this.GetLocalSeatID(rec.handInfo.sbSeatId);
@@ -827,7 +852,6 @@ export default class TexasGame {
                 this.IsSecondPsc = true;
             }
         }
-
         GameCache.Instance._texasData._smallBlind = rec.roomInfo.smallBlind;
         GameCache.Instance._texasData._bigBlind = rec.roomInfo.smallBlind * 2;
         GameCache.Instance._texasData._minBringIn = GameCache.Instance._texasData._bigBlind;
@@ -854,8 +878,8 @@ export default class TexasGame {
         this.squidFeature.UpdateRoomConfig(rec);
         this.UpdateCriticalHitConfig(rec);
         this.jackpotFeature.UpdateRoomConfig(rec);
-        this.callTime = Number(roomInfoAny?.callTime || GameCache.Instance.room_call_time || 0);
-        this.callTimeWinline = Number(roomInfoAny?.callTimeWinline || GameCache.Instance.room_call_time_winline || 0);
+        this.callTime = roomInfoAny.callTimeCount || GameCache.Instance.room_call_time || 0;
+        this.callTimeWinline = Number(GameCache.Instance.room_call_time_winline || 0);
         this.callTimeLimitCount = Number(roomInfoAny?.callTimeCount || GameCache.Instance.room_call_time_count || 0);
         this.callTimeCount = Number(roomInfoAny?.callTimeCount || 0);
         this.callTimeStay = !!(rec.myInfo as any)?.callTimeStay;
@@ -863,67 +887,37 @@ export default class TexasGame {
             this.callTimeCount = Number((rec.myInfo as any).callTimeCount || this.callTimeCount || 0);
         }
 
-        this.bringinEqualLeader = Number(roomInfoAny?.bringinEqualLeader || roomInfoAny?.bringin_equal_leader || 0);
-        this.minPlayerChipRate = Number(roomInfoAny?.minPlayerChipRate || roomInfoAny?.min_player_chip_rate || 0);
-        this.maxBringinTotalRate = Number(roomInfoAny?.maxBringinTotalRate || roomInfoAny?.max_bringin_total_rate || 0);
-        this.forceShowCard = Number(roomInfoAny?.forceShowCard || roomInfoAny?.force_show_card || 0);
-        this.randomSeat = Number(roomInfoAny?.randomSeat || roomInfoAny?.random_seat || GameCache.Instance.room_random_seat || 0);
-        this.onlyIOS = Number(roomInfoAny?.onlyIOS || roomInfoAny?.only_ios || 0);
-        this.poolRate = Number(roomInfoAny?.poolRate || roomInfoAny?.pool_rate || roomInfoAny?.limitMinPoolRate || roomInfoAny?.limit_min_pool_rate || 0);
-        this.lookHandCard = Number(
-            roomInfoAny?.lookHandCard
-            ?? roomInfoAny?.look_hand_card
-            ?? roomInfoAny?.viewPlayerCards
-            ?? roomInfoAny?.view_player_cards
-            ?? GameCache.Instance.room_view_player_cards
-            ?? 0
-        );
-        this.chatType = Number(roomInfoAny?.chatType || roomInfoAny?.chat_type || 1);
-        this.straddleMax = Number(roomInfoAny?.straddleMax || roomInfoAny?.straddle_max || 2);
-        this.secondPcsOn = Number(roomInfoAny?.secondPcsOn || roomInfoAny?.second_pcs_on || 0) > 0;
-        this.insuranceMode = Number(roomInfoAny?.insuranceMode || roomInfoAny?.insurance_mode || 0);
-        this.blockchainType = Number(roomInfoAny?.encryptCards || roomInfoAny?.encrypt_cards || roomInfoAny?.blockchainType || 0);
-        this.anteRandomJumpConfig = String(roomInfoAny?.randomAnte || roomInfoAny?.random_ante || "");
+        this.bringinEqualLeader = GameCache.Instance._bringinEqualLeader;
+        this.minPlayerChipRate = GameCache.Instance._minPlayerChipRate;
+        this.maxBringinTotalRate = GameCache.Instance._maxBringinTotalRate;
+        this.forceShowCard =GameCache.Instance._forceShowCard;
+        this.randomSeat = GameCache.Instance.room_random_seat;
+        this.onlyIOS = GameCache.Instance._onlyIOS;
+        this.poolRate = roomInfoAny?.limitMinPoolRate;
+        this.lookHandCard = GameCache.Instance.room_view_player_cards;
+        this.chatType = GameCache.Instance._chatType;
+        this.straddleMax =  GameCache.Instance._straddleMax;
+        this.secondPcsOn = GameCache.Instance._secondPcsOn;
+        this.insuranceMode = roomInfoAny.insuranceMode;
+        this.blockchainType = GameCache.Instance._blockchainType;
+        this.anteRandomJumpConfig = roomInfoAny.randomAnte;
         this.isAnteRandomJumpEnable = this.anteRandomJumpConfig.length > 0;
-        this.autoChangeRoomLimitHand = Number(roomInfoAny?.autoChangeRoomLimitHand || roomInfoAny?.auto_change_room_limit_hand || 0);
+        this.autoChangeRoomLimitHand = roomInfoAny.autoChangeRoomLimitHand;
         this.isAutoChangeTable = this.autoChangeRoomLimitHand > 0;
         this.autoChangeTable = this.autoChangeRoomLimitHand;
         this.jackpot = Number(roomInfoAny?.jackpot || 0);
         GameCache.Instance.jackPot_on = this.jackpot;
         GameCache.Instance._enterRoomType = 1;
-        GameCache.Instance.jackPot_id = Number(
-            roomInfoAny?.jackpotId
-            ?? roomInfoAny?.jackpot_id
-            ?? GameCache.Instance.jackPot_id
-            ?? 0
-        );
-        GameCache.Instance.jackPot_gold = Number(
-            roomInfoAny?.jackpotGold
-            ?? roomInfoAny?.jackpot_gold
-            ?? GameCache.Instance.jackPot_gold
-            ?? 0
-        );
-        GameCache.Instance.jackPot_parent_gold = Number(
-            roomInfoAny?.jackpotParentGold
-            ?? roomInfoAny?.jackpot_parent_gold
-            ?? GameCache.Instance.jackPot_parent_gold
-            ?? GameCache.Instance.jackPot_gold
-            ?? 0
-        );
+        GameCache.Instance.jackPot_id = roomInfoAny.jackpot;
+        GameCache.Instance.jackPot_gold = roomInfoAny.jackpotGold;
+        GameCache.Instance.jackPot_parent_gold = roomInfoAny.jackpotParentGold;
         GameCache.Instance.jackPot_fund = GameCache.Instance.jackPot_parent_gold;
-        this.jackpotConfig = this.ResolveJackpotConfig(
-            roomInfoAny?.jackpotConfig
-            ?? roomInfoAny?.jackpot_config
-            ?? GameCache.Instance.room_jackpot_config
-            ?? null
-        );
+        this.jackpotConfig = this.ResolveJackpotConfig(GameCache.Instance.room_jackpot_config);
         this.insurance = rec.roomInfo.insurance;
         this.isIpRestrictions = rec.roomInfo.limitIp;
         this.isGPSRestrictions = rec.roomInfo.limitGps;
-        this.isSafeRoom = !!(rec.roomInfo as any)?.seatedMessaging || Number(GameCache.Instance.room_seated_messaging || 0) === 1;
-
+        this.isSafeRoom = roomInfoAny.seatedMessaging;
         GameCache.Instance.insurance = this.insurance;
-
         for (let i = 0; i < rec.handInfo.potsList.length; i++) {
             this.pots.push(rec.handInfo.potsList[i].amount);
             console.log(LN,"排池子数据:", this.pots);
@@ -933,19 +927,16 @@ export default class TexasGame {
         } else {
             this.HideWaitBlindBtn();
         }
-
         // 显示可用位置
         let mPlayerIds: number[] = [];
         for (let i = 0; i < rec.playersList.length; i++) {
             mPlayerIds.push(this.GetLocalSeatID(rec.playersList[i].seatId));
         }
-
         let mSeat: Seat = null;
         //客户端赋值本地座位号。座位空人也设置
         for (let i = 0, n = GameCache.Instance.seat_count; i < n; i++) {
             mSeat = this.listSeat[i];
             mSeat.seatID = i;
-
             mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
             if (!mPlayerIds.includes(i)) {
                 mSeat.FsmLogicComponent.SM.ChangeState(SeatEmpty.Instance);
@@ -955,13 +946,9 @@ export default class TexasGame {
             let player_local_seadID = this.GetLocalSeatID(
                 rec.playersList[i].seatId,
             );
-
             mSeat = this.listSeat[player_local_seadID];
-
             mSeat.seatID = player_local_seadID;
-
             mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
-
             let mPlayerId = rec.playersList[i].userRid;
             if (mPlayerId == 0) {
                 mSeat.FsmLogicComponent.SM.ChangeState(SeatEmpty.Instance);
@@ -994,7 +981,6 @@ export default class TexasGame {
             mPlayer.anteNumber = mAnte;
             mPlayer.isOffLine = OffLineState;
             mPlayer.IsAutoOp = rec.playersList[i].isAutoop;
-
             mPlayer.keepSeatReason = rec.playersList[i].keepSeatReason;
             //留座原因是带入申请中
             if (mPlayer.keepSeatReason == Def.KeepSeatReason.KSR_TAKE_SEAT) {
@@ -1019,39 +1005,28 @@ export default class TexasGame {
             //更新玩家离线状态
             mSeat.UpdateOnOrOffLine();
         }
-
         if (this.gamestatus == GameState.NOT_START) {
             this.ShowWaitForStartTips();
         }
         else {
             this.HideWaitForStartTips();
         }
-
-
         this.UpdateAlreadAnte();
         this.UpdateRoomDes();
         this.UpdatePublicCardsNoAnim();
         this.uirc.UpdateBarragePanelActive();
-
         mSeat = this.GetSeatByLocalSeatID(this.mainPlayer.seatID);
         if (null != mSeat) {
             this.ResetSeatUIInfo(mSeat.ClientSeatId);
         }
         for (let i = 0, n = rec.playersList.length; i < n; i++) {
-            mSeat =
-                this.listSeat[this.GetLocalSeatID(rec.playersList[i].seatId)];
-
+            mSeat =this.listSeat[this.GetLocalSeatID(rec.playersList[i].seatId)];
             mSeat.seatID = this.GetLocalSeatID(rec.playersList[i].seatId);
-
             mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
-
             let mPlayerId = rec.playersList[i].userRid;
-
             if (mPlayerId == 0) continue;
-
             mSeat.UpdateFSMbyStatus(true);
         }
-
         // EnterRoom 即刷新蘑菇标识（不等待 StartInfo）
         if (this.mushroomEnabled) {
             this.mushroomFeature.RefreshSeatMarks();
@@ -1150,65 +1125,7 @@ export default class TexasGame {
         //刷新池子
         this.UpdatePots();
         // 切换游戏状态机
-        switch (rec.gameStatus) {
-            case Def.GameStatus.NOT_START:
-                {
-                    this.SMAgency.ChangeGameState(TexasGameState.NotStart, rec);
-                }
-                break;
-            case Def.GameStatus.WAIT_HAND_START:
-                {
-                    this.SMAgency.ChangeGameState(
-                        TexasGameState.WaitHandStart,
-                        rec,
-                    );
-                }
-                break;
-            case Def.GameStatus.HAND_STARTED:
-                {
-                    this.SMAgency.ChangeGameState(
-                        TexasGameState.HandStarted,
-                        rec,
-                    );
-                }
-                break;
-            case Def.GameStatus.HAND_FLOP:
-                {
-                    this.SMAgency.ChangeGameState(TexasGameState.HandFlop, rec);
-                }
-                break;
-            case Def.GameStatus.HAND_TURN:
-                {
-                    this.SMAgency.ChangeGameState(TexasGameState.HandTurn, rec);
-                }
-                break;
-            case Def.GameStatus.HAND_RIVER:
-                {
-                    this.SMAgency.ChangeGameState(
-                        TexasGameState.HandRiver,
-                        rec,
-                    );
-                }
-                break;
-            case Def.GameStatus.HAND_END:
-                {
-                    this.SMAgency.ChangeGameState(
-                        TexasGameState.WaitHandStart,
-                        rec,
-                    );
-                }
-                break;
-            case Def.GameStatus.COMPLETE:
-                {
-                    this.SMAgency.ChangeGameState(TexasGameState.Complete, rec);
-                }
-                break;
-            case Def.GameStatus.CANCEL:
-                {
-                    this.SMAgency.ChangeGameState(TexasGameState.Cancel, rec);
-                }
-                break;
-        }
+        this._stateChange(rec.gameStatus, rec);
 
         this.roomReqList = [
             // { name: "UpdateMsgBtnSprite", func: this.UpdateMsgBtnSprite },
@@ -1236,6 +1153,70 @@ export default class TexasGame {
         }
     }
     roomReqList: any = [];
+
+
+    // _stateChange 根据入房间状态切换状态机
+    private _stateChange(status: Def.GameStatusMap[keyof Def.GameStatusMap], rec: ServerMessageEnterRoom.AsObject) {
+        switch (status) {
+        case Def.GameStatus.NOT_START:
+            {
+                this.SMAgency.ChangeGameState(TexasGameState.NotStart, rec);
+            }
+            break;
+        case Def.GameStatus.WAIT_HAND_START:
+            {
+                this.SMAgency.ChangeGameState(
+                    TexasGameState.WaitHandStart,
+                    rec,
+                );
+            }
+            break;
+        case Def.GameStatus.HAND_STARTED:
+            {
+                this.SMAgency.ChangeGameState(
+                    TexasGameState.HandStarted,
+                    rec,
+                );
+            }
+            break;
+        case Def.GameStatus.HAND_FLOP:
+            {
+                this.SMAgency.ChangeGameState(TexasGameState.HandFlop, rec);
+            }
+            break;
+        case Def.GameStatus.HAND_TURN:
+            {
+                this.SMAgency.ChangeGameState(TexasGameState.HandTurn, rec);
+            }
+            break;
+        case Def.GameStatus.HAND_RIVER:
+            {
+                this.SMAgency.ChangeGameState(
+                    TexasGameState.HandRiver,
+                    rec,
+                );
+            }
+            break;
+        case Def.GameStatus.HAND_END:
+            {
+                this.SMAgency.ChangeGameState(
+                    TexasGameState.WaitHandStart,
+                    rec,
+                );
+            }
+            break;
+        case Def.GameStatus.COMPLETE:
+            {
+                this.SMAgency.ChangeGameState(TexasGameState.Complete, rec);
+            }
+            break;
+        case Def.GameStatus.CANCEL:
+            {
+                this.SMAgency.ChangeGameState(TexasGameState.Cancel, rec);
+            }
+            break;
+        }
+    }
 
     // 刷新分池
     public UpdatePots(): void {

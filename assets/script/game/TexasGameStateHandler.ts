@@ -15,142 +15,68 @@ import { TexasGameState } from "./TexasGameState";
 
 
 export class TexasGameStateHandlerNetworkException extends StateHandler {
-
     public Name: string = "TexasGameStateHandlerNetworkException";
-
     public Enter(entity?: any) {
         super.Enter(entity);
     }
-
     public Execute(entity?: any) {
     }
-
     public Exit(entity?: any) {
-
         super.Exit(entity);
     }
 }
 export class TexasGameStateHandlerLaunch extends StateHandler {
-
     public Name: string = "TexasGameStateHandlerLaunch";
-
-    private _waitTimeoutThreshold: number = 20.0;
-    private _waitTimeoutTime: number = 0;
-    private _checkFlag: boolean = false;
-
-    private _checkInterval: number = 1.0;
-    private _lastCheckTime: number = 0;
-
+    // private _waitTimeoutThreshold: number = 20.0;
+    // private _waitTimeoutTime: number = 0;
+    // private _checkFlag: boolean = false;
+    // private _checkInterval: number = 1.0;
+    // private _lastCheckTime: number = 0;
     public Enter(entity?: any) {
-
         super.Enter(entity);
-
         let game: TexasGame = entity as TexasGame;
-
         if (!game) return;
-
-        game.RegiterEnterRoom();
-
-        game.EnterRoom();//GameCache.Instance.room_id
-
-        this._waitTimeoutTime = GlobalSession.NowTimeS + this._waitTimeoutThreshold;
-
-        this._checkFlag = true;
+        GameCache.Instance.CurGame.RegisterMsgHandler();
+        game.EnterRoom();
+        // this._waitTimeoutTime = GlobalSession.NowTimeS + this._waitTimeoutThreshold;
+        // this._checkFlag = true;
     }
-
-    public Execute(entity?: any) {
-    }
-
-    public Exit(entity?: any) {
-
-        super.Exit(entity);
-
-    }
-
 }
 
 export class TexasGameStateHandlerInit extends StateHandler {
-
     public Name: string = "TexasGameStateHandlerInit";
-
-
     public Enter(entity?: any) {
-
         super.Enter(entity);
-
         let game: TexasGame = entity as TexasGame;
-
         if (!game) return;
-
-
         var source = this.SourceData as ServerMessageEnterRoom.AsObject;
         if (source == null) {
             return;
         }
-
         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
-
-        GameCache.Instance.CurrentRoomID = GameCache.Instance.room_id;
-        GameCache.Instance.CurGame.RegisterMsgHandler();
+        GameCache.Instance._currentRoomID = GameCache.Instance.room_id;
         GameCache.Instance.CurGame.UpdateRoom(source);
     }
-
-    public Execute(entity?: any) {
-    }
-
-    public Exit(entity?: any) {
-
-        super.Exit(entity);
-    }
-
 }
+
 export class TexasGameStateHandlerHandStarted extends StateHandler {
-
     public Name: string = "TexasGameStateHandlerHandStarted";
-
     public Enter(entity?: any): void {
-
         super.Enter(entity);
-
         let game: TexasGame = entity as TexasGame;
-
         if (!game) return;
-
         game.SMAgency.ChangeGameState(TexasGameState.HandPreflop, this.SourceData);
-    }
-
-    public Execute(entity?: any): void {
-    }
-
-    public Exit(entity?: any): void {
-
-        super.Exit(entity);
     }
 }
 
 
 export class TexasGameStateHandlerHandPreflop extends StateHandler {
-
     public Name: string = "TexasGameStateHandlerHandPreflop";
-
     public Enter(entity?: any): void {
-
-        var source = this.SourceData as ServerMessageStartInfo.AsObject;
-        if (source == null) {
-            return;
-        }
-
+        const source = this.SourceData as ServerMessageStartInfo.AsObject;
+        if (!source) return;
         let game: TexasGame = entity as TexasGame;
-
         game.TexasGameProtocol.handleRecvStartInfoCommon(source);
-    }
-
-    public Execute(entity?: any): void {
-    }
-
-    public Exit(entity?: any): void {
-
-        super.Exit(entity);
     }
 }
 
