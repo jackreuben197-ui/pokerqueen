@@ -14,10 +14,11 @@ export default class ToggleButton extends cc.Component {
     @property(cc.Label)
     content_label: cc.Label = null;
 
-
+    defaultLabel: cc.Node = null;
     callback: Function = null;
 
     onLoad() {
+        this.defaultLabel = this.node.getChildByName('Label');
         this.bg_node.on("click", this.bgClick, this);
         this.check_node.on("click", this.checkClick, this);
     }
@@ -33,15 +34,23 @@ export default class ToggleButton extends cc.Component {
     }
     check() {
         this.check_node.active = true;
+        if (this.content_label) {
+            this.defaultLabel.active = false;
+            this.content_label.node.active = true;
+        }
         this.callback?.(true);
     }
     uncheck() {
         this.check_node.active = false;
+        if (this.content_label) {
+            this.defaultLabel.active = true;
+            this.content_label.node.active = false;
+        }
         this.callback?.(false);
     }
 
     set content(value: string) {
-        if (this.content_label) this.content_label.string = value;
+        this.content_label.string = '';
     }
 
     set isOn(bool: boolean) {

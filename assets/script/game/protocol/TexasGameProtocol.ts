@@ -65,7 +65,7 @@ import { WebUserSetVideoMask } from "../../net/https/web_request/WebRequestUser"
 import { WWW } from "../../net/https/WebRequestBase";
 
 
-
+const LN = '[TexasGameProtocol]';
 //const CanPlayStatus = Def.CanPlayStatus;
 
 export default class TexasGameProtocol {
@@ -75,7 +75,7 @@ export default class TexasGameProtocol {
 
     public RegisterMsgHandler(): void {
 
-        console.log(`TexasGame : RegisterMsgHandler`);
+        console.log(LN, `RegisterMsgHandler`);
 
         // 进入房间时加入视频频道（不依赖坐下）
         this.JoinVideoChannelIfNeed();
@@ -114,7 +114,7 @@ export default class TexasGameProtocol {
         GC.notify.register(ProtocolCode.Protocol_Holdem_VideoMaskChange, this.HANDLER_REQ_VIDEO_MASK_CHANGE, this); // 视频窗花变更
     }
     public RemoveMsgHandler(): void {
-        console.log(`TexasGame : RemoveMsgHandler`);
+        console.log(LN, 'RemoveMsgHandler');
         // 离开房间时退出视频频道
         this.LeaveVideoChannel();
         GC.notify.remove(ProtocolCode.Protocol_Holdem_Seated, this.HANDLER_REQ_GAME_SEND_MY_SEAT, this);//自己坐下
@@ -476,7 +476,7 @@ export default class TexasGameProtocol {
             if (Seat.seatID == this.game.mainPlayer.seatID) {
                 hasMainSeatInPlayers = true;
                 if (Seat.Player.actionStatus == Def.Action.NONE) {
-                    console.warn("[StartInfo] main seat in playersList but action is NONE", {
+                    console.warn(LN, "[StartInfo] main seat in playersList but action is NONE", {
                         handNum: rec.handInfo?.handNum,
                         mainSeatID: this.game.mainPlayer.seatID,
                         mainCanPlayStatus: Seat.Player.canPlayStatus,
@@ -549,7 +549,7 @@ export default class TexasGameProtocol {
             });
         }
         this.__PlayDealAnimation(rec);
-        cc.log("————————>立刻执行发牌");
+        console.log(LN, "立刻执行发牌");
         this.game.UpdateStartGameState();
     }
     private __PlayDealAnimation(responseData: any) {

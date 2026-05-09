@@ -46,14 +46,17 @@ export default class HttpClient {
         needConsole = true,
         api = "",
     }: HttpSendParams) {
+        const rawBody = body;
         if (isJson) {
             body = JSON.stringify(body);
         }
-        needConsole && console.log('[HttpClient]', ">>>>> http post - request : ", url, body);
+        needConsole && console.log('[HttpClient]', ">>>>> http post - request : ", url, rawBody);
         needJuhua && UIComponent.open<void>(UIDefine.UIPromptComponent);
         let response: string = <string>await HttpClient.__request(url, false, body, headers, isJson);
         needJuhua && UIComponent.close<void>(UIDefine.UIPromptComponent);
-        needConsole && console.log('[HttpClient]', ">>>>> http post - response : ", url, response);
+        let obj = response;
+        if (obj != 'timeout' && obj != 'error') obj = JSON.parse(obj);
+        needConsole && console.log('[HttpClient]', ">>>>> http post - response : ", url, obj);
         HttpClient.__response(response, onFailure, onSuccess, api);
     }
     /**
@@ -133,7 +136,6 @@ export default class HttpClient {
             }, HttpClient.TimeOut);
 
             xhr.onreadystatechange = function () {
-
                 if (xhr.readyState === 4 && (xhr.status >= 200 && xhr.status < 400)) {
                     var response = xhr.responseText;
                     if (isTimeout) return;//请求已经超时，忽略
@@ -166,10 +168,8 @@ export default class HttpClient {
                     xhr.setRequestHeader(header[0], header[1]);
                 }
             }
-
-            let strToDebug: string = this.xhrToCurl(xhr);
-            console.log(strToDebug);
-
+            // let strToDebug: string = this.xhrToCurl(xhr);
+            // console.log(strToDebug);
             xhr.send(body ? body : null);
         })
     }

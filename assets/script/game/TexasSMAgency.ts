@@ -57,7 +57,7 @@ export default class TexasSMAgency {
         }
     }
 
-    public ChangeGameState(state: TexasGameState, sourceData?: any) {
+    public ChangeGameState<T>(state: TexasGameState, sourceData?: T) {
         if (this.game.GameState == state) {
             // 状态未变更
             return;

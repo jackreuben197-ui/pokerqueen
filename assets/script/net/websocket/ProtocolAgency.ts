@@ -94,7 +94,7 @@ export default class ProtocolAgency extends cc.Component {
             if (OpCodeHelper.NeedLog(param.Code)) {
                 console.log(LN,
                     `>>>>> protocol send (H5): ${protocol_name}`,
-                    `RoomID:${param.RoomID},MatchID:${param.MatchID},body:${JSON.stringify(param.Body)}`,
+                    `RoomID:${param.RoomID},MatchID:${param.MatchID},body:`, param.Body,
                 );
             }
 
@@ -141,7 +141,7 @@ export default class ProtocolAgency extends cc.Component {
             if (OpCodeHelper.NeedLog(param.Code)) {
                 console.log(LN,
                     `>>>>> protocol send : ${protocol_name}`,
-                    `RoomID:${param.RoomID},MatchID:${param.MatchID},body:${JSON.stringify(param.Body)}`,
+                    `RoomID:${param.RoomID},MatchID:${param.MatchID},body:`, param.Body,
                 );
             }
 
@@ -386,7 +386,8 @@ export default class ProtocolAgency extends cc.Component {
         if (OpCodeHelper.NeedLog(code)){
             console.log(LN,
                 `>>>>> protocol receive : ${protocol_name}`,
-                `RoomID:${roomid},MatchID:${matchid},body:${JSON.stringify(body)}`,
+                `RoomID:${roomid},MatchID:${matchid},body:`, 
+                body
             );
         }
         

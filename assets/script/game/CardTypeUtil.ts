@@ -647,7 +647,7 @@ export class CardTypeUtil {
     }
 
 
-    public static GetCardTypeEnglishName(cardType) {
+    public static GetCardTypeEnglishName(cardType: CardType) {
         switch (cardType) {
             case CardType.RoyalFlush:
                 return "Royal Flush";

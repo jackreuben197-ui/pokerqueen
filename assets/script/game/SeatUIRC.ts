@@ -188,7 +188,6 @@ export default class SeatUIRC extends UIBase {
             "Image_Empty",
             cc.Sprite,
         );
-
         this.Frame_Head = this.getChildNodeOrComponent("Frame_Head");
         this.Raw_Head = this.getChildNodeOrComponent("Raw_Head", cc.Sprite);
         this.Gray_Head = this.getChildNodeOrComponent("Gray_Head");
@@ -317,8 +316,7 @@ export default class SeatUIRC extends UIBase {
             "Text_CancelReserveSeat",
             cc.Label,
         );
-        this.imageReserveSeat =
-            this.getChildNodeOrComponent("Image_ReserveSeat");
+        this.imageReserveSeat = this.getChildNodeOrComponent("Image_ReserveSeat");
         this.m_ReserveTime = this.getChildNodeOrComponent("time", cc.Label);
 
         this.Image_Trust = this.getChildNodeOrComponent("Image_Trust");
@@ -474,47 +472,7 @@ export default class SeatUIRC extends UIBase {
 
     private ClickCancelReserveSeat(): void {
         if (this.seat.IsMySeat && this.seat.Player.chips <= 0) {
-            if (GameUtil.GetFriendsOrClubTable() == 3) {
-                WWW.Instance.CommonAPI({
-                    web_class: WebUserRoomBringin,
-                    api_id: GameCache.Instance.room_id,
-                }).then(
-                    (res: any) => {
-                        UIComponent.Instance.ShowUI<AddClipsData>(
-                            PrefabUI.UIBringIn,
-                            {
-                                bigBlind: GameCache.Instance.CurGame.bigBlind,
-                                smallBlind:
-                                    GameCache.Instance.CurGame.smallBlind,
-                                currentMinRate:
-                                    GameCache.Instance.CurGame.currentMinRate,
-                                currentMaxRate:
-                                    GameCache.Instance.CurGame.currentMaxRate,
-                                totalCoin: GC.data.user.info.gold,
-                            tableChips: this.seat.Player.chips,
-                            wallets: [res.data],
-                            minBringIn: GameCache.Instance.CurGame.GetMinBringInWithMush(),
-                            returnOrNew: res.return_table,
-                            }
-                        )
-                    },
-                    (res: any) => {},
-                );
-            } else {
-
-                UIComponent.Instance.ShowUI<AddClipsData>(
-                    PrefabUI.UIBringIn,
-                    {
-                        bigBlind: GameCache.Instance.CurGame.bigBlind,
-                        smallBlind: GameCache.Instance.CurGame.smallBlind,
-                        currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-                        currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-                        totalCoin: GC.data.user.info.gold,
-                        tableChips: this.seat.Player.chips,
-                        minBringIn: GameCache.Instance.CurGame.GetMinBringInWithMush(),
-                    }
-                )
-            }
+            GameCache.Instance.CurGame.StartAddChips();
         } else {
             ProtocolAgency.Send<ClientMessageKeepSeatActive.AsObject>({
                 Code: ProtocolCode.Protocol_Holdem_KeepSeatActive,

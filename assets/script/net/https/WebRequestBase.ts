@@ -70,20 +70,20 @@ export class WWW {
         )
      * @returns 
      */
-    CommonAPI(param: {
+    CommonAPI<T>(param: {
         web_class: { API: string; Request: (param: any) => any; Response: any };
         body?: any;
         api_id?: number;
         club_id?: number;
         juhua?: boolean;
         useCache?: boolean;
-    }): Promise<any> {
+    }): Promise<T> {
         return new Promise((resolve, reject) => {
             let obj: any = {
                 request: param.web_class,
                 body: param.web_class.Request(param.body),
                 onSuccess: function () {
-                    resolve(param.web_class.Response);
+                    resolve(param.web_class.Response as T);
                 }.bind(this),
                 onFailure: function (content: any) {
                     reject(content);

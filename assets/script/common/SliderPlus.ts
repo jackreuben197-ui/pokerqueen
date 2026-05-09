@@ -218,7 +218,7 @@ export default class SliderPlus extends cc.Component {
     }
 
 
-    getCount(value) {
+    getCount(value: number) {
 
         let count = Math.round((value - this.min) / this.step_distance);
 

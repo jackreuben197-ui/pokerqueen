@@ -187,7 +187,7 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
             }
             GameCache.Instance._roomEndTime = GameCache.Instance._roomStartTime + this._roomInfo.playDuration;
         }
-
+        GameCache.Instance._roomRecord = this._roomInfo;
         GameCache.Instance._serviceId = isClear ? "" : this._roomInfo.serviceId;
         GameCache.Instance.roomName = isClear ? "" : this._roomInfo.name;
         GameCache.Instance.game_type = isClear ? 0 : this._roomInfo.gameType;
@@ -256,6 +256,7 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         GameCache.Instance._opDuration = isClear ? 0 : this._roomInfo.opDuration;
         GameCache.Instance._texasData._allinBanChatType = isClear ? 0 : this._roomInfo.allInMute;
         GameCache.Instance._texasData._insuranceForceBuyRatio = isClear ? 0 : this._roomInfo.insuranceForceBuyRatio;
+        GameCache.Instance.room_jackpot_config = isClear ? null: this._roomInfo.jackpotConfig;
 
         // 多语言房间名设置
         if (isClear) {
@@ -374,6 +375,13 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         GameCache.Instance._texasData._callTimeWinline = isClear ? 0 : this._roomInfo.calltimeWinLine;
         GameCache.Instance._texasData._callTimeLimitCount = isClear ? 0 : this._roomInfo.calltimeLimit;
         GameCache.Instance._texasData._autoChangeTable = isClear ? 0 : this._roomInfo.autoChangeRoomLimitHand;
+
+        GameCache.Instance._texasData._smallBlind = isClear ? 0 : this._roomInfo.sb;
+        GameCache.Instance._texasData._bigBlind = isClear ? 0 : this._roomInfo.sb * 2;
+        GameCache.Instance._texasData._ante = isClear ? 0 : this._roomInfo.ante;
+        GameCache.Instance._texasData._minBringIn = isClear ? 0 : this._roomInfo.sb * 2;
+        GameCache.Instance._texasData._curMaxRate = isClear ? 0 : this._roomInfo.maxRate;
+        GameCache.Instance._texasData._curMinRate = isClear ? 0 : this._roomInfo.minRate;
     }
 
     /**

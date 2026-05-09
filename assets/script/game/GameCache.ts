@@ -7,6 +7,7 @@ import GameUtil, { GameEnterType } from "./util/GameUtil";
 import TexasGameplayData from "../crazyPoker/gameplay/texas/data/TexasGameplayData";
 import { AntiCheatType } from "../crazyPoker/gameplay/common/constant/AntiCheatType";
 import { VideoModel } from "../crazyPoker/gameplay/common/constant/VideoModel";
+import { WebRoomCenterDelayTimeBlindLevelQuery } from "../net/https/web_request/WebRequestRoomCenter";
 
 export interface GameEnterParam { 
     game_enter_type: GameEnterType, 
@@ -14,10 +15,6 @@ export interface GameEnterParam {
 }
 
 export class GameCache {
-
-    public CurrentRoomID: number = 0;
-
-
     /// <summary>
     /// 用户登录手机
     /// </summary>
@@ -746,7 +743,7 @@ export class GameCache {
     //  isActiveLeaving 
     public isActiveLeaving: boolean = false;
 
-    //
+    // mtt 相关
     public _mttRebuyLevel: number = 0;
     public _mttAddCloseRebuyLevel: number = 0;
     public _mttAddopRebuyLevel: number = 0;
