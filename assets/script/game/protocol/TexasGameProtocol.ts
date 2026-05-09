@@ -1820,8 +1820,8 @@ export default class TexasGameProtocol {
 
     }
 
-    ProtocolHoldemBroadcastMsgHandler(Protocol_Holdem_BroadcastMsg: ProtocolCode, ProtocolHoldemBroadcastMsgHandler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    ProtocolHoldemBroadcastMsgHandler(rec: any) {
+        console.log("[Emoji] BroadcastMsg response:", rec);
     }
     protected ProtocolHoldemGetMsgHandler(rec: ServerMessageGetMsg.AsObject) {
 
@@ -1837,9 +1837,7 @@ export default class TexasGameProtocol {
         switch (code) {
             case BroadcastCode.BroadcastMsg:
                 var broadcastMsg = BroadcastMsg.Response(data);
-                //ShowBarrage((PropsID)broadcastMsg.type, responsedata.Message, broadcastMsg.name, (uint)broadcastMsg.user_id, (uint)broadcastMsg.target_user_id);
-                //缓存记录，本地
-                //SetPlayerBarrageRecord(responsedata.Message, broadcastMsg.name);
+                console.log("[Emoji] 收到广播:", "type=", broadcastMsg.type, "user_id=", broadcastMsg.user_id, "name=", broadcastMsg.name);
                 break;
             case BroadcastCode.BroadcastVoiceprint:
                 // var VoiceprintData = VoiceprintMsg.Response(responseData.data);

@@ -1213,6 +1213,14 @@ export const UIDefine: Record<string, IUIDefine> = {
         Path: "purple_prefab/ui/UIGameplayAddChipsAndDiamond",
         DisAdaptScreen: true,
     },
+    //表情弹窗
+    UIEmojiDlg: {
+        UIType: UIType.Board,
+        Name: "UIEmojiDlg",
+        Bundle: 'texas',
+        Path: "prefab/ui/UIEmojiDlg",
+        DisAdaptScreen: true,
+    },
     //确认对话框
     UIConfirmDialog: {
         UIType: UIType.Dialog,
