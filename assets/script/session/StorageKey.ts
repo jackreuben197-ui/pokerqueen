@@ -55,6 +55,7 @@ export default class StorageKey {
   //扑克牌样式
   static SettingPokerType = "SettingPokerType";
 
+  static TextureResourceLoaded = "TextureResourceLoaded"; // 牌桌资源已加载过
   static kQuickActionIndexKEY = "kQuickActionIndexKEY"; //自定义加注
   static kQuickActionIndexValueKEY = "kQuickActionIndexValueKEY";
   static togglesCardType = "togglesCardType"; // 牌面

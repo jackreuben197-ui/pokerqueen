@@ -419,8 +419,8 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
             this.textBlindLabel.string = i18nMgr.Get("UIFantasy_Dizhu2");
             this.textBlind.string = StringHelper.GetLongString(this.addChipsData._smallBlind);
         } else {
-            console.log("setupSlider", i18nMgr.Get("UITexas_smallBigBlind"));
-            console.log("setupSlider", `${StringHelper.GetLongString(this.addChipsData._smallBlind)}/${StringHelper.GetLongString(this.addChipsData._bigBlind)}`);
+            console.log(LN, "setupSlider", i18nMgr.Get("UITexas_smallBigBlind"));
+            console.log(LN, "setupSlider", `${StringHelper.GetLongString(this.addChipsData._smallBlind)}/${StringHelper.GetLongString(this.addChipsData._bigBlind)}`);
             this.textBlindLabel.string = i18nMgr.Get("UITexas_smallBigBlind");
             this.textBlind.string = `${StringHelper.GetLongString(this.addChipsData._smallBlind)}/${StringHelper.GetLongString(this.addChipsData._bigBlind)}`;
         }

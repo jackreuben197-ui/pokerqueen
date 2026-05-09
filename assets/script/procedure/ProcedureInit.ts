@@ -1,7 +1,9 @@
 
 import { GameConfig } from "../config/GameConfig";
+import GC from "../frame/GameControl";
 import { i18nMgr } from "../i18n/i18nMgr";
 import * as MainUtils from "../MainUtils";
+import StorageKey from "../session/StorageKey";
 import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureInit extends ProcedureBase {
@@ -12,8 +14,14 @@ export default class ProcedureInit extends ProcedureBase {
         this.setFit();
         //解析 语言配置
         this.setNetwork();
-        await i18nMgr.loadAndRefreshConfig();
         i18nMgr.initLanguage();
+        await i18nMgr.loadAndRefreshConfig();
+
+        // 已加载过牌桌资源则隐藏首次加载提示
+        if (GC.localStore.getItem(StorageKey.TextureResourceLoaded) === 1) {
+            const firstloadLabel = cc.find('Canvas/Block - 遮挡/UIPreloading/progress_node/firstload_label');
+            if (firstloadLabel) firstloadLabel.active = false;
+        }
         MainUtils.loadWebSDK();
         // 引擎设置完成，等待 H5 层发送消息驱动后续流程
         console.log('[Procedure]',"ProcedureInit 完成，等待 H5 层指令...");

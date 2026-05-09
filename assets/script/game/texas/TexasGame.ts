@@ -995,6 +995,7 @@ export default class TexasGame {
             this.mushroomFeature.ApplyPlayerState(mPlayer, rec.playersList[i] as any);
             const isMainSeat = rec.myInfo != null && this.GetLocalSeatID(rec.myInfo.seatId) == player_local_seadID;
             this.squidFeature.ApplyPlayerState(mPlayer, rec.playersList[i] as any, rec.myInfo as any, isMainSeat);
+            mPlayer.videoMaskId = rec.playersList[i].videoMaskId || 0;
             mSeat.Player = mPlayer;
 
             if (isMainSeat) {
