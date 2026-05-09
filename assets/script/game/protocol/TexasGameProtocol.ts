@@ -63,6 +63,7 @@ import ToastManager from "../../manager/ToastManager";
 import { MicIconState } from "../SeatUIRC";
 import { WebUserSetVideoMask } from "../../net/https/web_request/WebRequestUser";
 import { WWW } from "../../net/https/WebRequestBase";
+import { HttpUserSetVideoMaskProtocol } from "../../crazyPoker/module/message/CPHotfixWebMessage/user/HttpUserSetVideoMaskProtocol";
 
 
 const LN = '[TexasGameProtocol]';
@@ -2949,13 +2950,13 @@ export default class TexasGameProtocol {
      */
     public async requestSetVideoMask(videoMaskId: number): Promise<boolean> {
         try {
-            const response = await WWW.Instance.CommonAPI({
+            const response = await WWW.Instance.CommonAPI<HttpUserSetVideoMaskProtocol.ResponseData>({
                 web_class: WebUserSetVideoMask,
                 body: {
                     video_mask_id: videoMaskId,
                 },
             });
-            if (response?.code === 0 || response?.code === 200) {
+            if (response.code === 0) {
                 console.log('[VideoMask] 设置窗花成功, videoMaskId:', videoMaskId);
                 // 立即更新本地数据
                 this.game.mainPlayer.videoMaskId = videoMaskId;

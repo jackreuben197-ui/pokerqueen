@@ -10,7 +10,6 @@ import WebImageHelper from "../../../../../helper/WebImageHelper";
 import SliderPlus from "../../../../../common/SliderPlus";
 import UIComponent from "../../../../../ui/UIComponent";
 import { UIDefine } from "../../../../../define/UIDefine";
-import { HttpRoomBringOutProtocol } from "../../../../module/message/CPHotfixWebMessage/room/HttpRoomBringOutProtocol";
 import UIBase from "../../../../../ui/UIBase";
 
 const { ccclass, menu, property } = cc._decorator;
@@ -79,8 +78,6 @@ export class AddChipsData {
     public _commit: (amount: number, clubID: number) => void
     /** 授信额度 */
     public _creditNum: number = 0;
-    /** 是否返桌 */
-    public _returnOrNew: boolean = false;
     /** 押金 */
     public _deposit: number = 0;
 }
@@ -196,7 +193,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
 
     // 状态变量
     private addChipsData: AddChipsData = null;
-    private mySelectWallet: HttpRoomBringOutProtocol.Wallet = null;
+    private mySelectWallet: IWallet = null;
     private currentSelect: number = 0;
     private walletToggles: cc.Toggle[] = [];
     private magnification: number = 1;
@@ -1069,16 +1066,6 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         }
     }
 
-    private getClubInfo(): HttpRoomBringOutProtocol.Wallet {
-        if (!this.addChipsData?._wallets) return null;
-        for (let index = 0; index < this.addChipsData._wallets.length; index++) {
-            if (this.addChipsData._wallets[index].club_id == GameCache.Instance._fromClubId) {
-                return this.addChipsData._wallets[index];
-            }
-        }
-        return null;
-    }
-
     /**
      * 设置带入筹码Text
      */
@@ -1094,7 +1081,6 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
             this.scheduleOnce(() => {
                 let worldPos = this.bringBtn.parent.convertToWorldSpaceAR(this.bringBtn.position);
                 let localPos = this.triangleNode.parent.convertToNodeSpaceAR(worldPos);
-                console.log(LN, 'pos', localPos.x, localPos.y);
                 this.triangleNode.setPosition(localPos.x + 100, localPos.y - 53);
             }, 0);
         }
@@ -1227,7 +1213,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     /**
      * 设置俱乐部数据
      */
-    private SetClubItemData(walletItem: HttpRoomBringOutProtocol.Wallet, temp: cc.Node, addLine?: boolean): void {
+    private SetClubItemData(walletItem: IWallet, temp: cc.Node, addLine?: boolean): void {
         // 设置头像
         let headImage = cc.find("cnamegrp/spriteClubIcon", temp).getComponent(cc.Sprite);
         WebImageHelper.SetHeadImage(headImage, walletItem.club_logo);

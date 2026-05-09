@@ -731,7 +731,7 @@ export default class TexasGame {
         //     observer = GameCache.Instance.CurGame.IsLookOn;
         // }
 
-        const body = {
+        const body: ClientMessageEnterRoom.AsObject = {
             room: { roomId: roomId, matchId: matchId },
             gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
             mttPartialBringIn: mttPartialBringIn,
@@ -743,7 +743,7 @@ export default class TexasGame {
             Code: ProtocolCode.Protocol_Holdem_EnterRoom,
             RoomID: roomId,
             MatchID: matchId,
-            Body: body as any,
+            Body: body,
         });
         console.log(LN, `EnterRoom: room_id=${roomId}, match_id=${matchId}, observer=${observer}`);
     }
@@ -1851,7 +1851,6 @@ export default class TexasGame {
                         _wallets: [response.data],
                         _source: BringInChipsType.SUPPLEMENT,
                         _creditNum: 0,
-                        _returnOrNew: false,
                         _commit: this._commitBringInCallback(),
                         _deposit: 0 // 如果在桌上不需要带入押金，这里要判断他的押金是否不足,到时候再补 deposit -user.current.deposit  @TODO
                     });
@@ -1950,7 +1949,6 @@ export default class TexasGame {
                 _wallets: response.data.wallet,
                 _source: BringInChipsType.BRING_IN,
                 _creditNum: response.data.user_club_gold_credit,
-                _returnOrNew: response.data.return_table,
                 _deposit: GameCache.Instance._texasData._deposit,
                 _commit: this._commitBringInCallback(seatedData),
             }

@@ -226,7 +226,7 @@ export async function registerH5Listeners(): Promise<void> {
     // await initH5BridgeDependencies();
     // initH5BridgeDependencies();
     H5MsgMgr.Instance.on('enterTable', (payload) => {
-        console.log('[H5Bridge] 收到 enterTable:', JSON.stringify(payload));
+        console.log('[H5Bridge] 收到 enterTable:', payload);
         const { token, websocketPort, roomId, roomInfo: roomData } = payload;
 
         // === 1. H5 消息基本字段校验 ===
