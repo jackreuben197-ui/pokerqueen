@@ -71,7 +71,7 @@ export default class UIAutoOperationComponent extends UIBase {
                 GameCache.Instance.CurGame.autoCheck = false;
             }
             this.LocalCallNum = autoOperationData.callAmount;
-            this.textAutoCall.string = StringHelper.getStringDiv100(autoOperationData.callAmount);
+            this.textAutoCall.string = StringHelper.GetLongString(autoOperationData.callAmount);
         } else if (autoOperationData.callAmount >= GameCache.Instance.CurGame.mainPlayer.chips) {
             GameCache.Instance.CurGame.autoCall = false;
             GameCache.Instance.CurGame.autoCheck = false;

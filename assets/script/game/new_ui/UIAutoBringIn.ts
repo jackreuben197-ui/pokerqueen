@@ -5,7 +5,6 @@ import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../config/TexasConfig";
-import WalletModel from "../../lobby/new_club/wallet/WalletModel";
 import { WebUserRoom } from "../../net/https/WebRequest";
 import GGASCom from "../../ui/component/GGASCom";
 import GGSlider from "../../ui/component/GGSlider";

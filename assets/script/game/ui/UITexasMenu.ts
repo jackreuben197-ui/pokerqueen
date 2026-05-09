@@ -14,15 +14,12 @@ import {
     WebUserRoomBringin,
     WWW,
 } from "../../net/https/WebRequest";
-import { BringInChipsType } from "../../crazyPoker/gameplay/common/constant/BringInChipsType";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
-import { GameCache } from "../GameCache";
-import { AddClipsData } from "../../crazyPoker/gameplay/common/view/chips/UIGameplayAddChipsAndDiamond";
-import { HttpRoomBringOutProtocol } from "../../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringOutProtocol";
 import { OutClipsData } from "../new_ui/UIBringOut";
 import TexasGame from "../texas/TexasGame";
 import GameUtil from "../util/GameUtil";
+import { GameCache } from "../GameCache";
 
 const { ccclass, property } = cc._decorator;
 
@@ -398,43 +395,43 @@ export default class UITexasMenu extends UIBasePlus {
         //     return;
         // }
 
-        if (GameUtil.GetFriendsOrClubTable() == 3) {
-            WWW.Instance.CommonAPI({
-                web_class: WebUserRoomBringin,
-                api_id: GameCache.Instance.room_id,
-            }).then(
-                (res: any) => {
-                    UIComponent.Instance.ShowUI(PrefabUI.UIAutoBringIn, {
-                        bigBlind: GameCache.Instance.CurGame.bigBlind,
-                        smallBlind: GameCache.Instance.CurGame.smallBlind,
-                        currentMinRate:
-                            GameCache.Instance.CurGame.currentMinRate,
-                        currentMaxRate:
-                            GameCache.Instance.CurGame.currentMaxRate,
-                        tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
-                        totalCoin: GC.data.user.info.gold,
-                        storeChips:
-                            GameCache.Instance.CurGame.mainPlayer
-                                .cacheStoreChips,
-                        isFromSetting: true,
-                        wallets: [res.data],
-                    });
-                },
-                (res: any) => {},
-            );
-        } else {
-            UIComponent.Instance.ShowUI(PrefabUI.UIAutoBringIn, {
-                bigBlind: GameCache.Instance.CurGame.bigBlind,
-                smallBlind: GameCache.Instance.CurGame.smallBlind,
-                currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-                currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-                totalCoin: GC.data.user.info.gold,
-                tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
-                storeChips:
-                    GameCache.Instance.CurGame.mainPlayer.cacheStoreChips,
-                isFromSetting: true,
-            });
-        }
+        // if (GameUtil.GetFriendsOrClubTable() == 3) {
+        //     WWW.Instance.CommonAPI({
+        //         web_class: WebUserRoomBringin,
+        //         api_id: GameCache.Instance.room_id,
+        //     }).then(
+        //         (res: any) => {
+        //             UIComponent.Instance.ShowUI(PrefabUI.UIAutoBringIn, {
+        //                 bigBlind: GameCache.Instance.CurGame.bigBlind,
+        //                 smallBlind: GameCache.Instance.CurGame.smallBlind,
+        //                 currentMinRate:
+        //                     GameCache.Instance.CurGame.currentMinRate,
+        //                 currentMaxRate:
+        //                     GameCache.Instance.CurGame.currentMaxRate,
+        //                 tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
+        //                 totalCoin: GC.data.user.info.gold,
+        //                 storeChips:
+        //                     GameCache.Instance.CurGame.mainPlayer
+        //                         .cacheStoreChips,
+        //                 isFromSetting: true,
+        //                 wallets: [res.data],
+        //             });
+        //         },
+        //         (res: any) => {},
+        //     );
+        // } else {
+        //     UIComponent.Instance.ShowUI(PrefabUI.UIAutoBringIn, {
+        //         bigBlind: GameCache.Instance.CurGame.bigBlind,
+        //         smallBlind: GameCache.Instance.CurGame.smallBlind,
+        //         currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+        //         currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+        //         totalCoin: GC.data.user.info.gold,
+        //         tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
+        //         storeChips:
+        //             GameCache.Instance.CurGame.mainPlayer.cacheStoreChips,
+        //         isFromSetting: true,
+        //     });
+        // }
     }
 
     //手动带入
@@ -443,7 +440,7 @@ export default class UITexasMenu extends UIBasePlus {
         //     return;
         // }
         this.click_black();
-        this.game.uirc.showAddChipDialog();
+        this.game.StartAddChips();
     }
 
     //手动带出

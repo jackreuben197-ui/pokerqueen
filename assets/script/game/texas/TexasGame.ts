@@ -69,13 +69,13 @@ import TexasSMAgency from "./../TexasSMAgency";
 import { OperationData } from "./../ui/UIOperationComponent";
 import UITexas, { PotInfo, PublicCardInfo } from "./../UITexas";
 import { UITexasModel } from "./../UITexasModel";
-import { AddClipsDataOut } from "../new_ui/UIBringOut";
-import { AddClipsData } from "../../crazyPoker/gameplay/common/view/chips/UIGameplayAddChipsAndDiamond";
+import { AddChipsData } from "../../crazyPoker/gameplay/common/view/chips/UIGameplayAddChipsAndDiamond";
 import { BringInChipsType } from "../../crazyPoker/gameplay/common/constant/BringInChipsType";
 import { HttpRoomBringOutProtocol } from "../../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringOutProtocol";
 import { VideoModel } from "../../crazyPoker/gameplay/common/constant/VideoModel";
 import AgoraManager from "../../net/agora/AgoraManager";
 import ToastManager from "../../manager/ToastManager";
+import { HttpRoomBringInByIDProtocol } from "../../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringInByIDProtocol";
 //const PBTypes = Def.Types;
 
 class SeatMoveStruct {
@@ -747,6 +747,7 @@ export default class TexasGame {
         });
         console.log(LN, `EnterRoom: room_id=${roomId}, match_id=${matchId}, observer=${observer}`);
     }
+
     //更新房间数据
     public UpdateRoom(obj: ServerMessageEnterRoom.AsObject) {
         this.UpdateRoomCommon(obj);
@@ -855,6 +856,7 @@ export default class TexasGame {
         GameCache.Instance._texasData._smallBlind = rec.roomInfo.smallBlind;
         GameCache.Instance._texasData._bigBlind = rec.roomInfo.smallBlind * 2;
         GameCache.Instance._texasData._minBringIn = GameCache.Instance._texasData._bigBlind;
+        GameCache.Instance._texasData._deposit = rec.roomInfo.deposit;
 
         this.smallBlind = rec.roomInfo.smallBlind;
         GameCache.Instance.carry_small = rec.roomInfo.smallBlind * 2;
@@ -1427,7 +1429,6 @@ export default class TexasGame {
     }
 
     protected IsGameNotStart(): boolean {
-        console.log(LN,'IsGameNotStart', this.gamestatus, this.mHandNum);
         return this.gamestatus == Def.GameStatus.NOT_START && this.mHandNum == 0;
     }
 
@@ -1496,8 +1497,6 @@ export default class TexasGame {
             this.isCriticalHitOpen = false;
             return;
         }
-
-        console.log(LN,"房间信息：" + JSON.stringify(rec));
 
         const roomInfoAny = rec.roomInfo as any;
         const handInfoAny = rec.handInfo as any;
@@ -1721,7 +1720,6 @@ export default class TexasGame {
         const operationPos2D = cc.v2(Operation_Pos.x, Operation_Pos.y + 200);
         this.uirc.UIOperation_Com.SetUIPos(operationPos2D);
         this.uirc.UIAutoOperation_Com.SetUIPos(operationPos2D);
-
         console.log(LN,"设置 - InitOperationPos", Operation_Pos.toString());
     }
 
@@ -1751,7 +1749,6 @@ export default class TexasGame {
     /// <returns></returns>
     public GetSeatByUserId(userId: number): Seat {
         if (userId <= 0) return null;
-
         let mSeat: Seat = null;
         for (let i = 0, n = this.listSeat.length; i < n; i++) {
             mSeat = this.listSeat[i];
@@ -1802,34 +1799,29 @@ export default class TexasGame {
             this.dicSeatOnlyClient.set(target_dir, seat);
             //座位运动到目标位置
             cc.tween(seat.ui)
-                .to(
-                    0.3,
-                    { position: infos[target_dir].seat_pos },
-                    cc.easeQuadraticActionOut(),
-                )
-                .call(() => {
-                    //更新方位配置
-                    seat.UpdateSeatUIInfo(target_dir);
-
-                    this.seatMoveStruct.move_cp_count++;
-
-                    if (this.seatMoveStruct.move_cp_count >= seat_count)
-                        this.AllSeatMoveEnd();
-                })
-                .start();
+            .to(
+                0.3,
+                { position: infos[target_dir].seat_pos },
+                cc.easeQuadraticActionOut(),
+            )
+            .call(() => {
+                //更新方位配置
+                seat.UpdateSeatUIInfo(target_dir);
+                this.seatMoveStruct.move_cp_count++;
+                if (this.seatMoveStruct.move_cp_count >= seat_count)
+                    this.AllSeatMoveEnd();
+            })
+            .start();
         }
     }
 
     //座位运动结束的处理
     private AllSeatMoveEnd() {
         console.log(LN,"所有座位运动完毕");
-
         while (this.seatMoveStruct.cacheFuncs?.length) {
             let f = this.seatMoveStruct.cacheFuncs.shift();
-            console.log(LN,f);
             f.b.call(f.a, f.c);
         }
-
         this.ResetSeatMoveStruct();
     }
 
@@ -1842,6 +1834,37 @@ export default class TexasGame {
         return this.dicSeatOnlyClient.get(clientSeatId);
     }
 
+    // AddChips 补充筹码
+    public async StartAddChips(): Promise<void>{
+        try {
+            const response = await WWW.Instance.CommonAPI<HttpRoomBringInByIDProtocol.ResponseData>({web_class: WebUserRoomBringin,api_id: GameCache.Instance.room_id});
+            // 联盟币
+            if (GameCache.Instance.gold_type == 1) {
+                UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond,
+                    {
+                        _bigBlind: GameCache.Instance._texasData._bigBlind,
+                        _smallBlind: GameCache.Instance._texasData._smallBlind,
+                        _currentMinRate: GameCache.Instance._texasData._curMinRate,
+                        _currentMaxRate: GameCache.Instance._texasData._curMaxRate,
+                        _tableChips: this.mainPlayer.chips,
+                        _wallets: [response.data],
+                        _source: BringInChipsType.SUPPLEMENT,
+                        _creditNum: 0,
+                        _returnOrNew: false,
+                        _commit: this._commitBringInCallback(),
+                        _deposit: 0 // 如果在桌上不需要带入押金，这里要判断他的押金是否不足,到时候再补 deposit -user.current.deposit  @TODO
+                    });
+                return;
+            }
+            // 记分牌 @TODO
+            if (GameCache.Instance.gold_type == 3) {
+                console.error(LN, "not implement 记分牌带入");
+            }
+        }catch(e){
+            console.error(LN, 'StartAddChips', e);
+        }
+    }
+
     /// <summary>
     /// 坐下
     /// </summary>
@@ -1849,26 +1872,23 @@ export default class TexasGame {
     public async Sitdown(clientSeatId: number, isEmptyClick: boolean = false): Promise<void> {
         //test
         //this.CurlimitOutChip = RoomInfo.RetainType.RT_AUTO;
-
         let mSeat: Seat = this.GetSeatByClientId(clientSeatId);
         if (null == mSeat) {
-            console.log(LN,`Sitdown 位置不存在 clientSeatId:${clientSeatId}`);
+            console.error(LN,`Sitdown 位置不存在 clientSeatId:${clientSeatId}`);
             return;
         }
-
         if (this.mainPlayer.seatID != -1) {
-            console.log(LN,
+            console.error(LN,
                 `Sitdown 你已在其他位置 seatID ${this.mainPlayer.seatID}, clientSeatId ${this.GetSeatByLocalSeatID(this.mainPlayer.seatID).ClientSeatId}`,
             );
             return;
         }
-
         if (null != mSeat.Player) {
             if (mSeat.Player.userID == this.mainPlayer.userID) {
                 console.log(LN,`Sitdown 你已在该位置 clientSeatId:${clientSeatId}`);
                 return;
             }
-            console.log(LN,`Sitdown 该位置有其他玩家 clientSeatId:${clientSeatId}`);
+            console.error(LN,`Sitdown 该位置有其他玩家 clientSeatId:${clientSeatId}`);
             return;
         }
 
@@ -1882,7 +1902,7 @@ export default class TexasGame {
                 stream.getTracks().forEach(t => t.stop());
             } catch (e) {
                 // 权限被拒绝
-                console.log('[Sitdown] 摄像头权限被拒绝:', e);
+                console.error('[Sitdown] 摄像头权限被拒绝:', e);
                 ToastManager.Instance.createToast("必须同意浏览器的视频权限才能成功坐在视频桌");
                 setTimeout(() => {
                     this.TexasGameUtils.LeaveRoom();
@@ -1890,131 +1910,147 @@ export default class TexasGame {
                 return;
             }
         }
-
         this.cacheSitdownSeatId = mSeat.seatID;
-
-        WWW.Instance.CommonAPI({
-            web_class: WebUserRoom,
-            api_id: GameCache.Instance.room_id,
-        }).then(
-            (res: typeof WebUserRoom.Response) => {
-
-                // 将 res 转换为 ResponseData
-                let response = res as HttpRoomBringOutProtocol.ResponseData;
-                if (response.code == 0 && response.data.last_bring_out != null) {
-                    let fee = res.data.last_bring_out.fee;
-                    let bring_out = res.data.last_bring_out.to_wallet;
-                    if (bring_out + fee > 0) {
-                        if (
-                            res.data.last_bring_out.to_wallet <=
-                            UITexasModel.mInstance.GetGoldByClubID(
-                                res.data.last_bring_out.club_id,
-                            )
-                        ) {
-                            ProtocolAgency.Send<ClientMessageSeated.AsObject>({
-                                Code: ProtocolCode.Protocol_Holdem_Seated,
-                                RoomID: GameCache.Instance.room_id,
-                                MatchID: GameCache.Instance.match_id,
-                                Body: {
-                                    room: {
-                                        roomId: GameCache.Instance.room_id,
-                                        matchId: GameCache.Instance.match_id,
-                                    },
-                                    seatId: this.GetRemoteSeatID(mSeat.seatID),
-                                    bringIn: bring_out + fee,
-                                    autoOnTable: 0,
-                                    autoUseWallet: false,
-                                    returnOrNew: 1,
-                                    store: 0,
-                                    clubId: res.data.last_bring_out.club_id,
-                                    applyBringIn: false,
-                                    autoOnTableNoStore: false,
-                                    autoOnTableFix: 0,
-                                    depositAdvance: 0,
-                                    autoOnTableMax: 0,
-                                },
-                            });
-                        } else if (
-                            GameUtil.GetFriendsOrClubTable() == 1 ||
-                            GameUtil.GetFriendsOrClubTable() == 2
-                        ) {
-                            ProtocolAgency.Send<ClientMessageSeated.AsObject>({
-                                Code: ProtocolCode.Protocol_Holdem_Seated,
-                                RoomID: GameCache.Instance.room_id,
-                                MatchID: GameCache.Instance.match_id,
-                                Body: {
-                                    room: {
-                                        roomId: GameCache.Instance.room_id,
-                                        matchId: GameCache.Instance.match_id,
-                                    },
-                                    seatId: this.GetRemoteSeatID(mSeat.seatID),
-                                    bringIn: bring_out + fee,
-                                    autoOnTable: 0,
-                                    autoUseWallet: false,
-                                    returnOrNew: res.data.return_table ? 1 : 0,
-                                    store: 0,
-                                    clubId: res.data.last_bring_out.club_id,
-                                    applyBringIn: false,
-                                    autoOnTableNoStore: false,
-                                    autoOnTableFix: 0,
-                                    depositAdvance: 0,
-                                    autoOnTableMax: 0,
-                                },
-                            });
-                        } else {
-                            return;
-                        }
-
+        //之前带入信息查询
+        try {
+            const response = await WWW.Instance.CommonAPI<HttpRoomBringOutProtocol.ResponseData>({
+                web_class: WebUserRoom,
+                api_id: GameCache.Instance.room_id,
+            });
+            // 请求异常
+            if (response.code != 0) {
+                console.error(LN,`Sitdown 坐下查询带入失败 ${response.code}`);
+                return;
+            }
+            let seatedData: ClientMessageSeated.AsObject = {
+                room: {
+                    roomId: GameCache.Instance.room_id,
+                    matchId: GameCache.Instance.match_id,
+                },
+                seatId: this.GetRemoteSeatID(mSeat.seatID),
+                bringIn: 0,
+                autoOnTable: 0,
+                autoUseWallet: false,
+                returnOrNew: response.data.return_table? 1: 0,
+                store: 0,
+                clubId: 0,
+                applyBringIn: false,
+                autoOnTableNoStore: false,
+                autoOnTableFix: 0,
+                depositAdvance: 0,
+                autoOnTableMax: 0,
+            };
+            let addChipData: AddChipsData = {
+                _bigBlind: GameCache.Instance._texasData._bigBlind,
+                _smallBlind: GameCache.Instance._texasData._smallBlind,
+                _currentMinRate: GameCache.Instance._texasData._curMinRate,
+                _currentMaxRate: GameCache.Instance._texasData._curMaxRate,
+                _tableChips: this.mainPlayer.chips,
+                _wallets: response.data.wallet,
+                _source: BringInChipsType.BRING_IN,
+                _creditNum: response.data.user_club_gold_credit,
+                _returnOrNew: response.data.return_table,
+                _deposit: GameCache.Instance._texasData._deposit,
+                _commit: this._commitBringInCallback(seatedData),
+            }
+            // 联盟币
+            if (GameCache.Instance.gold_type == 1) {
+                 // 有带出
+                if (response.data.last_bring_out != null) {
+                    let returnAmount = response.data.last_bring_out.to_wallet + response.data.last_bring_out.fee;
+                    // 要带回桌子上金额
+                    const bringToTable = response.data.last_bring_out.to_wallet + response.data.last_bring_out.fee - GameCache.Instance._texasData._deposit;
+                    const returnFromWallet = response.data.last_bring_out.to_wallet;
+                    const walletAmount =  UITexasModel.mInstance.getGoldFromWallets(response.data.last_bring_out.club_id, response.data.wallet);
+                    // 要反桌，但是钱包钱不够了
+                    if (bringToTable > 0 && returnFromWallet > walletAmount) {
+                        console.log(LN, 'return table, not enough from wallet', 'need:', returnFromWallet, 'current:',walletAmount);
+                        // 金额不足
+                        UIComponent.Instance.Toast(i18nMgr.Get('adaptation20010') + `(${returnFromWallet} > ${walletAmount})`);
+                        return;
                     }
-                    else {
-                        if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                            this.OpenBringInWithSecurity(response.data);
-                        }
-                        else {
-                            this.OpenBringInWithSecurity(response.data);
-                        }
+                    seatedData.bringIn = returnAmount;
+                    seatedData.clubId = response.data.last_bring_out.club_id;
+                    // 钱包够,没输光(反桌)
+                    if (bringToTable > 0) {
+                        ProtocolAgency.Send<ClientMessageSeated.AsObject>({
+                            Code: ProtocolCode.Protocol_Holdem_Seated,
+                            RoomID: GameCache.Instance.room_id,
+                            MatchID: GameCache.Instance.match_id,
+                            Body: seatedData,
+                        });
+                        return;
                     }
-                } else if (
-                    (GameUtil.GetFriendsOrClubTable() == 1 ||
-                        GameUtil.GetFriendsOrClubTable() == 2) &&
-                    res.code == 0 &&
-                    res.data.apply_bring_in > 0
-                ) //朋友卓带入逻辑
-                {
-                    ProtocolAgency.Send<ClientMessageSeated.AsObject>({
-                        Code: ProtocolCode.Protocol_Holdem_Seated,
-                        RoomID: GameCache.Instance.room_id,
-                        MatchID: GameCache.Instance.match_id,
-                        Body: {
-                            room: {
-                                roomId: GameCache.Instance.room_id,
-                                matchId: GameCache.Instance.match_id,
-                            },
-                            seatId: this.GetRemoteSeatID(mSeat.seatID),
-                            bringIn: res.data.apply_bring_in,
-                            autoOnTable: 0,
-                            autoUseWallet: false,
-                            returnOrNew: 0,
-                            store: 0,
-                            clubId: 0,
-                            applyBringIn: true,
-                            autoOnTableNoStore: false,
-                            autoOnTableFix: 0,
-                            depositAdvance: 0,
-                            autoOnTableMax: 0,
-                        },
-                    });
-                } else {
-                    if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                        this.OpenBringInWithSecurity(response.data);
-                    }
-                    else {
-                        this.OpenBringInWithSecurity(response.data);
-                    }
+                    // 其他都需要弹窗口输入
+                    UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
+                    return;
                 }
-            },
-            (res) => { },
-        );
+                //是否需要显示安全提示
+                if (!this.shouldShowBringInSecuritySetting()) {
+                    if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
+                        // this.ShowAutoAddChips(data.wallet);
+                    } else {
+                        UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
+                    }
+                    return;
+                }
+                // 非首次不显示
+                UIComponent.open(UIDefine.UIGameplaySecuritySetting, {
+                    isFromBringIn: true,
+                    bringInAct: () => {
+                        if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
+                            // this.ShowAutoAddChips(data.wallet);
+                        } else {
+                           UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
+                        }
+                    },
+                    noAnimation: true,
+                });
+            }
+            // 记分牌(朋友卓)
+            if (GameCache.Instance.gold_type == 3) {
+                //@TODO 朋友卓
+            }           
+        } catch (e) {
+            console.error(LN, 'sit down', e);
+        };
+    }
+
+    // _commitBringInCallback 带入流程，最后按钮按下去的处理(要么坐下，要么带入)
+    private _commitBringInCallback(seatedData?: ClientMessageSeated.AsObject): (amount:number, clubID:number) => void {
+        // 要坐下
+        if (seatedData) return (amount, clubID) => {
+            seatedData.bringIn = amount;
+            seatedData.clubId = clubID;
+            ProtocolAgency.Send<ClientMessageSeated.AsObject>({
+                Code: ProtocolCode.Protocol_Holdem_Seated,
+                RoomID: GameCache.Instance.room_id,
+                MatchID: GameCache.Instance.match_id,
+                Body: seatedData,
+            });
+        };
+        return  (amount, clubID) => { 
+            //普通加筹码
+            let applyBringIn =
+            (GameUtil.GetFriendsOrClubTable() == 1 ||
+                GameUtil.GetFriendsOrClubTable() == 2) &&
+            GameCache.Instance.FriendsTableLimitBringIn;
+            ProtocolAgency.Send<ClientMessageBringIn.AsObject>({
+                Code: ProtocolCode.Protocol_Holdem_BringIn,
+                RoomID: GameCache.Instance.room_id,
+                MatchID: GameCache.Instance.match_id,
+                Body: {
+                    room: {
+                        roomId: GameCache.Instance.room_id,
+                        matchId: GameCache.Instance.match_id,
+                    },
+                    bringIn: amount,
+                    useWallet: true,
+                    applyBringIn: applyBringIn,
+                    depositAdvance: 0,
+                },
+            });
+        }
     }
 
     /// <summary>
@@ -2089,222 +2125,221 @@ export default class TexasGame {
     public GetMinBringInWithMush(): number {
         return this.mushroomFeature.GetMinBringIn();
     }
-    /// <summary>
-    /// 带入
-    /// </summary>
-    /// <param name="anteNumber"></param>
-    public AddChips(
-        anteNumber: number,
-        autoOnTable: number = 0,
-        autoUseWallet: boolean = false,
-        club_id = 0,
-        club_random_id = 0,
-        fromBring: { wallets: any; selected_wallet: any; own: any } = null,
-        returnOrNew: boolean = false,
-    ) {
-        //大厅桌
-        if (GameUtil.GetFriendsOrClubTable() == 3) {
-            if (anteNumber > UITexasModel.mInstance.GetGoldByClubID(club_id)) {
-                //多钱包有其他支付
-                if (fromBring?.wallets.length > 1) {
-                    UIComponent.open<UIConfirmDialogParam>(
-                        UIDefine.UIComfirmDialog,
-                        {
-                            content: i18nMgr.Get("ServerErrorCode_20004"),
+    // /// <summary>
+    // /// 带入
+    // /// </summary>
+    // /// <param name="anteNumber"></param>
+    // public AddChips(
+    //     anteNumber: number,
+    //     autoOnTable: number = 0,
+    //     autoUseWallet: boolean = false,
+    //     club_id = 0,
+    //     club_random_id = 0,
+    //     fromBring: { wallets: any; selected_wallet: any; own: any } = null,
+    //     returnOrNew: boolean = false,
+    // ) {
+    //     //大厅桌
+    //     if (GameUtil.GetFriendsOrClubTable() == 3) {
+    //         if (anteNumber > UITexasModel.mInstance.GetGoldByClubID(club_id)) {
+    //             //多钱包有其他支付
+    //             if (fromBring?.wallets.length > 1) {
+    //                 UIComponent.open<UIConfirmDialogParam>(
+    //                     UIDefine.UIComfirmDialog,
+    //                     {
+    //                         content: i18nMgr.Get("ServerErrorCode_20004"),
+    //                         commit: i18nMgr.Get(
+    //                             "UIMine_WalletAddchipsListItems",
+    //                         ),
 
-                            commit: i18nMgr.Get(
-                                "UIMine_WalletAddchipsListItems",
-                            ),
+    //                         cancel: i18nMgr.Get("UI_otherPay"),
 
-                            cancel: i18nMgr.Get("UI_otherPay"),
+    //                         commit_click: () => {
+    //                             WWW.Instance.CommonAPI({
+    //                                 web_class: WebOrgClubSearchById,
+    //                                 body: {
+    //                                     club_random_id: club_random_id,
+    //                                 },
+    //                             }).then(
+    //                                 (res: any) => {
+    //                                     UIComponent.open(
+    //                                         UIDefine.UIToRecharge,
+    //                                         {
+    //                                             type: 1,
+    //                                             walletType: WalletType.Club,
+    //                                             club_id: res.data.club_id,
+    //                                             club_name: res.data.club_name,
+    //                                             tribe_name: res.data.tribe_name,
+    //                                         },
+    //                                     );
+    //                                 },
+    //                                 (res: any) => { },
+    //                             );
+    //                         },
 
-                            commit_click: () => {
-                                WWW.Instance.CommonAPI({
-                                    web_class: WebOrgClubSearchById,
-                                    body: {
-                                        club_random_id: club_random_id,
-                                    },
-                                }).then(
-                                    (res: any) => {
-                                        UIComponent.open(
-                                            UIDefine.UIToRecharge,
-                                            {
-                                                type: 1,
-                                                walletType: WalletType.Club,
-                                                club_id: res.data.club_id,
-                                                club_name: res.data.club_name,
-                                                tribe_name: res.data.tribe_name,
-                                            },
-                                        );
-                                    },
-                                    (res: any) => { },
-                                );
-                            },
+    //                         cancel_click: () => {
+    //                             UIComponent.open(
+    //                                 UIDefine.UIClubWalletList,
+    //                                 fromBring,
+    //                             );
+    //                         },
+    //                     },
+    //                 );
+    //             } else {
+    //                 UIComponent.open<UIConfirmDialogParam>(
+    //                     UIDefine.UIComfirmDialog,
+    //                     {
+    //                         content: i18nMgr.Get("ServerErrorCode_20004"),
 
-                            cancel_click: () => {
-                                UIComponent.open(
-                                    UIDefine.UIClubWalletList,
-                                    fromBring,
-                                );
-                            },
-                        },
-                    );
-                } else {
-                    UIComponent.open<UIConfirmDialogParam>(
-                        UIDefine.UIComfirmDialog,
-                        {
-                            content: i18nMgr.Get("ServerErrorCode_20004"),
+    //                         ok: i18nMgr.Get("UIMine_WalletAddchipsListItems"),
 
-                            ok: i18nMgr.Get("UIMine_WalletAddchipsListItems"),
+    //                         ok_click: () => {
+    //                             WWW.Instance.CommonAPI({
+    //                                 web_class: WebOrgClubSearchById,
+    //                                 body: {
+    //                                     club_random_id: club_random_id,
+    //                                 },
+    //                             }).then(
+    //                                 (res: any) => {
+    //                                     UIComponent.open(
+    //                                         UIDefine.UIToRecharge,
+    //                                         {
+    //                                             type: 1,
+    //                                             walletType: WalletType.Club,
+    //                                             club_id: res.data.club_id,
+    //                                             club_name: res.data.club_name,
+    //                                             tribe_name: res.data.tribe_name,
+    //                                         },
+    //                                     );
+    //                                 },
+    //                                 (res: any) => { },
+    //                             );
+    //                         },
+    //                     },
+    //                 );
+    //             }
+    //             return;
+    //         }
+    //     }
 
-                            ok_click: () => {
-                                WWW.Instance.CommonAPI({
-                                    web_class: WebOrgClubSearchById,
-                                    body: {
-                                        club_random_id: club_random_id,
-                                    },
-                                }).then(
-                                    (res: any) => {
-                                        UIComponent.open(
-                                            UIDefine.UIToRecharge,
-                                            {
-                                                type: 1,
-                                                walletType: WalletType.Club,
-                                                club_id: res.data.club_id,
-                                                club_name: res.data.club_name,
-                                                tribe_name: res.data.tribe_name,
-                                            },
-                                        );
-                                    },
-                                    (res: any) => { },
-                                );
-                            },
-                        },
-                    );
-                }
-                return;
-            }
-        }
+    //     //朋友桌不需要判断金豆
+    //     // if (GameCache.Instance.origin_type != 4 && GC.data.user.info.gold < anteNumber) {
+    //     //     UIComponent.open(UIDefine.UIDialogComponent,
+    //     //         {
+    //     //             type: UIDialogComponent.DialogType.CommitCancel,
+    //     //             // title = $"余额不足",
+    //     //             title: CPErrorCode.LanguageDescription(10025),
+    //     //             // content = $"金豆余额不足，请先充值",
+    //     //             content: CPErrorCode.LanguageDescription(20010),
+    //     //             // contentCommit = "去充豆",
+    //     //             contentCommit: CPErrorCode.LanguageDescription(10026),
+    //     //             // contentCancel = "取消",
+    //     //             contentCancel: CPErrorCode.LanguageDescription(10013),
 
-        //朋友桌不需要判断金豆
-        // if (GameCache.Instance.origin_type != 4 && GC.data.user.info.gold < anteNumber) {
-        //     UIComponent.open(UIDefine.UIDialogComponent,
-        //         {
-        //             type: UIDialogComponent.DialogType.CommitCancel,
-        //             // title = $"余额不足",
-        //             title: CPErrorCode.LanguageDescription(10025),
-        //             // content = $"金豆余额不足，请先充值",
-        //             content: CPErrorCode.LanguageDescription(20010),
-        //             // contentCommit = "去充豆",
-        //             contentCommit: CPErrorCode.LanguageDescription(10026),
-        //             // contentCancel = "取消",
-        //             contentCancel: CPErrorCode.LanguageDescription(10013),
+    //     //             actionCommit: () => {
+    //     //                 //跳转充豆
+    //     //                 UIComponent.open(UIDefine.MyWalletForm, false);
+    //     //             },
+    //     //             noAnimation: true,
+    //     //         });
+    //     //     return;
+    //     // }
+    //     if (this.mainPlayer == null || this.mainPlayer.seatID == -1) {
+    //         //声纹认证开启判断
+    //         if (GameCache.Instance.voiceprint_verify_on == 1) {
+    //             //             UITexasModel.mInstance.APIUserVoiceprint(0, 0, Act => {
+    //             //                 if (Act.code == 0) {
+    //             //                     if (Act.data == null) {
+    //             //                         if (!MicrophoneHelper.IsMicrophonePermissionAllowed()) {
+    //             //                             return;
+    //             //                         }
+    //             //                         Game.Scene.GetComponent<UIComponent>().PrefabUI(UIType.UITexasHumanYZ, new UITexasHumanYZComponent.VerificationDataInfo()
+    //             //     								{
+    //             //                                 cacheVoiceprint = VoiceprintRoomType.Hall,
+    //             //                                 isHaveVoice = true
+    //             //                             });
+    //             //                     }
+    //             //                     else {
+    //             //                         CPGameSessionComponent.Instance.Send(new Protocol_Holdem_Seated()
+    //             //     								{
+    //             //                                 RoomID = (ulong)GameCache.Instance.room_id,
+    //             //                                 MatchID = (ulong)GameCache.Instance.match_id,
+    //             //                                 request = new ClientMessageSeated()
+    //             //     									{
+    //             //                                 Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
+    //             //                             SeatId = GetRemoteSeatID((sbyte)cacheSitdownSeatId),
+    //             //                             BringIn = (ulong)anteNumber,//rec.Chips
+    //             //                             AutoOnTable = autoOnTable,
+    //             //                             //Store= storeChip,
+    //             //                             AutoUseWallet = autoUseWallet
+    //             //     									}
+    //             //                 });
+    //             //         }
+    //             //         return;
+    //             //     }
+    //             // });
+    //             UIComponent.Instance.Toast("声纹认证暂未开启");
+    //         } else {
+    //             console.log(LN, 'seated bringin', anteNumber, "returnOrNew:", returnOrNew);
+    //             ProtocolAgency.Send<ClientMessageSeated.AsObject>({
+    //                 Code: ProtocolCode.Protocol_Holdem_Seated,
+    //                 RoomID: GameCache.Instance.room_id,
+    //                 MatchID: GameCache.Instance.match_id,
+    //                 Body: {
+    //                     room: {
+    //                         roomId: GameCache.Instance.room_id,
+    //                         matchId: GameCache.Instance.match_id,
+    //                     },
+    //                     seatId: this.GetRemoteSeatID(this.cacheSitdownSeatId),
+    //                     bringIn: anteNumber, //rec.Chips
+    //                     autoOnTable: autoOnTable,
+    //                     autoUseWallet: autoUseWallet,
+    //                     returnOrNew: returnOrNew ? 1 : 0,
+    //                     store: 0,
+    //                     applyBringIn:
+    //                         (GameUtil.GetFriendsOrClubTable() == 1 ||
+    //                             GameUtil.GetFriendsOrClubTable() == 2) &&
+    //                         GameCache.Instance.FriendsTableLimitBringIn,
+    //                     clubId: club_id,
+    //                     autoOnTableNoStore: false,
+    //                     autoOnTableFix: 0,
+    //                     depositAdvance: 0,
+    //                     autoOnTableMax: 0,
+    //                 },
+    //             });
+    //         }
+    //         return;
+    //     }
+    //     //已经上桌就发送带入补充
+    //     let IsUseWallet = true;
+    //     if (this.mainPlayer.cacheStoreChips >= anteNumber) {
+    //         IsUseWallet = false;
+    //     }
 
-        //             actionCommit: () => {
-        //                 //跳转充豆
-        //                 UIComponent.open(UIDefine.MyWalletForm, false);
-        //             },
-        //             noAnimation: true,
-        //         });
-        //     return;
-        // }
-        if (this.mainPlayer == null || this.mainPlayer.seatID == -1) {
-            //声纹认证开启判断
-            if (GameCache.Instance.voiceprint_verify_on == 1) {
-                //             UITexasModel.mInstance.APIUserVoiceprint(0, 0, Act => {
-                //                 if (Act.code == 0) {
-                //                     if (Act.data == null) {
-                //                         if (!MicrophoneHelper.IsMicrophonePermissionAllowed()) {
-                //                             return;
-                //                         }
-                //                         Game.Scene.GetComponent<UIComponent>().PrefabUI(UIType.UITexasHumanYZ, new UITexasHumanYZComponent.VerificationDataInfo()
-                //     								{
-                //                                 cacheVoiceprint = VoiceprintRoomType.Hall,
-                //                                 isHaveVoice = true
-                //                             });
-                //                     }
-                //                     else {
-                //                         CPGameSessionComponent.Instance.Send(new Protocol_Holdem_Seated()
-                //     								{
-                //                                 RoomID = (ulong)GameCache.Instance.room_id,
-                //                                 MatchID = (ulong)GameCache.Instance.match_id,
-                //                                 request = new ClientMessageSeated()
-                //     									{
-                //                                 Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
-                //                             SeatId = GetRemoteSeatID((sbyte)cacheSitdownSeatId),
-                //                             BringIn = (ulong)anteNumber,//rec.Chips
-                //                             AutoOnTable = autoOnTable,
-                //                             //Store= storeChip,
-                //                             AutoUseWallet = autoUseWallet
-                //     									}
-                //                 });
-                //         }
-                //         return;
-                //     }
-                // });
-                UIComponent.Instance.Toast("声纹认证暂未开启");
-            } else {
-                console.log(LN, 'seated bringin', anteNumber, "returnOrNew:", returnOrNew);
-                ProtocolAgency.Send<ClientMessageSeated.AsObject>({
-                    Code: ProtocolCode.Protocol_Holdem_Seated,
-                    RoomID: GameCache.Instance.room_id,
-                    MatchID: GameCache.Instance.match_id,
-                    Body: {
-                        room: {
-                            roomId: GameCache.Instance.room_id,
-                            matchId: GameCache.Instance.match_id,
-                        },
-                        seatId: this.GetRemoteSeatID(this.cacheSitdownSeatId),
-                        bringIn: anteNumber, //rec.Chips
-                        autoOnTable: autoOnTable,
-                        autoUseWallet: autoUseWallet,
-                        returnOrNew: returnOrNew ? 1 : 0,
-                        store: 0,
-                        applyBringIn:
-                            (GameUtil.GetFriendsOrClubTable() == 1 ||
-                                GameUtil.GetFriendsOrClubTable() == 2) &&
-                            GameCache.Instance.FriendsTableLimitBringIn,
-                        clubId: club_id,
-                        autoOnTableNoStore: false,
-                        autoOnTableFix: 0,
-                        depositAdvance: 0,
-                        autoOnTableMax: 0,
-                    },
-                });
-            }
-            return;
-        }
-        //已经上桌就发送带入补充
-        let IsUseWallet = true;
-        if (this.mainPlayer.cacheStoreChips >= anteNumber) {
-            IsUseWallet = false;
-        }
-
-        let applyBringIn =
-            (GameUtil.GetFriendsOrClubTable() == 1 ||
-                GameUtil.GetFriendsOrClubTable() == 2) &&
-            GameCache.Instance.FriendsTableLimitBringIn;
-        console.log(LN, 'only bringin', anteNumber, applyBringIn);
-        ProtocolAgency.Send<ClientMessageBringIn.AsObject>({
-            Code: ProtocolCode.Protocol_Holdem_BringIn,
-            RoomID: GameCache.Instance.room_id,
-            MatchID: GameCache.Instance.match_id,
-            Body: {
-                room: {
-                    roomId: GameCache.Instance.room_id,
-                    matchId: GameCache.Instance.match_id,
-                },
-                bringIn: anteNumber,
-                useWallet: IsUseWallet,
-                applyBringIn: applyBringIn,
-                depositAdvance: 0,
-            },
-        });
-        //需要审核的加入提示信息
-        // if (applyBringIn) {
-        //     UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${150}s`);
-        // }
-    }
+    //     let applyBringIn =
+    //         (GameUtil.GetFriendsOrClubTable() == 1 ||
+    //             GameUtil.GetFriendsOrClubTable() == 2) &&
+    //         GameCache.Instance.FriendsTableLimitBringIn;
+    //     console.log(LN, 'only bringin', anteNumber, applyBringIn);
+    //     ProtocolAgency.Send<ClientMessageBringIn.AsObject>({
+    //         Code: ProtocolCode.Protocol_Holdem_BringIn,
+    //         RoomID: GameCache.Instance.room_id,
+    //         MatchID: GameCache.Instance.match_id,
+    //         Body: {
+    //             room: {
+    //                 roomId: GameCache.Instance.room_id,
+    //                 matchId: GameCache.Instance.match_id,
+    //             },
+    //             bringIn: anteNumber,
+    //             useWallet: IsUseWallet,
+    //             applyBringIn: applyBringIn,
+    //             depositAdvance: 0,
+    //         },
+    //     });
+    //     //需要审核的加入提示信息
+    //     // if (applyBringIn) {
+    //     //     UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${150}s`);
+    //     // }
+    // }
 
     SetAutoOnTableChips(
         autoOnTable: number = 0,
@@ -3830,32 +3865,9 @@ export default class TexasGame {
             PublicCardInfo.trans.active = false;
         }
     }
-    /**
-    * 代入前安全设置（Unity 对齐）
-    */
-    private OpenBringInWithSecurity(data: HttpRoomBringOutProtocol.Data): void {
-        const openBringIn = () => {
-            if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                this.ShowAutoAddChips(data.wallet);
-            } else {
-                this.ShowAddChips(data);
-            }
-        };
-
-        if (!this.ShouldShowBringInSecuritySetting()) {
-            openBringIn();
-            return;
-        }
-        // 非首次不显示
-        // GameCache.Instance.SetSecuritySettingRoom(GameCache.Instance.room_id);
-        UIComponent.open(UIDefine.UIGameplaySecuritySetting, {
-            isFromBringIn: true,
-            bringInAct: openBringIn,
-            noAnimation: true,
-        });
-    }
-
-    private ShouldShowBringInSecuritySetting(): boolean {
+    
+    // shouldShowBringInSecuritySetting 判断是否要显示
+    private shouldShowBringInSecuritySetting(): boolean {
         if (GameCache.Instance.match_id != 0) return false;
         if (this.mainPlayer?.seatID != -1) return false;
         // if (GameCache.Instance.HasSecuritySettingRoom(GameCache.Instance.room_id)) return false;
@@ -3869,66 +3881,6 @@ export default class TexasGame {
                 return false;
         }
     }
-    /**
-   
-
-    /**
-     * 显示手动设置面板 
-     */
-    private ShowAddChips(data: HttpRoomBringOutProtocol.Data): void {
-        // UIComponent.Instance.ShowUI<AddClipsData>(
-        //     PrefabUI.UIBringIn,
-        //     {
-        //         bigBlind: this.bigBlind,
-        //         smallBlind: this.smallBlind,
-        //         currentMinRate: this.currentMinRate,
-        //         currentMaxRate: this.currentMaxRate,
-        //         totalCoin: GC.data.user.info.gold,
-        //         tableChips: this.mainPlayer.chips,
-        //         minBringIn: this.GetMinBringInWithMush(),
-        //         wallets: wallets
-        //     }
-        // )
-
-        UIComponent.open<AddClipsData>(UIDefine.UIGameplayAddChipsAndDiamond,
-            {
-                _bigBlind: this.bigBlind,
-                _smallBlind: this.smallBlind,
-                _currentMinRate: this.currentMinRate,
-                _currentMaxRate: this.currentMaxRate,
-                //_totalCoin: GC.data.user.info.gold,
-                _tableChips: this.mainPlayer.chips,
-                _wallets: data.wallet,
-                _source: BringInChipsType.BRING_IN,
-                _isBringIn: true,
-                _creditNum: data.user_club_gold_credit,
-                _returnOrNew: data.return_table,
-            }
-        );
-    }
-
-    /**
-     * 显示自动带入界面
-     * @param wallets 钱包信息数组
-     */
-    public ShowAutoAddChips(wallets: any[]): void {
-        UIComponent.Instance.ShowUI<AddClipsDataOut>(
-
-            PrefabUI.UIAutoBringIn,
-            {
-                bigBlind: this.bigBlind,
-                smallBlind: this.smallBlind,
-                currentMinRate: this.currentMinRate,
-                currentMaxRate: this.currentMaxRate,
-                totalCoin: GameCache.Instance.gold,
-                tableChips: this.mainPlayer.chips,
-                storeChips: this.mainPlayer.cacheStoreChips,
-                minBringIn: this.GetMinBringInWithMush(),
-                wallets: wallets
-            }
-        )
-    }
-
 
     // 牌桌玩家信息
     public CheckPlayerInfo(userId: number, player: CPlayer = null): void {

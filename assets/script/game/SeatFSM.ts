@@ -119,7 +119,6 @@ export class SeatFSM {
 
         // this.seat.StopAllinArmature();
         this.seat.StopWinArmature();
-
         this.seat.uirc.Frame_Head.active = true;
         this.seat.uirc.imageEmpty.node.active = false;
 

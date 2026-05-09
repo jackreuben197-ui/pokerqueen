@@ -102,9 +102,9 @@ export default class UIComponent {
             node.active = true;
             let ui_component: UIBase = node.getComponent(UIBase);
             ui_component?.onShow(param);
-            console.log("ShowUI PrefabUI_node", node.name);
+            console.log("[ShowUI] PrefabUI_node", node.name);
         } else {
-            console.log("ShowUI ::: > 缺少相关的节点", com);
+            console.log("[ShowUI] > 缺少相关的节点", com);
         }
     }
     //隐藏节点
@@ -114,7 +114,7 @@ export default class UIComponent {
             node.active = false;
             let ui_component: UIBase = node.getComponent(UIBase);
             ui_component?.onClose(param);
-            console.log("HideUI", com);
+            console.log("[HideUI]", com);
         }
     }
     static open<T>(UIDefine: IUIDefine, param?: T, obj?: Open_Obj) {

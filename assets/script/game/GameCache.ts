@@ -743,7 +743,7 @@ export class GameCache {
     //  isActiveLeaving 
     public isActiveLeaving: boolean = false;
 
-    //
+    // mtt 相关
     public _mttRebuyLevel: number = 0;
     public _mttAddCloseRebuyLevel: number = 0;
     public _mttAddopRebuyLevel: number = 0;

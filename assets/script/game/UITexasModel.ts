@@ -1,9 +1,9 @@
+import { HttpRoomBringOutProtocol } from "../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringOutProtocol";
 import GC from "../frame/GameControl";
 import HttpRequest from "../net/https/HttpRequest";
 import {
     WebOrgFriendBringIn,
     WebStatsOtherUserStats,
-    WebUserInfo,
     WebUserRoom,
     WebUserRoomSettleDetail,
 } from "../net/https/WebRequest";
@@ -102,5 +102,11 @@ export class UITexasModel {
             }
         }
         return gold;
+    }
+
+    public getGoldFromWallets(clubID: number, wallets: HttpRoomBringOutProtocol.Wallet[]): number {
+        const fw = wallets.filter(v => v.club_id == clubID);
+        if (fw.length == 0) return 0;
+        return fw[0].gold;
     }
 }

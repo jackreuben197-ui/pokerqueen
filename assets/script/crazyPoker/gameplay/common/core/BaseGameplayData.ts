@@ -143,4 +143,7 @@ export default class BaseGameplayData {
      * 当前最大带入倍数
      */
     public _curMaxRate: number = 0;
+    
+    // 押金
+    public _deposit: number = 0;
 }

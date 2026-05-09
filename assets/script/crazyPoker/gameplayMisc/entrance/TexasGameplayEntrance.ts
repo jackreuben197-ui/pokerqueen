@@ -375,6 +375,13 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         GameCache.Instance._texasData._callTimeWinline = isClear ? 0 : this._roomInfo.calltimeWinLine;
         GameCache.Instance._texasData._callTimeLimitCount = isClear ? 0 : this._roomInfo.calltimeLimit;
         GameCache.Instance._texasData._autoChangeTable = isClear ? 0 : this._roomInfo.autoChangeRoomLimitHand;
+
+        GameCache.Instance._texasData._smallBlind = isClear ? 0 : this._roomInfo.sb;
+        GameCache.Instance._texasData._bigBlind = isClear ? 0 : this._roomInfo.sb * 2;
+        GameCache.Instance._texasData._ante = isClear ? 0 : this._roomInfo.ante;
+        GameCache.Instance._texasData._minBringIn = isClear ? 0 : this._roomInfo.sb * 2;
+        GameCache.Instance._texasData._curMaxRate = isClear ? 0 : this._roomInfo.maxRate;
+        GameCache.Instance._texasData._curMinRate = isClear ? 0 : this._roomInfo.minRate;
     }
 
     /**

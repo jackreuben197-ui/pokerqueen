@@ -62,12 +62,12 @@ export namespace HttpRoomBringOutProtocol {
         public club_logo: string = "";
         /** 充值预付状态：1 开启，2 关闭 */
         public deposit_advance: number = 0;
-        /** 道具替代买入/重购/增购的类型：0 不支持，1 仅支持道具，2 支持道具/货币 */
-        public prop_buy_type: number = 0;
-        /** 消费的道具 ID */
-        public buy_prop_id: number = 0;
         /** 联盟随机 ID */
         public tribe_random_id: number = 0;
+        public user_status: number = 0;
+        public user_type:number = 0;
+        public wallet_status: number = 0;
+        public wallet_tribe_status:number = 0;
     }
 
     /**

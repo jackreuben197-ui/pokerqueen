@@ -37,11 +37,6 @@ import ToastManager from "../manager/ToastManager";
 import AgoraManager from "../net/agora/AgoraManager";
 import AgoraVideoRender from "../net/agora/AgoraVideoRender";
 import { VideoModel } from "../crazyPoker/gameplay/common/constant/VideoModel";
-import { AddClipsData } from "../crazyPoker/gameplay/common/view/chips/UIGameplayAddChipsAndDiamond";
-import { BringInChipsType } from "../crazyPoker/gameplay/common/constant/BringInChipsType";
-import { WWW } from "../net/https/WebRequestBase";
-import { WebUserRoomBringin } from "../net/https/web_request/WebRequestUser";
-
 
 const LN = '[UI][UITexas]';
 
@@ -774,63 +769,6 @@ export default class UITexas extends BaseScene {
         });
     }
 
-    public showAddChipDialog() {
-        console.log(LN, 'click_bringin table type:', GameUtil.GetFriendsOrClubTable());
-        if (GameUtil.GetFriendsOrClubTable() == 3) {
-            WWW.Instance.CommonAPI({
-                web_class: WebUserRoomBringin,
-                api_id: GameCache.Instance.room_id,
-            }).then(
-                (res: any) => {
-
-                    // UIComponent.Instance.ShowUI<AddClipsData>(
-                    //     PrefabUI.UIBringIn,
-                    //     {
-                    //         bigBlind: GameCache.Instance.CurGame.bigBlind,
-                    //         smallBlind: GameCache.Instance.CurGame.smallBlind,
-                    //         currentMinRate:
-                    //             GameCache.Instance.CurGame.currentMinRate,
-                    //         currentMaxRate:
-                    //             GameCache.Instance.CurGame.currentMaxRate,
-                    //         totalCoin: GC.data.user.info.gold,
-                    //         tableChips:
-                    //             GameCache.Instance.CurGame.mainPlayer.chips,
-                    //         wallets: [res.data],
-                    //         fromMenu: true,
-                    //     },
-                    // );
-                
-                    UIComponent.open<AddClipsData>(UIDefine.UIGameplayAddChipsAndDiamond,
-                    {
-                        _bigBlind: GameCache.Instance.CurGame.bigBlind,
-                        _smallBlind: GameCache.Instance.CurGame.smallBlind,
-                        _currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-                        _currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-                        _tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
-                        _wallets: [res.data],
-                        _source: BringInChipsType.BRING_IN,
-                        _isBringIn: false,
-                        _creditNum: 0,
-                        _returnOrNew: false,
-                    }
-                );
-                },
-                (res: any) => {},
-            );
-        } else {
-            console.log(LN, 'click_bringin 1,2:');
-            // UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIBringIn, {
-            //     bigBlind: GameCache.Instance.CurGame.bigBlind,
-            //     smallBlind: GameCache.Instance.CurGame.smallBlind,
-            //     currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-            //     currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-            //     totalCoin: GC.data.user.info.gold,
-            //     tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
-            //     fromMenu: true,
-            // });
-        }
-    }
-
     public ShowMenu(): void {
         //this.UITexasMenu_Com?.onShow();
         this.UITexasMenu?.onShow();
@@ -1176,6 +1114,6 @@ export default class UITexas extends BaseScene {
         UIComponent.open(UIDefine.UIBlank_dialog, { title: "客服界面" });
     }
     private click_table_add_chip() {
-        this.showAddChipDialog();
+        this.game.StartAddChips();
     }
 }
