@@ -1,20 +1,10 @@
 import { ProcedureEnum } from "../define/EIDefine";
-import GC from "../frame/GameControl";
-import { GameCache, GameEnterParam } from "../game/GameCache";
+import { GameCache } from "../game/GameCache";
 import H5MsgMgr from "../H5MsgMgr";
-import { CPErrorCode } from "../i18n/CPErrorCode";
 import ProcedureManager from "../manager/ProcedureManager";
 import { PreloadDefinitionTexas, PreloadParams } from "../manager/ResManager";
-import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { ServerMessageRooms } from "../protobuf/holdem/req_rpc_rooms_pb";
-import { RoomRecord } from "../protobuf/holdem/define_pb";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import ProcedureBase from "./ProcedureBase";
-import { i18nMgr } from "../i18n/i18nMgr";
-import ReconnectComponent from "../funcomponent/ReconnectComponent";
-import TexasGameplayEntrance from "../crazyPoker/gameplayMisc/entrance/TexasGameplayEntrance";
-import { GameEnterType } from "../game/util/GameUtil";
-import { ServerMessageMttDetail } from "../protobuf/holdem/req_rpc_mtt_detail_pb";
 import AGameplayEntrance from "../crazyPoker/gameplayMisc/entrance/AGameplayEntrance";
 import { AGameplayEntranceProvider } from "../crazyPoker/gameplayMisc/entrance/AGamelayEntranceProvider";
 
