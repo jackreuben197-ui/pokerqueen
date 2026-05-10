@@ -14,7 +14,6 @@ export enum ServerErrorCode {
     Common_Unavailable,
     Common_Unauthenticated,
     //#endregion
-
     //#region MTT 10000+
     //ErrCodeMTTNoApply û�б���
     MTT_NoApply = 10000,
@@ -57,7 +56,6 @@ export enum ServerErrorCode {
     //ErrCodeMTTSameTagLimit 须打完或被淘汰，才能报下一场相同tag的比赛 10019
     MTT_SameTagLimit,
     //#endregion
-
     //#region room 20000+
     //ErrCodeRoomUserIsInAnotherRoom �û�������������
     Room_RoomUserIsInAnotherRoom = 20000,
@@ -112,7 +110,6 @@ export enum ServerErrorCode {
     // ErrCodeUserVoiceprintVerifyVote 用户在此房间已投过票 20025
     Room_UserVoiceprintVerifyVote,
     //#endregion
-
     //#region gameplay 30000+
     Gameplay_LessChip = 31001,
     Gameplay_NotInBetTime,
@@ -156,19 +153,18 @@ export enum ServerErrorCode {
     Gameplay_RoomerOverLimit, // 房间人数超过上限
     Gameplay_NotInAgreeSecondPublicCardsTime, // 不在等待双公共牌确认的时间段内
     Gameplay_AutoSeatReturnToInvalidGame, // 应对后端代理及实体玩家拆合桌问题加入的特殊错误码
-    Gameplay_HandClearCanNotShowCard,//本手结束后不允许亮牌
-    Gameplay_HandClearCanNotViewPublicCards,//本手结束后不允许查看公共牌
-    Gameplay_OvertimeFailure,//加时失败
+    Gameplay_HandClearCanNotShowCard, //本手结束后不允许亮牌
+    Gameplay_HandClearCanNotViewPublicCards, //本手结束后不允许查看公共牌
+    Gameplay_OvertimeFailure, //加时失败
     //#endregion
-
     //#region Other 50000+
-    Other_InternalGetMaintenanceConfig = 50000,                        // 获取停机维护表信息失败
-    Other_OnMaintenanceTime,                                           // 处于停机维护时间
-    Other_InternalGetGameConfig,                                       // 获取游戏配置失败
-    Other_GameConfigShutdownClose,                                     // 游戏配置停机维护按钮关闭
-    Other_InternalGetWhiteList,                                        // 获取白名单信息失败
-    Other_UserShutdownClose,                                           // 用户没有开启停机服务
-    Other_GameConfigNoRestrictSimulatorLoginClose,                     // 游戏配置不限制模拟器登陆开关关闭
-    Other_UserNoRestrictSimulatorLoginClose,                           // 用户没有开启不限制模拟器登陆服务
+    Other_InternalGetMaintenanceConfig = 50000, // 获取停机维护表信息失败
+    Other_OnMaintenanceTime, // 处于停机维护时间
+    Other_InternalGetGameConfig, // 获取游戏配置失败
+    Other_GameConfigShutdownClose, // 游戏配置停机维护按钮关闭
+    Other_InternalGetWhiteList, // 获取白名单信息失败
+    Other_UserShutdownClose, // 用户没有开启停机服务
+    Other_GameConfigNoRestrictSimulatorLoginClose, // 游戏配置不限制模拟器登陆开关关闭
+    Other_UserNoRestrictSimulatorLoginClose // 用户没有开启不限制模拟器登陆服务
     //#endregion
 }

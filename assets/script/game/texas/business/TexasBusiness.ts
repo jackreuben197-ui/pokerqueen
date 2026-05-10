@@ -1,7 +1,6 @@
-import { GameCache } from "../../GameCache";
-import { RoomType } from "../../util/GameUtil";
-import TexasGame from "../TexasGame";
-
+import { GameCache } from '../../GameCache';
+import { RoomType } from '../../util/GameUtil';
+import TexasGame from '../TexasGame';
 const { ccclass } = cc._decorator;
 
 /**
@@ -12,7 +11,7 @@ export enum EnterRoomType {
     /** 普通入座 */
     Normal = 0,
     /** 随机入座 */
-    Random = 1,
+    Random = 1
 }
 
 /**
@@ -22,8 +21,8 @@ export enum EnterRoomType {
  */
 @ccclass
 export default class TexasBusiness {
-
     private static instance: TexasBusiness = null;
+
     public static get Instance(): TexasBusiness {
         if (!this.instance) {
             this.instance = new TexasBusiness();
@@ -46,29 +45,24 @@ export default class TexasBusiness {
      */
     public IsOpenRoomShare(): boolean {
         let isShow: boolean = true;
-
         // MTT不可分享
         isShow = !TexasBusiness.IsMttGameplay(GameCache.Instance.room_type);
-
         // 随机进入房间不可分享
         if (GameCache.Instance._roomRecord?.enterRoomType == EnterRoomType.Random) {
             isShow = false;
         }
-
         // 安全屋判断
         let isSafeRoom: boolean = false;
         let game: TexasGame = GameCache.Instance.CurGame;
         if (game?.isSafeRoom || Number(GameCache.Instance.room_seated_messaging || 0) === 1) {
             isSafeRoom = true;
         }
-
         if (isSafeRoom) {
             // 安全屋，玩家自己入座后才显示分享按钮
             if (!game?.mainPlayer || game?.mainPlayer.seatID < 0) {
                 isShow = false;
             }
         }
-
         return isShow;
     }
 
@@ -86,7 +80,6 @@ export default class TexasBusiness {
      * @returns 蘑菇所需押金
      */
     public GetMushroomDeposit(): number {
-        return GameCache.Instance._texasData._mushroomBase *
-            GameCache.Instance._texasData._mushroomMode;
+        return GameCache.Instance._texasData._mushroomBase * GameCache.Instance._texasData._mushroomMode;
     }
 }

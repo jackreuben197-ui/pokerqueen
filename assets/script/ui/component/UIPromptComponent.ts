@@ -1,44 +1,35 @@
 /**
  * loadng 菊花|文字 效果组件 延迟显示
  */
-
-import UIBase from "../UIBase";
-import UIComponent from "../UIComponent";
-
+import UIBase from '../UIBase';
+import UIComponent from '../UIComponent';
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIPromptComponent extends UIBase {
-
     //状态
     statusType = {
         Idle: 0,
         WaitShow: 1,
-        Showing: 2,
-    }
+        Showing: 2
+    };
     //延时显示
     private showDelay: number = 2;
-
     //超时时间
     private timeout: number = 10;
-
     protected mask_opacitys: number[] = [1, 60];
-
     mask: cc.Node = null;
     loading: cc.Node = null;
-
     waitShow: boolean = false;
     isShow: boolean = false;
-
     showStartTime: number = 0;
-
     //当前状态
     status: number = 0;
 
     protected lateLoad() {
         super.lateLoad();
-        this.mask = this.getChildNodeOrComponent("mask");
-        this.loading = this.getChildNodeOrComponent("loading");
+        this.mask = this.getChildNodeOrComponent('mask');
+        this.loading = this.getChildNodeOrComponent('loading');
         this.translateStatus(this.statusType.Idle);
     }
 
@@ -49,7 +40,6 @@ export default class UIPromptComponent extends UIBase {
     }
 
     protected update(dt: number): void {
-
         switch (this.status) {
             //case this.statusType.Idle:
             //return;
@@ -66,12 +56,15 @@ export default class UIPromptComponent extends UIBase {
                 break;
         }
     }
+
     lateClose(param: any = null) {
         this.translateStatus(this.statusType.Idle);
     }
+
     goClose() {
         UIComponent.close(this.UIDefine);
     }
+
     //切换状态
     translateStatus(status: number) {
         this.status = status;

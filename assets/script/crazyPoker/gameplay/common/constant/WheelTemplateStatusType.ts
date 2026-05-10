@@ -4,10 +4,8 @@
  */
 export enum WheelTemplateStatusType {
     NONE = 0,
-
     /** 上架 */
     NORMAL = 1,
-
     /** 下架 */
-    DELISTED = 2,
+    DELISTED = 2
 }

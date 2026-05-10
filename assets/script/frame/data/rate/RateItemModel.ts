@@ -1,13 +1,15 @@
-import { TRateConfig, TRateItem } from "../../../config/TTypeConfig";
-import GC from "../../GameControl";
+import { TRateConfig, TRateItem } from '../../../config/TTypeConfig';
+import GC from '../../GameControl';
 
 export default class RateItemModel {
     private _msg: TRateItem = null;
     private _fromCfg: TRateConfig = null;
     private _cfg: TRateConfig = null;
+
     constructor(msg: any) {
         this.updateData(msg);
     }
+
     updateData(msg: any) {
         this._msg = msg;
         this._fromCfg = GC.data.rate.rate.getCfg(this._msg.from_currency);
@@ -25,15 +27,19 @@ export default class RateItemModel {
     get fromPath() {
         return this._fromCfg.path;
     }
+
     get fromRate() {
-        return this._msg.from_rate
+        return this._msg.from_rate;
     }
+
     get fromCountry() {
         return this._fromCfg.country;
     }
+
     get fromFlag() {
         return this._fromCfg.flag;
     }
+
     get fromDesc() {
         return this._fromCfg.desc;
     }
@@ -41,15 +47,19 @@ export default class RateItemModel {
     get path() {
         return this._cfg.path;
     }
+
     get rate() {
         return this._msg.to_rate;
     }
+
     get country() {
         return this._cfg.country;
     }
+
     get flag() {
         return this._cfg.flag;
     }
+
     get desc() {
         return this._cfg.desc;
     }
@@ -57,6 +67,4 @@ export default class RateItemModel {
     changeToNum(num) {
         return Math.floor(num * this.rate * 100) / 100;
     }
-
-
 }

@@ -1,10 +1,9 @@
 /**
  * Http请求接口
  */
-
-import { Result } from "../../protobuf/holdem/define_pb";
-import HttpRequest from "./HttpRequest";
-import WebApiCacheCenter, { WebApiCacheContext } from "./WebApiCacheCenter";
+import { Result } from '../../protobuf/holdem/define_pb';
+import HttpRequest from './HttpRequest';
+import WebApiCacheCenter, { WebApiCacheContext } from './WebApiCacheCenter';
 
 export class WebCommon {
     public static API: string;
@@ -12,25 +11,24 @@ export class WebCommon {
     public static ResponseData: any;
     public static CacheEnabled: boolean = false;
     public static CacheTTL: number = 0;
+
     public static Request(param: any) {
         this.RequestParams = param;
         return param;
     }
+
     public static BuildCacheKey(context: WebApiCacheContext): string {
         return WebApiCacheCenter.buildDefaultKey(context);
     }
     public static NormalizeCacheResponse<T = any>(response: T): T {
         return response;
     }
+
     public static ComputeCacheHash(response: any): string {
         return WebApiCacheCenter.hashFromJson(response);
     }
-    public static ShouldUpdateCache(
-        previousResponse: any,
-        nextResponse: any,
-        previousHash: string,
-        nextHash: string,
-    ): boolean {
+
+    public static ShouldUpdateCache(previousResponse: any, nextResponse: any, previousHash: string, nextHash: string): boolean {
         return previousHash !== nextHash;
     }
     public static Response: {
@@ -41,11 +39,13 @@ export class WebCommon {
 }
 
 export class WWW {
+
     public static get Instance(): WWW {
         return ((this as any).__Instance ??= new WWW());
     }
+
     /**
-     * @param param 
+     * @param param
      * web_class 接口类
      * body 发送数据body
      * api_id 替换接口中{id}
@@ -60,15 +60,18 @@ export class WWW {
                 },
                 club_id: ClubCache.club_id
             }
+
         ).then(
+
             (res: any) => {
                 this.reqInfo();
             },
-            (res: any) => {
 
+            (res: any) => {
             }
         )
-     * @returns 
+
+     * @returns
      */
     CommonAPI<T>(param: {
         web_class: { API: string; Request: (param: any) => any; Response: any };
@@ -89,17 +92,13 @@ export class WWW {
                     reject(content);
                 }.bind(this),
                 juhua: param.juhua,
-                useCache: !!param.useCache,
+                useCache: !!param.useCache
             };
             //设置动态id参数
-            (param.api_id ?? 0) > 0 &&
-                (obj.api = param.web_class.API.replace(
-                    "{id}",
-                    `${param.api_id}`,
-                ));
+            (param.api_id ?? 0) > 0 && (obj.api = param.web_class.API.replace('{id}', `${param.api_id}`));
             //设置header
             let headers = [];
-            (param.club_id ?? 0) > 0 && headers.push(["X-Club", param.club_id]);
+            (param.club_id ?? 0) > 0 && headers.push(['X-Club', param.club_id]);
             obj.headers = headers;
             HttpRequest.Send(obj);
         });

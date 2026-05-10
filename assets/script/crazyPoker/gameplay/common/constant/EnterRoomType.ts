@@ -4,10 +4,8 @@
  */
 export enum EnterRoomType {
     UNKNOWN = 0,
-
     /** 通过房间列表 */
     ROOM_LIST = 1,
-
     /** 随机进入 */
-    RANDOM = 2,
+    RANDOM = 2
 }

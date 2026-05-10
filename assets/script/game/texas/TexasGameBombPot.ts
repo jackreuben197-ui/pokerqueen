@@ -1,17 +1,19 @@
-import GC from "../../frame/GameControl";
-import { GameCache } from "../GameCache";
+import GC from '../../frame/GameControl';
+import { GameCache } from '../GameCache';
 
 interface TexasGameBombPotHost {
     isBombPot: boolean;
     uirc: any;
     listDefaultPublicCardsLPos: cc.Vec3[];
     listDefaultSecondPublicCardsLPos: cc.Vec3[];
+
     GetPublicCards(n: number): number[];
+
     GetPublicCardsCount(n: number): number;
+
     UpdateSecondPublicCardsCardType(secondPublicCards: number[]): void;
 }
-
-const JOINED_ROOMS_KEY = "BombPotJoinedRooms";
+const JOINED_ROOMS_KEY = 'BombPotJoinedRooms';
 const JOINED_ROOMS_MAX = 64;
 
 /**
@@ -23,8 +25,7 @@ export default class TexasGameBombPot {
     private isPlayingOpenAnim = false;
     private isPlayedOpenAnim = false;
 
-    constructor(private host: TexasGameBombPotHost) {
-    }
+    constructor(private host: TexasGameBombPotHost) {}
 
     public EnterGame(): void {
         if (!this.host.isBombPot) return;
@@ -38,7 +39,6 @@ export default class TexasGameBombPot {
     public PlayOpenScreen(): void {
         if (!this.host.isBombPot) return;
         if (this.isPlayingOpenAnim) return;
-
         this.isPlayingOpenAnim = true;
         const anim = this.host.uirc?.BombPotOpenAnim as cc.Animation;
         const node = this.host.uirc?.BombPotOpen as cc.Node;
@@ -46,14 +46,12 @@ export default class TexasGameBombPot {
             this.isPlayingOpenAnim = false;
             return;
         }
-
         node.active = true;
         anim.stop();
-        anim.off("finished", this.OnOpenFinished, this);
-        anim.on("finished", this.OnOpenFinished, this);
-
+        anim.off('finished', this.OnOpenFinished, this);
+        anim.on('finished', this.OnOpenFinished, this);
         // Unity 通常使用 usually，首帧兜底 default clip
-        const clipName = this.ResolveClip(anim, ["usually", "bombpot_open", "BombPotOpen"]);
+        const clipName = this.ResolveClip(anim, ['usually', 'bombpot_open', 'BombPotOpen']);
         anim.play(clipName);
     }
 
@@ -64,40 +62,36 @@ export default class TexasGameBombPot {
         const cards = this.host.GetPublicCards(2);
         const cardId = cards?.[cardIndex];
         if (cardId == null || cardId < 0) return;
-
         const startPos = this.host.listDefaultPublicCardsLPos?.[cardIndex];
         const endPos = this.host.listDefaultSecondPublicCardsLPos?.[cardIndex];
         if (!startPos || !endPos) return;
-
         info.trans.setPosition(startPos);
         info.trans.setScale(1, 1);
         info.trans.active = true;
         info.imageCard.node.color = cc.Color.WHITE;
         info.imageSelect.node.active = false;
         info.SetSpriteFrame(cardId);
-
-        tween.then(cc.callFunc(() => {
-            cc.tween(info.trans)
-                .to(0.2, { scaleX: 1.2, scaleY: 1.2 })
-                .call(() => {
-                    GC.sound?.Play?.("sfx_desk_chat");
-                })
-                .parallel(
-                    cc.scaleTo(0.2, 1, 1),
-                    cc.moveTo(0.4, cc.v2(endPos.x, endPos.y))
-                )
-                .call(() => {
-                    if (cardIndex === 2) {
-                        const copy = cards.slice();
-                        copy[cardIndex + 1] = -1;
-                        copy[cardIndex + 2] = -1;
-                        this.host.UpdateSecondPublicCardsCardType(copy);
-                    } else {
-                        this.host.UpdateSecondPublicCardsCardType(cards);
-                    }
-                })
-                .start();
-        }));
+        tween.then(
+            cc.callFunc(() => {
+                cc.tween(info.trans)
+                    .to(0.2, { scaleX: 1.2, scaleY: 1.2 })
+                    .call(() => {
+                        GC.sound?.Play?.('sfx_desk_chat');
+                    })
+                    .parallel(cc.scaleTo(0.2, 1, 1), cc.moveTo(0.4, cc.v2(endPos.x, endPos.y)))
+                    .call(() => {
+                        if (cardIndex === 2) {
+                            const copy = cards.slice();
+                            copy[cardIndex + 1] = -1;
+                            copy[cardIndex + 2] = -1;
+                            this.host.UpdateSecondPublicCardsCardType(copy);
+                        } else {
+                            this.host.UpdateSecondPublicCardsCardType(cards);
+                        }
+                    })
+                    .start();
+            })
+        );
         tween.delay(0.6);
     }
 
@@ -108,7 +102,7 @@ export default class TexasGameBombPot {
         const logo = this.host.uirc?.BombPotLogo as cc.Node;
         const openAnim = this.host.uirc?.BombPotOpenAnim as cc.Animation;
         const logoAnim = this.host.uirc?.BombPotLogoAnim as cc.Animation;
-        openAnim?.off("finished", this.OnOpenFinished, this);
+        openAnim?.off('finished', this.OnOpenFinished, this);
         openAnim?.stop();
         logoAnim?.stop();
         if (open) open.active = false;
@@ -118,31 +112,28 @@ export default class TexasGameBombPot {
     private PlayEnterGameAnim(): void {
         if (this.isPlayedOpenAnim) return;
         this.RecordJoinedRoom();
-
         this.isPlayingOpenAnim = true;
         const openAnim = this.host.uirc?.BombPotOpenAnim as cc.Animation;
         const openNode = this.host.uirc?.BombPotOpen as cc.Node;
         const logoAnim = this.host.uirc?.BombPotLogoAnim as cc.Animation;
         const logoNode = this.host.uirc?.BombPotLogo as cc.Node;
-
         if (openAnim && openNode) {
             openNode.active = true;
             openAnim.stop();
-            openAnim.off("finished", this.OnOpenFinished, this);
-            openAnim.on("finished", this.OnOpenFinished, this);
+            openAnim.off('finished', this.OnOpenFinished, this);
+            openAnim.on('finished', this.OnOpenFinished, this);
             // Unity 首次状态 first
-            const clipName = this.ResolveClip(openAnim, ["first", "bombpot_open_first", "BombPotOpenFirst", "usually"]);
+            const clipName = this.ResolveClip(openAnim, ['first', 'bombpot_open_first', 'BombPotOpenFirst', 'usually']);
             openAnim.play(clipName);
         } else {
             this.isPlayingOpenAnim = false;
             this.isPlayedOpenAnim = true;
         }
-
         if (logoAnim && logoNode) {
             logoNode.active = true;
             logoAnim.stop();
             // Unity logo 状态 loding2_GG_NP（可循环）
-            const logoClip = this.ResolveClip(logoAnim, ["loding2_GG_NP", "bombpot_logo", "BombPotLogo"]);
+            const logoClip = this.ResolveClip(logoAnim, ['loding2_GG_NP', 'bombpot_logo', 'BombPotLogo']);
             logoAnim.play(logoClip);
         }
     }
@@ -167,7 +158,7 @@ export default class TexasGameBombPot {
                 return name;
             }
         }
-        return anim.defaultClip?.name || "";
+        return anim.defaultClip?.name || '';
     }
 
     private IsJoinedRoom(): boolean {
@@ -188,15 +179,14 @@ export default class TexasGameBombPot {
         if (rooms.length > JOINED_ROOMS_MAX) {
             rooms.splice(0, rooms.length - JOINED_ROOMS_MAX);
         }
-        cc.sys.localStorage.setItem(JOINED_ROOMS_KEY, rooms.join(","));
+        cc.sys.localStorage.setItem(JOINED_ROOMS_KEY, rooms.join(','));
     }
 
     private GetJoinedRooms(): number[] {
-        const raw = cc.sys.localStorage.getItem(JOINED_ROOMS_KEY) || "";
+        const raw = cc.sys.localStorage.getItem(JOINED_ROOMS_KEY) || '';
         return raw
-            .split(",")
-            .map( (v :string) => Number(v))
+            .split(',')
+            .map((v: string) => Number(v))
             .filter((v: number) => Number.isFinite(v) && v > 0);
     }
 }
-

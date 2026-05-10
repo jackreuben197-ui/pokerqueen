@@ -24,17 +24,14 @@
  *   H5MsgMgr.sendToH5(action, msgtype, payload);     // 向 H5 发消息
  *   H5MsgMgr.Instance.on('xxx', fn);                 // 注册消息监听
  */
-
-import PacketHead from "./net/websocket/PacketHead";
-
+import PacketHead from './net/websocket/PacketHead';
 const TAG = '[H5Bridge]';
-
 /** 握手超时时间（毫秒） */
 const HANDSHAKE_TIMEOUT = 10000;
 
 export default class H5MsgMgr {
-
     private static _instance: H5MsgMgr = null;
+
     static get Instance(): H5MsgMgr {
         if (!H5MsgMgr._instance) {
             H5MsgMgr._instance = new H5MsgMgr();
@@ -44,7 +41,6 @@ export default class H5MsgMgr {
 
     /** 消息监听器表: action → callback(payload, msgtype) */
     private _listeners: { [action: string]: (payload: any, msgtype?: number) => void } = {};
-
     /** 握手是否完成 */
     private _handshakeDone: boolean = false;
     /** 握手前缓存的消息队列 */
@@ -55,7 +51,6 @@ export default class H5MsgMgr {
     private constructor() {}
 
     // ─── 初始化 ──────────────────────────────────────
-
     /**
      * 初始化 H5 Bridge 消息监听。
      * 注册 window.CocosBridge（bridge.js 直接调用），
@@ -77,29 +72,24 @@ export default class H5MsgMgr {
             }
         };
         console.log(TAG, 'window.CocosBridge 已注册');
-
         // 方式2：监听 window.postMessage
         window.addEventListener('message', (e: MessageEvent) => {
             const data = e.data;
             if (!data) return;
-
             // H5 直接 postMessage 对象（structured clone，可能含二进制 payload）
             if (typeof data === 'object' && data.source === 'h5') {
                 self._onMessageObj(data);
                 return;
             }
-
             // 兼容旧版 JSON 字符串
             if (typeof data === 'string' && data.includes('action')) {
                 self._onMessage(data);
             }
         });
-
         console.log(TAG, '消息监听已初始化');
     }
 
     // ─── 握手机制 ──────────────────────────────────────
-
     /**
      * 启动握手流程：
      * 1. 设置 window.__CC_READY__ = true
@@ -113,17 +103,14 @@ export default class H5MsgMgr {
             H5MsgMgr.sendToH5('ccAck', 1);
             this._completeHandshake();
         });
-
         // H5 收到 ccReady 后回复的 h5Ack
         this.on('h5Ack', () => {
             console.log(TAG, '收到 h5Ack');
             this._completeHandshake();
         });
-
         // 设置 CC 就绪标志
         (window as any).__CC_READY__ = true;
         console.log(TAG, '__CC_READY__ 已设置');
-
         // 如果握手尚未完成，发送 ccReady 通知 H5
         // （sendToH5 可能同步触发 H5 回调完成握手，所以 log 放在发送前）
         if (!this._handshakeDone) {
@@ -132,10 +119,8 @@ export default class H5MsgMgr {
         } else {
             console.log(TAG, '握手已通过 h5Ready 完成，跳过发送 ccReady');
         }
-
         // 握手已完成则无需超时
         if (this._handshakeDone) return;
-
         // 超时保护
         this._handshakeTimer = window.setTimeout(() => {
             if (!this._handshakeDone) {
@@ -149,15 +134,12 @@ export default class H5MsgMgr {
     private _completeHandshake(): void {
         if (this._handshakeDone) return;
         this._handshakeDone = true;
-
         console.log(TAG, '握手完成');
-
         // 清理定时器
         if (this._handshakeTimer) {
             clearTimeout(this._handshakeTimer);
             this._handshakeTimer = null;
         }
-
         // 发送握手前缓存的消息
         this._flushPendingMessages();
     }
@@ -166,7 +148,6 @@ export default class H5MsgMgr {
     private _flushPendingMessages(): void {
         const msgs = this._pendingMessages.splice(0);
         if (msgs.length === 0) return;
-
         console.log(TAG, `发送 ${msgs.length} 条缓存消息`);
         for (const msg of msgs) {
             H5MsgMgr._post(msg);
@@ -179,7 +160,6 @@ export default class H5MsgMgr {
     }
 
     // ─── 接收消息 ─────────────────────────────────────
-
     /**
      * 处理从 H5 层收到的原始消息字符串
      * 消息格式: { action, payload, msgtype, requestId, timestamp }
@@ -192,22 +172,17 @@ export default class H5MsgMgr {
     private _onMessage(rawData: string): void {
         try {
             let jsonStr = rawData;
-
             // 兼容 cocos:// scheme 包裹
             if (jsonStr.startsWith('cocos://')) {
                 const match = jsonStr.match(/data=([^&]+)/);
                 if (match) jsonStr = decodeURIComponent(match[1]);
             }
-
             const msg = JSON.parse(jsonStr);
             if (!msg.action) return;
-
             // 忽略自己发出的回声（postMessage 同 window 自己也会收到）
             if (msg.source === 'cc') return;
-
             const msgtype = msg.msgtype;
-            console.log(TAG, '收到消息:', msg.action, 'msgtype:', msgtype, "msgContent:" + rawData );
-
+            console.log(TAG, '收到消息:', msg.action, 'msgtype:', msgtype, 'msgContent:' + rawData);
             // 分发给注册的监听器
             const fn = this._listeners[msg.action];
             if (fn) {
@@ -231,10 +206,8 @@ export default class H5MsgMgr {
     private _onMessageObj(msg: any): void {
         try {
             if (!msg.action) return;
-
             const msgtype = msg.msgtype;
             let payload = msg.payload;
-
             // text 类型：解析 JSON 字符串为对象
             if (payload && payload.dataType === 'text' && typeof payload.text === 'string') {
                 try {
@@ -245,9 +218,7 @@ export default class H5MsgMgr {
             }
             // binary 类型：payload.data 就是 ArrayBuffer，直接传递给监听器
             // （dataType === 'binary' 时不做任何转换，监听器自行处理 .data）
-
             console.log(TAG, '收到消息(obj):', msg.action, 'msgtype:', msgtype);
-
             const fn = this._listeners[msg.action];
             if (fn) {
                 fn(payload, msgtype);
@@ -260,7 +231,6 @@ export default class H5MsgMgr {
     }
 
     // ─── 发送消息 ─────────────────────────────────────
-
     /**
      * 向 H5 层发送消息
      * @param action  消息类型
@@ -276,35 +246,30 @@ export default class H5MsgMgr {
         if (payload instanceof Uint8Array || payload instanceof ArrayBuffer) {
             finalPayload = {
                 dataType: 'binary',
-                data: payload instanceof ArrayBuffer ? new Uint8Array(payload) : payload,
+                data: payload instanceof ArrayBuffer ? new Uint8Array(payload) : payload
             };
         }
-
         const msg = {
             action,
             msgtype,
             payload: finalPayload,
             source: 'cc',
             requestId: `cocos_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-            timestamp: Date.now(),
+            timestamp: Date.now()
         };
-
         // 握手消息（ccReady / ccAck）立即发送，不走队列
         if (action === 'ccReady' || action === 'ccAck') {
             H5MsgMgr._post(msg);
             return;
         }
-
         // 握手未完成 → 业务消息进队列
         if (!H5MsgMgr.Instance._handshakeDone) {
             H5MsgMgr.Instance._pendingMessages.push(msg);
             console.log(TAG, '握手未完成，消息进队列:', action);
             return;
         }
-
         // 正常发送
         H5MsgMgr._post(msg);
-
         if (msgtype === 0) {
             console.log(TAG, '发送 H5 层转发消息:', action);
         }
@@ -320,11 +285,11 @@ export default class H5MsgMgr {
      */
     private static _post(msg: any): void {
         setTimeout(() => {
-            const hasBinary = msg.payload &&
+            const hasBinary =
+                msg.payload &&
                 typeof msg.payload === 'object' &&
                 msg.payload.dataType === 'binary' &&
                 (msg.payload.data instanceof Uint8Array || msg.payload.data instanceof ArrayBuffer);
-
             if (hasBinary) {
                 // structured clone：二进制数据原样传递，不经过 JSON 序列化
                 window.postMessage(msg, '*');
@@ -336,7 +301,6 @@ export default class H5MsgMgr {
     }
 
     // ─── 监听器注册 ───────────────────────────────────
-
     /**
      * 注册 H5 消息监听
      * @param action   消息类型（如 'enterTable', 'h5Ready' 等）

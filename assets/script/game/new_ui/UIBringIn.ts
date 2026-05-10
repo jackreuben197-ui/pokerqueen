@@ -1,21 +1,16 @@
-import SliderPlus from "../../common/SliderPlus";
-import { UIDefine } from "../../define/UIDefine";
-import GC from "../../frame/GameControl";
-import { StringHelper } from "../../helper/StringHelper";
-import { CPErrorCode } from "../../i18n/CPErrorCode";
-import { i18nMgr } from "../../i18n/i18nMgr";
-import {
-    WebUserDiamondsWallet,
-    WWW,
-    WebConfigGlobalConfig,
-} from "../../net/https/WebRequest";
-import UIBasePlus from "../../ui/UIBasePlus";
-import UIComponent, { PrefabUI } from "../../ui/UIComponent";
-import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
-import { GameCache } from "../GameCache";
-import GameUtil from "../util/GameUtil";
-import UIClubWalletList from "./UIClubWalletList";
-
+import SliderPlus from '../../common/SliderPlus';
+import { UIDefine } from '../../define/UIDefine';
+import GC from '../../frame/GameControl';
+import { StringHelper } from '../../helper/StringHelper';
+import { CPErrorCode } from '../../i18n/CPErrorCode';
+import { i18nMgr } from '../../i18n/i18nMgr';
+import { WebUserDiamondsWallet, WWW, WebConfigGlobalConfig } from '../../net/https/WebRequest';
+import UIBasePlus from '../../ui/UIBasePlus';
+import UIComponent, { PrefabUI } from '../../ui/UIComponent';
+import { UISuperDialogType } from '../../ui/dialog/UISuperDialog';
+import { GameCache } from '../GameCache';
+import GameUtil from '../util/GameUtil';
+import UIClubWalletList from './UIClubWalletList';
 const { ccclass, menu } = cc._decorator;
 
 /**
@@ -65,7 +60,7 @@ export type AddClipsData = {
 };
 
 @ccclass
-@menu("脚本分组/game/new_ui/UIBringIn")
+@menu('脚本分组/game/new_ui/UIBringIn')
 export default class UIBringIn extends UIBasePlus {
     //part1
     $Part1: cc.Node = null;
@@ -98,75 +93,61 @@ export default class UIBringIn extends UIBasePlus {
     ///////////////////////////
     _param: AddClipsData = null;
     //startRate: number = 0;//开始比率
-
     //滑动条 数据对象
     slider_obj = {
         min: 0,
         max: 0,
-        step: 0,
+        step: 0
     };
-
     sendCoin: number = 0; //发送货币值
     ownCoin: number = 0; //拥有的货币值
     gold_type: number = 0; //货币类型
-
     wallet_mode: number = 0; //钱包模式 0:无钱包 1:1个钱包 2:多个钱包
     wallet_status: number = 0; //钱包状态 0未选择 1选择
-
     selected_wallet: any = null; //选中的钱包
     //wallet_select: number = 0;
-
     wallets: any[] = null;
     return_or_new: boolean = false; //是否返桌
-
     reqList: any = null;
     diamond_wallet_data: any = null;
     recordFeeData: any = null;
 
     protected lateLoad(): void {
-        this.name = "UIBringIn";
+        this.name = 'UIBringIn';
         super.lateLoad();
         //this.GGSlider$slider.onChange(this.onSliderChange.bind(this));
     }
 
     onShow(data: AddClipsData): void {
         super.onShow(data);
-
         if (data != null) {
             this.selected_wallet = null;
             this.ownCoin = 0;
             this.wallets = data.wallets;
             this.return_or_new = data.returnOrNew;
-
             this.diamond_wallet_data = null;
             this.recordFeeData = null;
-            this.cc_Label$blind_d.string = i18nMgr.Get("UIAddChips_OhZuXhM0");
-            this.cc_Label$buyin_d.string = i18nMgr.Get("UIAddChips_dIyU7Svz");
+            this.cc_Label$blind_d.string = i18nMgr.Get('UIAddChips_OhZuXhM0');
+            this.cc_Label$buyin_d.string = i18nMgr.Get('UIAddChips_dIyU7Svz');
             // 有固定押金时，文案追加“+押金”
             if (this.IsNeedFixedDeposit()) {
-                this.cc_Label$buyin_d.string += `+${i18nMgr.Get("UIFantasy_dairuyajin")}`;
+                this.cc_Label$buyin_d.string += `+${i18nMgr.Get('UIFantasy_dairuyajin')}`;
             }
-
             //小盲值/100
             this.cc_Label$blind.string = `${StringHelper.GetLongString(data.smallBlind)}/${StringHelper.GetLongString(data.bigBlind)}`; //SB/BB
             this.cc_RichText$buyin.string = `${data.bigBlind}`; // Buy-in
             //最大带入值
-            let max =
-                (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
-            let min = data.minBringIn != null
-                ? data.minBringIn / 100
-                : data.currentMinRate * data.bigBlind / 100;
+            let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
+            let min = data.minBringIn != null ? data.minBringIn / 100 : (data.currentMinRate * data.bigBlind) / 100;
             max = Math.max(min, max);
-
             this.SliderPlus$slider.show({
                 min_value: min,
                 max_value: max,
                 step: data.bigBlind / 10,
                 change: this.sliderChange,
-                own: this,
+                own: this
             });
             this.sliderChange(min);
-
             if (GameCache.Instance.gold_type == 3) {
                 this.$Part1.active = false;
                 this.$Part4.active = false;
@@ -177,10 +158,8 @@ export default class UIBringIn extends UIBasePlus {
             this.$Part1.active = true;
             this.$Part4.active = true;
             this.$Part6.active = false;
-
             this.$icon_coin.active = GameCache.Instance.gold_type == 1;
             this.$icon_usdt.active = GameCache.Instance.gold_type == 2;
-
             //带入选择钱包逻辑
             if (data.wallets != null) {
                 if (data.wallets.length == 1) {
@@ -196,6 +175,7 @@ export default class UIBringIn extends UIBasePlus {
             }
         }
     }
+
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$confirm, this.onClickConfirm);
         this.setButtonClick(this.$cancel, this.onClickCancel);
@@ -213,9 +193,7 @@ export default class UIBringIn extends UIBasePlus {
         } else {
             this.cc_RichText$buyin.string = `${this.FormatDisplayAmount(this.sendCoin)}`;
         }
-
         this.refreshSliderTextColor();
-
         if (this.recordFeeData != null) {
             this.$Part6.active = false;
             this.cc_Label$diamond_fee.string = `${this.GetRecordFee() || 0}`;
@@ -230,7 +208,7 @@ export default class UIBringIn extends UIBasePlus {
     refreshSelect(index: number) {
         this.selected_wallet = this.wallets[index];
         if (index == -1) {
-            this.cc_Label$club.string = i18nMgr.Get("UIGuild_WalletNoSelect");
+            this.cc_Label$club.string = i18nMgr.Get('UIGuild_WalletNoSelect');
             this.ownCoin = 0;
         } else {
             this.cc_Label$club.string = this.selected_wallet.club_name;
@@ -243,24 +221,20 @@ export default class UIBringIn extends UIBasePlus {
 
     refreshSliderTextColor() {
         let label = this.SliderPlus$slider.label_value;
-        label.node.color = cc.Color.BLACK.fromHEX("#EEF5FF");
+        label.node.color = cc.Color.BLACK.fromHEX('#EEF5FF');
         if ((GameCache.Instance.gold_type == 1 || GameCache.Instance.gold_type == 2) && this.GetTotalBringIn() > this.ownCoin) {
-            label.node.color = cc.Color.BLACK.fromHEX("#ee8380");
+            label.node.color = cc.Color.BLACK.fromHEX('#ee8380');
         }
     }
 
     /////////////////////click事件
     //确认
     onClickConfirm() {
-        if (
-            GameUtil.GetFriendsOrClubTable() == 3 &&
-            this.selected_wallet == null
-        ) {
-            UIComponent.Instance.ToastLanguage("UILogin_Select");
+        if (GameUtil.GetFriendsOrClubTable() == 3 && this.selected_wallet == null) {
+            UIComponent.Instance.ToastLanguage('UILogin_Select');
             return;
         }
         let mAnteNumber: number = this.GetTotalBringIn();
-
         if (GameUtil.GetFriendsOrClubTable() == 3) {
             GameCache.Instance.CurGame.AddChips(
                 mAnteNumber,
@@ -271,44 +245,41 @@ export default class UIBringIn extends UIBasePlus {
                 {
                     own: this,
                     wallets: this.wallets,
-                    selected_wallet: this.selected_wallet,
+                    selected_wallet: this.selected_wallet
                 },
-                this.return_or_new,
+                this.return_or_new
             );
         } else {
-            if (
-                this.diamond_wallet_data.diamonds_wallet.diamonds <=
-                (+this.cc_Label$diamond_fee.string ^ 0)
-            ) {
+            if (this.diamond_wallet_data.diamonds_wallet.diamonds <= (+this.cc_Label$diamond_fee.string ^ 0)) {
                 UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
                     this: this,
-
-                    content: i18nMgr.Get("UIMine_DiamondsNotEnough"),
+                    content: i18nMgr.Get('UIMine_DiamondsNotEnough'),
                     // contentCommit = "确定","充值"
                     commit: CPErrorCode.LanguageDescription(10326),
                     // contentCancel = "取消",
                     cancel: CPErrorCode.LanguageDescription(10013),
                     commit_click: () => {
                         UIComponent.open(UIDefine.UIMall);
-                    },
+                    }
                 });
             } else {
                 GameCache.Instance.CurGame.AddChips(mAnteNumber);
             }
         }
-
         this.hideUI();
     }
+
     //取消
     onClickCancel() {
         this.hideUI();
     }
+
     //公会选择
     onClickClub() {
         UIComponent.open(UIDefine.UIClubWalletList, {
             wallets: this.wallets,
             selected_wallet: this.selected_wallet,
-            own: this,
+            own: this
         });
     }
 
@@ -317,13 +288,14 @@ export default class UIBringIn extends UIBasePlus {
     RunReqlist() {
         if (this.reqList.length) {
             let obj = this.reqList.shift();
-            console.log("请求---->", obj.name);
+            console.log('请求---->', obj.name);
             obj.func.call(this, this.RunReqlist);
         } else {
-            console.log("队列请求完毕---->");
+            console.log('队列请求完毕---->');
             this.RunReqlistEnd();
         }
     }
+
     //队列请求结束处理
     RunReqlistEnd() {
         this.cc_Label$diamond.string = `${this.diamond_wallet_data?.diamonds_wallet?.diamonds || 0}`;
@@ -332,17 +304,12 @@ export default class UIBringIn extends UIBasePlus {
             this.$Part6.active = true;
         }
     }
+
     private GetRecordFee(): string {
         if (this.recordFeeData == null) return null;
-
         // 记录费按选中带入（不含押金）计算，和 Unity 保持一致
         let bringIn: number = this.sendCoin;
-
-
-
-        if (this.recordFeeData.ratio == 0)
-            return `${this.recordFeeData.floor_price}`;
-
+        if (this.recordFeeData.ratio == 0) return `${this.recordFeeData.floor_price}`;
         let fee = 0;
         switch (this.recordFeeData.decimal_type) {
             case 1:
@@ -357,7 +324,6 @@ export default class UIBringIn extends UIBasePlus {
             default:
                 break;
         }
-
         if (fee < this.recordFeeData.floor_price) {
             fee = this.recordFeeData.floor_price;
         }
@@ -366,7 +332,7 @@ export default class UIBringIn extends UIBasePlus {
 
     private WebUserDiamondsWallet(next?: Function) {
         WWW.Instance.CommonAPI({
-            web_class: WebUserDiamondsWallet,
+            web_class: WebUserDiamondsWallet
         }).then(
             (res: any) => {
                 //this.cc_Label$diamond.string = `${res.data.diamonds_wallet.diamonds}`;
@@ -375,7 +341,7 @@ export default class UIBringIn extends UIBasePlus {
             },
             () => {
                 next?.call(this);
-            },
+            }
         );
     }
 
@@ -383,13 +349,8 @@ export default class UIBringIn extends UIBasePlus {
         if (type != 3 && type != 4) {
             return;
         }
-
-        this.reqList = [
-            { name: "WebUserDiamondsWallet", func: this.WebUserDiamondsWallet },
-        ];
-
+        this.reqList = [{ name: 'WebUserDiamondsWallet', func: this.WebUserDiamondsWallet }];
         this.RunReqlist();
-
         const configData = WebConfigGlobalConfig.Response?.data;
         if (type == 3) //1 平台，2 联盟，3 公会 4 个人（朋友桌）
         {

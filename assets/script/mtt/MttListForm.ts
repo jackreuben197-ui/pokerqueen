@@ -1,20 +1,21 @@
-import ComFormTitle from "../common/ComFormTitle";
-import List from "../common/List";
-import GC from "../frame/GameControl";
-import { WebMtt } from "../net/https/WebRequest";
-import BaseForm from "../ui/form/BaseForm";
-import MttListItem from "./MttListItem";
-
+import ComFormTitle from '../common/ComFormTitle';
+import List from '../common/List';
+import GC from '../frame/GameControl';
+import { WebMtt } from '../net/https/WebRequest';
+import BaseForm from '../ui/form/BaseForm';
+import MttListItem from './MttListItem';
 const { ccclass, property, menu } = cc._decorator;
+
 @ccclass
 @menu('脚本分组/mtt/MttListForm')
 export default class MttListForm extends BaseForm {
     private comFormTitle: ComFormTitle = null;
     private list: List = null;
+
     lateLoad() {
         super.lateLoad();
-        this.list = this.getChildNodeOrComponent("list", List);
-        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+        this.list = this.getChildNodeOrComponent('list', List);
+        this.comFormTitle = this.getChildNodeOrComponent('comFormTitle', ComFormTitle);
     }
 
     protected regiterDispatchEvent(): void {
@@ -27,21 +28,20 @@ export default class MttListForm extends BaseForm {
 
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
-            case WebMtt.LIST: {
-                this.updateList();
-            } break;
+            case WebMtt.LIST:
+                {
+                    this.updateList();
+                }
+                break;
         }
     }
 
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node): void {
         super.onShow(param, fromUI, sceneUI);
-
-        this.comFormTitle.initData("UIMTTList_mtt", this);
+        this.comFormTitle.initData('UIMTTList_mtt', this);
         this.list.scrollingCB = this.scrollingCB;
         GC.data.mtt.list.reqList();
-
     }
-
     scrollingCB = (scrollView: cc.ScrollView) => {
         if (scrollView) {
             let cur = scrollView.getScrollOffset();

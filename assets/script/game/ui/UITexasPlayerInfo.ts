@@ -1,17 +1,14 @@
-import { i18nMgr } from "../../i18n/i18nMgr";
-import UIBasePlus from "../../ui/UIBasePlus";
-import { CPlayer } from "../CPlayer";
-import { GameCache } from "../GameCache";
-import {
-    WebOtherUserInfo,
-    WebStatsOtherUserStats,
-    WWW,
-} from "../../net/https/WebRequest";
-import UIComponent from "../../ui/UIComponent";
-import { UIDefine } from "../../define/UIDefine";
-import WebImageHelper from "../../helper/WebImageHelper";
-import { RoomType } from "../util/GameUtil";
+import { i18nMgr } from '../../i18n/i18nMgr';
+import UIBasePlus from '../../ui/UIBasePlus';
+import { CPlayer } from '../CPlayer';
+import { GameCache } from '../GameCache';
+import { WebOtherUserInfo, WebStatsOtherUserStats, WWW } from '../../net/https/WebRequest';
+import UIComponent from '../../ui/UIComponent';
+import { UIDefine } from '../../define/UIDefine';
+import WebImageHelper from '../../helper/WebImageHelper';
+import { RoomType } from '../util/GameUtil';
 const { ccclass } = cc._decorator;
+
 @ccclass
 export default class UITexasPlayerInfo extends UIBasePlus {
     //面板点击
@@ -22,13 +19,10 @@ export default class UITexasPlayerInfo extends UIBasePlus {
     cc_Label$nick: cc.Label = null;
     //id
     cc_Label$id: cc.Label = null;
-
     $icon_sex1: cc.Node = null;
     $icon_sex2: cc.Node = null;
-
     $values: cc.Node = null;
     $tips: cc.Node = null;
-
     //标题文本
     cc_Label$title: cc.Label = null;
 
@@ -39,40 +33,39 @@ export default class UITexasPlayerInfo extends UIBasePlus {
 
     onShow(param?: any): void {
         super.onShow(param);
-
         let player: CPlayer = param;
-
         //标题文本
         if (GameCache.Instance.CurGame.isMTT) {
-            this.cc_Label$title.string = i18nMgr.Get("UIGame_UserInfoTipsMtt");
+            this.cc_Label$title.string = i18nMgr.Get('UIGame_UserInfoTipsMtt');
         } else {
-            this.cc_Label$title.string = i18nMgr.Get("UIGame_UserInfoTips");
+            this.cc_Label$title.string = i18nMgr.Get('UIGame_UserInfoTips');
         }
-
         this.refreshDownTips();
         this.reqUserInfo(player.userID);
     }
+
     reqUserInfo(userid: number) {
         WWW.Instance.CommonAPI({
             web_class: WebOtherUserInfo,
-            api_id: userid,
+            api_id: userid
         }).then(
             (res: any) => {
                 res?.data && this.refreshUserInfo(res.data);
                 this.reqUserStats(res.data.random_num);
             },
-            (res: any) => {},
+            (res: any) => {}
         );
     }
+
     reqUserStats(random_num: number) {
         WWW.Instance.CommonAPI({
             web_class: WebStatsOtherUserStats,
-            api_id: random_num,
+            api_id: random_num
         }).then(
             (res: any) => {
                 res?.data && this.refreshDownValues(res.data);
             },
-            (res: any) => {},
+            (res: any) => {}
         );
     }
 
@@ -85,68 +78,34 @@ export default class UITexasPlayerInfo extends UIBasePlus {
     }
 
     refreshDownValues(data) {
-        if (
-            GameCache.Instance.room_type ==
-            RoomType.MTTTexasHoldemStandardNoLimit
-        ) {
-            this.$values.children[0].getComponent(cc.Label).string =
-                `${data.mtt_room_data.frist_times}`;
-            this.$values.children[1].getComponent(cc.Label).string =
-                `${data.mtt_room_data.second_times}`;
-            this.$values.children[2].getComponent(cc.Label).string =
-                `${data.mtt_room_data.third_times}`;
-            this.$values.children[3].getComponent(cc.Label).string =
-                `${data.mtt_room_data.play_times}`;
-            this.$values.children[4].getComponent(cc.Label).string =
-                `${data.mtt_room_data.win_times}`;
+        if (GameCache.Instance.room_type == RoomType.MTTTexasHoldemStandardNoLimit) {
+            this.$values.children[0].getComponent(cc.Label).string = `${data.mtt_room_data.frist_times}`;
+            this.$values.children[1].getComponent(cc.Label).string = `${data.mtt_room_data.second_times}`;
+            this.$values.children[2].getComponent(cc.Label).string = `${data.mtt_room_data.third_times}`;
+            this.$values.children[3].getComponent(cc.Label).string = `${data.mtt_room_data.play_times}`;
+            this.$values.children[4].getComponent(cc.Label).string = `${data.mtt_room_data.win_times}`;
         } else {
-            this.$values.children[0].getComponent(cc.Label).string =
-                `${data.room_data.total_game_cnt}`;
-            this.$values.children[1].getComponent(cc.Label).string =
-                `${data.room_data.vpip}%`;
-            this.$values.children[2].getComponent(cc.Label).string =
-                `${data.room_data.prf}%`;
-            this.$values.children[3].getComponent(cc.Label).string =
-                `${data.room_data.total_hand}`;
-            this.$values.children[4].getComponent(cc.Label).string =
-                `${data.room_data.wins}%`;
+            this.$values.children[0].getComponent(cc.Label).string = `${data.room_data.total_game_cnt}`;
+            this.$values.children[1].getComponent(cc.Label).string = `${data.room_data.vpip}%`;
+            this.$values.children[2].getComponent(cc.Label).string = `${data.room_data.prf}%`;
+            this.$values.children[3].getComponent(cc.Label).string = `${data.room_data.total_hand}`;
+            this.$values.children[4].getComponent(cc.Label).string = `${data.room_data.wins}%`;
         }
     }
 
     refreshDownTips() {
-        if (
-            GameCache.Instance.room_type ==
-            RoomType.MTTTexasHoldemStandardNoLimit
-        ) {
-            this.$tips.children[0].getComponent(cc.Label).string = i18nMgr.Get(
-                "UIData_YGvXd5iXr_006",
-            );
-            this.$tips.children[1].getComponent(cc.Label).string = i18nMgr.Get(
-                "UIData_YGvXd5iXr_007",
-            );
-            this.$tips.children[2].getComponent(cc.Label).string = i18nMgr.Get(
-                "UIData_YGvXd5iXr_008",
-            );
-            this.$tips.children[3].getComponent(cc.Label).string = i18nMgr.Get(
-                "UIData_YGvXd5iXr_005",
-            );
-            this.$tips.children[4].getComponent(cc.Label).string = i18nMgr.Get(
-                "UITexasInfo_wincount",
-            );
+        if (GameCache.Instance.room_type == RoomType.MTTTexasHoldemStandardNoLimit) {
+            this.$tips.children[0].getComponent(cc.Label).string = i18nMgr.Get('UIData_YGvXd5iXr_006');
+            this.$tips.children[1].getComponent(cc.Label).string = i18nMgr.Get('UIData_YGvXd5iXr_007');
+            this.$tips.children[2].getComponent(cc.Label).string = i18nMgr.Get('UIData_YGvXd5iXr_008');
+            this.$tips.children[3].getComponent(cc.Label).string = i18nMgr.Get('UIData_YGvXd5iXr_005');
+            this.$tips.children[4].getComponent(cc.Label).string = i18nMgr.Get('UITexasInfo_wincount');
         } else {
-            this.$tips.children[0].getComponent(cc.Label).string =
-                i18nMgr.Get("UITexasInfo_games");
-            this.$tips.children[1].getComponent(cc.Label).string = i18nMgr.Get(
-                "UITexasInfo_poolrate",
-            );
-            this.$tips.children[2].getComponent(cc.Label).string =
-                i18nMgr.Get("UITexasInfo_flop");
-            this.$tips.children[3].getComponent(cc.Label).string = i18nMgr.Get(
-                "UITexasInfo_allhands",
-            );
-            this.$tips.children[4].getComponent(cc.Label).string = i18nMgr.Get(
-                "UITexasInfo_poolwin",
-            );
+            this.$tips.children[0].getComponent(cc.Label).string = i18nMgr.Get('UITexasInfo_games');
+            this.$tips.children[1].getComponent(cc.Label).string = i18nMgr.Get('UITexasInfo_poolrate');
+            this.$tips.children[2].getComponent(cc.Label).string = i18nMgr.Get('UITexasInfo_flop');
+            this.$tips.children[3].getComponent(cc.Label).string = i18nMgr.Get('UITexasInfo_allhands');
+            this.$tips.children[4].getComponent(cc.Label).string = i18nMgr.Get('UITexasInfo_poolwin');
         }
     }
 
@@ -162,7 +121,6 @@ export default class UITexasPlayerInfo extends UIBasePlus {
 //                 "vip": 0, "vip_endtime": null
 //     }
 // }
-
 // if (GameCache.Instance.room_type == (int)RoomType.MTTTexasHoldemStandardNoLimit)
 // 			{
 // 				MTTData.gameObject.SetActive(true);

@@ -1,14 +1,14 @@
-import { i18nMgr } from "./i18nMgr";
-
+import { i18nMgr } from './i18nMgr';
 //@executeInEditMode()
 //@requireComponent(cc.Label)
 const { ccclass, property, disallowMultiple, menu } = cc._decorator;
+
 @ccclass
 @disallowMultiple
-@menu("common/i18nLabel")
+@menu('common/i18nLabel')
 export class i18nLabel extends cc.Component {
     @property
-    private i18n_string: string = "";
+    private i18n_string: string = '';
 
     override start() {
         i18nMgr._addOrDelLabel(this, true);
@@ -17,33 +17,26 @@ export class i18nLabel extends cc.Component {
 
     set i18NString(value: string) {
         this.i18n_string = value;
-        this.setEndValue()
+        this.setEndValue();
     }
-
 
     // @property({ type: cc.String })
     // // get string() {
     // //     return this.i18n_string;
     // // }
-
     // // set string(value: string) {
     // //     this.i18n_string = value;
-
     // //     this.setEndValue()
     // // }
     // string: string = null;
-
     // @property({ type: [cc.String] })
     // get params() {
     //     return this.i18n_params;
     // }
-
     // set params(value: string[]) {
     //     this.i18n_params = value;
-
     //     this.setEndValue()
     // }
-
     // init(string: string, params: string[]) {
     //     this.i18n_string = string;
     //     this.setEndValue()
@@ -66,7 +59,7 @@ export class i18nLabel extends cc.Component {
 
     _resetValue() {
         //this.string = this.i18n_string;
-        if (this.i18n_string == "") return;
+        if (this.i18n_string == '') return;
         this.setEndValue();
     }
 

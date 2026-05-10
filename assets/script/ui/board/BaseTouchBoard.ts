@@ -1,49 +1,39 @@
 /**
  *  触摸板基类
  */
-import UIBase from "../UIBase";
-import UIComponent from "../UIComponent";
-
+import UIBase from '../UIBase';
+import UIComponent from '../UIComponent';
 const { ccclass } = cc._decorator;
 
 @ccclass
 export default class BaseTouchBoard extends UIBase {
-
     mask: cc.Node = null;
     main: cc.Node = null;
-
     //mask上的block遮挡
     mask_block: cc.BlockInputEvents = null;
-
     //content上的block遮挡
     content_block: cc.BlockInputEvents = null;
-
     //顶部block遮挡
     top_block: cc.Node = null;
-
     protected mainFadeInIsComplete: boolean = false;
     protected maskFadeInIsComplete: boolean = false;
-
     //面板渐入渐出样式
-    protected defaultStyle: any = {
-
-    }
+    protected defaultStyle: any = {};
 
     protected lateLoad(): void {
         super.lateLoad();
-        this.mask = this.getChildNodeOrComponent("mask");
-        this.main = this.getChildNodeOrComponent("main");
+        this.mask = this.getChildNodeOrComponent('mask');
+        this.main = this.getChildNodeOrComponent('main');
         this.mask_block = this.mask.getComponent(cc.BlockInputEvents);
-        this.top_block = this.getChildNodeOrComponent("top_block");
+        this.top_block = this.getChildNodeOrComponent('top_block');
     }
-
 
     protected regiterTouchEvents(): void {
         //回退触发
-        this.mask.on("click", this.goClose, this);
+        this.mask.on('click', this.goClose, this);
     }
 
-    onShow(param: { data?: any, style?: any, noAnimation?: boolean } = null) {
+    onShow(param: { data?: any; style?: any; noAnimation?: boolean } = null) {
         super.onShow(param);
         this.lateShow(param);
         if (param.noAnimation) {
@@ -62,51 +52,47 @@ export default class BaseTouchBoard extends UIBase {
         this.mainFadeIn(param?.style);
     }
 
-    protected lateShow(param?: any) {
+    protected lateShow(param?: any) {}
 
-    }
+    protected maskFadeIn(style: any) {}
 
+    protected mainFadeIn(style: any) {}
 
-    protected maskFadeIn(style: any) {
+    protected maskFadeOut(style: any) {}
 
-    }
-    protected mainFadeIn(style: any) {
+    protected mainFadeOut(style: any) {}
 
-    }
-
-    protected maskFadeOut(style: any) {
-
-    }
-    protected mainFadeOut(style: any) {
-
-    }
     protected mainFadeInComplete() {
         this.mainFadeInIsComplete = true;
         this.checkFadeComplete();
     }
+
     protected maskFadeInComplete() {
         this.maskFadeInIsComplete = true;
         this.checkFadeComplete();
     }
+
     protected checkFadeComplete() {
         if (this.mainFadeInIsComplete && this.maskFadeInIsComplete) {
             this.top_block.active = false;
-            cc.log("面板动画完成");
+            cc.log('面板动画完成');
         }
     }
+
     lateClose(param: any = null) {
         super.lateClose(param);
     }
+
     protected stopAllThings(): void {
         this.mask.stopAllActions();
         this.main.stopAllActions();
     }
+
     protected goClose() {
         if (this.param.noAnimation) {
             UIComponent.Instance.CloseNoAnimation(this.UIDefine);
         } else {
             UIComponent.close(this.UIDefine);
-
         }
     }
 }

@@ -1,4 +1,4 @@
-import MTTOmahaGame4 from "./MTTOmahaGame4";
+import MTTOmahaGame4 from './MTTOmahaGame4';
 
 export default class MTTOmahaGame6 extends MTTOmahaGame4 {
 

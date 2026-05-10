@@ -1,4 +1,4 @@
-import { i18nMgr } from "../i18n/i18nMgr";
+import { i18nMgr } from '../i18n/i18nMgr';
 
 /**
  * 处理成字符串类
@@ -7,8 +7,9 @@ export class StringHelper {
 
     //返回缩小100倍整数字符串
     static getStringDiv100(num: number): string {
-        return `${num / 100 ^ 0}`;
+        return `${(num / 100) ^ 0}`;
     }
+
     static GetLongString(num: number | string): string {
         num = +num;
         let n: number = num / 100;
@@ -25,71 +26,64 @@ export class StringHelper {
     static GetLongStringLocale(num: number): string {
         if (num % 100 != 0) {
             const n: number = num / 100;
-            return n.toLocaleString('en-US', { 
-                minimumFractionDigits: 2, 
-                maximumFractionDigits: 2 
+            return n.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
             });
         }
         return (num / 100).toLocaleString('en-US');
     }
 
     public static GetLongStringUnit(num: number): string {
-
         if (num == 0) {
-            return "0";
+            return '0';
         }
         if (num < 100000) {
             return `${num / 100}`;
-        }
-        else if (num < 100000000) {
-            let thousand = num / 100000 ^ 0;
-            let others = (num % 100000) / 10000 ^ 0;
+        } else if (num < 100000000) {
+            let thousand = (num / 100000) ^ 0;
+            let others = ((num % 100000) / 10000) ^ 0;
             if (others != 0) {
                 return `${thousand}.${others}K`;
-            }
-            else {
+            } else {
                 return `${thousand}K`;
             }
-        }
-        else {
-            let million = num / 100000000 ^ 0;
-            let othersm = (num % 100000000) / 10000000 ^ 0;
-
+        } else {
+            let million = (num / 100000000) ^ 0;
+            let othersm = ((num % 100000000) / 10000000) ^ 0;
             if (othersm != 0) {
                 return `${million}.${othersm}M`;
-            }
-            else {
+            } else {
                 return `${million}M`;
             }
         }
     }
 
-
     static GetSignedLongString(num: number): string {
         if (num == 0) {
-            return "0";
+            return '0';
         }
         if (num > 0) {
             return `+${num / 100}`;
-        }
-        else {
+        } else {
             return `${num / 100}`;
         }
     }
+
     /**
      * 替换{0}
      */
     // static Format(str: string, replace: string = ""): string {
     //     return str.replace("{0}", replace);
     // }
-    static FormatString(str: string, ...replaces:(string|number)[]): string {
+    static FormatString(str: string, ...replaces: (string | number)[]): string {
         for (let i = 0; i < replaces.length; i++) {
             str = str.replace(`{${i}}`, `${replaces[i]}`);
         }
         return str;
     }
 
-    static Format(str: string, replaces:(string|number)[]): string {
+    static Format(str: string, replaces: (string | number)[]): string {
         for (let i = 0; i < replaces.length; i++) {
             str = str.replace(`{${i}}`, `${replaces[i]}`);
         }
@@ -98,10 +92,7 @@ export class StringHelper {
 
     static Replace(str: string, replaces: string): string {
         return str.replace('{id}', replaces);
-
     }
-
-
 
     /// <summary>
     /// 获取房间类型名称
@@ -111,19 +102,20 @@ export class StringHelper {
     /// <param name="bet_type"></param>
     /// <returns></returns>
     public static GetRoomTypeNameByType(game_type: number, poker_type: number, bet_type: number): string {
-        let name = "";
-        let gameTypeStr = i18nMgr.Get("GameType_" + game_type);
-        let pokerTypeStr = i18nMgr.Get("PokerType_" + poker_type);
-        let betTypeStr = i18nMgr.Get("BetType_" + bet_type);
-        name = gameTypeStr + "-" + pokerTypeStr + "-" + betTypeStr;
+        let name = '';
+        let gameTypeStr = i18nMgr.Get('GameType_' + game_type);
+        let pokerTypeStr = i18nMgr.Get('PokerType_' + poker_type);
+        let betTypeStr = i18nMgr.Get('BetType_' + bet_type);
+        name = gameTypeStr + '-' + pokerTypeStr + '-' + betTypeStr;
         return name;
     }
+
     /**
      * 格式化数字字符串 支持正负数
      * 转换成 1,000,000 格式
-     * @param format 
-     * @param num 
-     * @returns 
+     * @param format
+     * @param num
+     * @returns
      */
     /**
      * 金钱表达式 1,000,000 格式 正负数
@@ -138,7 +130,6 @@ export class StringHelper {
     //     let dot_index = nop_str.indexOf(".");
     //     let base_str = nop_str.substring(0, dot_index);
     //     let fix_str = nop_str.substring(dot_index);
-
     //     let len = base_str.length;
     //     if (len > 3) {
     //         let start = len - 3;
@@ -148,9 +139,6 @@ export class StringHelper {
     //             start = end - 3;
     //         }
     //     }
-
-
-
     // let len = _str.length;
     // let end = len;
     // let start = end - 3;
@@ -164,32 +152,30 @@ export class StringHelper {
     // let base = arr.join(",").toString();
 
     public static FormatToString(format: string = null, num: number | string = 0) {
-
         let _num = +num;
-
-        let _num_str = "";
+        let _num_str = '';
         //符号部分
-        let op = "";
+        let op = '';
         if (_num < 0) {
-            op = "-";
+            op = '-';
             _num = -_num;
         }
         switch (format) {
-            case "{0:N0}":
+            case '{0:N0}':
                 _num_str = _num.toFixed(0);
                 break;
-            case "{0:N1}":
+            case '{0:N1}':
                 _num_str = _num.toFixed(1);
                 break;
-            case "{0:N2}":
+            case '{0:N2}':
                 _num_str = _num.toFixed(2);
                 break;
             default:
                 return num.toString();
         }
         //小数部分
-        let d_num = "";
-        let dot_index = _num_str.indexOf(".");
+        let d_num = '';
+        let dot_index = _num_str.indexOf('.');
         if (~dot_index) {
             d_num = _num_str.substring(dot_index);
         }
@@ -204,7 +190,7 @@ export class StringHelper {
             start = end - 3;
         }
         arr.unshift(str.substring(start, end));
-        let base = arr.join(",").toString();
+        let base = arr.join(',').toString();
         return op + base + d_num;
     }
 
@@ -213,18 +199,19 @@ export class StringHelper {
      */
     public static FormatIntOrFloat1(num: string | number): string {
         let numStr = num.toString();
-        if (~numStr.indexOf(".")) {
-            return this.FormatToString("{0:N1}", numStr);
+        if (~numStr.indexOf('.')) {
+            return this.FormatToString('{0:N1}', numStr);
         }
         return numStr;
     }
+
     /**
      * 除法
      * 结果 整数不变,小数保留N位
      */
     public static DivFloat(num: number, div: number = 100, float_bit: number = 1) {
         let num_str = div ? this.GetLongString(num) : num.toString();
-        let dot_index = num_str.indexOf(".");
+        let dot_index = num_str.indexOf('.');
         if (~dot_index) {
             return num_str.substring(0, dot_index + float_bit + 1);
         }
@@ -235,13 +222,9 @@ export class StringHelper {
      * 名字长度超出加...
      */
     public static LengthNick(nick: string, limit: number = 10) {
-
         let len = 0;
-
         let result = nick;
-
         if (nick?.length) {
-
             for (let i = 0; i < nick.length; i++) {
                 let char_code = nick.charCodeAt(i);
                 //半角
@@ -257,20 +240,19 @@ export class StringHelper {
                     len += 2;
                 }
                 if (len > limit) {
-                    result = nick.substring(0, i) + "...";
+                    result = nick.substring(0, i) + '...';
                     break;
                 }
             }
         }
         return result;
-
     }
 
     /// <summary>
     /// 是否包含特殊字符
     /// </summary>
     public static IsContainSpecialCharacter(text: string) {
-        let reg: RegExp = new RegExp("^[a-zA-Z0-9\u4e00-\u9fa5]+$");
+        let reg: RegExp = new RegExp('^[a-zA-Z0-9\u4e00-\u9fa5]+$');
         return !text.match(reg);
     }
 
@@ -285,7 +267,7 @@ export class StringHelper {
                 label.string = label.string.substring(0, label.string.length - 1);
                 height = label.node.height;
             }
-            label.string = label.string.substring(0, label.string.length - 3) + "...";
+            label.string = label.string.substring(0, label.string.length - 3) + '...';
             return true;
         }
         return false;
@@ -301,11 +283,12 @@ export class StringHelper {
     //有小数取N位小数,不进行四舍五入
     public static GetDecimalN(num: number, n: number = 1) {
         let s = `${num}`;
-        let arr = s.split(".");
+        let arr = s.split('.');
         if (arr.length == 1 || n < 1) return arr[0];
         let a = arr[0];
         let b = arr[1].substring(0, n);
         return `${+`${a}.${b}`}`;
     }
 }
+
 (window as any).StringHelper = StringHelper;

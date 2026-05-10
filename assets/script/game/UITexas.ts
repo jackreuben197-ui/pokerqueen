@@ -1,43 +1,35 @@
-import SimpleNodePool from "../common/MyNodePool";
-
-import { UIDefine } from "../define/UIDefine";
-import { Sequence } from "../dotween/DOTween";
-import GC from "../frame/GameControl";
-import { StringHelper } from "../helper/StringHelper";
-import TimeHelper from "../helper/TimeHelper";
-import { i18nMgr } from "../i18n/i18nMgr";
-
-
-
-import { BUNDLE_RESOURCES, BUNDLE_TEXAS } from "../manager/ResManager";
-import MttAgainBuy from "../mtt/detail/MttAgainBuy";
-
-import GlobalSession from "../session/GlobalSession";
-import StorageKey from "../session/StorageKey";
-import AssetContext from "../ui/component/AssetContext";
-import BaseScene from "../ui/scene/BaseScene";
-import UIComponent, { PrefabUI } from "../ui/UIComponent";
-import { GameCache } from "./GameCache";
-import UIAutoBringIn from "./new_ui/UIAutoBringIn";
-import UIBringIn from "./new_ui/UIBringIn";
-import UIBringOut from "./new_ui/UIBringOut";
-import UIInsurancePanel from "./new_ui/UIInsurancePanel";
-import TexasGame from "./texas/TexasGame";
-
-import UIAgreeSecondPcsComponent from "./ui/UIAgreeSecondPcsComponent";
-
-import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
-import UIMTTTimeComponent from "./ui/UIMTTTimeComponent";
-import UIOperationComponent from "./ui/UIOperationComponent";
-import UIOutChipsTipComponent from "./ui/UIOutChipsTipComponent";
-import UITexasMenu from "./ui/UITexasMenu";
-import GameUtil, { GameEnterType, some_pos } from "./util/GameUtil";
-import Seat from "./seat/Seat";
-import ToastManager from "../manager/ToastManager";
-import AgoraManager from "../net/agora/AgoraManager";
-import AgoraVideoRender from "../net/agora/AgoraVideoRender";
-import { VideoModel } from "../crazyPoker/gameplay/common/constant/VideoModel";
-
+import SimpleNodePool from '../common/MyNodePool';
+import { UIDefine } from '../define/UIDefine';
+import { Sequence } from '../dotween/DOTween';
+import GC from '../frame/GameControl';
+import { StringHelper } from '../helper/StringHelper';
+import TimeHelper from '../helper/TimeHelper';
+import { i18nMgr } from '../i18n/i18nMgr';
+import { BUNDLE_RESOURCES, BUNDLE_TEXAS } from '../manager/ResManager';
+import MttAgainBuy from '../mtt/detail/MttAgainBuy';
+import GlobalSession from '../session/GlobalSession';
+import StorageKey from '../session/StorageKey';
+import AssetContext from '../ui/component/AssetContext';
+import BaseScene from '../ui/scene/BaseScene';
+import UIComponent, { PrefabUI } from '../ui/UIComponent';
+import { GameCache } from './GameCache';
+import UIAutoBringIn from './new_ui/UIAutoBringIn';
+import UIBringIn from './new_ui/UIBringIn';
+import UIBringOut from './new_ui/UIBringOut';
+import UIInsurancePanel from './new_ui/UIInsurancePanel';
+import TexasGame from './texas/TexasGame';
+import UIAgreeSecondPcsComponent from './ui/UIAgreeSecondPcsComponent';
+import UIAutoOperationComponent from './ui/UIAutoOperationComponent';
+import UIMTTTimeComponent from './ui/UIMTTTimeComponent';
+import UIOperationComponent from './ui/UIOperationComponent';
+import UIOutChipsTipComponent from './ui/UIOutChipsTipComponent';
+import UITexasMenu from './ui/UITexasMenu';
+import GameUtil, { GameEnterType, some_pos } from './util/GameUtil';
+import Seat from './seat/Seat';
+import ToastManager from '../manager/ToastManager';
+import AgoraManager from '../net/agora/AgoraManager';
+import AgoraVideoRender from '../net/agora/AgoraVideoRender';
+import { VideoModel } from '../crazyPoker/gameplay/common/constant/VideoModel';
 const LN = '[UI][UITexas]';
 
 export class PlayerBarrageRecord {
@@ -45,6 +37,7 @@ export class PlayerBarrageRecord {
     public time: number;
     public msg: string;
 }
+
 export class PotInfo {
     public pot: number;
     public textPot: cc.Label;
@@ -55,37 +48,42 @@ export class PotInfo {
 
     constructor(public trans: cc.Node) {
         if (null != trans) {
-            this.imagePotFrame = trans.getChildByName("Image_PotFrame").getComponent(cc.Sprite);
-            this.imagePot = trans.getChildByName("Image_Pot").getComponent(cc.Sprite);
-            this.textPot = trans.getChildByName("Text_Pot").getComponent(cc.Label);
-            this.imagePotText = trans.getChildByName("Image_PotText")?.getComponent(cc.Label);
+            this.imagePotFrame = trans.getChildByName('Image_PotFrame').getComponent(cc.Sprite);
+            this.imagePot = trans.getChildByName('Image_Pot').getComponent(cc.Sprite);
+            this.textPot = trans.getChildByName('Text_Pot').getComponent(cc.Label);
+            this.imagePotText = trans.getChildByName('Image_PotText')?.getComponent(cc.Label);
         }
     }
 }
+
 export class PublicCardInfo {
     public imageCard: cc.Sprite;
     public imageSelect: cc.Sprite;
-    constructor(public cardId: number, public trans: cc.Node) {
+
+    constructor(
+        public cardId: number,
+        public trans: cc.Node
+    ) {
         this.imageCard = trans.getComponent(cc.Sprite);
-        this.imageSelect = trans.getChildByName("Image_SelectPublicCard").getComponent(cc.Sprite);
+        this.imageSelect = trans.getChildByName('Image_SelectPublicCard').getComponent(cc.Sprite);
     }
+
     //设置卡牌id并且刷新显示
     SetSpriteFrame(cardId: number) {
         this.cardId = cardId;
         this.UpdateSpriteFrame();
     }
+
     //刷新显示
     UpdateSpriteFrame() {
         this.imageCard.spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(this.cardId));
     }
 }
-
 const { ccclass, property, executionOrder } = cc._decorator;
 
 @ccclass
 @executionOrder(-1)
 export default class UITexas extends BaseScene {
-
     /**
      * 节点|组件 定义
      */
@@ -95,7 +93,6 @@ export default class UITexas extends BaseScene {
     sp_table_face: cc.Sprite = null;
     //桌面主容器
     main: cc.Node = null;
-
     // 设置
     btn_menu: cc.Node = null;
     // 消息
@@ -128,7 +125,6 @@ export default class UITexas extends BaseScene {
     private _micOn: boolean = false;
     //座位节点容器
     seats_content: cc.Node = null;
-
     /**
      * 牌桌信息
      */
@@ -150,51 +146,37 @@ export default class UITexas extends BaseScene {
     callTimeArea: cc.Node = null;
     callTimeDes: cc.Label = null;
     StartGameButton: cc.Node = null;
-
-    /** 
+    /**
      * 牌桌上的分享按钮，在未开始牌局前显示
      */
     _buttonShare: cc.Node = null;
     JackpotButton: cc.Node = null;
     JackpotGoldLabel: cc.Label | cc.RichText = null;
     JackpotAnimRoot: cc.Node = null;
-
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
-
-
     /**
      * 等待开局提示
      */
     Image_WaitForStartTips: cc.Node = null;
     Image_ReserveSeatTips: cc.Node = null;
     Image_InsuranceTips: cc.Node = null;
-
     //座位模板
     Seat_Temp: cc.Node = null;
-
-
     Text_AlreadAnte: cc.Label = null;
     //个性设置界面
     //UITexasSetting: cc.Node = null;
-
-
     public transPots: cc.Node = null;
     public transPot: cc.Node = null;
     public transAllPot: cc.Node = null;
-
-
     Button_Delay: cc.Node = null;
     Button_SeeMorePublic: cc.Node = null;
     Image_SeeMorePublicTips: cc.Node = null;
     textSeeMorePublicTips: cc.Label = null;
-
     textSeeMorePublic: cc.Label = null;
     textSeeMorePublicGold: cc.Label = null;
-
     Button_CancelTrust: cc.Node = null;
     Text_CancelTrust: cc.Label = null;
-
     //MTT
     //public buttonRebuy: cc.Node = null;
     public Button_AddOn: cc.Node = null;
@@ -204,14 +186,10 @@ export default class UITexas extends BaseScene {
     public Image_WaitForStartBathTips: cc.Node = null;
     public pullDownText: cc.Label = null;
     public BathText: cc.Label = null;
-
-
     //带入申请按钮
     //Button_BringIn: cc.Node = null;
     //朋友桌邀请码
     Text_InvateCode: cc.Label = null;
-
-
     //1.MTT比赛倒计时
     UIMTTTime_Con: cc.Node = null;
     UIMTTTime_Com: UIMTTTimeComponent = null;
@@ -231,7 +209,6 @@ export default class UITexas extends BaseScene {
     //UIOutChips_Com: UIOutChipsComponent = null;
     //UIAutoChips_Com: UIAutoChipsComponent = null;
     UIOutChipsTip_Com: UIOutChipsTipComponent = null;
-
     UIBringIn: UIBringIn = null;
     UIAutoBringIn: UIAutoBringIn = null;
     UIBringOut: UIBringOut = null;
@@ -251,14 +228,9 @@ export default class UITexas extends BaseScene {
     listCards: PublicCardInfo[] = null;
     listSecondCards: PublicCardInfo[] = null;
     listPotInfo: PotInfo[] = null;
-
-
     game: TexasGame = null;
-
     TransPot_Pool: SimpleNodePool = null;
     TransAllPot_Pool: SimpleNodePool = null;
-
-
     //#region 弹幕界面
     /// <summary>
     /// 弹幕界面
@@ -273,159 +245,147 @@ export default class UITexas extends BaseScene {
     public barrageCountDown: number = 0;
     private barrageAnimationSequence_obj = {};
     private barrageAnimationSequence: Sequence<{}> = null;
-    //#endregion
 
+    //#endregion
     ///////////////////////////////////
     override update(dt: number) {
         this.game?.Update(dt);
     }
 
     protected override lateLoad(): void {
-        this.name = "UITexas";
+        this.name = 'UITexas';
         super.lateLoad();
-        this.sp_table_bg = this.getChildNodeOrComponent("sp_table_bg", cc.Sprite);
-        this.sp_table_face = this.getChildNodeOrComponent("sp_table_face", cc.Sprite);
-        this.main = this.getChildNodeOrComponent("main");
-
-        this.btn_menu = this.getChildNodeOrComponent("btn_menu");
-        this.btn_msg = this.getChildNodeOrComponent("btn_msg");
-        this.btn_report = this.getChildNodeOrComponent("btn_report");
-        this.btn_poker = this.getChildNodeOrComponent("btn_poker");
-        this.btn_im = this.getChildNodeOrComponent("btn_im");
-        this.table_add_chip = this.getChildNodeOrComponent("table_add_chip");
-
+        this.sp_table_bg = this.getChildNodeOrComponent('sp_table_bg', cc.Sprite);
+        this.sp_table_face = this.getChildNodeOrComponent('sp_table_face', cc.Sprite);
+        this.main = this.getChildNodeOrComponent('main');
+        this.btn_menu = this.getChildNodeOrComponent('btn_menu');
+        this.btn_msg = this.getChildNodeOrComponent('btn_msg');
+        this.btn_report = this.getChildNodeOrComponent('btn_report');
+        this.btn_poker = this.getChildNodeOrComponent('btn_poker');
+        this.btn_im = this.getChildNodeOrComponent('btn_im');
+        this.table_add_chip = this.getChildNodeOrComponent('table_add_chip');
         // main_menu 按钮（main_menu 在 side_btns 下，load_all_object 已递归索引）
-        this.btn_emoji = this.getChildNodeOrComponent("btn_emoji");
-        this.btn_effect = this.getChildNodeOrComponent("btn_effect");
-        this.btn_audio = this.getChildNodeOrComponent("btn_audio");
-        this.btn_camera = this.getChildNodeOrComponent("btn_camera");
-        this.chatBtn = this.getChildNodeOrComponent("chatBtn");
-
+        this.btn_emoji = this.getChildNodeOrComponent('btn_emoji');
+        this.btn_effect = this.getChildNodeOrComponent('btn_effect');
+        this.btn_audio = this.getChildNodeOrComponent('btn_audio');
+        this.btn_camera = this.getChildNodeOrComponent('btn_camera');
+        this.chatBtn = this.getChildNodeOrComponent('chatBtn');
         // 远端音频/视频控制按钮（muteMicNode / hideVideoNode）
-        const muteMicNode = this.getChildNodeOrComponent("muteMicNode") as cc.Node;
+        const muteMicNode = this.getChildNodeOrComponent('muteMicNode') as cc.Node;
         if (muteMicNode) {
-            const bg = muteMicNode.getChildByName("background");
-            this.muteMicOpenBtn = bg?.getChildByName("openBtn");
-            this.muteMicCloseBtn = bg?.getChildByName("closeBtn");
+            const bg = muteMicNode.getChildByName('background');
+            this.muteMicOpenBtn = bg?.getChildByName('openBtn');
+            this.muteMicCloseBtn = bg?.getChildByName('closeBtn');
         }
-        const hideVideoNode = this.getChildNodeOrComponent("hideVideoNode") as cc.Node;
+        const hideVideoNode = this.getChildNodeOrComponent('hideVideoNode') as cc.Node;
         if (hideVideoNode) {
-            const bg = hideVideoNode.getChildByName("background");
-            this.hideVideoOpenBtn = bg?.getChildByName("openBtn");
-            this.hideVideoCloseBtn = bg?.getChildByName("closeBtn");
+            const bg = hideVideoNode.getChildByName('background');
+            this.hideVideoOpenBtn = bg?.getChildByName('openBtn');
+            this.hideVideoCloseBtn = bg?.getChildByName('closeBtn');
         }
-        this.seats_content = this.getChildNodeOrComponent("seats_content");
-        this.textRoomInfo = this.getChildNodeOrComponent("Text_RoomInfo", cc.Label);
-        this.Image_WaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
-        this._buttonShare = this.Image_WaitForStartTips.getChildByName("ShareButton");
-        this.Image_ReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
-        this.Image_InsuranceTips = this.getChildNodeOrComponent("Image_InsuranceTips");
+        this.seats_content = this.getChildNodeOrComponent('seats_content');
+        this.textRoomInfo = this.getChildNodeOrComponent('Text_RoomInfo', cc.Label);
+        this.Image_WaitForStartTips = this.getChildNodeOrComponent('Image_WaitForStartTips');
+        this._buttonShare = this.Image_WaitForStartTips.getChildByName('ShareButton');
+        this.Image_ReserveSeatTips = this.getChildNodeOrComponent('Image_ReserveSeatTips');
+        this.Image_InsuranceTips = this.getChildNodeOrComponent('Image_InsuranceTips');
         // 座位管理
-        this.seats_content = this.getChildNodeOrComponent("seats_content");
-        this.Seat_Temp = this.getChildNodeOrComponent("Seat_Temp");
+        this.seats_content = this.getChildNodeOrComponent('seats_content');
+        this.Seat_Temp = this.getChildNodeOrComponent('Seat_Temp');
         // 鱿鱼
-        this.RemainingSquidCount = this.main?.getChildByName("RemainingSquidCount");
-        this.RemainingSquidLabelCount = this.RemainingSquidCount
-            ?.getChildByName("RemainingSquidLabel")
-            ?.getChildByName("RemainingSquidLabelCount")
+        this.RemainingSquidCount = this.main?.getChildByName('RemainingSquidCount');
+        this.RemainingSquidLabelCount = this.RemainingSquidCount?.getChildByName('RemainingSquidLabel')
+            ?.getChildByName('RemainingSquidLabelCount')
             ?.getComponent(cc.Label);
         if (this.RemainingSquidCount) {
             this.RemainingSquidCount.active = false;
         }
-        this.SquidSwitch = this.main?.getChildByName("SquidSwitch");
-        this.SquidSwitchClickNode = this.SquidSwitch
-            ?.getChildByName("content")
-            ?.getChildByName("GGSwitch2") || this.SquidSwitch;
-
-        this.SquidJoinLabel = this.SquidSwitch
-            ?.getChildByName("content")
-            ?.getChildByName("$joinLabel")
-            ?.getComponent(cc.Label);
+        this.SquidSwitch = this.main?.getChildByName('SquidSwitch');
+        this.SquidSwitchClickNode = this.SquidSwitch?.getChildByName('content')?.getChildByName('GGSwitch2') || this.SquidSwitch;
+        this.SquidJoinLabel = this.SquidSwitch?.getChildByName('content')?.getChildByName('$joinLabel')?.getComponent(cc.Label);
         if (this.SquidJoinLabel) {
-            this.SquidJoinLabel.string = i18nMgr.Get("UIClub_RoomJoin");
+            this.SquidJoinLabel.string = i18nMgr.Get('UIClub_RoomJoin');
         }
         if (this.SquidSwitch) {
             this.SquidSwitch.active = false;
         }
-        this.SquidStandUp = this.main?.getChildByName("squidStandUp");
+        this.SquidStandUp = this.main?.getChildByName('squidStandUp');
         if (this.SquidStandUp) {
             this.SquidStandUp.active = false;
         }
-        this.SquidStart = this.getChildNodeOrComponent("squid_start");
+        this.SquidStart = this.getChildNodeOrComponent('squid_start');
         this.SquidStartAnim = this.SquidStart?.getComponent(cc.Animation);
         if (this.SquidStart) {
             this.SquidStart.active = false;
             this.SquidStartAnim?.stop();
         }
-        this.BombPotOpen = this.main?.getChildByName("bombpot_open");
+        this.BombPotOpen = this.main?.getChildByName('bombpot_open');
         this.BombPotOpenAnim = this.BombPotOpen?.getComponent(cc.Animation);
         if (this.BombPotOpen) {
             this.BombPotOpen.active = false;
             this.BombPotOpenAnim?.stop();
         }
-        this.BombPotLogo = this.main?.getChildByName("bombpot_logo");
+        this.BombPotLogo = this.main?.getChildByName('bombpot_logo');
         this.BombPotLogoAnim = this.BombPotLogo?.getComponent(cc.Animation);
         if (this.BombPotLogo) {
             this.BombPotLogo.active = false;
             this.BombPotLogoAnim?.stop();
         }
-        this.CriticalHitStart = this.main?.getChildByName("critical_hit_start");
+        this.CriticalHitStart = this.main?.getChildByName('critical_hit_start');
         this.CriticalHitStartAnim = this.CriticalHitStart?.getComponent(cc.Animation);
         if (this.CriticalHitStart) {
             this.CriticalHitStart.active = false;
             this.CriticalHitStartAnim?.stop();
         }
-        this.callTimeArea = this.main?.getChildByName("callTimeArea");
-        this.callTimeDes = this.callTimeArea?.getChildByName("callTimeDes")?.getComponent(cc.Label) || null;
+        this.callTimeArea = this.main?.getChildByName('callTimeArea');
+        this.callTimeDes = this.callTimeArea?.getChildByName('callTimeDes')?.getComponent(cc.Label) || null;
         if (this.callTimeArea) {
             this.callTimeArea.active = false;
         }
         this.StartGameButton =
-            this.main?.getChildByName("StartGameButton")
-            || this.getChildNodeOrComponent("StartGameButton")
-            || cc.find("main/StartGameButton", this.node);
+            this.main?.getChildByName('StartGameButton') || this.getChildNodeOrComponent('StartGameButton') || cc.find('main/StartGameButton', this.node);
         if (this.StartGameButton) {
             this.StartGameButton.active = false;
         } else {
-            cc.warn("[UITexas] StartGameButton not found");
+            cc.warn('[UITexas] StartGameButton not found');
         }
-        this.JackpotButton = this.main?.getChildByName("Button_Jackpot");
+        this.JackpotButton = this.main?.getChildByName('Button_Jackpot');
         if (this.JackpotButton) {
             this.JackpotButton.active = false;
-            const jackpotTextNode = this.JackpotButton.getChildByName("Label_Gold");
+            const jackpotTextNode = this.JackpotButton.getChildByName('Label_Gold');
             this.JackpotGoldLabel = jackpotTextNode?.getComponent(cc.Label) || jackpotTextNode?.getComponent(cc.RichText) || null;
         }
-        this.JackpotAnimRoot = this.main?.getChildByName("JackpotAnimRoot");
+        this.JackpotAnimRoot = this.main?.getChildByName('JackpotAnimRoot');
         if (this.JackpotAnimRoot) {
             this.JackpotAnimRoot.active = false;
             this.JackpotAnimRoot.getComponent(cc.Animation)?.stop();
         }
         //this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
-        this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
-        this.Text_AlreadAnte = this.getChildNodeOrComponent("Text_AlreadAnte", cc.Label);
-        this.transPots = this.getChildNodeOrComponent("Pots");
-        this.transPot = this.getChildNodeOrComponent("Pot");
-        this.transAllPot = this.getChildNodeOrComponent("AllPot");
-        this.Button_Delay = this.getChildNodeOrComponent("Button_Delay");
-        this.Button_SeeMorePublic = this.getChildNodeOrComponent("Button_SeeMorePublic");
-        this.Image_SeeMorePublicTips = this.getChildNodeOrComponent("Image_SeeMorePublicTips");
-        this.textSeeMorePublicTips = this.getChildNodeOrComponent("Text_SeeMorePublicTips", cc.Label);
-        this.textSeeMorePublic = this.getChildNodeOrComponent("Text_SeeMorePublic", cc.Label);
-        this.textSeeMorePublicGold = this.getChildNodeOrComponent("Text_SeeMorePublicGold", cc.Label);
+        this.buttonWaitBlind = this.getChildNodeOrComponent('Button_WaitBlind');
+        this.Text_AlreadAnte = this.getChildNodeOrComponent('Text_AlreadAnte', cc.Label);
+        this.transPots = this.getChildNodeOrComponent('Pots');
+        this.transPot = this.getChildNodeOrComponent('Pot');
+        this.transAllPot = this.getChildNodeOrComponent('AllPot');
+        this.Button_Delay = this.getChildNodeOrComponent('Button_Delay');
+        this.Button_SeeMorePublic = this.getChildNodeOrComponent('Button_SeeMorePublic');
+        this.Image_SeeMorePublicTips = this.getChildNodeOrComponent('Image_SeeMorePublicTips');
+        this.textSeeMorePublicTips = this.getChildNodeOrComponent('Text_SeeMorePublicTips', cc.Label);
+        this.textSeeMorePublic = this.getChildNodeOrComponent('Text_SeeMorePublic', cc.Label);
+        this.textSeeMorePublicGold = this.getChildNodeOrComponent('Text_SeeMorePublicGold', cc.Label);
         //托管
-        this.Button_CancelTrust = this.getChildNodeOrComponent("Button_CancelTrust");
-        this.Text_CancelTrust = this.getChildNodeOrComponent("Text_CancelTrust", cc.Label);
+        this.Button_CancelTrust = this.getChildNodeOrComponent('Button_CancelTrust');
+        this.Text_CancelTrust = this.getChildNodeOrComponent('Text_CancelTrust', cc.Label);
         //MTT
-        this.Button_AddOn = this.getChildNodeOrComponent("Button_AddOn");
-        this.Image_RedistributionTips = this.getChildNodeOrComponent("Image_RedistributionTips");
-        this.pullDownText = this.Image_RedistributionTips.getChildByName("Text_Tips")?.getComponent(cc.Label);
+        this.Button_AddOn = this.getChildNodeOrComponent('Button_AddOn');
+        this.Image_RedistributionTips = this.getChildNodeOrComponent('Image_RedistributionTips');
+        this.pullDownText = this.Image_RedistributionTips.getChildByName('Text_Tips')?.getComponent(cc.Label);
         //this.armatureRewardCircleZH = rc.Get<GameObject>("Armature_RewardCircle_zh").GetComponent<UnityArmatureComponent>();
         //this.armatureRewardCircleEN = rc.Get<GameObject>("Armature_RewardCircle_en").GetComponent<UnityArmatureComponent>();
-        this.Image_WaitForStartBathTips = this.getChildNodeOrComponent("Image_WaitForStartBathTips");
-        this.BathText = this.Image_WaitForStartBathTips?.getChildByName("Text_Tips")?.getComponent(cc.Label);
+        this.Image_WaitForStartBathTips = this.getChildNodeOrComponent('Image_WaitForStartBathTips');
+        this.BathText = this.Image_WaitForStartBathTips?.getChildByName('Text_Tips')?.getComponent(cc.Label);
         //this.Button_BringIn = this.getChildNodeOrComponent("Button_BringIn");
         //朋友桌邀请码
-        this.Text_InvateCode = this.getChildNodeOrComponent("Text_InvateCode", cc.Label);
+        this.Text_InvateCode = this.getChildNodeOrComponent('Text_InvateCode', cc.Label);
         //////////////////公共牌数据（第一套和第二套 ui,id,每套牌5张）
         this.listCards = [];
         this.listSecondCards = [];
@@ -444,21 +404,20 @@ export default class UITexas extends BaseScene {
         }
         //////////////////装载容器
         //1.MTT比赛倒计时
-        this.UIMTTTime_Con = this.getChildNodeOrComponent("UIMTTTime_Con");
+        this.UIMTTTime_Con = this.getChildNodeOrComponent('UIMTTTime_Con');
         this.UIMTTTime_Com = this.AddComponents(PrefabUI.UIMTTTimeComponent, this.UIMTTTime_Con);
         //2.操作面板
-        this.UIOperation_Con = this.getChildNodeOrComponent("UIOperation_Con");
+        this.UIOperation_Con = this.getChildNodeOrComponent('UIOperation_Con');
         this.UIOperation_Com = this.AddComponents(PrefabUI.UIOperationComponent, this.UIOperation_Con);
         this.UIAutoOperation_Com = this.AddComponents(PrefabUI.UIAutoOperationComponent, this.UIOperation_Con);
         //3.菜单
-        this.UITexasMenu_Con = this.getChildNodeOrComponent("UITexasMenu_Con");
+        this.UITexasMenu_Con = this.getChildNodeOrComponent('UITexasMenu_Con');
         //this.UITexasMenu_Com = this.AddComponents(PrefabUI.UITexasMenuComponent, this.UITexasMenu_Con, true);
         this.UITexasMenu = this.AddComponents(PrefabUI.UITexasMenu, this.UITexasMenu_Con, true);
-
         //4.通用容器 放置 桌面设置，实时战况，战绩
-        this.Common_Con = this.getChildNodeOrComponent("Common_Con");
+        this.Common_Con = this.getChildNodeOrComponent('Common_Con');
         //5.带入面板 带出面板
-        this.UIChips_Con = this.getChildNodeOrComponent("UIChips_Con");
+        this.UIChips_Con = this.getChildNodeOrComponent('UIChips_Con');
         //this.UIAddChips_Com = this.AddComponents(PrefabUI.UIAddChipsComponent, this.UIChips_Con);
         //this.UIOutChips_Com = this.AddComponents(PrefabUI.UIOutChipsComponent, this.UIChips_Con);
         //this.UIAutoChips_Com = this.AddComponents(PrefabUI.UIAutoChipsComponent, this.UIChips_Con);
@@ -467,14 +426,13 @@ export default class UITexas extends BaseScene {
         this.UIAutoBringIn = this.AddComponents(PrefabUI.UIAutoBringIn, this.UIChips_Con);
         this.UIBringOut = this.AddComponents(PrefabUI.UIBringOut, this.UIChips_Con);
         //6.保险面板
-        this.UIInsurance_Con = this.getChildNodeOrComponent("UIInsurance_Con");
+        this.UIInsurance_Con = this.getChildNodeOrComponent('UIInsurance_Con');
         this.UIInsurancePanel = this.AddComponents(PrefabUI.UIInsurancePanel, this.UIInsurance_Con);
         //7.二套牌投票面板
-        this.UIAgreeSecondPcs_Con = this.getChildNodeOrComponent("UIAgreeSecondPcs_Con");
+        this.UIAgreeSecondPcs_Con = this.getChildNodeOrComponent('UIAgreeSecondPcs_Con');
         this.UIAgreeSecondPcs_Com = this.AddComponents(PrefabUI.UIAgreeSecondPcsComponent, this.UIAgreeSecondPcs_Con);
         //8.MTT重购面板
-        this.MttAgainBuy_Con = this.getChildNodeOrComponent("UIMttSignDialog_Con");
-        //this.UIMttSignDialog_Com = this.AddComponents(PrefabUI.UIMttSignDialogComponent, this.UIMttSignDialog_Con, false, BUNDLE_RESOURCES);
+        this.MttAgainBuy_Con = this.getChildNodeOrComponent('UIMttSignDialog_Con');
         this.MttAgainBuy = this.AddComponents(PrefabUI.MttAgainBuy, this.MttAgainBuy_Con, false, BUNDLE_RESOURCES);
         //////////////////////////////////////////////////////////////////////
         //////////////////初始化杂类
@@ -485,7 +443,6 @@ export default class UITexas extends BaseScene {
         this.TransPot_Pool = new SimpleNodePool(this.transPot);
         this.TransAllPot_Pool = new SimpleNodePool(this.transAllPot);
     }
-
 
     //从预制体添加到容器
     private AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = BUNDLE_TEXAS) {
@@ -505,7 +462,6 @@ export default class UITexas extends BaseScene {
     }
 
     protected override regiterTouchEvents(): void {
-
         this.setButtonClick(this.btn_menu, this.click_side_button);
         this.setButtonClick(this.btn_msg, this.click_side_button);
         this.setButtonClick(this.btn_report, this.click_side_button);
@@ -514,21 +470,18 @@ export default class UITexas extends BaseScene {
         if (this.table_add_chip) {
             this.table_add_chip.on(cc.Node.EventType.TOUCH_END, this.click_table_add_chip, this);
         }
-
         // main_menu 按钮
         this.setButtonClick(this.btn_emoji, this.click_btn_emoji);
         this.setButtonClick(this.btn_effect, this.click_btn_effect);
         this.setButtonClick(this.btn_audio, this.click_btn_audio);
         this.setButtonClick(this.btn_camera, this.click_btn_camera);
         this.setButtonClick(this.chatBtn, this.click_chatBtn);
-
         // 远端音频/视频控制按钮
         this.setButtonClick(this.muteMicOpenBtn, this.click_muteMicOpen);
         this.setButtonClick(this.muteMicCloseBtn, this.click_muteMicClose);
         this.setButtonClick(this.hideVideoOpenBtn, this.click_hideVideoOpen);
         this.setButtonClick(this.hideVideoCloseBtn, this.click_hideVideoClose);
         ///////////////////////////
-
         this.setButtonClick(this.Button_Delay, this.onClickDelay);
         this.setButtonClick(this.Button_SeeMorePublic, this.onClickSeeMorePublic);
         this.setButtonClick(this.buttonWaitBlind, this.onClickWaitBlind);
@@ -537,18 +490,14 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.JackpotButton, this.onClickJackpot);
         this.setButtonClick(this.SquidSwitchClickNode, this.onClickJoinGame);
         this.setButtonClick(this.SquidStandUp, this.onClickSquidStandUp);
-
         this.setButtonClick(this.Button_AddOn, this.onClickAddOn);
-
         //this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
-
         this.setButtonClick(this.Button_CancelTrust, this.onClickCancelTrust);
         this.setButtonClick(this.textRoomInfo?.node, this.onClickTextRoomInfo);
-
     }
 
     // Enter Called by SceneManager.switchScene & enter
-    override Enter(param: { game_enter_type: GameEnterType, isLookOn: boolean }): void {
+    override Enter(param: { game_enter_type: GameEnterType; isLookOn: boolean }): void {
         super.Enter(param);
         this.AdaptiveMain();
         this.game = GameCache.Instance.CurGame;
@@ -569,26 +518,16 @@ export default class UITexas extends BaseScene {
     AdaptiveMain() {
         //高度小于目标进行缩放
         let view_height = cc.view.getVisibleSize().height;
-
         let limit_height = 2400;
-
         if (view_height <= limit_height) {
-
             this.main.height = 2688;
-
             let scale = view_height / 2688;
-
             scale *= 1.09;
-
             this.main.setScale(scale, scale);
-
         } else {
-
             this.main.setScale(1, 1);
-
             this.main.height = view_height;
         }
-
         // 延迟到下一帧计算座位偏移，确保 Widget 布局已完成
         this.scheduleOnce(() => {
             this.adjustSeatYOffset();
@@ -604,29 +543,23 @@ export default class UITexas extends BaseScene {
      */
     private adjustSeatYOffset() {
         some_pos.seatYOffset = 0;
-
-        const mainMenu = this.getChildNodeOrComponent("main_menu") as cc.Node;
+        const mainMenu = this.getChildNodeOrComponent('main_menu') as cc.Node;
         if (!mainMenu || !this.seats_content) return;
-
         // 用 getBoundingBoxToWorld 获取 main_menu 在世界坐标系中的实际包围盒
         const menuBox = mainMenu.getBoundingBoxToWorld();
         const menuTopWorldY = menuBox.y + menuBox.height;
-
         // seat 0 中心点的世界坐标
         const seat0LocalPos = some_pos.all_seat_pos[0];
         const seat0WorldPos = this.seats_content.convertToWorldSpaceAR(seat0LocalPos);
         const seat0WorldY = seat0WorldPos.y;
-
         // 世界坐标中 main_menu 上边缘与 seat 0 中心的重叠量
         const overlapWorld = menuTopWorldY - seat0WorldY;
         if (overlapWorld <= 0) return; // 无重叠
-
         // 将世界坐标的重叠量转换为 seats_content 本地坐标
         const mainScale = this.main.scaleY;
         const overlapLocal = overlapWorld / mainScale;
         const margin = 30;
         let offset = overlapLocal + margin;
-
         // 校验顶部座位：seat 4/5/6 的 y = -440，上移后不能超出屏幕
         const topSeatY = some_pos.all_seat_pos[5].y; // -440（最高）
         const topSeatNewY = topSeatY + offset;
@@ -634,7 +567,6 @@ export default class UITexas extends BaseScene {
         if (topSeatNewY > 0) {
             offset = offset - topSeatNewY; // clamp 到刚好不超出
         }
-
         some_pos.seatYOffset = offset;
     }
 
@@ -647,6 +579,7 @@ export default class UITexas extends BaseScene {
             seat.UpdateSeatUIInfo(seat.ClientSeatId);
         }
     }
+
     //进入初始UI
     EnterInitUI() {
         //this.ShowInvateCode();
@@ -667,6 +600,7 @@ export default class UITexas extends BaseScene {
         this._initRemoteMediaButtons();
         this.refreshViewOnSitAndStandup(this.game.UserSitdown());
     }
+
     //清理UI
     CleanUI() {
         //隐藏面板
@@ -683,7 +617,7 @@ export default class UITexas extends BaseScene {
             PrefabUI.UIBringIn,
             PrefabUI.UIBringOut,
             PrefabUI.UIAutoBringIn,
-            PrefabUI.UIInsurancePanel,
+            PrefabUI.UIInsurancePanel
         ].forEach(item => {
             UIComponent.Instance.HideUI(item);
         });
@@ -692,7 +626,6 @@ export default class UITexas extends BaseScene {
             //this.Button_BringIn,
             this.Button_AddOn,
             this.buttonWaitBlind,
-
             this.Image_WaitForStartTips,
             this.Image_RedistributionTips,
             this.Image_WaitForStartBathTips,
@@ -704,7 +637,7 @@ export default class UITexas extends BaseScene {
             this.JackpotButton,
             this.JackpotAnimRoot,
             this.BombPotOpen,
-            this.BombPotLogo,
+            this.BombPotLogo
         ].forEach(item => {
             this.setActive(item, false);
         });
@@ -732,12 +665,15 @@ export default class UITexas extends BaseScene {
     override Exit(param: any): void {
         super.Exit(param);
     }
+
     /// <param name="num"></param>几张
     /// <param name="premium"></param>保费
     /// <param name="paynum"></param>赔付金额
     public async ShowInsuranceTip(num: number, premium: number, paynum: number) {
         this.Image_InsuranceTips.active = true;
-        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = `${i18nMgr.Get("UILobby_Menu_menu_btn_my")}......\n` + StringHelper.FormatString(i18nMgr.Get("UIInsurance_tips001"), num, StringHelper.GetLongString(premium), StringHelper.GetLongString(paynum));
+        this.Image_InsuranceTips.getChildByName('Text_Tips').getComponent(cc.Label).string =
+            `${i18nMgr.Get('UILobby_Menu_menu_btn_my')}......\n` +
+            StringHelper.FormatString(i18nMgr.Get('UIInsurance_tips001'), num, StringHelper.GetLongString(premium), StringHelper.GetLongString(paynum));
         await TimeHelper.Sleep(2000);
         if (this.Image_InsuranceTips.activeInHierarchy) {
             this.Image_InsuranceTips.active = false;
@@ -760,12 +696,12 @@ export default class UITexas extends BaseScene {
      */
     private onClickTextRoomInfo() {
         // TODO: 实现房间信息点击逻辑
-        console.log("==>onClickTextRoomInfo");
+        console.log('==>onClickTextRoomInfo');
         UIComponent.open(UIDefine.UIGameplayTableSetting, {
             isFromBringIn: false,
             bringInAct: null,
             roomPermissions: null,
-            noAnimation: true,
+            noAnimation: true
         });
     }
 
@@ -773,6 +709,7 @@ export default class UITexas extends BaseScene {
         //this.UITexasMenu_Com?.onShow();
         this.UITexasMenu?.onShow();
     }
+
     public HideMenu(animation: boolean = true): void {
         //this.UITexasMenu_Com?.onClose(animation);
         this.UITexasMenu?.onClose(animation);
@@ -788,8 +725,8 @@ export default class UITexas extends BaseScene {
 
     public UpdateBarragePanelActive(): void {
         //this.barrageAnimationSequence = DOTween.Sequence(this.barrageAnimationSequence_obj);
-        let OpenBarrage: number = + GC.localStore.getItem(StorageKey.OpenBarrage);
-        this.barragePanel && (this.barragePanel.active = (OpenBarrage != 2));
+        let OpenBarrage: number = +GC.localStore.getItem(StorageKey.OpenBarrage);
+        this.barragePanel && (this.barragePanel.active = OpenBarrage != 2);
         this.barrageIndex = 0;
     }
 
@@ -800,26 +737,33 @@ export default class UITexas extends BaseScene {
     private onClickAddOn() {
         this.game.onClickAddOn();
     }
+
     //加时点击
     private onClickDelay() {
         this.game.onClickDelay();
     }
+
     private onClickSeeMorePublic() {
         this.game.onClickSeeMorePublic();
     }
+
     private onClickWaitBlind() {
         this.game?.onClickWaitBlind();
     }
+
     private onClickStartGame() {
         this.game?.onClickStartGame();
     }
+
     private onClickJackpot() {
         this.game?.OnClickJackpot();
     }
+
     private onClickJoinGame() {
         console.log(`==>onClickJoinGame`);
         this.game?.OnClickSquidJoinSwitch();
     }
+
     private onClickSquidStandUp() {
         this.game?.OnClickSquidStandUp();
     }
@@ -831,12 +775,15 @@ export default class UITexas extends BaseScene {
     private OnButtonShareClick() {
         console.log(`==>onButtonShareClick`);
         // TODO: 实现分享逻辑
-        ToastManager.Instance.createToast("还未开发");
+        ToastManager.Instance.createToast('还未开发');
     }
 
     public async ShowInsuranceTipJieSuan(paynum: number) {
         this.Image_InsuranceTips.active = true;
-        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = StringHelper.FormatString(i18nMgr.Get("UIInsurance_tips003"), StringHelper.GetLongString(paynum));
+        this.Image_InsuranceTips.getChildByName('Text_Tips').getComponent(cc.Label).string = StringHelper.FormatString(
+            i18nMgr.Get('UIInsurance_tips003'),
+            StringHelper.GetLongString(paynum)
+        );
         await TimeHelper.Sleep(2000);
         if (this.Image_InsuranceTips.activeInHierarchy) {
             this.Image_InsuranceTips.active = false;
@@ -845,25 +792,24 @@ export default class UITexas extends BaseScene {
 
     //边角按钮点击
     private click_side_button(e: cc.Button) {
-
         if (this.game.CanClick() == false) return;
         this.game.lastClickTime = GlobalSession.NowTimeMS;
         switch (e.node) {
-            case this.btn_menu://菜单按钮
+            case this.btn_menu: //菜单按钮
                 this.ShowMenu();
                 break;
-            case this.btn_msg://消息
+            case this.btn_msg: //消息
                 if (GameUtil.GetFriendsOrClubTable() == 1) {
-                    UIComponent.open(UIDefine.UIMsgBring, { from: 0, name: "UIClub_RoomSitApplyRecords_title" });
+                    UIComponent.open(UIDefine.UIMsgBring, { from: 0, name: 'UIClub_RoomSitApplyRecords_title' });
                 }
                 if (GameUtil.GetFriendsOrClubTable() == 2) {
-                    UIComponent.open(UIDefine.UIMsgBring, { from: 1, name: "UIClub_RoomSitApplyRecords_title" });
+                    UIComponent.open(UIDefine.UIMsgBring, { from: 1, name: 'UIClub_RoomSitApplyRecords_title' });
                 }
                 break;
-            case this.btn_report://实时战况
+            case this.btn_report: //实时战况
                 this.Click_Report_Btn();
                 break;
-            case this.btn_poker://战绩牌谱
+            case this.btn_poker: //战绩牌谱
                 this.Click_Cursituation_btn();
                 break;
         }
@@ -873,42 +819,39 @@ export default class UITexas extends BaseScene {
     private click_btn_emoji() {
         UIComponent.open(UIDefine.UIEmojiDlg);
     }
+
     private async click_btn_effect() {
         // 非视频房间
         if (GameCache.Instance._videoModel === VideoModel.NONE) {
-            ToastManager.Instance.createToast(i18nMgr.Get("UIEffectNoVideo"));
+            ToastManager.Instance.createToast(i18nMgr.Get('UIEffectNoVideo'));
             return;
         }
         // 节能模式未开启
         if (GameCache.Instance._videoPowerSaving !== 1) {
-            ToastManager.Instance.createToast(i18nMgr.Get("UIEffectNoPowerSaving"));
+            ToastManager.Instance.createToast(i18nMgr.Get('UIEffectNoPowerSaving'));
             return;
         }
         // 摄像头未开启
         const headNode = this.game?.listSeat?.find((s: Seat) => s.IsMySeat)?.uirc?.Raw_Head?.node;
         const vr = headNode?.getComponent(AgoraVideoRender);
         if (!vr?.isRendering) {
-            ToastManager.Instance.createToast(i18nMgr.Get("UIEffectNoCamera"));
+            ToastManager.Instance.createToast(i18nMgr.Get('UIEffectNoCamera'));
             return;
         }
-
         const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
         if (!mySeat) {
-            ToastManager.Instance.createToast("请先入座");
+            ToastManager.Instance.createToast('请先入座');
             return;
         }
-
         // videoMaskId 循环 +1，大于4回到1
         const oldMaskId = this.game.mainPlayer.videoMaskId || 0;
         let newMaskId = oldMaskId + 1;
         if (newMaskId > 4) newMaskId = 1;
-
         // 立即更新本地数据和窗花显示（乐观更新）
         this.game.mainPlayer.videoMaskId = newMaskId;
         if (headNode?.isValid) {
             if (vr) vr.setVideoMaskId(newMaskId);
         }
-
         // 请求服务器广播窗花变更，失败时回滚
         const ok = await this.game.TexasGameProtocol?.requestSetVideoMask(newMaskId);
         if (!ok) {
@@ -919,20 +862,19 @@ export default class UITexas extends BaseScene {
             }
         }
     }
+
     private async click_btn_audio() {
         if (GameCache.Instance._videoModel === VideoModel.NONE) {
-            ToastManager.Instance.createToast("当前房间未开启语音");
+            ToastManager.Instance.createToast('当前房间未开启语音');
             return;
         }
         const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
         if (!mySeat) {
-            ToastManager.Instance.createToast("请先入座");
+            ToastManager.Instance.createToast('请先入座');
             return;
         }
-
         const agora = AgoraManager.Instance;
         if (!agora.isJoined) return;
-
         if (this._micOn) {
             agora.setMicMuted(true);
             this._micOn = false;
@@ -949,42 +891,38 @@ export default class UITexas extends BaseScene {
         // 麦克风状态变更后刷新所有 MicIcon
         this.game?.TexasGameProtocol?.refreshMicIcons();
     }
+
     private async click_btn_camera() {
         if (GameCache.Instance._videoModel === VideoModel.NONE) {
-            ToastManager.Instance.createToast("当前房间未开启视频");
+            ToastManager.Instance.createToast('当前房间未开启视频');
             return;
         }
         if (GameCache.Instance._videoModel === VideoModel.FULL_TIME) {
-            ToastManager.Instance.createToast(i18nMgr.Get("UIVideoModelverifyFullTime02"));
+            ToastManager.Instance.createToast(i18nMgr.Get('UIVideoModelverifyFullTime02'));
             return;
         }
         // 麦序模式：无论是否在操作，都不允许手动切换摄像头
         if (GameCache.Instance._videoModel === VideoModel.SEQUENCE) {
-            ToastManager.Instance.createToast(i18nMgr.Get("UICantOpenVideoOnMicSeq"));
+            ToastManager.Instance.createToast(i18nMgr.Get('UICantOpenVideoOnMicSeq'));
             return;
         }
         if (GameCache.Instance._randomVideoActive) {
             const remainSec = Math.max(0, Math.ceil((GameCache.Instance._randomVideoEndTime - Date.now()) / 1000));
-            ToastManager.Instance.createToast(
-                i18nMgr.Get('UIVideoModelverifyRandom02').replace('{0}', String(remainSec))
-            );
+            ToastManager.Instance.createToast(i18nMgr.Get('UIVideoModelverifyRandom02').replace('{0}', String(remainSec)));
             return;
         }
         const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
         if (!mySeat) {
-            ToastManager.Instance.createToast("请先入座");
+            ToastManager.Instance.createToast('请先入座');
             return;
         }
-
         const agora = AgoraManager.Instance;
         if (!agora.isJoined) return;
-
         // 以实际渲染状态为准，防止 _cameraOn 与实际脱节（如渲染异常静默停止）
         const headNode = mySeat.uirc?.Raw_Head?.node;
         const vr = headNode?.getComponent(AgoraVideoRender);
         const actuallyRendering = vr?.isRendering === true;
         this._cameraOn = actuallyRendering;
-
         if (this._cameraOn) {
             const headNode = mySeat.uirc?.Raw_Head?.node;
             const vr = headNode?.getComponent(AgoraVideoRender);
@@ -1016,9 +954,7 @@ export default class UITexas extends BaseScene {
         if (this.btn_effect) {
             const headNode = this.game?.listSeat?.find((s: Seat) => s.IsMySeat)?.uirc?.Raw_Head?.node;
             const vr = headNode?.getComponent(AgoraVideoRender);
-            const effectEnabled = GameCache.Instance._videoModel !== VideoModel.NONE
-                && GameCache.Instance._videoPowerSaving === 1
-                && vr?.isRendering === true;
+            const effectEnabled = GameCache.Instance._videoModel !== VideoModel.NONE && GameCache.Instance._videoPowerSaving === 1 && vr?.isRendering === true;
             this.btn_effect.opacity = effectEnabled ? 255 : 128;
             const sprite = this.btn_effect.getComponent(cc.Sprite);
             if (sprite) this.setSpriteShowGray(sprite, !effectEnabled);
@@ -1030,8 +966,8 @@ export default class UITexas extends BaseScene {
      */
     public syncVideoButtonsFromAgora(): void {
         const agora = AgoraManager.Instance;
-        this._cameraOn = !!(agora.localVideoTrack);
-        this._micOn = !!(agora.localAudioTrack);
+        this._cameraOn = !!agora.localVideoTrack;
+        this._micOn = !!agora.localAudioTrack;
         this._syncVideoButtonVisuals();
     }
 
@@ -1059,13 +995,11 @@ export default class UITexas extends BaseScene {
         if (muteMicNode) muteMicNode.active = isVideoRoom;
         if (hideVideoNode) hideVideoNode.active = isVideoRoom;
         if (!isVideoRoom) return;
-
         const agora = AgoraManager.Instance;
         // 功能开启 → openBtn 可见；功能关闭 → closeBtn 可见
         const audioOn = !agora.isRemoteAudioMuted;
         if (this.muteMicOpenBtn) this.muteMicOpenBtn.active = audioOn;
         if (this.muteMicCloseBtn) this.muteMicCloseBtn.active = !audioOn;
-
         const videoOn = !agora.isRemoteVideoMuted;
         if (this.hideVideoOpenBtn) this.hideVideoOpenBtn.active = videoOn;
         if (this.hideVideoCloseBtn) this.hideVideoCloseBtn.active = !videoOn;
@@ -1108,11 +1042,13 @@ export default class UITexas extends BaseScene {
     }
 
     private click_chatBtn() {
-        UIComponent.open(UIDefine.UIBlank_dialog, { title: "聊天" });
+        UIComponent.open(UIDefine.UIBlank_dialog, { title: '聊天' });
     }
+
     private click_btn_im() {
-        UIComponent.open(UIDefine.UIBlank_dialog, { title: "客服界面" });
+        UIComponent.open(UIDefine.UIBlank_dialog, { title: '客服界面' });
     }
+
     private click_table_add_chip() {
         this.game.StartAddChips();
     }

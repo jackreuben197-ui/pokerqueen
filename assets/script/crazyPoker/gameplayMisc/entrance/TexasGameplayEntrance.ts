@@ -1,11 +1,11 @@
-import { GameCache } from "../../../game/GameCache";
-import ProtocolAgency from "../../../net/websocket/ProtocolAgency";
-import { ProtocolCode } from "../../../net/websocket/ProtocolCode";
-import { ClientMessageRooms, ServerMessageRooms } from "../../../protobuf/holdem/req_rpc_rooms_pb";
-import { AntiCheatType } from "../../gameplay/common/constant/AntiCheatType";
-import AGameplayEntrance, { LoadIndicator } from "./AGameplayEntrance";
-import ProcedureManager from "../../../manager/ProcedureManager";
-import { ProcedureEnum } from "../../../define/EIDefine";
+import { GameCache } from '../../../game/GameCache';
+import ProtocolAgency from '../../../net/websocket/ProtocolAgency';
+import { ProtocolCode } from '../../../net/websocket/ProtocolCode';
+import { ClientMessageRooms, ServerMessageRooms } from '../../../protobuf/holdem/req_rpc_rooms_pb';
+import { AntiCheatType } from '../../gameplay/common/constant/AntiCheatType';
+import AGameplayEntrance, { LoadIndicator } from './AGameplayEntrance';
+import ProcedureManager from '../../../manager/ProcedureManager';
+import { ProcedureEnum } from '../../../define/EIDefine';
 
 /**
  * @description 德州玩法入口
@@ -36,27 +36,21 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
      */
     protected override async messageLayerEnterAsync(isEnterForeground: boolean): Promise<boolean> {
         console.log(`${this.constructor.name}: messageLayerEnterAsync: ${this.tableId}, isEnterForeground=${isEnterForeground}`);
-
         // C#: int status = await RequestRoomInfoAsync();
         const roomStatus: number = await this.requestRoomInfoAsync();
         if (roomStatus != 0) {
             console.error(`${this.constructor.name}: messageLayerEnterAsync: requestRoomInfoAsync failed: ${roomStatus}`);
             return false;
         }
-
         // 检查是否可以进入
         const isCanEnter: boolean = await this.checkCanEnterAsync(isEnterForeground);
         console.log(`${this.constructor.name}: messageLayerEnterAsync - CanEnter: ${isCanEnter}`);
-
         if (!isCanEnter) {
             return false;
         }
-
         // 请求进入房间
         this._enterStatus = await this.requestEnterAsync(true);
-
         console.log(`${this.constructor.name}: messageLayerEnterAsync - EnterStatus: ${this._enterStatus}`);
-
         if (this._enterStatus != 0 && this._enterStatus != 1015) {
             if (!this._isHasToast) {
                 this._isHasToast = true;
@@ -64,7 +58,6 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
             }
             return false;
         }
-
         return true;
     }
 
@@ -80,7 +73,6 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         //     this._roomInfoResolve = resolve;
         //     this._roomInfoReject = reject;
         // });
-
         // 发送请求房间信息协议
         // const sendObj = {
         //     Code: ProtocolCode.Protocol_Holdem_Rooms,
@@ -90,12 +82,10 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         //         roomIdList: [this._roomId],
         //     },
         // };
-
         const resp = await ProtocolAgency.SendAsync<ClientMessageRooms.AsObject, ServerMessageRooms.AsObject>(ProtocolCode.Protocol_Holdem_Rooms, {
-                roomIdList: [this._roomId],
-                rpcId: 1,
-            });
-
+            roomIdList: [this._roomId],
+            rpcId: 1
+        });
         // 等待响应 (由 ProcedureEnterTexas.onMsgHoldemRooms 调用 _roomInfoResolve)
         try {
             if (resp.status != 0) {
@@ -104,13 +94,11 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
             }
             if (resp.roomsList == null || resp.roomsList.length == 0) {
                 console.error(`${this.constructor.name}: requestRoomInfoAsync: room not exist`);
-                return -1
+                return -1;
             }
-
             this._roomInfo = resp.roomsList[0];
             return 0;
-        }
-        catch (error) {
+        } catch (error) {
             console.error(`${this.constructor.name}: requestRoomInfoAsync: wait room info failed, ${error}`);
             return -1;
         }
@@ -164,16 +152,13 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
      */
     protected override cacheGlobalDataBeforeLoad(isClear: boolean): void {
         super.cacheGlobalDataBeforeLoad(isClear);
-
         console.log(`${this.constructor.name}: cacheGlobalDataBeforeLoad: ${this._roomInfo.rid}, isClear=${isClear}`);
-
         // 特殊处理与房间存续期相关的数据缓存逻辑
         GameCache.Instance._roomDurationTime = isClear ? 0 : this._roomInfo.playDuration;
         if (isClear) {
             GameCache.Instance._roomStartTime = 0;
             GameCache.Instance._roomEndTime = 0;
-        }
-        else {
+        } else {
             // 房间的start time是个动态数据, 缓存的roomInfo中此数据可能已经失效
             // 不要因为就只想获得这个数据再请求一次roomInfo，太耗
             // 此时进入房间所必须的所有数据都已准备好, 直接使用enter room响应中的返回值才是实时的
@@ -188,13 +173,12 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
             GameCache.Instance._roomEndTime = GameCache.Instance._roomStartTime + this._roomInfo.playDuration;
         }
         GameCache.Instance._roomRecord = this._roomInfo;
-        GameCache.Instance._serviceId = isClear ? "" : this._roomInfo.serviceId;
-        GameCache.Instance.roomName = isClear ? "" : this._roomInfo.name;
+        GameCache.Instance._serviceId = isClear ? '' : this._roomInfo.serviceId;
+        GameCache.Instance.roomName = isClear ? '' : this._roomInfo.name;
         GameCache.Instance.game_type = isClear ? 0 : this._roomInfo.gameType;
         GameCache.Instance.poker_type = isClear ? 0 : this._roomInfo.pokerType;
         GameCache.Instance.bet_type = isClear ? 0 : this._roomInfo.limitBetType;
         GameCache.Instance.gold_type = isClear ? 0 : this._roomInfo.goldType;
-
         // 俱乐部id
         GameCache.Instance._texasData._clubId = isClear ? 0 : this._roomInfo.clubId;
         // 联盟id
@@ -210,11 +194,11 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         GameCache.Instance._bringInLimitType = isClear ? 0 : this._roomInfo.bringinLimitType;
         GameCache.Instance._muck = isClear ? 0 : this._roomInfo.muckOn;
         GameCache.Instance._isShowLeftTime = isClear ? false : false;
-        GameCache.Instance._tableSkin = isClear ? "" : this._roomInfo.tableclothTag;
+        GameCache.Instance._tableSkin = isClear ? '' : this._roomInfo.tableclothTag;
         GameCache.Instance._shareTableType = isClear ? 0 : this._roomInfo.shareTable;
         GameCache.Instance._originType = isClear ? 0 : this._roomInfo.originType;
-        GameCache.Instance._friendsTableCode = isClear ? "" : this._roomInfo.invitationCode;
-        GameCache.Instance._friendsTableLimitBringIn = isClear ? false : (this._roomInfo.limitBringIn > 0);
+        GameCache.Instance._friendsTableCode = isClear ? '' : this._roomInfo.invitationCode;
+        GameCache.Instance._friendsTableLimitBringIn = isClear ? false : this._roomInfo.limitBringIn > 0;
         GameCache.Instance._chatType = isClear ? 0 : this._roomInfo.chatType;
         GameCache.Instance._autoRecharge = isClear ? 0 : this._roomInfo.autoOnTableSwitch;
         GameCache.Instance._currentRoomID = isClear ? 0 : this._roomId;
@@ -256,27 +240,22 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         GameCache.Instance._opDuration = isClear ? 0 : this._roomInfo.opDuration;
         GameCache.Instance._texasData._allinBanChatType = isClear ? 0 : this._roomInfo.allInMute;
         GameCache.Instance._texasData._insuranceForceBuyRatio = isClear ? 0 : this._roomInfo.insuranceForceBuyRatio;
-        GameCache.Instance.room_jackpot_config = isClear ? null: this._roomInfo.jackpotConfig;
-
+        GameCache.Instance.room_jackpot_config = isClear ? null : this._roomInfo.jackpotConfig;
         // 多语言房间名设置
         if (isClear) {
             GameCache.Instance._multiLanguage = null;
-        }
-        else {
+        } else {
             // TODO: 多语言处理 - 需要MultiLanguage类和相关反射实现
             // C#: GameCache.Instance._multiLanguage = GameCache.Instance._multiLanguage ?? new MultiLanguage();
             // C#: foreach (var mlName in _roomInfo.MultiLangNames) { ... }
         }
-
         GameCache.Instance._antiCheatType = isClear ? 0 : this._roomInfo.antiCheatType;
         if (GameCache.Instance._antiCheatType == AntiCheatType.VIDEO) {
             console.log('-------------------客户端已进入视频房间-------------------');
             GameCache.Instance._videoModel = this._roomInfo.antiCheatVideoType;
-        }
-        else {
+        } else {
             GameCache.Instance._videoModel = 0;
         }
-
         GameCache.Instance._normalAntiCheatOrderType = isClear ? 0 : this._roomInfo.antiCheatOrderType;
         GameCache.Instance._normalAntiCheatOrderMicType = isClear ? 0 : this._roomInfo.antiCheatOrderMicType;
         GameCache.Instance._antiCheatTimeLimit = isClear ? 0 : this._roomInfo.antiCheatTimelimit;
@@ -284,18 +263,15 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         GameCache.Instance._videoPowerSaving = isClear ? 0 : this._roomInfo.powerSaving;
         console.log('[VideoMask] 节能模式(窗花) power_saving:', GameCache.Instance._videoPowerSaving, '(1=开,2=关)');
         GameCache.Instance._videoVerifyType = isClear ? 0 : this._roomInfo.videoVerifyType;
-
         // 保险赔率表 - TODO: 需要GameUtil._outsList实现
         // C#: GameUtil._outsList.Clear();
         // C#: foreach (var insurance in _roomInfo.InsuranceOdds) { ... }
         // C#: GameUtil._outsList.Add((uint)insurance.PotUserCount, oddsList);
-
         if (!isClear) {
             // 鱿鱼设置
             if (this._roomInfo.squidBase == 0 && (this._roomInfo.subConfigsList == null || this._roomInfo.subConfigsList.length == 0)) {
                 GameCache.Instance._texasData._squidBase = this._roomInfo.squidBase;
-            }
-            else {
+            } else {
                 GameCache.Instance._texasData._squidMostGet = this._roomInfo.squidMostGet;
                 GameCache.Instance._texasData._squidBetGet = this._roomInfo.squidBetGet;
                 GameCache.Instance._texasData._squidHead = this._roomInfo.squidHead;
@@ -307,44 +283,34 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
                 GameCache.Instance._texasData._squidCountRates = this._roomInfo.squidCountRateList || [];
                 GameCache.Instance._texasData._squidDepositPercent = this._roomInfo.depositPercent;
                 if (this._roomInfo.subConfigsList != null && this._roomInfo.subConfigsList.length > 0) {
-                    GameCache.Instance._texasData._squidOpenNumber =
-                        this._roomInfo.subConfigsList[0].playingPlayerCountLimit;
-                }
-                else {
+                    GameCache.Instance._texasData._squidOpenNumber = this._roomInfo.subConfigsList[0].playingPlayerCountLimit;
+                } else {
                     GameCache.Instance._texasData._squidOpenNumber = this._roomInfo.squidPlayerCount;
                 }
-
                 if (this._roomInfo.squidBase == 0) {
                     if (this._roomInfo.subConfigsList != null && this._roomInfo.subConfigsList.length > 0) {
                         GameCache.Instance._texasData._squidBase = this._roomInfo.subConfigsList[0].squidBase;
                     }
-                }
-                else {
+                } else {
                     GameCache.Instance._texasData._squidBase = this._roomInfo.squidBase;
                 }
             }
-
             if (!GameCache.Instance._texasData._isSquidEnable) {
                 if (this._roomInfo.subConfigsList != null && this._roomInfo.subConfigsList.length > 0) {
                     GameCache.Instance._texasData._subGamePlayAnte = this._roomInfo.subConfigsList[0].ante;
-                    GameCache.Instance._texasData._isCriticalHitEnable =
-                        this._roomInfo.subConfigsList[0].criticalHit == 1;
-                }
-                else {
+                    GameCache.Instance._texasData._isCriticalHitEnable = this._roomInfo.subConfigsList[0].criticalHit == 1;
+                } else {
                     GameCache.Instance._texasData._subGamePlayAnte = 0;
                     GameCache.Instance._texasData._isCriticalHitEnable = false;
                 }
-
                 GameCache.Instance._texasData._criticalHitRound = this._roomInfo.rounds;
             }
-
             // Club/Tribe 权限缓存 - TODO: 需要对应实现
             // C#: GameCache.Instance._clubRoomPermissionsPart.CacheClubRoomPermission(...);
             // C#: GameCache.Instance._tribeBlackUserDataPart.CacheBlackUserList(...);
             // C#: GameCache.Instance._jackpotTemplateListPart.CacheJackpotAwardDetail(...);
             // C#: GameCache.Instance._wheelTemplateListPart.CacheAwardDetail(...);
-        }
-        else {
+        } else {
             // 鱿鱼设置 isClear
             GameCache.Instance._texasData._squidBase = 0;
             GameCache.Instance._texasData._squidMostGet = 0;
@@ -362,7 +328,6 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
             GameCache.Instance._texasData._squidCountRates = [];
             GameCache.Instance._texasData._squidDepositPercent = 0;
         }
-
         // 新增字段 (C# 408-417行)
         GameCache.Instance._texasData._mushroomMode = isClear ? 0 : this._roomInfo.mushroomMode;
         GameCache.Instance._texasData._mushroomBase = isClear ? 0 : this._roomInfo.mushroomBase;
@@ -370,12 +335,11 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         // C#: (EnterRoomType)_roomInfo.EnterRoomType
         GameCache.Instance._enterRoomType = isClear ? 0 : this._roomInfo.enterRoomType;
         GameCache.Instance._isWhiteList = isClear ? false : this._roomInfo.isWhitelist;
-        GameCache.Instance._texasData._anteRandomJumpConfig = isClear ? "" : this._roomInfo.randomAnte;
+        GameCache.Instance._texasData._anteRandomJumpConfig = isClear ? '' : this._roomInfo.randomAnte;
         GameCache.Instance._texasData._callTime = isClear ? 0 : this._roomInfo.calltime;
         GameCache.Instance._texasData._callTimeWinline = isClear ? 0 : this._roomInfo.calltimeWinLine;
         GameCache.Instance._texasData._callTimeLimitCount = isClear ? 0 : this._roomInfo.calltimeLimit;
         GameCache.Instance._texasData._autoChangeTable = isClear ? 0 : this._roomInfo.autoChangeRoomLimitHand;
-
         GameCache.Instance._texasData._smallBlind = isClear ? 0 : this._roomInfo.sb;
         GameCache.Instance._texasData._bigBlind = isClear ? 0 : this._roomInfo.sb * 2;
         GameCache.Instance._texasData._ante = isClear ? 0 : this._roomInfo.ante;

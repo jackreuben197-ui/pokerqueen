@@ -1,15 +1,13 @@
 /*
  * @Author: xfj
  * @Date: 2022-12-21 12:38:03
- * @description: 
+ * @description:
  * @LastEditors: Please set LastEditors
  * @LastEditTime: 2022-12-24 20:49:25
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubUserDataCache.ts
  */
-
-import { EventName } from "../../../config/EventName";
-import GC from "../../GameControl";
-
+import { EventName } from '../../../config/EventName';
+import GC from '../../GameControl';
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -18,21 +16,23 @@ export class ClubUserDataCache {
     static _allCubData: any = null;
 
     static setUserData(data: any) {
-        this._msg = data
-    }
-    static get gold() {
-        return this._msg?.user_info?.gold
-    }
-    static get usdt() {
-        return this._msg?.user_info?.usdt
+        this._msg = data;
     }
 
-    static refreshData(data: {[props: string]: any}) {
-        Object.keys(data).map((key) => {
+    static get gold() {
+        return this._msg?.user_info?.gold;
+    }
+
+    static get usdt() {
+        return this._msg?.user_info?.usdt;
+    }
+
+    static refreshData(data: { [props: string]: any }) {
+        Object.keys(data).map(key => {
             this._msg[key] = data[key];
-        })
+        });
         // GC.notify.post(EventName.refreshClubData)
     }
-
 }
+
 (window as any).ClubUserDataCache = ClubUserDataCache;

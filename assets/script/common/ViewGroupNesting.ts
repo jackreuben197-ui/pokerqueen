@@ -2,8 +2,8 @@
 const { ccclass, property } = cc._decorator;
 
 interface EventTouch extends cc.Event.EventTouch {
-    simulate?: boolean
-    sham?: boolean
+    simulate?: boolean;
+    sham?: boolean;
 }
 
 @ccclass
@@ -19,7 +19,6 @@ export default class ViewGroupNesting extends cc.Component {
 
     private onTouchHandle(event: EventTouch) {
         if (event.sham || event.simulate || event.target === this.node) return;
-
         const cancelEvent: EventTouch = new cc.Event.EventTouch(event.getTouches(), event.bubbles);
         cancelEvent.type = event.type;
         cancelEvent.touch = event.touch;

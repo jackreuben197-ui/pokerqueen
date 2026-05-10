@@ -1,7 +1,7 @@
 /*
  * @Author: xfj
  * @Date: 2022-12-21 12:38:03
- * @description: 
+ * @description:
  * @LastEditors: Please set LastEditors
  * @LastEditTime: 2023-05-05 11:00:13
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
@@ -12,30 +12,30 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
-
-import { EventName } from "../../../config/EventName";
-import { GameCache } from "../../../game/GameCache";
-import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
-import GC from "../../GameControl";
-import ClubInfoModel from "./ClubInfoModel";
-
+import { EventName } from '../../../config/EventName';
+import { GameCache } from '../../../game/GameCache';
+import AssetContext, { AssetFold } from '../../../ui/component/AssetContext';
+import GC from '../../GameControl';
+import ClubInfoModel from './ClubInfoModel';
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export class ClubCache {
-    static _msg:any = null;
+    static _msg: any = null;
     static _allCubData: any = null;
     static _diamonds_wallet: number | null = null;
     // 创建来源 1 平台，2 联盟，3 公会（外） 4 个人（朋友桌）5 公会（内）
     // joinCreateMatchType 0 俱乐部  1 朋友桌
-    static joinCreateMatchType:number = 0;
+    static joinCreateMatchType: number = 0;
     //玩法类型 1 NLH 2 PLO 3 6+
-    static CreateGameType: number = 1
-    static mttPayWallat: any = null;   //mtt支付钱包
+    static CreateGameType: number = 1;
+    static mttPayWallat: any = null; //mtt支付钱包
+
     static setClubData(data: any) {
-        this._msg = data
+        this._msg = data;
         GameCache.Instance.isHadClub = this._msg?.club_id > 0;
     }
+
     static get club_table() {
         return this._msg?.tables;
     }
@@ -43,96 +43,127 @@ export class ClubCache {
     static get club_id() {
         return this._msg?.club_id;
     }
+
     static get club_name() {
         return this._msg?.club_name;
     }
+
     static get logo() {
         return this._msg?.logo;
     }
+
     static get random_id() {
         return this._msg?.random_id;
     }
+
     static get upper_limit() {
         return this._msg?.upper_limit;
     }
+
     static get club_members() {
         return this._msg?.club_members;
     }
+
     static get area_id() {
         return this._msg?.area_id;
     }
+
     static get club_type() {
         return this._msg?.club_type;
     }
+
     static get create_time() {
         return this._msg?.create_time;
     }
+
     static get is_official() {
         return this._msg?.is_official;
     }
+
     static get club_status() {
         return this._msg?.club_status;
     }
+
     static get desc() {
         return this._msg?.desc;
     }
+
     static get contact_info() {
         return this._msg?.contact_info;
     }
+
     static get member_type() {
         return this._msg?.member_type;
     }
+
     static get more_contact() {
         return this._msg?.more_contact;
     }
+
     static get level() {
         return this._msg?.level;
     }
+
     static get search_switch() {
         return this._msg?.search_switch;
     }
+
     static get auto_audit_switch() {
         return this._msg?.auto_audit_switch;
     }
+
     static get show_contact_switch() {
         return this._msg?.show_contact_switch;
     }
+
     static get club_creator_random_id() {
         return this._msg?.club_creator_random_id;
     }
+
     static get club_creator_avatar() {
         return this._msg?.club_creator_avatar;
     }
+
     static get club_creator_nickname() {
         return this._msg?.club_creator_nickname;
     }
+
     static get tribe_name() {
         return this._msg?.tribe_name;
     }
+
     static get user_level() {
         return this._msg?.user_level;
     }
+
     static get players() {
         return this._msg?.players;
     }
+
     static get tribe_id() {
         return this._msg?.tribe_id;
     }
+
     static get show_notice_switch() {
         return this._msg?.show_notice_switch;
     }
+
     static get gold_to_usdt_rate() {
         return this._msg?.gold_to_usdt_rate;
     }
+
     static get usdt_to_gold_rate() {
         return this._msg?.usdt_to_gold_rate;
     }
+
     static get tribe_logo() {
         return this._msg?.tribe_logo;
     }
+
     static get digital_wallet_switch() {
         return this._msg?.digital_wallet_switch;
     }
+
     static get digital_wallet_erc() {
         return this._msg?.digital_wallet_erc;
     }
@@ -141,58 +172,58 @@ export class ClubCache {
         return this._msg?.digital_wallet_trc;
     }
 
-
-
-    static refreshData(data: {[props: string]: any}) {
-        Object.keys(data).map((key) => {
+    static refreshData(data: { [props: string]: any }) {
+        Object.keys(data).map(key => {
             this._msg[key] = data[key];
-        })
-        GC.notify.post(EventName.refreshClubData)
+        });
+        GC.notify.post(EventName.refreshClubData);
     }
-    static setRoleType(hg:any, type: number) {
+
+    static setRoleType(hg: any, type: number) {
         //0 普通 1会长 3管理员 4代理
         switch (type) {
             case 0:
                 hg.active = false;
                 break;
             case 1:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg03', AssetFold.texture_new_club)
-
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg03', AssetFold.texture_new_club);
                 break;
             case 2:
                 break;
             case 3:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club)
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club);
                 break;
             case 4:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club)
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club);
                 break;
             default:
                 break;
         }
     }
+
     static getRoleName(type: number) {
-        let name = ''
+        let name = '';
         switch (type) {
             case 0:
-                name = 'UIGuild_FilterButtonMember'
+                name = 'UIGuild_FilterButtonMember';
                 break;
             case 1:
-                name = 'UIGuid_Founder'
+                name = 'UIGuid_Founder';
                 break;
             case 2:
                 break;
             case 3:
-                name = 'UIGuild_FilterButtonManager'
+                name = 'UIGuild_FilterButtonManager';
                 break;
             case 4:
-                name = 'UIGuild_FilterButtonVip'
+                name = 'UIGuild_FilterButtonVip';
                 break;
             default:
                 break;
         }
         return name;
     }
+
     //设置用户等级图标
     static getUserLevelIcon(user_level: number): cc.SpriteFrame {
         let spriteFrame: cc.SpriteFrame;
@@ -210,11 +241,12 @@ export class ClubCache {
                 spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club);
                 break;
             default:
-                spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club);;
+                spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club);
                 break;
         }
         return spriteFrame;
     }
 }
+
 //(window as any).GameCache = ClubCache;
 (window as any).ClubCache = ClubCache;

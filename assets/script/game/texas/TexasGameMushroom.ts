@@ -1,7 +1,7 @@
-import { StringHelper } from "../../helper/StringHelper";
-import { i18nMgr } from "../../i18n/i18nMgr";
-import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_th_enter_room_pb";
-import { CPlayer } from "../CPlayer";
+import { StringHelper } from '../../helper/StringHelper';
+import { i18nMgr } from '../../i18n/i18nMgr';
+import { ServerMessageEnterRoom } from '../../protobuf/holdem/req_th_enter_room_pb';
+import { CPlayer } from '../CPlayer';
 
 interface TexasGameMushroomHost {
     mushroomEnabled: boolean;
@@ -15,8 +15,8 @@ interface TexasGameMushroomHost {
 }
 
 export default class TexasGameMushroom {
-    constructor(private host: TexasGameMushroomHost) {
-    }
+
+    constructor(private host: TexasGameMushroomHost) {}
 
     public UpdateRoomConfig(rec: ServerMessageEnterRoom.AsObject): void {
         this.host.mushroomBase = (rec.roomInfo as any).mushroomBase || 0;
@@ -50,10 +50,10 @@ export default class TexasGameMushroom {
     }
 
     public BuildRoomDesc(): string {
-        if (!this.host.mushroomEnabled) return "";
-        let info = "";
-        info += `\n1${i18nMgr.Get("UIMush")} = ${StringHelper.GetLongString(this.host.mushroomBase)} `;
-        info += `\n${i18nMgr.Get("UIMushYaJin")}: ${StringHelper.GetLongString(this.host.mushroomBase * (this.host.mushroomMode || 1))}`;
+        if (!this.host.mushroomEnabled) return '';
+        let info = '';
+        info += `\n1${i18nMgr.Get('UIMush')} = ${StringHelper.GetLongString(this.host.mushroomBase)} `;
+        info += `\n${i18nMgr.Get('UIMushYaJin')}: ${StringHelper.GetLongString(this.host.mushroomBase * (this.host.mushroomMode || 1))}`;
         return info;
     }
 

@@ -2,7 +2,7 @@ type AnyJson = Record<string, any> | any[] | string | number | boolean | null;
 
 export type WebApiCacheContext = {
     api: string;
-    method: "GET" | "POST";
+    method: 'GET' | 'POST';
     url: string;
     body?: AnyJson;
     headers?: Array<[string, string]> | null;
@@ -31,15 +31,11 @@ export default class WebApiCacheCenter {
         }
         return {
             ...record,
-            response: this.deepClone(record.response),
+            response: this.deepClone(record.response)
         };
     }
 
-    static set(
-        key: string,
-        response: AnyJson,
-        hash?: string,
-    ): WebApiCacheRecord {
+    static set(key: string, response: AnyJson, hash?: string): WebApiCacheRecord {
         const safeResponse = this.deepClone(response);
         const nextHash = hash || this.hashFromJson(safeResponse);
         const previous = this._memory.get(key);
@@ -48,12 +44,12 @@ export default class WebApiCacheCenter {
             hash: nextHash,
             response: safeResponse,
             updatedAt: Date.now(),
-            createdAt: previous?.createdAt || Date.now(),
+            createdAt: previous?.createdAt || Date.now()
         };
         this._memory.set(key, record);
         return {
             ...record,
-            response: this.deepClone(record.response),
+            response: this.deepClone(record.response)
         };
     }
 
@@ -62,12 +58,12 @@ export default class WebApiCacheCenter {
         if (!record) return null;
         const next: WebApiCacheRecord = {
             ...record,
-            updatedAt: Date.now(),
+            updatedAt: Date.now()
         };
         this._memory.set(key, next);
         return {
             ...next,
-            response: this.deepClone(next.response),
+            response: this.deepClone(next.response)
         };
     }
 
@@ -81,13 +77,9 @@ export default class WebApiCacheCenter {
     }
 
     static buildDefaultKey(ctx: WebApiCacheContext): string {
-        return [
-            ctx.requestClassName || "WebCommon",
-            ctx.method,
-            ctx.api,
-            this.stableStringify(ctx.body || {}),
-            this.stableStringify(ctx.headers || []),
-        ].join("::");
+        return [ctx.requestClassName || 'WebCommon', ctx.method, ctx.api, this.stableStringify(ctx.body || {}), this.stableStringify(ctx.headers || [])].join(
+            '::'
+        );
     }
 
     static hashFromJson(payload: AnyJson): string {
@@ -110,13 +102,13 @@ export default class WebApiCacheCenter {
 
     private static sortValue(value: any): any {
         if (Array.isArray(value)) {
-            return value.map((item) => this.sortValue(item));
+            return value.map(item => this.sortValue(item));
         }
-        if (value && typeof value === "object") {
+        if (value && typeof value === 'object') {
             const output: Record<string, any> = {};
             Object.keys(value)
                 .sort()
-                .forEach((key) => {
+                .forEach(key => {
                     output[key] = this.sortValue(value[key]);
                 });
             return output;

@@ -1,32 +1,29 @@
 /**
  * toast管理器 队列上行显示
  */
-import Main from "../Main";
-import Toast from "../ui/toast/Toast";
-
+import Main from '../Main';
+import Toast from '../ui/toast/Toast';
 
 export interface IToastConfig {
     /** 容器起始位置 */
-    contentStartPosition?: number,
+    contentStartPosition?: number;
     /** 渐入的偏移距离*/
-    fadeInOffSetDis?: number,
+    fadeInOffSetDis?: number;
     /** 节点间隔距离*/
-    spaceDis?: number,
+    spaceDis?: number;
     /** 缓冲出现时间(解决文本自适应有异步时间差)*/
-    bufferDuration?: number,
+    bufferDuration?: number;
     /** 渐入时间*/
-    fadeInDuration?: number,
+    fadeInDuration?: number;
     /** 停留时间*/
-    stayDuration?: number,
+    stayDuration?: number;
     /** 消失时间*/
-    fadeOutDuration?: number,
+    fadeOutDuration?: number;
 }
-
 const { ccclass } = cc._decorator;
 
 @ccclass
 export default class ToastManager {
-
     config: IToastConfig = {
         //容器起始位置
         contentStartPosition: 350,
@@ -35,15 +32,14 @@ export default class ToastManager {
         //节点间隔距离
         spaceDis: 20,
         //缓冲出现时间(解决文本自适应有异步时间差)
-        bufferDuration: .1,
+        bufferDuration: 0.1,
         //渐入时间
-        fadeInDuration: .2,
+        fadeInDuration: 0.2,
         //停留时间
         stayDuration: 2,
         //消失时间
-        fadeOutDuration: .3,
-
-    }
+        fadeOutDuration: 0.3
+    };
     //存储节点的Toast组件
     sequenceToasts: Toast[] = [];
     //队列容器(承载队列节点的容器)
@@ -52,18 +48,19 @@ export default class ToastManager {
     prevToast: Toast = null;
     //toast节点池
     toast_pool: cc.Node[] = [];
-
     fadeDuration: number;
 
     static get Instance(): ToastManager {
-        return (<any>this).instance ??= new ToastManager();
+        return ((<any>this).instance ??= new ToastManager());
     }
+
     constructor() {
-        this.sequenceContent = new cc.Node("sequenceContent");
+        this.sequenceContent = new cc.Node('sequenceContent');
         this.sequenceContent.parent = Main.Toast;
         this.fadeDuration = this.config.bufferDuration + this.config.fadeInDuration + this.config.stayDuration + this.config.fadeOutDuration;
         this.resetSCPosition();
     }
+
     //重置队列容器位置
     resetSCPosition() {
         this.sequenceContent.y = this.config.contentStartPosition;
@@ -83,28 +80,41 @@ export default class ToastManager {
             toast.opacity = 0;
             //toast_script.setLabel(i18nMgr._getLabel(content));
             let config = this.config;
-            if (customConfig) config = {
-                ...this.config,
-                ...customConfig,
-            };
+            if (customConfig)
+                config = {
+                    ...this.config,
+                    ...customConfig
+                };
             toast_script.setLabel(content);
             if (this.sequenceToasts.length == 0) {
                 this.resetSCPosition();
                 toast_script.posY = 0;
                 toast.y = toast_script.posY - config.fadeInOffSetDis;
-                cc.tween(toast).to(config.bufferDuration, { opacity: 255 }).to(config.fadeInDuration, { y: toast_script.posY }).delay(config.stayDuration).to(config.fadeOutDuration, { opacity: 0 }).call(async () => {
-                    this.fadeComplete();
-                    await this.sequenceMove(config);
-                    if (cb) cb();
-                }).start();
+                cc.tween(toast)
+                    .to(config.bufferDuration, { opacity: 255 })
+                    .to(config.fadeInDuration, { y: toast_script.posY })
+                    .delay(config.stayDuration)
+                    .to(config.fadeOutDuration, { opacity: 0 })
+                    .call(async () => {
+                        this.fadeComplete();
+                        await this.sequenceMove(config);
+                        if (cb) cb();
+                    })
+                    .start();
             } else {
                 let step: number = config.spaceDis + (this.prevToast.node.height + toast.height) / 2;
                 toast_script.posY = this.prevToast.posY - step;
                 toast_script.markFadeOriTime = new Date().getTime();
                 toast.y = toast_script.posY - config.fadeInOffSetDis;
-                cc.tween(toast).to(config.bufferDuration, { opacity: 255 }).to(config.fadeInDuration, { y: toast_script.posY }).delay(config.stayDuration).to(config.fadeOutDuration, { opacity: 0 }).call(() => {
-                    if (cb) cb();
-                }).start();
+                cc.tween(toast)
+                    .to(config.bufferDuration, { opacity: 255 })
+                    .to(config.fadeInDuration, { y: toast_script.posY })
+                    .delay(config.stayDuration)
+                    .to(config.fadeOutDuration, { opacity: 0 })
+                    .call(() => {
+                        if (cb) cb();
+                    })
+                    .start();
             }
             this.prevToast = toast_script;
             this.sequenceToasts.push(toast_script);
@@ -119,31 +129,38 @@ export default class ToastManager {
             await this.moveStep(config);
             this.fadeComplete();
         }
-        cc.log("sequenceMove complete");
+        cc.log('sequenceMove complete');
     }
+
     /**
      *  每步运动
      */
     async moveStep(config: IToastConfig) {
-
         return new Promise((reslove, reject) => {
             let toast_script = this.sequenceToasts[0];
             let toast = toast_script.node;
             let target = config.contentStartPosition - toast_script.posY;
-            cc.tween(this.sequenceContent).to(.2, { y: target }).call(() => {
-                //判断时长，超过变化时长就算完成,否在需要补充停留时间
-                let disTime = (new Date().getTime() - toast_script.markFadeOriTime) / 1000;
-                let passTime = this.fadeDuration - disTime;
-                if (passTime <= 0) {
-                    reslove(0);
-                } else {
-                    cc.tween(toast).delay(passTime).call(() => {
+            cc.tween(this.sequenceContent)
+                .to(0.2, { y: target })
+                .call(() => {
+                    //判断时长，超过变化时长就算完成,否在需要补充停留时间
+                    let disTime = (new Date().getTime() - toast_script.markFadeOriTime) / 1000;
+                    let passTime = this.fadeDuration - disTime;
+                    if (passTime <= 0) {
                         reslove(0);
-                    }).start();
-                }
-            }).start();
+                    } else {
+                        cc.tween(toast)
+                            .delay(passTime)
+                            .call(() => {
+                                reslove(0);
+                            })
+                            .start();
+                    }
+                })
+                .start();
         });
     }
+
     //渐入渐出完成
     fadeComplete() {
         let toast = this.sequenceToasts.shift();
@@ -155,6 +172,7 @@ export default class ToastManager {
             this.sequenceContent.stopAllActions();
         }
     }
+
     /**
      *  节点返回池子
      */
@@ -162,12 +180,13 @@ export default class ToastManager {
         toast.parent = null;
         this.toast_pool.push(toast);
     }
+
     /**
      * 从池子取出节点
      */
     getToast() {
         if (this.toast_pool.length) return this.toast_pool.shift();
         let toast_pb: cc.Node = Main.Toast_Node;
-        return toast_pb && cc.instantiate(toast_pb) || null;
+        return (toast_pb && cc.instantiate(toast_pb)) || null;
     }
 }

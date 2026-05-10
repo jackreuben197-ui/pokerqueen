@@ -1,13 +1,13 @@
-
-import { GameConfig } from "../config/GameConfig";
-import GC from "../frame/GameControl";
-import { i18nMgr } from "../i18n/i18nMgr";
-import * as MainUtils from "../MainUtils";
-import StorageKey from "../session/StorageKey";
-import ProcedureBase from "./ProcedureBase";
+import { GameConfig } from '../config/GameConfig';
+import GC from '../frame/GameControl';
+import { i18nMgr } from '../i18n/i18nMgr';
+import * as MainUtils from '../MainUtils';
+import StorageKey from '../session/StorageKey';
+import ProcedureBase from './ProcedureBase';
 
 export default class ProcedureInit extends ProcedureBase {
-    Name: string = "ProcedureInit";
+    Name: string = 'ProcedureInit';
+
     async lateEnter(param?: any) {
         super.lateEnter(param);
         this.setCCC();
@@ -16,7 +16,6 @@ export default class ProcedureInit extends ProcedureBase {
         this.setNetwork();
         i18nMgr.initLanguage();
         await i18nMgr.loadAndRefreshConfig();
-
         // 已加载过牌桌资源则隐藏首次加载提示
         if (GC.localStore.getItem(StorageKey.TextureResourceLoaded) === 1) {
             const firstloadLabel = cc.find('Canvas/Block - 遮挡/UIPreloading/progress_node/firstload_label');
@@ -24,11 +23,13 @@ export default class ProcedureInit extends ProcedureBase {
         }
         MainUtils.loadWebSDK();
         // 引擎设置完成，等待 H5 层发送消息驱动后续流程
-        console.log('[Procedure]',"ProcedureInit 完成，等待 H5 层指令...");
+        console.log('[Procedure]', 'ProcedureInit 完成，等待 H5 层指令...');
     }
+
     Leave() {
         super.Leave();
     }
+
     /**
      * 设置适配
      */
@@ -45,37 +46,33 @@ export default class ProcedureInit extends ProcedureBase {
         const w = window.innerWidth;
         const h = window.innerHeight;
         const w_h_r = w / h;
-
-        console.log('[Procedure]', "窗口实际分辨率", w, h);
-
+        console.log('[Procedure]', '窗口实际分辨率', w, h);
         // 直接写入引擎的 _frameSize，避免被 Canvas.fitCanvasToWindow 用旧容器值覆盖
         const view = cc.view as any;
         view._frameSize.width = w;
         view._frameSize.height = h;
-
         const canvas = cc.Canvas.instance;
         const designW = canvas.designResolution.width;
         const designH = canvas.designResolution.height;
-
         if (w_h_r > 0.63) {
             cc.view.setDesignResolutionSize(designW, designH, cc.ResolutionPolicy.FIXED_HEIGHT);
         } else {
             cc.view.setDesignResolutionSize(designW, designH, cc.ResolutionPolicy.FIXED_WIDTH);
         }
     }
+
     /**
      * 引擎设置
      */
     private setCCC() {
-        console.log('[Procedure]','set frame rate')
+        console.log('[Procedure]', 'set frame rate');
         cc.game.setFrameRate(GameConfig.FRAME_RATE); // FPS 设置
         cc.macro.ENABLE_MULTI_TOUCH = GameConfig.ENABLE_MULTI_TOUCH; // 禁止多点触摸
     }
 
-
-     //初始化网络配置（static 供其他 Procedure 在 H5 桥接模式下兜底调用）
+    //初始化网络配置（static 供其他 Procedure 在 H5 桥接模式下兜底调用）
     private setNetwork() {
-        console.log('[Procedure]','set network')
+        console.log('[Procedure]', 'set network');
         switch (GameConfig.BUILD_TYPE) {
             case 0:
                 GameConfig.Network = {
@@ -100,7 +97,6 @@ export default class ProcedureInit extends ProcedureBase {
                     WebHost: `https://${GameConfig.Web_Host_Test1}`,
                     WSS: `wss://${GameConfig.Web_Host_Test1}/api/channel/`
                 };
-
                 break;
             case 4:
                 GameConfig.Network = {

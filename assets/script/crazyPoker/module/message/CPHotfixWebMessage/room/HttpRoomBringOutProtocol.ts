@@ -1,29 +1,26 @@
-import { WebResponseDataBase } from "../other/WebResponseDataBase";
+import { WebResponseDataBase } from '../other/WebResponseDataBase';
 
 /**
  * 查询在该房间带出信息
  */
 export namespace HttpRoomBringOutProtocol {
-    export const API = "/api/user/room/{id}";
-    export const CowboyAPI = "/api/user/cowboy/{id}";
-
+    export const API = '/api/user/room/{id}';
+    export const CowboyAPI = '/api/user/cowboy/{id}';
     /**
      * 请求数据
      */
     export class RequestData {
         /** GPS 纬度 */
-        public gps_latitude: string = "";
+        public gps_latitude: string = '';
         /** GPS 经度 */
-        public gps_longitude: string = "";
+        public gps_longitude: string = '';
     }
-
     /**
      * 响应数据
      */
     export class ResponseData extends WebResponseDataBase {
         public data: Data = null;
     }
-
     /**
      * 带出信息
      */
@@ -35,7 +32,6 @@ export namespace HttpRoomBringOutProtocol {
         /** 俱乐部 ID */
         public club_id: number = 0;
     }
-
     /**
      * 钱包数据
      */
@@ -47,7 +43,7 @@ export namespace HttpRoomBringOutProtocol {
         /** 钱包类型：1 联盟币 (gold)，2 USDT */
         public gold_type: number = 0;
         /** 币种三字码 */
-        public gold_currency: string = "";
+        public gold_currency: string = '';
         /** 钱包 ID */
         public w_u_id: number = 0;
         /** 钱包金额 */
@@ -55,21 +51,20 @@ export namespace HttpRoomBringOutProtocol {
         /** 被锁定金额 */
         public gold_lock: number = 0;
         /** 俱乐部名称 */
-        public club_name: string = "";
+        public club_name: string = '';
         /** 俱乐部随机 ID */
         public club_random_id: number = 0;
         /** 俱乐部头像 */
-        public club_logo: string = "";
+        public club_logo: string = '';
         /** 充值预付状态：1 开启，2 关闭 */
         public deposit_advance: number = 0;
         /** 联盟随机 ID */
         public tribe_random_id: number = 0;
         public user_status: number = 0;
-        public user_type:number = 0;
+        public user_type: number = 0;
         public wallet_status: number = 0;
-        public wallet_tribe_status:number = 0;
+        public wallet_tribe_status: number = 0;
     }
-
     /**
      * 响应数据体
      */
@@ -89,7 +84,6 @@ export namespace HttpRoomBringOutProtocol {
         /** 授信额度 */
         public user_club_gold_credit: number = 0;
     }
-
     /**
      * 免费限制
      */

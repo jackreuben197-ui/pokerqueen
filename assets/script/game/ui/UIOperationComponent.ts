@@ -1,34 +1,37 @@
+import SliderPlus from '../../common/SliderPlus';
+import { UIConfirmDialogParam } from '../../crazyPoker/gameplay/common/view/common/UIConfirmDialog';
+import { UIDefine } from '../../define/UIDefine';
+import GC from '../../frame/GameControl';
+import { StringHelper } from '../../helper/StringHelper';
+import { CPErrorCode } from '../../i18n/CPErrorCode';
+import { i18nMgr } from '../../i18n/i18nMgr';
+import { ProtocolCode } from '../../net/websocket/ProtocolCode';
+import { ActionLimit, ActionShortcutLimit, Def } from '../../protobuf/holdem/define_pb';
+import { ServerMessageAddTime } from '../../protobuf/holdem/req_th_add_time_pb';
+import UIBase from '../../ui/UIBase';
+import UIComponent from '../../ui/UIComponent';
+import { GameCache } from '../GameCache';
+import UITexasSettingComponent from '../UITexasSettingComponent';
+import GameUtil from '../util/GameUtil';
 
-import SliderPlus from "../../common/SliderPlus";
-import { UIDefine } from "../../define/UIDefine";
-import GC from "../../frame/GameControl";
-import PublicHelper from "../../helper/PublicHelper";
-import { StringHelper } from "../../helper/StringHelper";
-import { CPErrorCode } from "../../i18n/CPErrorCode";
-import { i18nMgr } from "../../i18n/i18nMgr";
-import { ProtocolCode } from "../../net/websocket/ProtocolCode";
-import { ActionLimit, ActionShortcutLimit, Def } from "../../protobuf/holdem/define_pb";
-import { ServerMessageAddTime } from "../../protobuf/holdem/req_th_add_time_pb";
-import GGSlider from "../../ui/component/GGSlider";
-import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
-import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
-import UIBase from "../../ui/UIBase";
-import UIComponent from "../../ui/UIComponent";
-import { GameCache } from "../GameCache";
-import UITexasSettingComponent from "../UITexasSettingComponent";
-import GameUtil from "../util/GameUtil";
 export type OperationData = {
-    actionsList?: ActionLimit.AsObject[],
-    shortcutsList?: ActionShortcutLimit.AsObject[],
-}
-class ActionDataInfo {
-    // public ActionLimit actionLimit;//只用于raise 或 bet
-    public constructor(public CallAmount: number = 0, public StraddleAmount: number = 0, public AllInAmount: number = 0, public actionLimit: ActionLimit.AsObject = null) {
-    }
-}
+    actionsList?: ActionLimit.AsObject[];
+    shortcutsList?: ActionShortcutLimit.AsObject[];
+};
 
+class ActionDataInfo {
+
+    // public ActionLimit actionLimit;//只用于raise 或 bet
+    public constructor(
+        public CallAmount: number = 0,
+        public StraddleAmount: number = 0,
+        public AllInAmount: number = 0,
+        public actionLimit: ActionLimit.AsObject = null
+    ) {}
+}
 const LN = '[UIOperationComponent]';
 const { ccclass } = cc._decorator;
+
 @ccclass
 export default class UIOperationComponent extends UIBase {
     /**
@@ -78,7 +81,7 @@ export default class UIOperationComponent extends UIBase {
     private isCountDown: boolean = false;
     private hadAlertSound: boolean = false;
     private isShowingDialog: boolean = false;
-    //滑动条比例值 
+    //滑动条比例值
     private calibrationWeight: number = 100;
     //private slider_step: number = 0;
     private chipScale: number = 100;
@@ -99,10 +102,10 @@ export default class UIOperationComponent extends UIBase {
     private UI: cc.Node = null;
     //滑动条最底部位置
     //sliderMin: number = 0;
-    //滑动条allin状态 
+    //滑动条allin状态
     slider_allin: boolean = false;
     slider_value: number = 0;
-    ActionMap: Map<number, ActionLimit.AsObject> = new Map;
+    ActionMap: Map<number, ActionLimit.AsObject> = new Map();
     Check_CountDown: cc.Node = null;
     Fold_CountDown: cc.Node = null;
     label_slider_max: cc.Label = null;
@@ -110,48 +113,50 @@ export default class UIOperationComponent extends UIBase {
     slider_max_value: number = 0;
     //倍数|比例
     slider_ab: number = 0;
+
     protected lateLoad(): void {
         super.lateLoad();
-        this.imageFreeCallMask = this.getChildNodeOrComponent("Image_FreeCallMask");
-        this.buttonAllin = this.getChildNodeOrComponent("Button_Allin");
-        this.Button_Straddle = this.getChildNodeOrComponent("Button_Straddle");
-        this.buttonCall = this.getChildNodeOrComponent("Button_Call");
-        this.buttonCall0 = this.getChildNodeOrComponent("Button_Call0");
-        this.buttonCall1 = this.getChildNodeOrComponent("Button_Call1");
-        this.buttonCall2 = this.getChildNodeOrComponent("Button_Call2");
-        this.buttonCallLeft = this.getChildNodeOrComponent("Button_Call_left");
-        this.buttonCallRight = this.getChildNodeOrComponent("Button_Call_right");
-        this.buttonCheck = this.getChildNodeOrComponent("Button_Check");
-        this.buttonFold = this.getChildNodeOrComponent("Button_Fold");
-        this.buttonFreeCall = this.getChildNodeOrComponent("Button_FreeCall");
-        this.buttonFreeCallConfirm = this.getChildNodeOrComponent("Button_FreeCall_Confirm");
-        this.Check_CountDown = this.getChildNodeOrComponent("Check_CountDown");
-        this.Fold_CountDown = this.getChildNodeOrComponent("Fold_CountDown");
-        this.imageCheckCountDown = this.getChildNodeOrComponent("Image_CheckCountDown", cc.Sprite);
-        this.imageFoldCountDown = this.getChildNodeOrComponent("Image_FoldCountDown", cc.Sprite);
+        this.imageFreeCallMask = this.getChildNodeOrComponent('Image_FreeCallMask');
+        this.buttonAllin = this.getChildNodeOrComponent('Button_Allin');
+        this.Button_Straddle = this.getChildNodeOrComponent('Button_Straddle');
+        this.buttonCall = this.getChildNodeOrComponent('Button_Call');
+        this.buttonCall0 = this.getChildNodeOrComponent('Button_Call0');
+        this.buttonCall1 = this.getChildNodeOrComponent('Button_Call1');
+        this.buttonCall2 = this.getChildNodeOrComponent('Button_Call2');
+        this.buttonCallLeft = this.getChildNodeOrComponent('Button_Call_left');
+        this.buttonCallRight = this.getChildNodeOrComponent('Button_Call_right');
+        this.buttonCheck = this.getChildNodeOrComponent('Button_Check');
+        this.buttonFold = this.getChildNodeOrComponent('Button_Fold');
+        this.buttonFreeCall = this.getChildNodeOrComponent('Button_FreeCall');
+        this.buttonFreeCallConfirm = this.getChildNodeOrComponent('Button_FreeCall_Confirm');
+        this.Check_CountDown = this.getChildNodeOrComponent('Check_CountDown');
+        this.Fold_CountDown = this.getChildNodeOrComponent('Fold_CountDown');
+        this.imageCheckCountDown = this.getChildNodeOrComponent('Image_CheckCountDown', cc.Sprite);
+        this.imageFoldCountDown = this.getChildNodeOrComponent('Image_FoldCountDown', cc.Sprite);
         //this.sliderFreeCall = this.getChildNodeOrComponent("Slider_FreeCall", GGSlider);
-        this.slider = this.getChildNodeOrComponent("slider", SliderPlus);
-        this.textFreeCall = this.getChildNodeOrComponent("Text_FreeCall", cc.Label);
-        this.textFreeCallMax = this.getChildNodeOrComponent("Text_FreeCall_Max", cc.Label);
-        this.Text_Straddle = this.Button_Straddle.getChildByName("Text").getComponent(cc.Label);
-        this.textCallTitle0 = this.buttonCall0.getChildByName("Text_CallTitle").getComponent(cc.Label);
-        this.textCallTitle1 = this.buttonCall1.getChildByName("Text_CallTitle").getComponent(cc.Label);
-        this.textCallTitle2 = this.buttonCall2.getChildByName("Text_CallTitle").getComponent(cc.Label);
-        this.textCallPot0 = this.buttonCall0.getChildByName("Text_Pot").getComponent(cc.Label);
-        this.textCallPot1 = this.buttonCall1.getChildByName("Text_Pot").getComponent(cc.Label);
-        this.textCallPot2 = this.buttonCall2.getChildByName("Text_Pot").getComponent(cc.Label);
-        this.textCallPotLeft = this.buttonCallLeft.getChildByName("Text_Pot").getComponent(cc.Label);
-        this.textCallPotRight = this.buttonCallRight.getChildByName("Text_Pot").getComponent(cc.Label);
-        this.textCallPotValue0 = this.buttonCall0.getChildByName("Text_CallPotValue").getComponent(cc.Label);
-        this.textCallPotValue1 = this.buttonCall1.getChildByName("Text_CallPotValue").getComponent(cc.Label);
-        this.textCallPotValue2 = this.buttonCall2.getChildByName("Text_CallPotValue").getComponent(cc.Label);
-        this.textCallPotValueLeft = this.buttonCallLeft.getChildByName("Text_CallPotValue").getComponent(cc.Label);
-        this.textCallPotValueRight = this.buttonCallRight.getChildByName("Text_CallPotValue").getComponent(cc.Label);
-        this.textCall = this.buttonCall.getChildByName("Text_Call").getComponent(cc.Label);
-        this.slider_bar = this.slider.node.getChildByName("bar");
-        this.UI = this.getChildNodeOrComponent("UI");
-        this.label_slider_max = this.getChildNodeOrComponent("label_slider_max", cc.Label);
+        this.slider = this.getChildNodeOrComponent('slider', SliderPlus);
+        this.textFreeCall = this.getChildNodeOrComponent('Text_FreeCall', cc.Label);
+        this.textFreeCallMax = this.getChildNodeOrComponent('Text_FreeCall_Max', cc.Label);
+        this.Text_Straddle = this.Button_Straddle.getChildByName('Text').getComponent(cc.Label);
+        this.textCallTitle0 = this.buttonCall0.getChildByName('Text_CallTitle').getComponent(cc.Label);
+        this.textCallTitle1 = this.buttonCall1.getChildByName('Text_CallTitle').getComponent(cc.Label);
+        this.textCallTitle2 = this.buttonCall2.getChildByName('Text_CallTitle').getComponent(cc.Label);
+        this.textCallPot0 = this.buttonCall0.getChildByName('Text_Pot').getComponent(cc.Label);
+        this.textCallPot1 = this.buttonCall1.getChildByName('Text_Pot').getComponent(cc.Label);
+        this.textCallPot2 = this.buttonCall2.getChildByName('Text_Pot').getComponent(cc.Label);
+        this.textCallPotLeft = this.buttonCallLeft.getChildByName('Text_Pot').getComponent(cc.Label);
+        this.textCallPotRight = this.buttonCallRight.getChildByName('Text_Pot').getComponent(cc.Label);
+        this.textCallPotValue0 = this.buttonCall0.getChildByName('Text_CallPotValue').getComponent(cc.Label);
+        this.textCallPotValue1 = this.buttonCall1.getChildByName('Text_CallPotValue').getComponent(cc.Label);
+        this.textCallPotValue2 = this.buttonCall2.getChildByName('Text_CallPotValue').getComponent(cc.Label);
+        this.textCallPotValueLeft = this.buttonCallLeft.getChildByName('Text_CallPotValue').getComponent(cc.Label);
+        this.textCallPotValueRight = this.buttonCallRight.getChildByName('Text_CallPotValue').getComponent(cc.Label);
+        this.textCall = this.buttonCall.getChildByName('Text_Call').getComponent(cc.Label);
+        this.slider_bar = this.slider.node.getChildByName('bar');
+        this.UI = this.getChildNodeOrComponent('UI');
+        this.label_slider_max = this.getChildNodeOrComponent('label_slider_max', cc.Label);
     }
+
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.buttonCall, this.onClickCall);
         this.setButtonClick(this.buttonCheck, this.onClickCheck);
@@ -167,6 +172,7 @@ export default class UIOperationComponent extends UIBase {
         this.setButtonClick(this.imageFreeCallMask, this.onClickFreeCallMask);
         this.setButtonClick(this.buttonFold, this.onClickFold);
     }
+
     onShow(obj?: OperationData): void {
         // obj = {
         //     "actionsList": [
@@ -203,7 +209,7 @@ export default class UIOperationComponent extends UIBase {
         this.operationData = obj;
         if (this.isShowingDialog) {
             //UIComponent.Instance.HideUI(UIType.UIDialog);
-            UIComponent.close(UIDefine.UISuperDialog);
+            UIComponent.close(UIDefine.UIConfirmDialog);
         }
         this.isShowingDialog = false;
         this.actionDataInfo = new ActionDataInfo();
@@ -213,7 +219,7 @@ export default class UIOperationComponent extends UIBase {
         if (this.optTotalTime < GameCache.Instance.CurGame.opTime) {
             this.optTotalTime = GameCache.Instance.CurGame.opTime;
         }
-        console.log(LN, "当前时间:> ", this.optCurTime, this.optTotalTime);
+        console.log(LN, '当前时间:> ', this.optCurTime, this.optTotalTime);
         this.isCountDown = false;
         this.slider_allin = false;
         //this.sliderMin = 0;
@@ -298,7 +304,7 @@ export default class UIOperationComponent extends UIBase {
         if (this.buttonCheck.activeInHierarchy) {
             //如果可以让牌，需要弹窗询问弃牌还是让牌
             this.isShowingDialog = true;
-            UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+            UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
                 this: this,
                 // title = $"确定弃牌？",
                 title: CPErrorCode.LanguageDescription(20037),
@@ -316,7 +322,7 @@ export default class UIOperationComponent extends UIBase {
                     GameCache.Instance.CurGame?.OptAction(Def.Action.CHECK, 0);
                     this.isCountDown = false;
                 }
-            })
+            });
             return;
         }
         GameCache.Instance.CurGame.OptAction(Def.Action.FOLD, 0);
@@ -332,29 +338,25 @@ export default class UIOperationComponent extends UIBase {
         if (this.callValue >= GameCache.Instance.CurGame.mainPlayer.chips) {
             if (this.actionDataInfo.AllInAmount == 0) {
                 if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)) {
-                    UIComponent.Instance.Toast(i18nMgr.Get("UIOperationComponentTips001"));
-                }
-                else {
-                    UIComponent.Instance.Toast(i18nMgr.Get("UIOperationComponentTips002"));
+                    UIComponent.Instance.Toast(i18nMgr.Get('UIOperationComponentTips001'));
+                } else {
+                    UIComponent.Instance.Toast(i18nMgr.Get('UIOperationComponentTips002'));
                 }
                 return;
             }
             GameCache.Instance.CurGame.OptAction(Def.Action.ALLIN, this.actionDataInfo.AllInAmount);
             return;
-        }
-        else if (this.callValue >= this.actionDataInfo.actionLimit.max) {
+        } else if (this.callValue >= this.actionDataInfo.actionLimit.max) {
             if (this.ActionMap.get(Def.Action.BET) != null) {
                 GameCache.Instance.CurGame.OptAction(Def.Action.BET, this.actionDataInfo.actionLimit.max);
-            }
-            else {
+            } else {
                 GameCache.Instance.CurGame.OptAction(Def.Action.RAISE, this.actionDataInfo.actionLimit.max);
             }
             return;
         }
         if (this.ActionMap.get(Def.Action.BET) != null) {
             GameCache.Instance.CurGame.OptAction(Def.Action.BET, this.callValue);
-        }
-        else {
+        } else {
             GameCache.Instance.CurGame.OptAction(Def.Action.RAISE, this.callValue);
         }
         this.isCountDown = false;
@@ -373,14 +375,24 @@ export default class UIOperationComponent extends UIBase {
         let num1Str: string = UITexasSettingComponent.GetCurQuickActionNum(2);
         let num2Str: string = UITexasSettingComponent.GetCurQuickActionNum(3);
         let numRightStr: string = UITexasSettingComponent.GetCurQuickActionNum(4);
-        this.callValueLeft = numLeftStr == "Allin" ? totalChips : (numLeftStr == "0" ? 0 : this.getPotMutiplierByQuickAction(UITexasSettingComponent.GetCurQuickActionNumValue(0)));
-        this.callValue0 = num0Str == "Allin" ? totalChips : this.getPotMutiplierByQuickAction(UITexasSettingComponent.GetCurQuickActionNumValue(1));
-        this.callValue1 = num1Str == "Allin" ? totalChips : this.getPotMutiplierByQuickAction(UITexasSettingComponent.GetCurQuickActionNumValue(2));
-        this.callValue2 = num2Str == "Allin" ? totalChips : this.getPotMutiplierByQuickAction(UITexasSettingComponent.GetCurQuickActionNumValue(3));
-        this.callValueRight = numRightStr == "Allin" ? totalChips : (numRightStr == "0" ? 0 : this.getPotMutiplierByQuickAction(UITexasSettingComponent.GetCurQuickActionNumValue(4)));
-        this.textCallTitle0.string = "POT";
-        this.textCallTitle1.string = "POT";
-        this.textCallTitle2.string = "POT";
+        this.callValueLeft =
+            numLeftStr == 'Allin'
+                ? totalChips
+                : numLeftStr == '0'
+                  ? 0
+                  : this.getPotMutiplierByQuickAction(UITexasSettingComponent.GetCurQuickActionNumValue(0));
+        this.callValue0 = num0Str == 'Allin' ? totalChips : this.getPotMutiplierByQuickAction(UITexasSettingComponent.GetCurQuickActionNumValue(1));
+        this.callValue1 = num1Str == 'Allin' ? totalChips : this.getPotMutiplierByQuickAction(UITexasSettingComponent.GetCurQuickActionNumValue(2));
+        this.callValue2 = num2Str == 'Allin' ? totalChips : this.getPotMutiplierByQuickAction(UITexasSettingComponent.GetCurQuickActionNumValue(3));
+        this.callValueRight =
+            numRightStr == 'Allin'
+                ? totalChips
+                : numRightStr == '0'
+                  ? 0
+                  : this.getPotMutiplierByQuickAction(UITexasSettingComponent.GetCurQuickActionNumValue(4));
+        this.textCallTitle0.string = 'POT';
+        this.textCallTitle1.string = 'POT';
+        this.textCallTitle2.string = 'POT';
         this.textCallPotLeft.string = UITexasSettingComponent.GetCurQuickActionNum(0);
         this.textCallPot0.string = UITexasSettingComponent.GetCurQuickActionNum(1);
         this.textCallPot1.string = UITexasSettingComponent.GetCurQuickActionNum(2);
@@ -404,11 +416,11 @@ export default class UIOperationComponent extends UIBase {
         let c = GameUtil.TransBetValue(this.callValue2);
         let d = GameUtil.TransBetValue(this.callValueLeft);
         let e = GameUtil.TransBetValue(this.callValueRight);
-        this.textCallPotValue0.string = this.callValue0 <= 0 ? "" : (this.callValue0 < totalChips ? a : "All in");
-        this.textCallPotValue1.string = this.callValue1 <= 0 ? "" : (this.callValue1 < totalChips ? b : "All in");
-        this.textCallPotValue2.string = this.callValue2 <= 0 ? "" : (this.callValue2 < totalChips ? c : "All in");
-        this.textCallPotValueLeft.string = this.callValueLeft <= 0 ? "" : (this.callValueLeft < totalChips ? d : "All in");
-        this.textCallPotValueRight.string = this.callValueRight <= 0 ? "" : (this.callValueRight < totalChips ? e : "All in");
+        this.textCallPotValue0.string = this.callValue0 <= 0 ? '' : this.callValue0 < totalChips ? a : 'All in';
+        this.textCallPotValue1.string = this.callValue1 <= 0 ? '' : this.callValue1 < totalChips ? b : 'All in';
+        this.textCallPotValue2.string = this.callValue2 <= 0 ? '' : this.callValue2 < totalChips ? c : 'All in';
+        this.textCallPotValueLeft.string = this.callValueLeft <= 0 ? '' : this.callValueLeft < totalChips ? d : 'All in';
+        this.textCallPotValueRight.string = this.callValueRight <= 0 ? '' : this.callValueRight < totalChips ? e : 'All in';
     }
 
     /// <summary>
@@ -418,8 +430,8 @@ export default class UIOperationComponent extends UIBase {
         this.buttonCall0.active = true;
         this.buttonCall1.active = true;
         this.buttonCall2.active = true;
-        this.buttonCallLeft.active = UITexasSettingComponent.GetCurQuickActionNum(0) != "0";
-        this.buttonCallRight.active = UITexasSettingComponent.GetCurQuickActionNum(4) != "0";
+        this.buttonCallLeft.active = UITexasSettingComponent.GetCurQuickActionNum(0) != '0';
+        this.buttonCallRight.active = UITexasSettingComponent.GetCurQuickActionNum(4) != '0';
         this.buttonFreeCall.active = true;
     }
 
@@ -432,48 +444,48 @@ export default class UIOperationComponent extends UIBase {
         let valueTmp: number = this.actionDataInfo.actionLimit.min;
         if (this.actionDataInfo.actionLimit.action == Def.Action.ALLIN) {
             valueTmp = GameCache.Instance.CurGame.mainPlayer.chips;
-        }
-        else {
+        } else {
             if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)) {
-                if (this.potMutiplier(times) >= GameCache.Instance.CurGame.mainPlayer.chips && this.potMutiplier(times) <= this.actionDataInfo.actionLimit.max) {
+                if (
+                    this.potMutiplier(times) >= GameCache.Instance.CurGame.mainPlayer.chips &&
+                    this.potMutiplier(times) <= this.actionDataInfo.actionLimit.max
+                ) {
                     valueTmp = GameCache.Instance.CurGame.mainPlayer.chips;
-                }
-                else {
+                } else {
                     if (this.potMutiplier(times) >= this.actionDataInfo.actionLimit.max) {
                         valueTmp = this.actionDataInfo.actionLimit.max;
-                    }
-                    else if (this.potMutiplier(times) <= this.actionDataInfo.actionLimit.min) {
+                    } else if (this.potMutiplier(times) <= this.actionDataInfo.actionLimit.min) {
                         valueTmp = this.actionDataInfo.actionLimit.min;
-                    }
-                    else {
+                    } else {
                         valueTmp = this.potMutiplier(times);
                     }
                 }
-            }
-            else {
+            } else {
                 if (this.potMutiplier(times) >= GameCache.Instance.CurGame.mainPlayer.chips) {
                     valueTmp = GameCache.Instance.CurGame.mainPlayer.chips;
-                }
-                else {
+                } else {
                     if (this.potMutiplier(times) > this.actionDataInfo.actionLimit.min) {
                         valueTmp = this.potMutiplier(times);
-                    }
-                    else {
+                    } else {
                         valueTmp = this.actionDataInfo.actionLimit.min;
                     }
                 }
-                valueTmp = this.potMutiplier(times) >= GameCache.Instance.CurGame.mainPlayer.chips ? GameCache.Instance.CurGame.mainPlayer.chips : (this.potMutiplier(times) >= this.actionDataInfo.actionLimit.min ? this.potMutiplier(times) : this.actionDataInfo.actionLimit.min);
+                valueTmp =
+                    this.potMutiplier(times) >= GameCache.Instance.CurGame.mainPlayer.chips
+                        ? GameCache.Instance.CurGame.mainPlayer.chips
+                        : this.potMutiplier(times) >= this.actionDataInfo.actionLimit.min
+                          ? this.potMutiplier(times)
+                          : this.actionDataInfo.actionLimit.min;
             }
         }
         if (valueTmp < GameCache.Instance.CurGame.mainPlayer.chips) {
             if (Math.ceil(valueTmp / this.calibrationWeight) * this.calibrationWeight >= this.actionDataInfo.actionLimit.max) {
                 valueTmp = Math.floor(this.actionDataInfo.actionLimit.max / this.calibrationWeight) * this.calibrationWeight;
-            }
-            else {
+            } else {
                 valueTmp = Math.ceil(valueTmp / this.calibrationWeight) * this.calibrationWeight;
             }
         }
-        console.log(LN, "times:" + times + "  valueTmp:" + valueTmp + "  potMutiplier(times):" + this.potMutiplier(times));
+        console.log(LN, 'times:' + times + '  valueTmp:' + valueTmp + '  potMutiplier(times):' + this.potMutiplier(times));
         return valueTmp;
     }
 
@@ -539,7 +551,7 @@ export default class UIOperationComponent extends UIBase {
         }
         if (this.optCurTime < 6.1 && this.optCurTime > 6 && !this.hadAlertSound) {
             //剩余5秒音效
-            GC.sound.Play("sfx_action_alert");
+            GC.sound.Play('sfx_action_alert');
             this.hadAlertSound = true;
             //this.DelayPlayBarrage();
         }
@@ -547,7 +559,7 @@ export default class UIOperationComponent extends UIBase {
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        this.listen(ProtocolCode.Protocol_Holdem_AddTime, this.HANDLER_REQ_ADD_TIME);  // 操作加时
+        this.listen(ProtocolCode.Protocol_Holdem_AddTime, this.HANDLER_REQ_ADD_TIME); // 操作加时
     }
 
     protected HANDLER_REQ_ADD_TIME(rec: ServerMessageAddTime.AsObject): void {
@@ -601,12 +613,12 @@ export default class UIOperationComponent extends UIBase {
     private SetCalibrationWeight(): void {
         //this.calibrationWeight = GameCache.Instance.CurGame.smallBlind < 100 ? 10 : 100;
         this.slider_ab = GameCache.Instance.CurGame.smallBlind < 100 ? 10 : 100;
-        console.log(LN, "slider_ab", this.slider_ab);
+        console.log(LN, 'slider_ab', this.slider_ab);
     }
 
-    //点击滑动条下确定按钮 
+    //点击滑动条下确定按钮
     onClickFreeCallConfirm() {
-        console.log(LN, "value :: ", this.slider.value);
+        console.log(LN, 'value :: ', this.slider.value);
         if (this.slider_allin) {
             this.callValue = this.actionDataInfo.AllInAmount;
         } else {
@@ -628,32 +640,38 @@ export default class UIOperationComponent extends UIBase {
         actions.forEach(action => {
             //this.ActionMap.set(action.action, action);
             switch (action.action) {
-                case Def.Action.STRADDLE://4
+                case Def.Action.STRADDLE: //4
                     this.showStraddle(action);
                     break;
-                case Def.Action.BET://5
+                case Def.Action.BET: //5
                     this.showBet(action);
                     break;
-                case Def.Action.CALL://6
+                case Def.Action.CALL: //6
                     this.showCall(action);
                     break;
-                case Def.Action.FOLD://7
+                case Def.Action.FOLD: //7
                     this.showFold(action);
                     break;
-                case Def.Action.CHECK://8
+                case Def.Action.CHECK: //8
                     this.showCheck(action);
                     break;
                 case Def.Action.RAISE: // 9 筹码条上下拖动
                     this.showBet(action);
                     break;
-                case Def.Action.ALLIN://10
-                    if (this.ActionMap.get(Def.Action.BET) == null && this.ActionMap.get(Def.Action.RAISE) == null && this.ActionMap.get(Def.Action.CALL) != null) {
+                case Def.Action.ALLIN: //10
+                    if (
+                        this.ActionMap.get(Def.Action.BET) == null &&
+                        this.ActionMap.get(Def.Action.RAISE) == null &&
+                        this.ActionMap.get(Def.Action.CALL) != null
+                    ) {
                         this.showAllInRaise(action);
-                    }
-                    else if (this.ActionMap.get(Def.Action.BET) == null && this.ActionMap.get(Def.Action.RAISE) == null && this.ActionMap.get(Def.Action.CHECK) != null) {
+                    } else if (
+                        this.ActionMap.get(Def.Action.BET) == null &&
+                        this.ActionMap.get(Def.Action.RAISE) == null &&
+                        this.ActionMap.get(Def.Action.CHECK) != null
+                    ) {
                         this.showAllInRaise(action);
-                    }
-                    else {
+                    } else {
                         this.showAllin(action);
                     }
                     break;
@@ -661,20 +679,20 @@ export default class UIOperationComponent extends UIBase {
                     console.warn(LN, `cannot recognize action: ${action.action}`);
                     break;
             }
-        })
+        });
     }
 
     //4 观
     private showStraddle(action: ActionLimit.AsObject): void {
-        console.log(LN, "+ showStraddle");
+        console.log(LN, '+ showStraddle');
         this.Button_Straddle.active = true;
         this.actionDataInfo.StraddleAmount = action.min;
         this.Text_Straddle.string = StringHelper.GetLongString(action.min);
     }
 
-    //5 , 9 
+    //5 , 9
     private showBet(action: ActionLimit.AsObject): void {
-        console.log(LN, "+ showBet");
+        console.log(LN, '+ showBet');
         this.buttonFreeCall.active = true;
         this.actionDataInfo.actionLimit = action;
         //相同
@@ -687,7 +705,7 @@ export default class UIOperationComponent extends UIBase {
                 step: 0,
                 change: this.sliderChange,
                 own: this,
-                scale: 100,
+                scale: 100
             });
             this.slider_allin = true;
         } else {
@@ -704,7 +722,7 @@ export default class UIOperationComponent extends UIBase {
                     step: 0,
                     change: this.sliderChange,
                     own: this,
-                    scale: 100,
+                    scale: 100
                 });
                 this.slider_allin = true;
             } else {
@@ -714,28 +732,28 @@ export default class UIOperationComponent extends UIBase {
                     step: this.slider_ab,
                     change: this.sliderChange,
                     own: this,
-                    scale: 100,
+                    scale: 100
                 });
                 this.slider_allin = false;
             }
         }
         this.refreshSliderMaxLabel();
         //this.sliderChange(min_value);
-        console.log(LN, " >> slider = > ", this.slider_min_value, this.slider_max_value, this.slider_ab);
+        console.log(LN, ' >> slider = > ', this.slider_min_value, this.slider_max_value, this.slider_ab);
         this.setTopCallButtons();
     }
 
-    // 6 
+    // 6
     private showCall(action: ActionLimit.AsObject): void {
-        console.log(LN, "+ showCall");
+        console.log(LN, '+ showCall');
         this.buttonCall.active = true;
         this.actionDataInfo.CallAmount = action.min;
         this.textCall.string = StringHelper.GetLongString(action.min);
     }
 
-    // 7 
+    // 7
     private showFold(action: ActionLimit.AsObject): void {
-        console.log(LN, "+ showFold");
+        console.log(LN, '+ showFold');
         this.buttonFold.active = true;
         if (this.ActionMap.get(Def.Action.CHECK) != null) {
             return;
@@ -747,7 +765,7 @@ export default class UIOperationComponent extends UIBase {
 
     // 8
     private showCheck(action: ActionLimit.AsObject): void {
-        console.log(LN, "+ showCheck");
+        console.log(LN, '+ showCheck');
         this.buttonCheck.active = true;
         //this.imageCheckCountDown.node.active = true;
         this._isCheckCountDown = true;
@@ -757,7 +775,7 @@ export default class UIOperationComponent extends UIBase {
 
     //10-1
     private showAllInRaise(action: ActionLimit.AsObject): void {
-        console.log(LN, "+ showRaise");
+        console.log(LN, '+ showRaise');
         this.buttonFreeCall.active = true;
         this.actionDataInfo.AllInAmount = action.min;
         this.actionDataInfo.actionLimit = action;
@@ -777,7 +795,7 @@ export default class UIOperationComponent extends UIBase {
 
     //10-2
     private showAllin(actionLimit: ActionLimit.AsObject) {
-        console.log(LN, "+ showAllin");
+        console.log(LN, '+ showAllin');
         this.buttonAllin.active = true;
         this.actionDataInfo.AllInAmount = actionLimit.min;
     }
@@ -797,8 +815,7 @@ export default class UIOperationComponent extends UIBase {
             this.buttonCallRight.active = false;
             this.slider.reset();
             this.refreshSliderValueStr();
-        }
-        else {
+        } else {
             this.imageFreeCallMask.active = false;
             //this.sliderFreeCall.node.active = false;
             this.slider.node.active = false;

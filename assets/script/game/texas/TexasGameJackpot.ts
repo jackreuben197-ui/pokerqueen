@@ -1,10 +1,10 @@
-import { UIDefine } from "../../define/UIDefine";
-import { StringHelper } from "../../helper/StringHelper";
-import { i18nMgr } from "../../i18n/i18nMgr";
-import { ServerMessageJackpotAward } from "../../protobuf/holdem/recv_th_jackpot_award_pb";
-import { ServerMessageJackpotGoldChange } from "../../protobuf/holdem/recv_th_jackpot_gold_change_pb";
-import UIComponent from "../../ui/UIComponent";
-import { GameCache } from "../GameCache";
+import { UIDefine } from '../../define/UIDefine';
+import { StringHelper } from '../../helper/StringHelper';
+import { i18nMgr } from '../../i18n/i18nMgr';
+import { ServerMessageJackpotAward } from '../../protobuf/holdem/recv_th_jackpot_award_pb';
+import { ServerMessageJackpotGoldChange } from '../../protobuf/holdem/recv_th_jackpot_gold_change_pb';
+import UIComponent from '../../ui/UIComponent';
+import { GameCache } from '../GameCache';
 
 interface TexasGameJackpotHost {
     jackpot: number;
@@ -15,32 +15,18 @@ interface TexasGameJackpotHost {
 
 export default class TexasGameJackpot {
     private goldRollData: { value: number } | null = null;
+
     private goldRollUpdate: (() => void) | null = null;
 
-    constructor(private host: TexasGameJackpotHost) {
-    }
+    constructor(private host: TexasGameJackpotHost) {}
 
     public UpdateRoomConfig(rec: any): void {
         const roomInfo = rec?.roomInfo || {};
         GameCache.Instance.jackPot_on = Number(roomInfo?.jackpot || 0);
-        GameCache.Instance.jackPot_id = Number(
-            roomInfo?.jackpotId
-            ?? roomInfo?.jackpot_id
-            ?? GameCache.Instance.jackPot_id
-            ?? 0
-        );
-        GameCache.Instance.jackPot_gold = Number(
-            roomInfo?.jackpotGold
-            ?? roomInfo?.jackpot_gold
-            ?? GameCache.Instance.jackPot_gold
-            ?? 0
-        );
+        GameCache.Instance.jackPot_id = Number(roomInfo?.jackpotId ?? roomInfo?.jackpot_id ?? GameCache.Instance.jackPot_id ?? 0);
+        GameCache.Instance.jackPot_gold = Number(roomInfo?.jackpotGold ?? roomInfo?.jackpot_gold ?? GameCache.Instance.jackPot_gold ?? 0);
         GameCache.Instance.jackPot_parent_gold = Number(
-            roomInfo?.jackpotParentGold
-            ?? roomInfo?.jackpot_parent_gold
-            ?? GameCache.Instance.jackPot_parent_gold
-            ?? GameCache.Instance.jackPot_gold
-            ?? 0
+            roomInfo?.jackpotParentGold ?? roomInfo?.jackpot_parent_gold ?? GameCache.Instance.jackPot_parent_gold ?? GameCache.Instance.jackPot_gold ?? 0
         );
         GameCache.Instance.jackPot_fund = GameCache.Instance.jackPot_parent_gold;
         this.RefreshUI();
@@ -56,7 +42,7 @@ export default class TexasGameJackpot {
 
     public OnClickJackpot(): void {
         UIComponent.open(UIDefine.UITexasJackpotRecentAwardRecord, {
-            noAnimation: true,
+            noAnimation: true
         });
     }
 
@@ -65,30 +51,26 @@ export default class TexasGameJackpot {
             this.HideUI();
             return;
         }
-
         const animRoot = this.host.uirc?.JackpotAnimRoot as cc.Node;
         const anim = animRoot?.getComponent(cc.Animation);
         if (!animRoot || !anim) {
             this.ShowUI();
             return;
         }
-
         const clipName = this.ResolveStartClip(anim);
         if (!clipName) {
             animRoot.active = false;
             this.ShowUI();
             return;
         }
-
         const button = this.host.uirc?.JackpotButton as cc.Node;
         if (button) {
             button.active = false;
         }
-
         animRoot.active = true;
         anim.stop();
-        anim.off("finished", this.OnStartAnimFinished, this);
-        anim.on("finished", this.OnStartAnimFinished, this);
+        anim.off('finished', this.OnStartAnimFinished, this);
+        anim.on('finished', this.OnStartAnimFinished, this);
         anim.play(clipName);
     }
 
@@ -109,7 +91,7 @@ export default class TexasGameJackpot {
         }
         UIComponent.open(UIDefine.UITexasDialogJackpotAwards, {
             awardUsers: rec.awardUsersList,
-            noAnimation: true,
+            noAnimation: true
         });
     }
 
@@ -118,7 +100,7 @@ export default class TexasGameJackpot {
         this.HideUI();
         const animRoot = this.host.uirc?.JackpotAnimRoot as cc.Node;
         const anim = animRoot?.getComponent(cc.Animation);
-        anim?.off("finished", this.OnStartAnimFinished, this);
+        anim?.off('finished', this.OnStartAnimFinished, this);
         anim?.stop();
         if (animRoot) {
             animRoot.active = false;
@@ -130,10 +112,10 @@ export default class TexasGameJackpot {
     }
 
     public GetRewardTypeText(cardsType: number): string {
-        if (cardsType === 10) return i18nMgr.Get("adaptation10053");
-        if (cardsType === 9) return i18nMgr.Get("adaptation10054");
-        if (cardsType === 8) return i18nMgr.Get("adaptation10055");
-        return "";
+        if (cardsType === 10) return i18nMgr.Get('adaptation10053');
+        if (cardsType === 9) return i18nMgr.Get('adaptation10054');
+        if (cardsType === 8) return i18nMgr.Get('adaptation10055');
+        return '';
     }
 
     private OnStartAnimFinished(): void {
@@ -170,7 +152,7 @@ export default class TexasGameJackpot {
         if (button) {
             button.active = false;
         }
-        this.SetGoldLabel("");
+        this.SetGoldLabel('');
     }
 
     private SetGoldLabel(value: string): void {
@@ -194,7 +176,7 @@ export default class TexasGameJackpot {
         if (!label) {
             return 0;
         }
-        const value = Number((label.string || "0").replace(/,/g, ""));
+        const value = Number((label.string || '0').replace(/,/g, ''));
         return Number.isFinite(value) ? Math.floor(value) : 0;
     }
 
@@ -209,20 +191,22 @@ export default class TexasGameJackpot {
             this.SetGoldLabel(`${to}`);
             return;
         }
-
         this.goldRollData = { value: from };
         cc.tween(this.goldRollData)
-            .to(duration, { value: to }, {
-                progress: (start: number, end: number, current: number, ratio: number) => {
-                    return start + (end - start) * ratio;
-                },
-            })
+            .to(
+                duration,
+                { value: to },
+                {
+                    progress: (start: number, end: number, current: number, ratio: number) => {
+                        return start + (end - start) * ratio;
+                    }
+                }
+            )
             .call(() => {
                 this.SetGoldLabel(`${to}`);
                 this.goldRollData = null;
             })
             .start();
-
         const update = () => {
             if (!this.goldRollData || !label.node || !label.node.isValid) {
                 return;
@@ -256,13 +240,13 @@ export default class TexasGameJackpot {
         if (!anim.defaultClip && clips.length > 0) {
             anim.defaultClip = clips[0];
         }
-        const preferred = ["jackpot_start", "jackpot", "start"];
+        const preferred = ['jackpot_start', 'jackpot', 'start'];
         for (let i = 0; i < preferred.length; i++) {
             const clipName = preferred[i];
             if (clips.find(c => c && c.name === clipName)) {
                 return clipName;
             }
         }
-        return anim.defaultClip?.name || "";
+        return anim.defaultClip?.name || '';
     }
 }

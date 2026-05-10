@@ -1,9 +1,8 @@
-import UIBasePlus from "../UIBasePlus";
-
+import UIBasePlus from '../UIBasePlus';
 const { ccclass, menu } = cc._decorator;
 
 @ccclass
-@menu("GG/GGASCom")
+@menu('GG/GGASCom')
 export default class GGASCom extends UIBasePlus {
     $sub: cc.Node = null;
     $add: cc.Node = null;
@@ -17,10 +16,12 @@ export default class GGASCom extends UIBasePlus {
         min: 0,
         max: 0
     };
+
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$sub, this.onSub);
         this.setButtonClick(this.$add, this.onAdd);
     }
+
     onSub() {
         if (!this._use) return;
         let a = this.value - this._data.step;
@@ -28,6 +29,7 @@ export default class GGASCom extends UIBasePlus {
         this.value = a;
         this._data.sub_click?.();
     }
+
     onAdd() {
         if (!this._use) return;
         let a = this.value + this._data.step;
@@ -35,20 +37,24 @@ export default class GGASCom extends UIBasePlus {
         this.value = a;
         this._data.add_click?.();
     }
+
     //设置数据
     set data(vdata: any) {
         this._data = vdata;
         this.value = this._data.value;
     }
+
     //刷新value
     set value(num: number) {
         this._value = num;
         this.cc_Label$label.string = `${num}`;
     }
+
     //获取value
     get value() {
         return this._value;
     }
+
     set use(boo: boolean) {
         this._use = boo;
     }

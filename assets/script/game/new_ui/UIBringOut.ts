@@ -1,12 +1,9 @@
-
-import { UIDefine } from "../../define/UIDefine";
-import { StringHelper } from "../../helper/StringHelper";
-import GGSlider from "../../ui/component/GGSlider";
-import UIBasePlus from "../../ui/UIBasePlus";
-import UIComponent, { PrefabUI } from "../../ui/UIComponent";
-import { GameCache } from "../GameCache";
-
-
+import { UIDefine } from '../../define/UIDefine';
+import { StringHelper } from '../../helper/StringHelper';
+import GGSlider from '../../ui/component/GGSlider';
+import UIBasePlus from '../../ui/UIBasePlus';
+import UIComponent, { PrefabUI } from '../../ui/UIComponent';
+import { GameCache } from '../GameCache';
 const { ccclass, menu } = cc._decorator;
 
 /**
@@ -16,12 +13,11 @@ export type OutClipsData = {
     /**
      * 当前最小倍数
      */
-    currentMinRate: number,
-
+    currentMinRate: number;
     /**
      * 玩家剩余记分牌
      */
-    tableChips: number,
+    tableChips: number;
 };
 
 /**
@@ -32,47 +28,38 @@ export type AddClipsDataOut = {
      * 大盲注金额
      */
     bigBlind: number;
-
     /**
      * 小盲注金额
      */
     smallBlind: number;
-
     /**
      * 最小带入倍数（相对于大盲）
      */
     currentMinRate: number;
-
     /**
      * 最大带入倍数（相对于大盲）
      */
     currentMaxRate: number;
-
     /**
      * 玩家持有总金豆
      */
     totalCoin?: number;
-
     /**
      * 当前桌面积分牌
      */
     tableChips: number;
-
     /**
      * 藏钱记分牌
      */
     storeChips: number;
-
     /**
      * 是否来自设置界面
      */
     isFromSetting?: boolean;
-
     /**
      * 指定最小带入额（含押金），单位同 bigBlind
      */
     minBringIn?: number;
-
     /**
      * 钱包列表
      */
@@ -97,27 +84,18 @@ export default class UIBringOut extends UIBasePlus {
     $Part4: cc.Node = null;
     $commit: cc.Node = null;
     $enable: cc.Node = null;
-
     $close: cc.Node = null;
-
     MaxRate: number = 0;
     CurMinOutBeans: number = 0;
-    Curmultiple: number = 0;//当前倍数
-
-    sendCoin: number = 0;//发送货币值
-    ownCoin: number = 0;//拥有的货币值
-    gold_type: number = 0;//货币类型
-
-
+    Curmultiple: number = 0; //当前倍数
+    sendCoin: number = 0; //发送货币值
+    ownCoin: number = 0; //拥有的货币值
+    gold_type: number = 0; //货币类型
     wallet_mode: number = 0; //钱包模式 0:无钱包 1:1个钱包 2:多个钱包
-    wallet_status: number = 0;//钱包状态 0未选择 1选择
-
-    selected_wallet: any = null;//选中的钱包
-
+    wallet_status: number = 0; //钱包状态 0未选择 1选择
+    selected_wallet: any = null; //选中的钱包
     wallet: any[] = null;
-
     protected _param: OutClipsData;
-
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -126,41 +104,30 @@ export default class UIBringOut extends UIBasePlus {
 
     onShow(data: OutClipsData): void {
         super.onShow(data);
-
         if (null != data) {
-
             //textCoin.text = $"{GameCache.Instance.carry_small* addClipsData.currentMinRate}";
             this.CurMinOutBeans = GameCache.Instance.carry_small * data.currentMinRate;
-
-            let currentMaxBring = (data.tableChips / 100 - (GameCache.Instance.carry_small / 100) * data.currentMinRate);
-
+            let currentMaxBring = data.tableChips / 100 - (GameCache.Instance.carry_small / 100) * data.currentMinRate;
             let maxRate = 0;
-
             this.Curmultiple = 0;
-
             if (currentMaxBring > 10 && currentMaxBring < 1000) {
                 maxRate = currentMaxBring / 10;
                 this.Curmultiple = 10;
                 this.enableCommit(true);
-            }
-            else if (currentMaxBring > 1000 && currentMaxBring < 10000) {
+            } else if (currentMaxBring > 1000 && currentMaxBring < 10000) {
                 maxRate = currentMaxBring / 100;
                 this.Curmultiple = 100;
                 this.enableCommit(true);
-
-            }
-            else if (currentMaxBring > 10000) {
+            } else if (currentMaxBring > 10000) {
                 maxRate = currentMaxBring / 1000;
                 this.Curmultiple = 1000;
                 this.enableCommit(true);
-            }
-            else {
+            } else {
                 maxRate = 0;
                 this.CurMinOutBeans = 0;
                 this.enableCommit(false);
-                this.cc_Label$coin.string = "0";
+                this.cc_Label$coin.string = '0';
             }
-
             this.MaxRate = maxRate;
             this.GGSlider$slider.SetMinMax(0, maxRate);
             this.GGSlider$slider.onShow({ index: 0 });
@@ -172,32 +139,27 @@ export default class UIBringOut extends UIBasePlus {
         this.$enable.active = boo;
     }
 
-
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$commit, this.onClickCommit);
         this.setButtonClick(this.$close, this.onClickClose);
     }
+
     /**
      * 滑动条改变触发
      */
 
     onSliderChange(rate: number) {
-
         if (this.MaxRate == rate && this.MaxRate > 0) {
-            this.cc_Label$coin.string = `${StringHelper.GetLongString(this._param.tableChips / 100 * 100 - this.CurMinOutBeans)}`;
-        }
-        else if (this._param.tableChips > this.CurMinOutBeans * 2) {
+            this.cc_Label$coin.string = `${StringHelper.GetLongString((this._param.tableChips / 100) * 100 - this.CurMinOutBeans)}`;
+        } else if (this._param.tableChips > this.CurMinOutBeans * 2) {
             if (rate * this.Curmultiple > this.CurMinOutBeans) {
                 this.cc_Label$coin.string = `${StringHelper.GetLongString(rate * this.Curmultiple * 100)}`;
-            }
-            else {
+            } else {
                 this.cc_Label$coin.string = `${StringHelper.GetLongString(this.CurMinOutBeans + rate * this.Curmultiple * 100)}`;
             }
+        } else if (this._param.tableChips <= this.CurMinOutBeans * 2 && this._param.tableChips > this.CurMinOutBeans) {
+            this.cc_Label$coin.string = `${StringHelper.GetLongString((this._param.tableChips / 100) * 100 - this.CurMinOutBeans)}`;
         }
-        else if (this._param.tableChips <= this.CurMinOutBeans * 2 && this._param.tableChips > this.CurMinOutBeans) {
-            this.cc_Label$coin.string = `${StringHelper.GetLongString(this._param.tableChips / 100 * 100 - this.CurMinOutBeans)}`;
-        }
-
     }
 
     hideUI() {
@@ -206,23 +168,24 @@ export default class UIBringOut extends UIBasePlus {
 
     //打开钱包列表
     goWalletList() {
-
         UIComponent.open(UIDefine.UIClubWalletList, {
             data: this.wallet,
             selected_wallet: this.selected_wallet,
             own: this
         });
     }
+
     /////////////////////click事件
     //确认
     onClickCommit() {
-        let mAnteNumber = + this.cc_Label$coin.string;
+        let mAnteNumber = +this.cc_Label$coin.string;
         if (mAnteNumber == 0) {
             return;
         }
         GameCache.Instance.CurGame.OutChips(mAnteNumber * 100);
         this.hideUI();
     }
+
     //关闭
     onClickClose() {
         this.hideUI();

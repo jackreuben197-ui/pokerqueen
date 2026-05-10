@@ -1,24 +1,15 @@
-import TimeHelper from "../../helper/TimeHelper";
-import StorageKey from "../../session/StorageKey";
+import TimeHelper from '../../helper/TimeHelper';
+import StorageKey from '../../session/StorageKey';
 
 export default class LabelCDTime extends cc.Component {
-
     label: cc.Label = null;
-
     duration: number = 0;
-
     difTime: number = 0;
-
     passtime: number = 0;
-
     sendTime: number = 0;
-
     unit: string = null;
-
     complete: boolean = false;
-
     call: Function = null;
-
     _scheTime: any = null;
 
     onLoad(): void {
@@ -27,9 +18,9 @@ export default class LabelCDTime extends cc.Component {
 
     /**
      * @param unit 单位
-     * @param duration 
+     * @param duration
      */
-    show(duration: number = 60, call: Function = null, unit: string = "S") {
+    show(duration: number = 60, call: Function = null, unit: string = 'S') {
         this.call = call;
         this.unit = unit;
         this.sendTime = TimeHelper.NowS;
@@ -41,7 +32,7 @@ export default class LabelCDTime extends cc.Component {
 
     resetUI(sendTime, call: Function = null) {
         this.call = call;
-        this.unit = "S";
+        this.unit = 'S';
         this.sendTime = sendTime;
         this.duration = 60;
         this.passtime = 0;
@@ -59,6 +50,7 @@ export default class LabelCDTime extends cc.Component {
         // this.duration--;
         this.updateLabel(this.duration - this.difTime);
     }
+
     protected update(dt: number): void {
         if (this.complete) return;
         this.passtime += dt;
@@ -78,7 +70,6 @@ export default class LabelCDTime extends cc.Component {
         this.passtime = 0;
         this.sendTime = 0;
     }
-
 
     //结束 是否处理回调
     public end(call: boolean = true) {

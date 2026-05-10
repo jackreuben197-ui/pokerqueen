@@ -17,50 +17,42 @@
  *   mirror:       镜像显示（本地摄像头建议开启）
  *   targetFps:    目标帧率
  */
-import AgoraManager from "./AgoraManager";
-import { GameCache } from "../../game/GameCache";
-
+import AgoraManager from './AgoraManager';
+import { GameCache } from '../../game/GameCache';
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class AgoraVideoRender extends cc.Component {
-
     @property({
         tooltip: '点击时渲染的目标: local=本地摄像头, remote=远端用户'
     })
     renderTarget: string = 'local';
-
     @property({
         tooltip: '远端用户 UID（仅 renderTarget=remote 时生效）',
-        visible: function (this: any) { return this.renderTarget === 'remote'; }
+        visible: function (this: any) {
+            return this.renderTarget === 'remote';
+        }
     })
     remoteUid: number = 0;
-
     @property({ tooltip: '镜像显示（本地摄像头建议开启）' })
     mirror: boolean = false;
-
     @property({ tooltip: '目标帧率（视频聊天 15-30 够用）' })
     targetFps: number = 30;
-
     private _video: HTMLVideoElement = null;
     private _texture: cc.Texture2D = null;
     private _spriteFrame: cc.SpriteFrame = null;
-
     /** 动态创建的视频覆盖层节点（Raw_Head 的子节点） */
     private _overlayNode: cc.Node = null;
     /** 覆盖层上的 Sprite 组件 */
     private _videoSprite: cc.Sprite = null;
-
     /** 窗花贴纸覆盖层节点（叠在 VideoOverlay 之上） */
     private _maskNode: cc.Node = null;
     /** 窗花 Sprite 组件 */
     private _maskSprite: cc.Sprite = null;
     /** 当前座位玩家的 videoMaskId */
     private _videoMaskId: number = 0;
-
     /** 已加载的窗花纹理缓存 key=maskId, value=SpriteFrame */
     private static _maskCache: Map<number, cc.SpriteFrame> = new Map();
-
     private _stream: MediaStream = null;
     private _isRendering: boolean = false;
     private _isCancelled: boolean = false;
@@ -72,6 +64,7 @@ export default class AgoraVideoRender extends cc.Component {
     /** 连续渲染帧异常计数，超过阈值才放弃 */
     private _consecutiveErrors: number = 0;
     private static readonly MAX_CONSECUTIVE_ERRORS = 30;
+
     /** 渲染异常或被停止时的回调，上层借此同步 UI 状态 */
     public onRenderStopped: (() => void) | null = null;
 
@@ -87,21 +80,17 @@ export default class AgoraVideoRender extends cc.Component {
     /** 确保视频覆盖层节点已创建（onLoad 或首次渲染时调用） */
     private _ensureOverlay(): void {
         if (this._overlayNode) return;
-
         this._overlayNode = new cc.Node('VideoOverlay');
         this._overlayNode.parent = this.node;
         this._overlayNode.setContentSize(this.node.getContentSize());
         this._overlayNode.active = false; // 默认隐藏
-
         this._videoSprite = this._overlayNode.addComponent(cc.Sprite);
-
         // 窗花覆盖层：叠在 VideoOverlay 之上
         this._maskNode = new cc.Node('VideoMask');
         this._maskNode.parent = this.node;
         this._maskNode.setContentSize(this.node.getContentSize());
         this._maskNode.active = false;
         this._maskSprite = this._maskNode.addComponent(cc.Sprite);
-
         this._gl = (cc.game as any)._renderContext;
         this._frameInterval = 1 / this.targetFps;
     }
@@ -137,7 +126,6 @@ export default class AgoraVideoRender extends cc.Component {
         this._stream = stream;
         this._frameAccum = 0;
         this._consecutiveErrors = 0;
-
         // 1. 创建隐藏的 video 元素
         this._video = document.createElement('video');
         this._video.setAttribute('playsinline', '');
@@ -152,89 +140,88 @@ export default class AgoraVideoRender extends cc.Component {
         this._video.style.pointerEvents = 'none';
         document.body.appendChild(this._video);
         this._video.srcObject = stream;
-
         try {
-            await Promise.race([
-                this._video.play(),
-                new Promise<void>((_, reject) => setTimeout(() => reject(new Error('play timeout')), 5000)),
-            ]);
+            await Promise.race([this._video.play(), new Promise<void>((_, reject) => setTimeout(() => reject(new Error('play timeout')), 5000))]);
             console.log('[AgoraVideoRender] play() 成功');
         } catch (e: any) {
-            if (this._isCancelled) { console.log('[AgoraVideoRender] play后已取消'); return false; }
+            if (this._isCancelled) {
+                console.log('[AgoraVideoRender] play后已取消');
+                return false;
+            }
             console.warn('[AgoraVideoRender] play失败或超时:', e?.message || e);
             this.stopRender();
             return false;
         }
-
-        if (this._isCancelled) { this._releaseResources(); return false; }
-
-        await new Promise<void>((resolve) => {
-            if (this._video.readyState >= 1) { resolve(); }
-            else {
-                const onMeta = () => { resolve(); };
+        if (this._isCancelled) {
+            this._releaseResources();
+            return false;
+        }
+        await new Promise<void>(resolve => {
+            if (this._video.readyState >= 1) {
+                resolve();
+            } else {
+                const onMeta = () => {
+                    resolve();
+                };
                 this._video.addEventListener('loadedmetadata', onMeta, { once: true });
-                setTimeout(() => { this._video.removeEventListener('loadedmetadata', onMeta); resolve(); }, 3000);
+                setTimeout(() => {
+                    this._video.removeEventListener('loadedmetadata', onMeta);
+                    resolve();
+                }, 3000);
             }
         });
-        console.log('[AgoraVideoRender] metadata 就绪, readyState:', this._video.readyState,
-            'videoSize:', this._video.videoWidth, 'x', this._video.videoHeight);
-
-        if (this._isCancelled) { this._releaseResources(); return false; }
-
+        console.log(
+            '[AgoraVideoRender] metadata 就绪, readyState:',
+            this._video.readyState,
+            'videoSize:',
+            this._video.videoWidth,
+            'x',
+            this._video.videoHeight
+        );
+        if (this._isCancelled) {
+            this._releaseResources();
+            return false;
+        }
         await new Promise<void>(resolve => setTimeout(resolve, 100));
-        if (this._isCancelled) { this._releaseResources(); return false; }
-
+        if (this._isCancelled) {
+            this._releaseResources();
+            return false;
+        }
         const vw = this._video.videoWidth || 240;
         const vh = this._video.videoHeight || 240;
-
         // 关键：设置 video 元素的 width/height 属性
         // handleLoadedTexture 内部检查 this._image.width && this._image.height，
         // 对 video 元素来说，video.width 返回的是属性值而非 videoWidth，
         // 不设属性就是 0，handleLoadedTexture 会直接跳过纹理创建！
         this._video.setAttribute('width', String(vw));
         this._video.setAttribute('height', String(vh));
-
         // 2. 覆盖层对齐节点大小
         const nodeSize = this.node.getContentSize();
         const cw = nodeSize.width || vw;
         const ch = nodeSize.height || vh;
-
         // 3. 创建 Texture2D — 直接绑定 <video> 元素，无 canvas 中转
         //    initWithElement(video) 让浏览器原生处理 video → GPU 纹理上传
         this._texture = new cc.Texture2D();
         this._texture.initWithElement(this._video as any);
         this._texture.packable = false;
         this._texture.handleLoadedTexture();
-
         // 4. SpriteFrame — 居中裁剪：取视频中心正方形区域
         const cropSize = Math.min(vw, vh);
         const cropX = (vw - cropSize) / 2;
         const cropY = (vh - cropSize) / 2;
         this._spriteFrame = new cc.SpriteFrame();
-        (this._spriteFrame as any).initWithTexture(
-            this._texture,
-            cc.rect(cropX, cropY, cropSize, cropSize),
-            false,
-            cc.v2(0, 0),
-            cc.size(cw, ch)
-        );
-
+        (this._spriteFrame as any).initWithTexture(this._texture, cc.rect(cropX, cropY, cropSize, cropSize), false, cc.v2(0, 0), cc.size(cw, ch));
         // 5. 显示视频覆盖层
         this._overlayNode.setContentSize(cw, ch);
         this._overlayNode.active = true;
         this._videoSprite.spriteFrame = this._spriteFrame;
-
         if (this.mirror) {
             this._overlayNode.scaleX = -1;
         }
-
         this._isRendering = true;
-
         // 6. 视频渲染成功后，尝试显示窗花覆盖层
         this._applyVideoMask();
-
-        console.log('[AgoraVideoRender] 开始渲染 (video direct), video:', vw, 'x', vh,
-            'overlay:', cw, 'x', ch, 'fps:', this.targetFps);
+        console.log('[AgoraVideoRender] 开始渲染 (video direct), video:', vw, 'x', vh, 'overlay:', cw, 'x', ch, 'fps:', this.targetFps);
         return true;
     }
 
@@ -246,28 +233,32 @@ export default class AgoraVideoRender extends cc.Component {
         this._releaseResources();
         // 通知上层渲染已停止（仅在实际渲染中停止时通知）
         if (wasRendering && this.onRenderStopped) {
-            try { this.onRenderStopped(); } catch (_) { }
+            try {
+                this.onRenderStopped();
+            } catch (_) {}
         }
     }
 
     private _releaseResources(): void {
         // 1. video
         if (this._video) {
-            try { this._video.pause(); } catch (_) { }
+            try {
+                this._video.pause();
+            } catch (_) {}
             if (this._video.parentNode) this._video.parentNode.removeChild(this._video);
             this._video.srcObject = null;
             this._video = null;
         }
-
         // 2. stream
         if (this._stream) {
             if (this._ownsStream) {
-                try { this._stream.getTracks().forEach(t => t.stop()); } catch (_) { }
+                try {
+                    this._stream.getTracks().forEach(t => t.stop());
+                } catch (_) {}
             }
             this._stream = null;
         }
         this._ownsStream = false;
-
         // 3. Texture2D + SpriteFrame
         if (this._texture) {
             this._deleteGLTextures(this._texture);
@@ -278,15 +269,12 @@ export default class AgoraVideoRender extends cc.Component {
             this._spriteFrame.destroy();
             this._spriteFrame = null;
         }
-
         this._frameAccum = 0;
-
         // 4. 隐藏视频覆盖层
         if (this._overlayNode) {
             this._overlayNode.active = false;
             this._overlayNode.scaleX = 1; // 重置镜像
         }
-
         // 5. 隐藏窗花覆盖层
         if (this._maskNode) {
             this._maskNode.active = false;
@@ -306,23 +294,22 @@ export default class AgoraVideoRender extends cc.Component {
                 if (impl?._texture?._glID) this._gl.deleteTexture(impl._texture._glID);
             }
             if (t._gpuTexture?._glID) this._gl.deleteTexture(t._gpuTexture._glID);
-        } catch (_) { }
+        } catch (_) {}
     }
 
     update(dt: number) {
         if (!this._isRendering || !this._video) return;
-        if (this._isCancelled) { this._isRendering = false; return; }
-
+        if (this._isCancelled) {
+            this._isRendering = false;
+            return;
+        }
         if (this._video.paused && this._video.srcObject) {
             this._video.play().catch(() => {});
         }
-
         if (this._video.readyState < 2) return;
-
         this._frameAccum += dt;
         if (this._frameAccum < this._frameInterval) return;
         this._frameAccum = 0;
-
         try {
             this._renderFrame();
             this._consecutiveErrors = 0;
@@ -348,12 +335,10 @@ export default class AgoraVideoRender extends cc.Component {
         // 重新绑定 video 元素（video 的帧内容已自动更新）
         (this._texture as any).initWithElement(this._video as any);
         this._texture.handleLoadedTexture();
-
         // 强制标记 sprite 为 dirty，确保 batch renderer 重新处理
         if (this._videoSprite) {
             (this._videoSprite as any)._vertsDirty = true;
         }
-
         const now = Date.now();
         if (now - this._lastLogTime > 10000) {
             this._lastLogTime = now;
@@ -374,7 +359,6 @@ export default class AgoraVideoRender extends cc.Component {
     }
 
     // ==================== 窗花贴纸相关 ====================
-
     /**
      * 设置当前座位的 videoMaskId（由上层在坐下/变更时调用）
      */
@@ -392,13 +376,11 @@ export default class AgoraVideoRender extends cc.Component {
      */
     private _applyVideoMask(): void {
         if (!this._maskNode) return;
-
         // 不满足条件则隐藏
         if (GameCache.Instance._videoPowerSaving !== 1 || !this._videoMaskId) {
             this._maskNode.active = false;
             return;
         }
-
         // 尝试从缓存获取
         const cached = AgoraVideoRender._maskCache.get(this._videoMaskId);
         if (cached && cached.isValid) {
@@ -407,7 +389,6 @@ export default class AgoraVideoRender extends cc.Component {
             this._maskNode.setSiblingIndex(this.node.childrenCount - 1);
             return;
         }
-
         // 从 resources 加载纹理
         const captureMaskId = this._videoMaskId;
         const path = `videomask/vm${captureMaskId}`;
@@ -418,7 +399,6 @@ export default class AgoraVideoRender extends cc.Component {
             }
             // 加载期间组件可能已销毁、停止渲染或切换了 maskId
             if (!(this as any).isValid || !this._isRendering || this._videoMaskId !== captureMaskId) return;
-
             const spriteFrame = new cc.SpriteFrame(texture);
             AgoraVideoRender._maskCache.set(captureMaskId, spriteFrame);
             if (this._maskNode?.isValid && this._maskSprite) {

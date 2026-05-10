@@ -5,10 +5,8 @@
 export enum BlackUserStateType {
     /** 无 */
     NONE = 0,
-
     /** 拉黑 */
     BLACK = 1,
-
     /** 取消拉黑 */
-    CANCEL_BLACK = 2,
+    CANCEL_BLACK = 2
 }

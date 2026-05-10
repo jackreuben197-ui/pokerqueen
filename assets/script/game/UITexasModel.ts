@@ -1,22 +1,18 @@
-import { HttpRoomBringOutProtocol } from "../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringOutProtocol";
-import GC from "../frame/GameControl";
-import HttpRequest from "../net/https/HttpRequest";
-import {
-    WebOrgFriendBringIn,
-    WebStatsOtherUserStats,
-    WebUserRoom,
-    WebUserRoomSettleDetail,
-} from "../net/https/WebRequest";
-import { GameCache } from "./GameCache";
+import { HttpRoomBringOutProtocol } from '../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringOutProtocol';
+import HttpRequest from '../net/https/HttpRequest';
+import { WebStatsOtherUserStats, WebUserRoom, WebUserRoomSettleDetail } from '../net/https/WebRequest';
+import { GameCache } from './GameCache';
 
 export class UITexasModel {
     private static instance: UITexasModel = null;
+
     public static get mInstance(): UITexasModel {
         if (!this.instance) {
             this.instance = new UITexasModel();
         }
         return this.instance;
     }
+
     /// <summary>
     /// 本房间带出信息
     /// </summary>
@@ -24,10 +20,7 @@ export class UITexasModel {
     public APIUserRoom() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: WebUserRoom.API.replace(
-                    "{id}",
-                    GameCache.Instance.room_id.toString(),
-                ),
+                api: WebUserRoom.API.replace('{id}', GameCache.Instance.room_id.toString()),
                 request: WebUserRoom,
                 onSuccess: function () {
                     // if (WebUserRoom.Response.code == 0) {
@@ -37,7 +30,7 @@ export class UITexasModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this),
+                }.bind(this)
             });
         });
     }
@@ -49,30 +42,24 @@ export class UITexasModel {
     public APIUserRoomSettleDetail(roomId: string) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: WebUserRoomSettleDetail.API.replace("{id}", roomId),
+                api: WebUserRoomSettleDetail.API.replace('{id}', roomId),
                 request: WebUserRoomSettleDetail,
                 onSuccess: function () {
                     resolve(WebUserRoomSettleDetail.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this),
+                }.bind(this)
             });
         });
     }
 
     /// 牌局内玩家战绩数据
     /// </summary>
-    public getOtherUserStats(
-        user_id: number,
-        onData?: (tResp: typeof WebStatsOtherUserStats.Response) => void,
-    ) {
+    public getOtherUserStats(user_id: number, onData?: (tResp: typeof WebStatsOtherUserStats.Response) => void) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: WebStatsOtherUserStats.API.replace(
-                    "{id}",
-                    user_id.toString(),
-                ),
+                api: WebStatsOtherUserStats.API.replace('{id}', user_id.toString()),
                 body: WebStatsOtherUserStats.Request(user_id),
                 request: WebStatsOtherUserStats,
                 useCache: true,
@@ -83,16 +70,15 @@ export class UITexasModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this),
+                }.bind(this)
             });
         });
     }
+
     /// 通过俱乐部id 获取钱包
     public GetGoldByClubID(club_id: number): number {
         let gold = 0;
-
         let wallet = WebUserRoom.Response?.data?.wallet;
-
         if (wallet?.length) {
             for (let item of wallet) {
                 if (club_id == item.club_id) {

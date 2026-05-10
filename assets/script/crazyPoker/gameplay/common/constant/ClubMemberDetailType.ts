@@ -5,7 +5,6 @@
 export enum ClubMemberDetailType {
     /** 样式1 */
     DETAIL_ONE = 1,
-
     /** 样式2 */
-    DETAIL_TWO = 2,
+    DETAIL_TWO = 2
 }

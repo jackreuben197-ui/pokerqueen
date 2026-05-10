@@ -1,14 +1,13 @@
-import { EventName } from "../../../config/EventName";
-import { TRateConfig } from "../../../config/TTypeConfig";
-import GC from "../../GameControl";
-import { RateConfig } from "./RateConfig";
-import RateItemModel from "./RateItemModel";
+import { EventName } from '../../../config/EventName';
+import { TRateConfig } from '../../../config/TTypeConfig';
+import GC from '../../GameControl';
+import { RateConfig } from './RateConfig';
+import RateItemModel from './RateItemModel';
 
 export default class RateModel {
     clubList: Array<RateItemModel> = [];
     unionList: Array<RateItemModel> = [];
     config: Map<string, TRateConfig> = new Map();
-
     curClub: RateItemModel = null;
     curUnion: RateItemModel = null;
 
@@ -20,7 +19,7 @@ export default class RateModel {
         this.config.clear();
         RateConfig.forEach(cfg => {
             this.config.set(cfg.country, cfg);
-        })
+        });
     }
 
     getCfg(type: string) {
@@ -31,16 +30,16 @@ export default class RateModel {
         let list = this.getList(isUnion);
         list.length = 0;
         msgs.forEach(msg => {
-            list.push(new RateItemModel(msg))
-        })
+            list.push(new RateItemModel(msg));
+        });
         this.initCurRate(isUnion);
     }
 
     setRate(msg: any, sendInfo: any, isUnion: boolean = false) {
         let list = this.getList(isUnion);
-        let item = list.find(item => item.country == msg.to_currency)
+        let item = list.find(item => item.country == msg.to_currency);
         if (!item) {
-            this.addRate(msg, list)
+            this.addRate(msg, list);
         } else {
             item.updateRate(msg);
             GC.notify.post(EventName.addRateItem);
@@ -49,9 +48,10 @@ export default class RateModel {
 
     addRate(sendInfo: any, list) {
         let item = new RateItemModel(sendInfo);
-        list.push(item)
+        list.push(item);
         GC.notify.post(EventName.addRateItem);
     }
+
     deletRate(msg: any, sendInfo: any, isUnion: boolean = false) {
         let list = this.getList(isUnion);
         let index = list.findIndex(item => item.id == sendInfo.id);
@@ -73,9 +73,8 @@ export default class RateModel {
         let type = GC.localStore.getItem(this.getCurRateLocalKey(isUnion));
         let rate = null;
         if (type) {
-            rate = this.getRate(type, isUnion)
+            rate = this.getRate(type, isUnion);
         }
-
         if (!rate) {
             let list = this.getList(isUnion);
             if (list.length) {
@@ -83,7 +82,6 @@ export default class RateModel {
                 this.setCurRate(rate.country, isUnion);
             }
         }
-
         if (isUnion) {
             this.curUnion = rate;
         } else {
@@ -94,10 +92,10 @@ export default class RateModel {
     getCurRate(isUnion: boolean) {
         return isUnion ? this.curUnion : this.curClub;
     }
+
     setCurRate(country: string, isUnion: boolean) {
         let item = this.getRate(country, isUnion);
         GC.localStore.setItem(this.getCurRateLocalKey(isUnion), item.country);
-
         if (isUnion) {
             this.curUnion = item;
         } else {
@@ -107,6 +105,6 @@ export default class RateModel {
     }
 
     getCurRateLocalKey(isUnion: boolean) {
-        return `${isUnion ? "union" : "cliub"}_rate_country`;
+        return `${isUnion ? 'union' : 'cliub'}_rate_country`;
     }
 }

@@ -6,18 +6,15 @@
  * @LastEditTime: 2022-09-28 18:14:54
  * @FilePath: /pokerqueen/assets/script/net/https/HttpRequest.ts
  */
-import { EventName } from "../../config/EventName";
-import { GameConfig } from "../../config/GameConfig";
-import { NotifyManager } from "../../frame/manager/NotifyManager";
-import HttpClient from "./HttpClient";
-import HotUpdateConfigCache from "./HotUpdateConfigCache";
-import WebApiCacheCenter from "./WebApiCacheCenter";
-import WebHelper from "./WebHelper";
-
+import { EventName } from '../../config/EventName';
+import { GameConfig } from '../../config/GameConfig';
+import { NotifyManager } from '../../frame/manager/NotifyManager';
+import HttpClient from './HttpClient';
+import HotUpdateConfigCache from './HotUpdateConfigCache';
+import WebApiCacheCenter from './WebApiCacheCenter';
+import WebHelper from './WebHelper';
 type HttpCallback = Function | null;
-
 type HttpHeaders = Array<[string, string]> | any[] | null;
-
 type HttpRequestParams = {
     api?: string | null;
     request?: any;
@@ -31,11 +28,12 @@ type HttpRequestParams = {
     juhua?: boolean;
     useCache?: boolean;
 };
+
 /**
  * HttpRequest 在HttpClient基础上包装一层
  */
-
 export default class HttpRequest {
+
     static async Send({
         api = null,
         request = null,
@@ -47,98 +45,71 @@ export default class HttpRequest {
         isJson = true,
         isGet = false,
         juhua = true,
-        useCache = false,
+        useCache = false
     }: HttpRequestParams) {
-        const host = cuscomHost || GameConfig.Network.WebHost || "";
-        const finalApi = api || request?.API || "";
+        const host = cuscomHost || GameConfig.Network.WebHost || '';
+        const finalApi = api || request?.API || '';
         if (!host || !finalApi) {
             return;
         }
-        const method: "GET" | "POST" = isGet ? "GET" : "POST";
-        const requestClassName = request?.name || "WebCommon";
-
-        const handledByCache =
-            await HotUpdateConfigCache.HandleLegacyConfigRequest({
-                api: finalApi,
-                request,
-                headers: headers || [],
-                onSuccess,
-            });
+        const method: 'GET' | 'POST' = isGet ? 'GET' : 'POST';
+        const requestClassName = request?.name || 'WebCommon';
+        const handledByCache = await HotUpdateConfigCache.HandleLegacyConfigRequest({
+            api: finalApi,
+            request,
+            headers: headers || [],
+            onSuccess
+        });
         if (handledByCache) {
             return;
         }
-
         let url = host + finalApi;
         url = this.handleUrl(url);
         const needJuhua = WebHelper.NeedJuhua(finalApi) && juhua;
         const needConsole = WebHelper.NeedConsole(finalApi);
-
-        const shouldUseCache =
-            !!useCache ||
-            (request && typeof request.CacheEnabled === "boolean"
-                ? request.CacheEnabled
-                : false);
-
+        const shouldUseCache = !!useCache || (request && typeof request.CacheEnabled === 'boolean' ? request.CacheEnabled : false);
         const cacheContext = {
             api: finalApi,
             method,
             url,
             body,
             headers,
-            requestClassName,
+            requestClassName
         };
-
         const cacheKey = shouldUseCache
-            ? typeof request?.BuildCacheKey === "function"
+            ? typeof request?.BuildCacheKey === 'function'
                 ? request.BuildCacheKey(cacheContext)
                 : WebApiCacheCenter.buildDefaultKey(cacheContext)
-            : "";
-        const cacheTTL =
-            shouldUseCache && typeof request?.CacheDataTTL === "number"
-                ? request.CacheDataTTL
-                : WebApiCacheCenter.DEFAULT_DATA_TTL_MS;
+            : '';
+        const cacheTTL = shouldUseCache && typeof request?.CacheDataTTL === 'number' ? request.CacheDataTTL : WebApiCacheCenter.DEFAULT_DATA_TTL_MS;
         const skipRequestTTL =
-            shouldUseCache && typeof request?.CacheNoRequestTTL === "number"
+            shouldUseCache && typeof request?.CacheNoRequestTTL === 'number'
                 ? request.CacheNoRequestTTL
-                : shouldUseCache && typeof request?.CacheTTL === "number"
+                : shouldUseCache && typeof request?.CacheTTL === 'number'
                   ? request.CacheTTL
                   : WebApiCacheCenter.DEFAULT_SKIP_REQUEST_TTL_MS;
-        const cachedRecord = shouldUseCache
-            ? WebApiCacheCenter.get(cacheKey, cacheTTL)
-            : null;
-        const canSkipRequest =
-            !!cachedRecord &&
-            WebApiCacheCenter.isWithin(cachedRecord, skipRequestTTL);
-
+        const cachedRecord = shouldUseCache ? WebApiCacheCenter.get(cacheKey, cacheTTL) : null;
+        const canSkipRequest = !!cachedRecord && WebApiCacheCenter.isWithin(cachedRecord, skipRequestTTL);
         if (cachedRecord) {
-            const cachedResponse = WebApiCacheCenter.deepClone(
-                cachedRecord.response,
-            );
+            const cachedResponse = WebApiCacheCenter.deepClone(cachedRecord.response);
             (cachedResponse as any).__cacheMeta = {
-                source: "memory",
+                source: 'memory',
                 key: cacheKey,
                 ageMs: WebApiCacheCenter.ageMs(cachedRecord),
-                skippedRequest: canSkipRequest,
+                skippedRequest: canSkipRequest
             };
             request && (request.Response = cachedResponse);
-            NotifyManager.instance.post(
-                EventName.serverResponse,
-                finalApi,
-                (cachedResponse as any)?.data,
-                body,
-            );
+            NotifyManager.instance.post(EventName.serverResponse, finalApi, (cachedResponse as any)?.data, body);
             console.log(
-                `[HttpRequest][Cache] hit api=${finalApi} key=${cacheKey} ageMs=${WebApiCacheCenter.ageMs(cachedRecord)} skipRequest=${canSkipRequest}`,
+                `[HttpRequest][Cache] hit api=${finalApi} key=${cacheKey} ageMs=${WebApiCacheCenter.ageMs(cachedRecord)} skipRequest=${canSkipRequest}`
             );
             onSuccess && onSuccess(cachedResponse);
         } else if (shouldUseCache) {
             console.log(`[HttpRequest][Cache] miss api=${finalApi} key=${cacheKey}`);
         }
-
         if (canSkipRequest) {
             return;
         }
-
         const send = isGet ? HttpClient.get : HttpClient.post;
         await send({
             url: url,
@@ -152,93 +123,45 @@ export default class HttpRequest {
             },
             onSuccess: function (response: any) {
                 if (!shouldUseCache) {
-                    HttpRequest.onSuccess(
-                        finalApi,
-                        request,
-                        body,
-                        onSuccess,
-                        response,
-                    );
+                    HttpRequest.onSuccess(finalApi, request, body, onSuccess, response);
                     return;
                 }
-
-                const normalized =
-                    typeof request?.NormalizeCacheResponse === "function"
-                        ? request.NormalizeCacheResponse(response)
-                        : response;
+                const normalized = typeof request?.NormalizeCacheResponse === 'function' ? request.NormalizeCacheResponse(response) : response;
                 const hash =
-                    typeof request?.ComputeCacheHash === "function"
-                        ? request.ComputeCacheHash(normalized)
-                        : WebApiCacheCenter.hashFromJson(normalized);
-
+                    typeof request?.ComputeCacheHash === 'function' ? request.ComputeCacheHash(normalized) : WebApiCacheCenter.hashFromJson(normalized);
                 if (!cachedRecord) {
                     WebApiCacheCenter.set(cacheKey, normalized, hash);
-                    console.log(
-                        `[HttpRequest][Cache] store api=${finalApi} key=${cacheKey} (no previous cache)`,
-                    );
-                    HttpRequest.onSuccess(
-                        finalApi,
-                        request,
-                        body,
-                        onSuccess,
-                        response,
-                    );
+                    console.log(`[HttpRequest][Cache] store api=${finalApi} key=${cacheKey} (no previous cache)`);
+                    HttpRequest.onSuccess(finalApi, request, body, onSuccess, response);
                     return;
                 }
-
                 const shouldUpdate =
-                    typeof request?.ShouldUpdateCache === "function"
-                        ? request.ShouldUpdateCache(
-                              cachedRecord.response,
-                              normalized,
-                              cachedRecord.hash,
-                              hash,
-                          )
+                    typeof request?.ShouldUpdateCache === 'function'
+                        ? request.ShouldUpdateCache(cachedRecord.response, normalized, cachedRecord.hash, hash)
                         : cachedRecord.hash !== hash;
-
                 if (!shouldUpdate) {
                     WebApiCacheCenter.touch(cacheKey);
-                    console.log(
-                        `[HttpRequest][Cache] unchanged api=${finalApi} key=${cacheKey}`,
-                    );
+                    console.log(`[HttpRequest][Cache] unchanged api=${finalApi} key=${cacheKey}`);
                     return;
                 }
-
                 WebApiCacheCenter.set(cacheKey, normalized, hash);
-                console.log(
-                    `[HttpRequest][Cache] updated api=${finalApi} key=${cacheKey}`,
-                );
-                HttpRequest.onSuccess(
-                    finalApi,
-                    request,
-                    body,
-                    onSuccess,
-                    response,
-                );
+                console.log(`[HttpRequest][Cache] updated api=${finalApi} key=${cacheKey}`);
+                HttpRequest.onSuccess(finalApi, request, body, onSuccess, response);
             },
             headers: headers,
             needJuhua: needJuhua,
             isJson: isJson,
             needConsole: needConsole,
-            api: finalApi,
+            api: finalApi
         });
     }
-    private static onSuccess(
-        api: string,
-        request: any,
-        body: any,
-        onSuccess: HttpCallback,
-        response: any,
-    ) {
-        NotifyManager.instance.post(
-            EventName.serverResponse,
-            api,
-            response.data,
-            body,
-        );
+
+    private static onSuccess(api: string, request: any, body: any, onSuccess: HttpCallback, response: any) {
+        NotifyManager.instance.post(EventName.serverResponse, api, response.data, body);
         request && (request.Response = response);
         onSuccess && onSuccess(response);
     }
+
     //代理转换
     public static handleUrl(url: string): string {
         // if (GameConfig.IsNewArea) {
@@ -254,17 +177,9 @@ export default class HttpRequest {
     }
 
     // 用于单独一个接口 需要https写死测试服务器用到
-    static async Send2({
-        api = null,
-        request = null,
-        body = {},
-        cuscomHost = null,
-        onSuccess = null,
-        onFailure = null,
-        headers = null,
-    }: HttpRequestParams) {
-        let host = "http://dev.awanptesting.com";
-        const finalApi = api || request?.API || "";
+    static async Send2({ api = null, request = null, body = {}, cuscomHost = null, onSuccess = null, onFailure = null, headers = null }: HttpRequestParams) {
+        let host = 'http://dev.awanptesting.com';
+        const finalApi = api || request?.API || '';
         if (!finalApi) {
             return;
         }
@@ -275,24 +190,18 @@ export default class HttpRequest {
             url: url,
             body,
             onFailure,
-            onSuccess: HttpRequest.onSuccess2.bind(
-                HttpRequest,
-                request,
-                onSuccess,
-            ),
+            onSuccess: HttpRequest.onSuccess2.bind(HttpRequest, request, onSuccess),
             headers: headers,
             needJuhua,
-            api: finalApi,
+            api: finalApi
         });
     }
-    private static onSuccess2(
-        request: any,
-        onSuccess: HttpCallback,
-        response: any,
-    ) {
+
+    private static onSuccess2(request: any, onSuccess: HttpCallback, response: any) {
         request.Response = response;
         onSuccess && onSuccess(response);
     }
+
     //代理转换
     public static handleUrl2(url: string): string {
         // if (GameConfig.IsNewArea) {

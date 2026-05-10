@@ -1,25 +1,18 @@
-import { EventName } from "../../config/EventName";
-import { NotifyManager, TEventType } from "../manager/NotifyManager";
-
-
+import { EventName } from '../../config/EventName';
+import { NotifyManager, TEventType } from '../manager/NotifyManager';
 
 export class Base extends cc.Component {
     private _listensArr: Array<TEventType> = [];
+
     constructor() {
         super();
     }
 
-    override onLoad() {
+    override onLoad() {}
 
-    }
+    override start() {}
 
-    override start() {
-
-    }
-
-    override onEnable() {
-
-    }
+    override onEnable() {}
 
     protected regiterDispatchEvent() {
         this.listen(EventName.serverResponse, this.notify);
@@ -37,7 +30,6 @@ export class Base extends cc.Component {
     // protected closeByName(name: string) {
     //     GC.dialog.close(name);
     // }
-
     // protected closeAll(without: string = '') {
     //     GC.dialog.closeAll(without);
     // }
@@ -48,8 +40,9 @@ export class Base extends cc.Component {
             this._listensArr.push(event);
         }
     }
+
     protected unregiterDispatchEvent(eventType: string | number) {
-        let index = this._listensArr.findIndex((event) => event.eventType == eventType && event.context == this);
+        let index = this._listensArr.findIndex(event => event.eventType == eventType && event.context == this);
         if (index >= 0) {
             let event = this._listensArr.splice(index, 1)[0];
             NotifyManager.instance.remove(event.eventType, event.callback, event.context);
@@ -65,10 +58,8 @@ export class Base extends cc.Component {
     }
 
     protected post(name: string, ...args: any[]) {
-        NotifyManager.instance.post(name, ...args)
+        NotifyManager.instance.post(name, ...args);
     }
 
-    protected notify(id: any, msg: any, sendInfo?: any) { }
-
-
+    protected notify(id: any, msg: any, sendInfo?: any) {}
 }

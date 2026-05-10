@@ -1,12 +1,13 @@
-import { EOrderType } from "../../../../config/EEnumConfig";
-import { TListStepReq, TOrderRecords } from "../../../../config/TTypeConfig";
-import GC from "../../../GameControl";
-import OrderRecordItemModel from "./OrderRecordItemModel";
+import { EOrderType } from '../../../../config/EEnumConfig';
+import { TListStepReq, TOrderRecords } from '../../../../config/TTypeConfig';
+import GC from '../../../GameControl';
+import OrderRecordItemModel from './OrderRecordItemModel';
 
 export default class OrderRecordModel {
     private _reccords: Map<EOrderType, Array<OrderRecordItemModel>> = new Map();
     private _status: Map<EOrderType, TListStepReq> = new Map();
     private _isCLub: boolean = false;
+
     getList(type: EOrderType) {
         let list = this._reccords.get(type);
         if (!list) {
@@ -44,7 +45,7 @@ export default class OrderRecordModel {
 
     reqRecords(type: EOrderType, isClub: boolean = this._isCLub) {
         let status = this.getStatus(type);
-        status.reqing = true
+        status.reqing = true;
         this._isCLub = isClub;
         if (status.offset == 0) {
             this.getList(type).length = 0;
@@ -55,13 +56,11 @@ export default class OrderRecordModel {
     updateData(msg: TOrderRecords, type: EOrderType) {
         let status = this.getStatus(type);
         status.reqing = false;
-
         let list = this.getList(type);
         msg.list.forEach(record => {
-            list.push(new OrderRecordItemModel(record))
-        })
-
-        status.offset = list.length
+            list.push(new OrderRecordItemModel(record));
+        });
+        status.offset = list.length;
         status.reqEnd = list.length >= msg.total;
     }
 }

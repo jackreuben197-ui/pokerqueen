@@ -1,43 +1,62 @@
-import { EventName } from "../../../config/EventName";
-import { TRoomList } from "../../../config/TTypeConfig";
-import { GameCache } from "../../../game/GameCache";
-import { WebOrgFriendRoomList, WebConfigGlobalConfig, WebConfigMultiLanguageTemplate, WebRoomCenterGroups, WebRoomCenterRooms, WebRoomCenterRoomsBlinds, WebRoomCenterRoomsBlindsClub, WebRoomCenterRoomsClub } from "../../../net/https/WebRequest";
-import { BaseData } from "../../base/BaseData";
-import GC from "../../GameControl";
-import LobbyGroupModel from "./LobbyGroupModel";
-import LobbyRoomBlindsModel from "./LobbyRoomBlindsModel";
-import LobbyRoomListModel from "./LobbyRoomListModel";
+import { EventName } from '../../../config/EventName';
+import { TRoomList } from '../../../config/TTypeConfig';
+import { GameCache } from '../../../game/GameCache';
+import {
+    WebOrgFriendRoomList,
+    WebConfigGlobalConfig,
+    WebConfigMultiLanguageTemplate,
+    WebRoomCenterGroups,
+    WebRoomCenterRooms,
+    WebRoomCenterRoomsBlinds,
+    WebRoomCenterRoomsBlindsClub,
+    WebRoomCenterRoomsClub
+} from '../../../net/https/WebRequest';
+import { BaseData } from '../../base/BaseData';
+import GC from '../../GameControl';
+import LobbyGroupModel from './LobbyGroupModel';
+import LobbyRoomBlindsModel from './LobbyRoomBlindsModel';
+import LobbyRoomListModel from './LobbyRoomListModel';
 
 export default class LobbyData extends BaseData {
     roomBlinds: LobbyRoomBlindsModel = new LobbyRoomBlindsModel();
     lobbyGroup: LobbyGroupModel = new LobbyGroupModel();
     roomList: LobbyRoomListModel = new LobbyRoomListModel();
+
     protected notify(api: any, msg: any, sendInfo?: any): void {
         switch (api) {
-            case WebRoomCenterRoomsBlinds.API: {
-                this.respRoomBlinds(msg, sendInfo, false);
-            } break;
-            case WebRoomCenterRoomsBlindsClub.API: {
-                this.respRoomBlinds(msg, sendInfo, true);
-            } break;
-            case WebRoomCenterGroups.API: {
-                this.respLobbyBaseData(msg, sendInfo);
-                GC.notify.post(EventName.refreshLobby);
-            } break;
+            case WebRoomCenterRoomsBlinds.API:
+                {
+                    this.respRoomBlinds(msg, sendInfo, false);
+                }
+                break;
+            case WebRoomCenterRoomsBlindsClub.API:
+                {
+                    this.respRoomBlinds(msg, sendInfo, true);
+                }
+                break;
+            case WebRoomCenterGroups.API:
+                {
+                    this.respLobbyBaseData(msg, sendInfo);
+                    GC.notify.post(EventName.refreshLobby);
+                }
+                break;
             // case WebConfigMultiLanguageTemplate.API: {
             //     this.respDeskNameTemp(msg, sendInfo);
             // } break;
-            case WebRoomCenterRooms.API: {
-                sendInfo.limit && this.respRoomList(msg, sendInfo, false);
-            } break;
-            case WebRoomCenterRoomsClub.API: {
-                sendInfo.limit && this.respRoomList(msg, sendInfo, true);
-            } break;
+            case WebRoomCenterRooms.API:
+                {
+                    sendInfo.limit && this.respRoomList(msg, sendInfo, false);
+                }
+                break;
+            case WebRoomCenterRoomsClub.API:
+                {
+                    sendInfo.limit && this.respRoomList(msg, sendInfo, true);
+                }
+                break;
         }
     }
 
-
-    respLobbyBaseData(msg: Array<any>, sendInfo? : any) {
+    respLobbyBaseData(msg: Array<any>, sendInfo?: any) {
         this.lobbyGroup.updataData(msg);
     }
 
@@ -49,7 +68,7 @@ export default class LobbyData extends BaseData {
     //     this.nameTemp.updateData(msg);
     // }
 
-    respRoomList(msg: TRoomList, sendInfo?: any, isClub:boolean = false) {
+    respRoomList(msg: TRoomList, sendInfo?: any, isClub: boolean = false) {
         this.roomList.updateData(msg, isClub);
     }
 
@@ -63,17 +82,16 @@ export default class LobbyData extends BaseData {
     // reqDeskNameTemp(onSuccess?: Function): void {
     //     this.reqServePost(WebConfigMultiLanguageTemplate.API, null, onSuccess)
     // }
-
     //请求大厅基础数据
     reqLobbyGroupData(onSuccess?: Function) {
-        this.reqServePost(WebRoomCenterGroups.API, null, onSuccess)
+        this.reqServePost(WebRoomCenterGroups.API, null, onSuccess);
     }
 
     //请求房间牌桌列表   大标签
     reqRoomList(offset: number, sb_min: number, sb_max: number, game_type: number, poker_type: number, isClub = false, limit = 7) {
         this.reqRoomBlinds(game_type, poker_type, isClub, () => {
             this.reqRoomListSB(offset, sb_min, sb_max, game_type, poker_type, isClub, limit);
-        })
+        });
     }
 
     //请求房间牌桌列表   小标签
@@ -81,7 +99,7 @@ export default class LobbyData extends BaseData {
         GC.data.languageTemp.reqLanguageTemp(() => {
             let url = isClub ? WebRoomCenterRoomsClub.API : WebRoomCenterRooms.API;
             this.reqServePost(url, {
-                name: "",
+                name: '',
                 ante_min: 0,
                 ante_max: 0,
                 sb_min: sb_min,
@@ -96,22 +114,26 @@ export default class LobbyData extends BaseData {
                 limit_bet_type: [],
                 limit: limit,
                 offset: offset,
-                order: ["sb_asc"]
-            })
-        })
+                order: ['sb_asc']
+            });
+        });
     }
 
     reqRoomByIds(ids: Array<number>, callBack?: Function, isClub = false) {
-        let url = WebRoomCenterRooms.API
+        let url = WebRoomCenterRooms.API;
         if (GameCache.Instance.origin_type == 4) {
-            url = WebOrgFriendRoomList.API
+            url = WebOrgFriendRoomList.API;
         } else if (GameCache.Instance.origin_type == 3) {
-            url = WebRoomCenterRoomsClub.API
+            url = WebRoomCenterRoomsClub.API;
         }
         // let url = isClub ? WebRoomCenterRoomsClub.API : WebRoomCenterRooms.API;
-        this.reqServePost(url, {
-            room_ids: ids,
-            order: ["sb_asc"]
-        }, callBack)
+        this.reqServePost(
+            url,
+            {
+                room_ids: ids,
+                order: ['sb_asc']
+            },
+            callBack
+        );
     }
 }

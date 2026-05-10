@@ -1,16 +1,13 @@
 /**
  * vconsole 开启判断，点击标题次数
  */
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class VConsoleComponent {
 
     public static get Instance(): VConsoleComponent {
-
-        return (this as any).__Instance ??= new VConsoleComponent();
-
+        return ((this as any).__Instance ??= new VConsoleComponent());
     }
     vconsole_click_time = 0;
     timeRun = false;
@@ -26,7 +23,8 @@ export default class VConsoleComponent {
         }
         this.vconsole_click_time++;
     }
-    Update(dt:number) {
+
+    Update(dt: number) {
         if (this.timeRun) {
             this.timePass += dt;
             if (this.timePass > 2) {
@@ -35,7 +33,7 @@ export default class VConsoleComponent {
                     //显示vconsole
                     this.vconsole_is_show = true;
                     (window as any).createVconsole?.();
-                    cc.log("显示console");
+                    cc.log('显示console');
                 }
                 //cc.log("失败", this.vconsole_click_time);
                 this.timeRun = false;

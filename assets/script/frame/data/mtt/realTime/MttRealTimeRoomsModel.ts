@@ -1,13 +1,12 @@
-import { TMttRoomsData, TMttRoomsDeskItem } from "../../../../config/TTypeConfig";
-import GC from "../../../GameControl";
+import { TMttRoomsData, TMttRoomsDeskItem } from '../../../../config/TTypeConfig';
+import GC from '../../../GameControl';
 
 export default class MttRealTimeRoomsModel {
     private _reqing: boolean = false;
     private _reqEnd: boolean = false;
-
     private _offset: number = 0;
-
     private _list: Array<TMttRoomsDeskItem> = [];
+
     get list() {
         return this._list;
     }
@@ -35,17 +34,14 @@ export default class MttRealTimeRoomsModel {
             this.resetData();
         }
         GC.data.mtt.reqRealTimeRooms(offset);
-
     }
 
     updateData(msg: TMttRoomsData) {
         this._reqing = false;
-
         msg.records.forEach(item => {
-            this._list.push(item)
-        })
-
-        this._offset = this._list.length
+            this._list.push(item);
+        });
+        this._offset = this._list.length;
         this._reqEnd = this._list.length >= msg.total;
     }
 }
