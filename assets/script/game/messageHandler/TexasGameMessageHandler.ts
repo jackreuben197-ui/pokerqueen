@@ -30,7 +30,6 @@ import UIComponent from '../../ui/UIComponent';
 import { GameCache } from '../GameCache';
 import Seat from '../seat/Seat';
 import { SeatStandupAnimation } from '../SeatStateHandler';
-import MTTGame from '../texas/MTTGame';
 import TexasGame from '../texas/TexasGame';
 import { TexasGameState } from '../TexasGameState';
 import { GamePlaySubType } from '../ui/UITexasGameEnd';
@@ -175,6 +174,8 @@ export default class TexasGameMessageHandler {
             }
             await SceneManager.Instance.switchScene(UIDefine.UITexas, null, GameCache.Instance.enter_param);
             this.game.SMAgency.ChangeGameState(TexasGameState.Init, response);
+            // 进房成功后加入 Agora 视频频道（确保场景和协议都已就绪）
+            this.game.TexasGameProtocol.JoinVideoChannelAfterEnterRoom();
         } else if (response.status == ServerErrorCode.Gameplay_AutoSeatReturnToInvalidGame && isMTT) {
             console.log(LN, `Protocol_Holdem_EnterRoom_Handler: response.state : ServerErrorCode.Gameplay_AutoSeatReturnToInvalidGame`);
             // 进入ExchangeRoom状态，等待换房

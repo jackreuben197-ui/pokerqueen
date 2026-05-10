@@ -84,11 +84,18 @@ export default class UIEmojiDlg extends UIBasePlus {
     }
 
     private onEmojiClick(index: number): void {
-        console.log(index);
         this.sendEmojiBroadcast(index);
         this.scheduleOnce(() => {
             UIComponent.close(this.UIDefine);
         }, 0.26);
+        // 对话框关闭后（0.26s + 关闭动画）再显示表情动画
+        setTimeout(() => {
+            const gc = GameCache.Instance;
+            const seat = gc.CurGame?.GetSeatByUserId(gc.nUserId);
+            if (seat) {
+                seat.ShowEmojiAnimation(index);
+            }
+        }, 400);
     }
 
     private sendEmojiBroadcast(emojiIndex: number): void {
@@ -97,7 +104,7 @@ export default class UIEmojiDlg extends UIBasePlus {
         const broadcastMsgData = JSON.stringify({
             name: gc.nick,
             type: EMOJI_TYPE_BASE + (emojiIndex - 1),
-            user_id: gc.userId,
+            user_id: gc.nUserId,
             target_user_id: 0,
             message: '',
             msgType: 1,
