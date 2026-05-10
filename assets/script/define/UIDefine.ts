@@ -1,23 +1,181 @@
+import { UIType, IUIDefine } from './EIDefine';
+type UIDefineKey =
+    | 'UIPreloadingComponent'
+    | 'UIGMComponent'
+    | 'LoginScene'
+    | 'LobbyScene'
+    | 'UITexas'
+    | 'BaseForm'
+    | 'LanguageForm'
+    | 'AreaCodeForm'
+    | 'UserAgreeForm'
+    | 'SettingsForm'
+    | 'UIMine_Service'
+    | 'UIMsg_Send'
+    | 'UIMine_MessageList'
+    | 'UIMine_Message'
+    | 'UIMsgIntoList'
+    | 'UIMine_PlayInfo'
+    | 'UIMine_SettingVersion'
+    | 'UIMine_About'
+    | 'UIMember'
+    | 'UIRecord'
+    | 'UIMineArch'
+    | 'UIMineBag'
+    | 'UIBagTicket'
+    | 'UIRecordScore'
+    | 'UICollectScore'
+    | 'UIRecordInto'
+    | 'UIRecordBXList'
+    | 'UIMatchPlayViewForm'
+    | 'UIMatchChessView'
+    | 'UIMatchSportsView'
+    | 'UIMatchGameView'
+    | 'UIMatchRealityView'
+    | 'UIMttSignDialogComponent'
+    | 'BaseTouchBoard'
+    | 'RightTouchBoard'
+    | 'UIDialogComponent'
+    | 'UIDialogContentSizeLimit'
+    | 'UIDialogSquid'
+    | 'UIGameplaySecuritySetting'
+    | 'UIGameplayTableSetting'
+    | 'UIDialogEditComponent'
+    | 'UINewDialogComponent'
+    | 'UIPromptComponent'
+    | 'TexasPreLoad'
+    | 'UITexasSettingComponent'
+    | 'UITexasRule'
+    | 'UITexasReportComponent'
+    | 'UITexasHistoryComponent'
+    | 'UITexasGameEnd'
+    | 'UISquidEnd'
+    | 'UITexasJackpotRecentAwardRecord'
+    | 'UITexasJackpotRewardDescription'
+    | 'UITexasDialogJackpotAwards'
+    | 'UILaborPlayViewForm'
+    | 'UITexasPlayerInfo'
+    | 'UITexasReportPlayerInfo'
+    | 'UITexasInsuranceComponent'
+    | 'UIlaborMerberManager'
+    | 'UIlaborExaminatMerber'
+    | 'UIClubLevel'
+    | 'UIClubEdit'
+    | 'UIWallet'
+    | 'UIToRecharge'
+    | 'UIRecharge'
+    | 'UIExchange'
+    | 'GoldOprationForm'
+    | 'UICreateMatchHome'
+    | 'UICreateMatch'
+    | 'LookRateListDlg'
+    | 'RateManagerListForm'
+    | 'EditRateForm'
+    | 'OrderRecordsForm'
+    | 'GoldIssueListForm'
+    | 'OrderApplyForm'
+    | 'MttListForm'
+    | 'MttDetailForm'
+    | 'MttRealTime'
+    | 'UIApplyJoin'
+    | 'UIAuditAdmin'
+    | 'UIAddAdmin'
+    | 'UIActiveMange'
+    | 'UIClubDataMange'
+    | 'UICalendar'
+    | 'UIAccountManagement'
+    | 'UIChangeAccount'
+    | 'UIChangeBind'
+    | 'UIMineThridBind'
+    | 'UIMTTMineRankComponent'
+    | 'UIClubMerberManager'
+    | 'UIClubHome'
+    | 'UIClubMember'
+    | 'UIClubCreateMatchHome'
+    | 'UIClubCreateMatch'
+    | 'UIMatchView'
+    | 'UIClubUpLevel'
+    | 'UIClubDigitalWallet'
+    | 'UIClubRateSet'
+    | 'UIClubActive'
+    | 'UIClubActiveBord'
+    | 'UIClubShareMatch'
+    | 'UICreatelabor'
+    | 'UIlaborJoin'
+    | 'UIJoinUnion'
+    | 'UISearchJoin'
+    | 'UIPlayerLookLabor'
+    | 'UIManageLabor'
+    | 'UIClubVipStatistics'
+    | 'UIAgentLink'
+    | 'UIAgentUnlink'
+    | 'UIClubVipOffline'
+    | 'UIClubVipManage'
+    | 'UIClubVipMemberDetail'
+    | 'UIClubVipMemberManage'
+    | 'MttPayforList'
+    | 'MttPayforHome'
+    | 'MttAgainBuy'
+    | 'UISuperDialog'
+    | 'UIPasswordDialog'
+    | 'UIBackDialog'
+    | 'UIRechargeDialog'
+    | 'UIClubWalletList'
+    | 'dropDownBoxNew'
+    | 'UICareerRecord'
+    | 'UIRecordDetail'
+    | 'UIRecordHands'
+    | 'UIMine_Poker'
+    | 'UIMttRecordDetail'
+    | 'UIEditInformation'
+    | 'UIChangeName'
+    | 'UIMall'
+    | 'UIMyPack'
+    | 'UIMyMessage'
+    | 'UIMeSettings'
+    | 'UIResetPassword'
+    | 'UIAboutus'
+    | 'UIVersion'
+    | 'UILanguage'
+    | 'UIReport'
+    | 'UIWebCommon'
+    | 'UIMsgSystem'
+    | 'UIMsgSystemEx'
+    | 'UIMsgBring'
+    | 'UIDownSelector'
+    | 'UIKeyNode'
+    | 'UIClubList'
+    | 'UIEditMess'
+    | 'UIPokerRoomList'
+    | 'UIMTTList'
+    | 'UIFriendDataMange'
+    | 'UIFriendDataDetail'
+    | 'UIMTTDetail'
+    | 'UIMTTMineRank'
+    | 'calendarCommpent'
+    | 'UIInsurance'
+    | 'UIFunManage'
+    | 'UIFunRecycleGive'
+    | 'UITexasHistory'
+    | 'UIBlank_dialog'
+    | 'UIGameplayAddChipsAndDiamond'
+    | 'UIEmojiDlg'
+    | 'UIConfirmDialog';
 
-import { UIType, IUIDefine } from "./EIDefine";
-
-
-
-export const UIDefine: Record<string, IUIDefine> = {
-
+export const UIDefine: Record<UIDefineKey, IUIDefine> = {
     //预加载UI
     UIPreloadingComponent: {
         UIType: UIType.CommonUI,
-        Name: "UIPreloadingComponent",
+        Name: 'UIPreloadingComponent',
         Bundle: null,
-        Path: "login/scene/LoginScene"
+        Path: 'login/scene/LoginScene'
     },
     //GM界面
     UIGMComponent: {
         UIType: UIType.CommonUI,
-        Name: "UIGMComponent",
+        Name: 'UIGMComponent',
         Bundle: null,
-        Path: "login/scene/LoginScene"
+        Path: 'login/scene/LoginScene'
     },
     /**
      *  场景
@@ -25,23 +183,23 @@ export const UIDefine: Record<string, IUIDefine> = {
     //登录场景
     LoginScene: {
         UIType: UIType.Scene,
-        Name: "LoginScene",
+        Name: 'LoginScene',
         Bundle: null,
-        Path: "login/scene/LoginScene"
+        Path: 'login/scene/LoginScene'
     },
     //大厅场景
     LobbyScene: {
         UIType: UIType.Scene,
-        Name: "LobbyScene",
+        Name: 'LobbyScene',
         Bundle: null,
-        Path: "main/lobby/LobbyScene"
+        Path: 'main/lobby/LobbyScene'
     },
     //基础牌桌
     UITexas: {
         UIType: UIType.Scene,
-        Name: "UITexas",
-        Bundle: "texas",
-        Path: "purple_prefab/scene/UITexas"
+        Name: 'UITexas',
+        Bundle: 'texas',
+        Path: 'purple_prefab/scene/UITexas'
     },
     /**
      *  标题窗口
@@ -49,147 +207,146 @@ export const UIDefine: Record<string, IUIDefine> = {
     //标题模板(不使用)
     BaseForm: {
         UIType: UIType.Form,
-        Name: "BaseForm",
+        Name: 'BaseForm',
         Bundle: null,
-        Path: "login/form/BaseForm",
-        Title: "BaseForm",
+        Path: 'login/form/BaseForm',
+        Title: 'BaseForm'
     },
     //语言
     LanguageForm: {
         UIType: UIType.Form,
-        Name: "LanguageForm",
+        Name: 'LanguageForm',
         Bundle: null,
-        Path: "main/prefab/form/LanguageForm",
-        Title: "UIMine_SettingLanguage",
+        Path: 'main/prefab/form/LanguageForm',
+        Title: 'UIMine_SettingLanguage'
     },
     //电话区号
     AreaCodeForm: {
         UIType: UIType.Form,
-        Name: "AreaCodeForm",
+        Name: 'AreaCodeForm',
         Bundle: null,
-        Path: "login/form/AreaCodeForm",
-        Title: "UILogin_Local",
+        Path: 'login/form/AreaCodeForm',
+        Title: 'UILogin_Local'
     },
     //电话区号
     UserAgreeForm: {
         UIType: UIType.Form,
-        Name: "UserAgreeForm",
+        Name: 'UserAgreeForm',
         Bundle: null,
-        Path: "login/form/UserAgreeForm",
-        Title: "tc_5E0V3qlb",
+        Path: 'login/form/UserAgreeForm',
+        Title: 'tc_5E0V3qlb'
     },
     //设置
     SettingsForm: {
         UIType: UIType.Form,
-        Name: "SettingsForm",
+        Name: 'SettingsForm',
         Bundle: null,
-        Path: "main/lobby/prefab/UIMine_Setting",
-        Title: "UIMine_btn_setting",
+        Path: 'main/lobby/prefab/UIMine_Setting',
+        Title: 'UIMine_btn_setting'
     },
     //设置-客服
     UIMine_Service: {
         UIType: UIType.Form,
-        Name: "UIMine_Service",
+        Name: 'UIMine_Service',
         Bundle: null,
-        Path: "main/lobby/prefab/UIMine_Service",
-        Title: "UIMineMain01",
+        Path: 'main/lobby/prefab/UIMine_Service',
+        Title: 'UIMineMain01'
     },
     //工会-消息推送
     UIMsg_Send: {
         UIType: UIType.Form,
-        Name: "UIMsg_Send",
+        Name: 'UIMsg_Send',
         Bundle: null,
-        Path: "main/lobby/prefab/UIMsg_Send",
-        Title: "消息推送",
+        Path: 'main/lobby/prefab/UIMsg_Send',
+        Title: '消息推送'
     },
     //公会消息
     UIMine_MessageList: {
         UIType: UIType.Form,
-        Name: "UIMine_MessageList",
+        Name: 'UIMine_MessageList',
         Bundle: null,
-        Path: "main/new_club/message/UIMine_MessageList",
-        Title: "UIMine_MsgSummary",
+        Path: 'main/new_club/message/UIMine_MessageList',
+        Title: 'UIMine_MsgSummary'
     },
     //系统公会等消息
     UIMine_Message: {
         UIType: UIType.Form,
-        Name: "UIMine_Message",
+        Name: 'UIMine_Message',
         Bundle: null,
-        Path: "main/new_club/message/UIMine_Message",
-        Title: "UIMine_MsgSummary",
+        Path: 'main/new_club/message/UIMine_Message',
+        Title: 'UIMine_MsgSummary'
     },
     //带入申请消息
     UIMsgIntoList: {
         UIType: UIType.Form,
-        Name: "UIMsgIntoList",
+        Name: 'UIMsgIntoList',
         Bundle: null,
-        Path: "main/new_club/message/UIMsgIntoList",
-        Title: "UIClub_IntoApply",
+        Path: 'main/new_club/message/UIMsgIntoList',
+        Title: 'UIClub_IntoApply'
     },
     //设置-玩家信息
     UIMine_PlayInfo: {
         UIType: UIType.Form,
-        Name: "UIMine_PlayInfo",
+        Name: 'UIMine_PlayInfo',
         Bundle: null,
-        Path: "main/lobby/prefab/UIMine_PlayInfo",
-        Title: "玩家信息",
+        Path: 'main/lobby/prefab/UIMine_PlayInfo',
+        Title: '玩家信息'
     },
-
     //设置-版本
     UIMine_SettingVersion: {
         UIType: UIType.Form,
-        Name: "UIMine_SettingVersion",
+        Name: 'UIMine_SettingVersion',
         Bundle: null,
-        Path: "main/lobby/prefab/UIMine_SettingVersion",
-        Title: "UIMine_SettingVersion",
+        Path: 'main/lobby/prefab/UIMine_SettingVersion',
+        Title: 'UIMine_SettingVersion'
     },
     //设置-关于
     UIMine_About: {
         UIType: UIType.Form,
-        Name: "UIMine_About",
+        Name: 'UIMine_About',
         Bundle: null,
-        Path: "main/lobby/prefab/UIMine_About",
-        Title: "UIMine_SettingAboutus",
+        Path: 'main/lobby/prefab/UIMine_About',
+        Title: 'UIMine_SettingAboutus'
     },
     //公会-成员详细
     UIMember: {
         UIType: UIType.Form,
-        Name: "UIMember",
+        Name: 'UIMember',
         Bundle: null,
-        Path: "main/lobby/prefab/record/UIMember",
-        Title: "详细资料",
+        Path: 'main/lobby/prefab/record/UIMember',
+        Title: '详细资料'
     },
     //战绩
     UIRecord: {
         UIType: UIType.Form,
-        Name: "UIRecord",
+        Name: 'UIRecord',
         Bundle: null,
-        Path: "main/lobby/prefab/record/UIRecord",
-        Title: "UICareerRecord",
+        Path: 'main/lobby/prefab/record/UIRecord',
+        Title: 'UICareerRecord'
     },
     //成就
     UIMineArch: {
         UIType: UIType.Form,
-        Name: "UIMineArch",
+        Name: 'UIMineArch',
         Bundle: null,
-        Path: "main/lobby/prefab/achi/UIMineArch",
-        Title: "牌型成就",
+        Path: 'main/lobby/prefab/achi/UIMineArch',
+        Title: '牌型成就'
     },
     //背包
     UIMineBag: {
         UIType: UIType.Form,
-        Name: "UIMineBag",
+        Name: 'UIMineBag',
         Bundle: null,
-        Path: "main/lobby/prefab/bag/UIMineBag",
-        Title: "UIMine_Backpack",
+        Path: 'main/lobby/prefab/bag/UIMineBag',
+        Title: 'UIMine_Backpack'
     },
     //门票
     UIBagTicket: {
         UIType: UIType.Form,
-        Name: "UIBagTicket",
+        Name: 'UIBagTicket',
         Bundle: null,
-        Path: "main/lobby/prefab/bag/UIBagTicket",
-        Title: "",
+        Path: 'main/lobby/prefab/bag/UIBagTicket',
+        Title: ''
     },
     // //战绩详情
     // UIRecordDetail: {
@@ -202,95 +359,87 @@ export const UIDefine: Record<string, IUIDefine> = {
     //本局牌谱
     UIRecordScore: {
         UIType: UIType.Form,
-        Name: "UIRecordScore",
+        Name: 'UIRecordScore',
         Bundle: null,
-        Path: "main/lobby/prefab/record/UIRecordScore",
-        Title: "UIMine_RecordDetailForNormal_FENSVUz3",
+        Path: 'main/lobby/prefab/record/UIRecordScore',
+        Title: 'UIMine_RecordDetailForNormal_FENSVUz3'
     },
     //收藏牌谱
     UICollectScore: {
         UIType: UIType.Form,
-        Name: "UICollectScore",
+        Name: 'UICollectScore',
         Bundle: null,
-        Path: "main/lobby/prefab/record/UICollectScore",
-        Title: "收藏牌谱",
+        Path: 'main/lobby/prefab/record/UICollectScore',
+        Title: '收藏牌谱'
     },
     //带入申请
     UIRecordInto: {
         UIType: UIType.Form,
-        Name: "UIRecordInto",
+        Name: 'UIRecordInto',
         Bundle: null,
-        Path: "main/lobby/prefab/record/UIRecordInto",
-        Title: "带入申请",
+        Path: 'main/lobby/prefab/record/UIRecordInto',
+        Title: '带入申请'
     },
     //保险详情
     UIRecordBXList: {
         UIType: UIType.Form,
-        Name: "UIRecordBXList",
+        Name: 'UIRecordBXList',
         Bundle: null,
-        Path: "main/lobby/prefab/record/MttRecordBXListForm",
-        Title: "",
+        Path: 'main/lobby/prefab/record/MttRecordBXListForm',
+        Title: ''
     },
     //房间模版
     UIMatchPlayViewForm: {
         UIType: UIType.Form,
-        Name: "UIMatchPlayViewForm",
+        Name: 'UIMatchPlayViewForm',
         Bundle: null,
-        Path: "main/lobby/prefab/matchView/UIMatchPlayViewForm"
+        Path: 'main/lobby/prefab/matchView/UIMatchPlayViewForm'
     },
-
     UIMatchChessView: {
         UIType: UIType.CommonUI,
-        Name: "UIMatchChessView",
+        Name: 'UIMatchChessView',
         Bundle: null,
-        Path: "main/lobby/prefab/matchView/UIMatchChessView"
+        Path: 'main/lobby/prefab/matchView/UIMatchChessView'
     },
-
     UIMatchSportsView: {
         UIType: UIType.CommonUI,
-        Name: "UIMatchSportsView",
+        Name: 'UIMatchSportsView',
         Bundle: null,
-        Path: "main/lobby/prefab/matchView/UIMatchSportsView"
+        Path: 'main/lobby/prefab/matchView/UIMatchSportsView'
     },
-
     UIMatchGameView: {
         UIType: UIType.CommonUI,
-        Name: "UIMatchGameView",
+        Name: 'UIMatchGameView',
         Bundle: null,
-        Path: "main/lobby/prefab/matchView/UIMatchGameView"
+        Path: 'main/lobby/prefab/matchView/UIMatchGameView'
     },
-
     UIMatchRealityView: {
         UIType: UIType.CommonUI,
-        Name: "UIMatchRealityView",
+        Name: 'UIMatchRealityView',
         Bundle: null,
-        Path: "main/lobby/prefab/matchView/UIMatchRealityView"
+        Path: 'main/lobby/prefab/matchView/UIMatchRealityView'
     },
-
     UIMttSignDialogComponent: {
         UIType: UIType.CommonUI,
-        Name: "UIMttSignDialogComponent",
+        Name: 'UIMttSignDialogComponent',
         Bundle: null,
-        Path: "main/mtt/detail/UIMttSignDialogComponent"
+        Path: 'main/mtt/detail/UIMttSignDialogComponent'
     },
-
     /**
      *  触摸板子（触摸黑色底板关闭）
      */
     //触摸板子模板(不使用)
     BaseTouchBoard: {
         UIType: UIType.Board,
-        Name: "BaseTouchBoard",
+        Name: 'BaseTouchBoard',
         Bundle: null,
-        Path: "main/prefab/board/BaseTouchBoard",
-
+        Path: 'main/prefab/board/BaseTouchBoard'
     },
     RightTouchBoard: {
         UIType: UIType.Board,
-        Name: "RightTouchBoard",
+        Name: 'RightTouchBoard',
         Bundle: null,
-        Path: "main/prefab/board/RightTouchBoard",
-
+        Path: 'main/prefab/board/RightTouchBoard'
     },
 
     /**
@@ -298,190 +447,183 @@ export const UIDefine: Record<string, IUIDefine> = {
      */
     UIDialogComponent: {
         UIType: UIType.Dialog,
-        Name: "UIDialogComponent",
+        Name: 'UIDialogComponent',
         Bundle: null,
-        Path: "main/prefab/dialog/UIDialogComponent",
+        Path: 'main/prefab/dialog/UIDialogComponent'
     },
+
     /**
      * 自适应内容对话框(不再提示)
      */
     UIDialogContentSizeLimit: {
         UIType: UIType.Dialog,
-        Name: "UIDialogContentSizeLimit",
+        Name: 'UIDialogContentSizeLimit',
         Bundle: null,
-        Path: "main/prefab/dialog/UIDialogContentSizeLimit",
+        Path: 'main/prefab/dialog/UIDialogContentSizeLimit'
     },
     /**
      * 鱿鱼玩法引导弹窗
      */
     UIDialogSquid: {
         UIType: UIType.Dialog,
-        Name: "UIDialogSquid",
+        Name: 'UIDialogSquid',
         Bundle: null,
-        Path: "main/prefab/dialog/UIDialogSquid",
+        Path: 'main/prefab/dialog/UIDialogSquid'
     },
     /**
      * 牌局安全设置（代入前）
      */
     UIGameplaySecuritySetting: {
         UIType: UIType.Dialog,
-        Name: "UIGameplaySecuritySetting",
+        Name: 'UIGameplaySecuritySetting',
         Bundle: null,
-        Path: "main/prefab/dialog/UIGameplaySecuritySetting",
+        Path: 'main/prefab/dialog/UIGameplaySecuritySetting'
     },
     /**
      * 牌局开桌设置（安全设置后）
      */
     UIGameplayTableSetting: {
         UIType: UIType.Dialog,
-        Name: "UIGameplayTableSetting",
+        Name: 'UIGameplayTableSetting',
         Bundle: null,
-        Path: "main/prefab/dialog/UIGameplayTableSetting",
+        Path: 'main/prefab/dialog/UIGameplayTableSetting'
     },
 
     /**
-    * 确认取消 弹窗面板(默认触摸全屏可关闭)
-    */
+     * 确认取消 弹窗面板(默认触摸全屏可关闭)
+     */
     UIDialogEditComponent: {
         UIType: UIType.Dialog,
-        Name: "UIDialogEditComponent",
+        Name: 'UIDialogEditComponent',
         Bundle: null,
-        Path: "main/prefab/dialog/UIDialogEditComponent",
+        Path: 'main/prefab/dialog/UIDialogEditComponent'
     },
+
     /**
-    * 确认取消 弹窗面板(默认触摸全屏可关闭)新版
-    */
+     * 确认取消 弹窗面板(默认触摸全屏可关闭)新版
+     */
     UINewDialogComponent: {
         UIType: UIType.Dialog,
-        Name: "UINewDialogComponent",
+        Name: 'UINewDialogComponent',
         Bundle: null,
-        Path: "main/prefab/dialog/UINewDialogComponent",
+        Path: 'main/prefab/dialog/UINewDialogComponent'
     },
-
-
     UIPromptComponent: {
         UIType: UIType.Prompt,
-        Name: "UIPromptComponent",
+        Name: 'UIPromptComponent',
         Bundle: null,
-        Path: "login/UIPromptComponent",
+        Path: 'login/UIPromptComponent'
     },
     TexasPreLoad: {
         UIType: UIType.TexasPreLoad,
-        Name: "TexasPreLoad",
+        Name: 'TexasPreLoad',
         Bundle: null,
-        Path: "main/prefab/component/TexasPreLoad",
+        Path: 'main/prefab/component/TexasPreLoad'
     },
     UITexasSettingComponent: {
         UIType: UIType.CommonUI,
-        Name: "UITexasSetting",
+        Name: 'UITexasSetting',
         Bundle: 'texas',
-        Path: "prefab/widgetLayer/UITexasSetting",
+        Path: 'prefab/widgetLayer/UITexasSetting'
     },
     UITexasRule: {
         UIType: UIType.CommonUI,
-        Name: "UITexasRule",
+        Name: 'UITexasRule',
         Bundle: 'texas',
-        Path: "prefab/widgetLayer/UITexasRule",
+        Path: 'prefab/widgetLayer/UITexasRule'
     },
     UITexasReportComponent: {
         UIType: UIType.CommonUI,
-        Name: "UITexasReport",
+        Name: 'UITexasReport',
         Bundle: 'texas',
-        Path: "prefab/widgetLayer/UITexasReport",
+        Path: 'prefab/widgetLayer/UITexasReport'
     },
     UITexasHistoryComponent: {
         UIType: UIType.CommonUI,
-        Name: "UITexasHistory",
+        Name: 'UITexasHistory',
         Bundle: 'texas',
-        Path: "prefab/widgetLayer/UITexasHistory",
+        Path: 'prefab/widgetLayer/UITexasHistory'
     },
     //普通桌结算
     UITexasGameEnd: {
         UIType: UIType.CommonUI,
-        Name: "UITexasGameEnd",
+        Name: 'UITexasGameEnd',
         Bundle: 'texas',
-        Path: "purple_prefab/ui/UITexasGameEnd",
+        Path: 'purple_prefab/ui/UITexasGameEnd'
     },
     //鱿鱼轮结算
     UISquidEnd: {
         UIType: UIType.CommonUI,
-        Name: "UISquidEnd",
+        Name: 'UISquidEnd',
         Bundle: 'texas',
-        Path: "purple_prefab/ui/UISquidOver",
+        Path: 'purple_prefab/ui/UISquidOver'
     },
     UITexasJackpotRecentAwardRecord: {
         UIType: UIType.CommonUI,
-        Name: "UITexasJackpotRecentAwardRecord",
+        Name: 'UITexasJackpotRecentAwardRecord',
         Bundle: null,
-        Path: "main/prefab/dialog/UITexasJackpotRecentAwardRecord",
+        Path: 'main/prefab/dialog/UITexasJackpotRecentAwardRecord'
     },
     UITexasJackpotRewardDescription: {
         UIType: UIType.CommonUI,
-        Name: "UITexasJackpotRewardDescription",
+        Name: 'UITexasJackpotRewardDescription',
         Bundle: 'texas',
-        Path: "purple_prefab/ui/UITexasJackpotRewardDescription",
+        Path: 'purple_prefab/ui/UITexasJackpotRewardDescription'
     },
     UITexasDialogJackpotAwards: {
         UIType: UIType.CommonUI,
-        Name: "UITexasDialogJackpotAwards",
+        Name: 'UITexasDialogJackpotAwards',
         Bundle: 'texas',
-        Path: "purple_prefab/ui/UITexasDialogJackpotAwards",
+        Path: 'purple_prefab/ui/UITexasDialogJackpotAwards'
     },
-
     //房间模版
     UILaborPlayViewForm: {
         UIType: UIType.CommonUI,
-        Name: "UILaborPlayViewForm",
+        Name: 'UILaborPlayViewForm',
         Bundle: null,
-        Path: "main/prefab/UILaborPlayViewForm"
+        Path: 'main/prefab/UILaborPlayViewForm'
     },
-
     UITexasPlayerInfo: {
         UIType: UIType.CommonUI,
-        Name: "UITexasPlayerInfo",
+        Name: 'UITexasPlayerInfo',
         Bundle: 'texas',
-        Path: "purple_prefab/ui/UITexasPlayerInfo",
+        Path: 'purple_prefab/ui/UITexasPlayerInfo'
     },
     UITexasReportPlayerInfo: {
         UIType: UIType.CommonUI,
-        Name: "UITexasReportPlayerInfo",
+        Name: 'UITexasReportPlayerInfo',
         Bundle: 'texas',
-        Path: "prefab/widgetLayer/UITexasReportPlayerInfo",
+        Path: 'prefab/widgetLayer/UITexasReportPlayerInfo'
     },
-
     UITexasInsuranceComponent: {
         UIType: UIType.CommonUI,
-        Name: "UITexasInsuranceComponent",
+        Name: 'UITexasInsuranceComponent',
         Bundle: 'texas',
-        Path: "prefab/ui/UITexasInsurance",
+        Path: 'prefab/ui/UITexasInsurance'
     },
-
-
-
     UIlaborMerberManager: {
         UIType: UIType.Form,
-        Name: "UIlaborMerberManager",
+        Name: 'UIlaborMerberManager',
         Bundle: null,
-        Path: "main/club/UIlaborMerberManager",
+        Path: 'main/club/UIlaborMerberManager'
     },
     UIlaborExaminatMerber: {
         UIType: UIType.Form,
-        Name: "UIlaborExaminatMerber",
+        Name: 'UIlaborExaminatMerber',
         Bundle: null,
-        Path: "main/club/UIlaborExaminatMerber",
+        Path: 'main/club/UIlaborExaminatMerber'
     },
-
     UIClubLevel: {
         UIType: UIType.Form,
-        Name: "UIClubLevel",
+        Name: 'UIClubLevel',
         Bundle: null,
-        Path: "main/club/UIClubLevel",
+        Path: 'main/club/UIClubLevel'
     },
     UIClubEdit: {
         UIType: UIType.Form,
-        Name: "UIClubEdit",
+        Name: 'UIClubEdit',
         Bundle: null,
-        Path: "main/new_club/lookClub/UIClubEdit",
+        Path: 'main/new_club/lookClub/UIClubEdit'
     },
     // MyWalletForm: {
     //     UIType: UIType.Form,
@@ -489,753 +631,726 @@ export const UIDefine: Record<string, IUIDefine> = {
     //     Bundle: null,
     //     Path: "main/wallet/MyWalletForm",
     // },
-
     //钱包主界面
     UIWallet: {
         UIType: UIType.Form,
-        Name: "UIWallet",
+        Name: 'UIWallet',
         Bundle: null,
-        Path: "main/new_club/wallet/UIWallet",
+        Path: 'main/new_club/wallet/UIWallet'
         //Title: "UIMine_WalletMy",
     },
     //跳转充值页面
     UIToRecharge: {
         UIType: UIType.Form,
-        Name: "UIToRecharge",
+        Name: 'UIToRecharge',
         Bundle: null,
-        Path: "main/new_club/wallet/UIToRecharge",
-        Title: "UIGuildFund_RechargeText",
+        Path: 'main/new_club/wallet/UIToRecharge',
+        Title: 'UIGuildFund_RechargeText'
     },
     //豆充值页面
     UIRecharge: {
         UIType: UIType.Form,
-        Name: "UIRecharge",
+        Name: 'UIRecharge',
         Bundle: null,
-        Path: "main/new_club/wallet/UIRecharge",
-        Title: "UIGuildFund_RechargeText",
+        Path: 'main/new_club/wallet/UIRecharge',
+        Title: 'UIGuildFund_RechargeText'
     },
     //豆转换界面
     UIExchange: {
         UIType: UIType.Form,
-        Name: "UIExchange",
+        Name: 'UIExchange',
         Bundle: null,
-        Path: "main/new_club/wallet/UIExchange",
-        Title: "adaptation10203",
+        Path: 'main/new_club/wallet/UIExchange',
+        Title: 'adaptation10203'
     },
-
     // WalletJumpForm: {
     //     UIType: UIType.Form,
     //     Name: "WalletJumpForm",
     //     Bundle: null,
     //     Path: "main/wallet/WalletJumpForm",
     // },
-
     GoldOprationForm: {
         UIType: UIType.Form,
-        Name: "GoldOprationForm",
+        Name: 'GoldOprationForm',
         Bundle: null,
-        Path: "main/wallet/GoldOprationForm",
+        Path: 'main/wallet/GoldOprationForm'
     },
-
     UICreateMatchHome: {
         UIType: UIType.Form,
-        Name: "UICreateMatchHome",
+        Name: 'UICreateMatchHome',
         Bundle: null,
-        Path: "main/club/UICreateMatchHome",
+        Path: 'main/club/UICreateMatchHome'
     },
-
     UICreateMatch: {
         UIType: UIType.Form,
-        Name: "UICreateMatch",
+        Name: 'UICreateMatch',
         Bundle: null,
-        Path: "main/club/UICreateMatch",
+        Path: 'main/club/UICreateMatch'
     },
-
     LookRateListDlg: {
         UIType: UIType.CommonUI,
-        Name: "LookRateListDlg",
+        Name: 'LookRateListDlg',
         Bundle: null,
-        Path: "main/wallet/rate/LookRateListDlg",
+        Path: 'main/wallet/rate/LookRateListDlg'
     },
     RateManagerListForm: {
         UIType: UIType.Form,
-        Name: "RateManagerListForm",
+        Name: 'RateManagerListForm',
         Bundle: null,
-        Path: "main/wallet/rate/RateManagerListForm",
+        Path: 'main/wallet/rate/RateManagerListForm'
     },
     EditRateForm: {
         UIType: UIType.Form,
-        Name: "EditRateForm",
+        Name: 'EditRateForm',
         Bundle: null,
-        Path: "main/wallet/rate/EditRateForm",
+        Path: 'main/wallet/rate/EditRateForm'
     },
     OrderRecordsForm: {
         UIType: UIType.Form,
-        Name: "OrderRecordsForm",
+        Name: 'OrderRecordsForm',
         Bundle: null,
-        Path: "main/wallet/record/OrderRecordsForm",
-        Title: "Text_RecordLine"
+        Path: 'main/wallet/record/OrderRecordsForm',
+        Title: 'Text_RecordLine'
     },
     GoldIssueListForm: {
         UIType: UIType.Form,
-        Name: "GoldIssueListForm",
+        Name: 'GoldIssueListForm',
         Bundle: null,
-        Path: "main/wallet/issue/GoldIssueListForm",
+        Path: 'main/wallet/issue/GoldIssueListForm'
     },
     OrderApplyForm: {
         UIType: UIType.Form,
-        Name: "OrderApplyForm",
+        Name: 'OrderApplyForm',
         Bundle: null,
-        Path: "main/wallet/apply/OrderApplyForm",
+        Path: 'main/wallet/apply/OrderApplyForm'
     },
-
     MttListForm: {
         UIType: UIType.Form,
-        Name: "MttListForm",
+        Name: 'MttListForm',
         Bundle: null,
-        Path: "main/mtt/MttListForm",
+        Path: 'main/mtt/MttListForm'
     },
     MttDetailForm: {
         UIType: UIType.Form,
-        Name: "MttDetailForm",
+        Name: 'MttDetailForm',
         Bundle: null,
-        Path: "main/mtt/detail/MttDetailForm",
+        Path: 'main/mtt/detail/MttDetailForm'
     },
     MttRealTime: {
         UIType: UIType.CommonUI,
-        Name: "MttRealTime",
+        Name: 'MttRealTime',
         Bundle: null,
-        Path: "main/mtt/realTime/MttRealTime",
+        Path: 'main/mtt/realTime/MttRealTime'
     },
     UIApplyJoin: {
         UIType: UIType.Form,
-        Name: "UIApplyJoin",
+        Name: 'UIApplyJoin',
         Bundle: null,
-        Path: "main/club/UIApplyJoin",
+        Path: 'main/club/UIApplyJoin'
     },
     UIAuditAdmin: {
         UIType: UIType.Form,
-        Name: "UIAuditAdmin",
+        Name: 'UIAuditAdmin',
         Bundle: null,
-        Path: "main/club/UIAuditAdmin",
+        Path: 'main/club/UIAuditAdmin'
     },
     UIAddAdmin: {
         UIType: UIType.Form,
-        Name: "UIAddAdmin",
+        Name: 'UIAddAdmin',
         Bundle: null,
-        Path: "main/club/UIAddAdmin",
+        Path: 'main/club/UIAddAdmin'
     },
     UIActiveMange: {
         UIType: UIType.Form,
-        Name: "UIActiveMange",
+        Name: 'UIActiveMange',
         Bundle: null,
-        Path: "main/club/UIActiveMange",
+        Path: 'main/club/UIActiveMange'
     },
     UIClubDataMange: {
         UIType: UIType.Form,
-        Name: "UIClubDataMange",
+        Name: 'UIClubDataMange',
         Bundle: null,
-        Path: "main/new_club/dataManger/UIClubDataMange",
+        Path: 'main/new_club/dataManger/UIClubDataMange'
     },
-
     UICalendar: {
         UIType: UIType.Board,
-        Name: "UICalendar",
+        Name: 'UICalendar',
         Bundle: null,
-        Path: "main/club/prefab/UICalendar",
+        Path: 'main/club/prefab/UICalendar'
     },
     UIAccountManagement: {
         UIType: UIType.Form,
-        Name: "UIMine_SafeAdmin",
+        Name: 'UIMine_SafeAdmin',
         Bundle: null,
-        Path: "main/lobby/me/UIAccountManagement",
-        Title: "UISettingPassword001"
+        Path: 'main/lobby/me/UIAccountManagement',
+        Title: 'UISettingPassword001'
     },
     UIChangeAccount: {
         UIType: UIType.Form,
-        Name: "UIChangeAccount",
+        Name: 'UIChangeAccount',
         Bundle: null,
-        Path: "main/lobby/me/UIChangeAccount",
+        Path: 'main/lobby/me/UIChangeAccount'
     },
     UIChangeBind: {
         UIType: UIType.Form,
-        Name: "UIChangeBind",
+        Name: 'UIChangeBind',
         Bundle: null,
-        Path: "main/lobby/me/UIChangeBind",
+        Path: 'main/lobby/me/UIChangeBind'
     },
-
     UIMineThridBind: {
         UIType: UIType.Form,
-        Name: "UIMineThridBind",
+        Name: 'UIMineThridBind',
         Bundle: null,
-        Path: "main/lobby/prefab/UIMineThridBind",
+        Path: 'main/lobby/prefab/UIMineThridBind'
     },
     //比赛结算等级
     UIMTTMineRankComponent: {
         UIType: UIType.CommonUI,
-        Name: "UIMTTMineRankComponent",
+        Name: 'UIMTTMineRankComponent',
         Bundle: 'texas',
-        Path: "prefab/ui/UIMTTMineRankComponent",
+        Path: 'prefab/ui/UIMTTMineRankComponent'
     },
     //成员管理
     UIClubMerberManager: {
         UIType: UIType.Form,
-        Name: "UIClubMerberManager",
+        Name: 'UIClubMerberManager',
         Bundle: null,
-        Path: "main/new_club/memberAdmin/UIClubMerberManager",
+        Path: 'main/new_club/memberAdmin/UIClubMerberManager'
     },
     //俱乐部主页
     UIClubHome: {
         UIType: UIType.Form,
-        Name: "UIClubHome",
+        Name: 'UIClubHome',
         Bundle: null,
-        Path: "main/new_club/clubList/UIClubHome",
+        Path: 'main/new_club/clubList/UIClubHome'
     },
     //公会-成员详细
     UIClubMember: {
         UIType: UIType.Form,
-        Name: "UIClubMember",
+        Name: 'UIClubMember',
         Bundle: null,
-        Path: "main/new_club/memberAdmin/UIClubMember",
-        Title:"UIClub_MlistInfo"
+        Path: 'main/new_club/memberAdmin/UIClubMember',
+        Title: 'UIClub_MlistInfo'
     },
     //创建比赛选择
     UIClubCreateMatchHome: {
         UIType: UIType.Form,
-        Name: "UIClubCreateMatchHome",
+        Name: 'UIClubCreateMatchHome',
         Bundle: null,
-        Path: "main/new_club/createMatch/UIClubCreateMatchHome",
+        Path: 'main/new_club/createMatch/UIClubCreateMatchHome'
     },
     //创建比赛
     UIClubCreateMatch: {
         UIType: UIType.Form,
-        Name: "UIClubCreateMatch",
+        Name: 'UIClubCreateMatch',
         Bundle: null,
-        Path: "main/new_club/createMatch/UIClubCreateMatch",
+        Path: 'main/new_club/createMatch/UIClubCreateMatch'
     },
     //排座列表管理
     UIMatchView: {
         UIType: UIType.CommonUI,
-        Name: "UIMatchView",
+        Name: 'UIMatchView',
         Bundle: null,
-        Path: "main/new_club/createMatch/UIMatchView"
+        Path: 'main/new_club/createMatch/UIMatchView'
     },
     //俱乐部升级
     UIClubUpLevel: {
         UIType: UIType.Form,
-        Name: "UIClubUpLevel",
+        Name: 'UIClubUpLevel',
         Bundle: null,
-        Path: "main/new_club/upLevel/UIClubUpLevel",
+        Path: 'main/new_club/upLevel/UIClubUpLevel'
     },
     //数字钱包
     UIClubDigitalWallet: {
         UIType: UIType.Form,
-        Name: "UIDigitalWallet",
+        Name: 'UIDigitalWallet',
         Bundle: null,
-        Path: "main/new_club/lookClub/UIClubDigitalWallet",
-        Title: "UIDigitalWallet"
+        Path: 'main/new_club/lookClub/UIClubDigitalWallet',
+        Title: 'UIDigitalWallet'
     },
     //汇率设置
     UIClubRateSet: {
         UIType: UIType.Form,
-        Name: "UIClubRateSet",
+        Name: 'UIClubRateSet',
         Bundle: null,
-        Path: "main/new_club/rateSet/UIClubRateSet",
+        Path: 'main/new_club/rateSet/UIClubRateSet'
     },
     //活动推送
     UIClubActive: {
         UIType: UIType.Form,
-        Name: "UIClubActive",
+        Name: 'UIClubActive',
         Bundle: null,
-        Path: "main/new_club/active/UIClubActive",
+        Path: 'main/new_club/active/UIClubActive'
     },
     //活动弹窗
     UIClubActiveBord: {
         UIType: UIType.Board,
-        Name: "UIClubActiveBord",
+        Name: 'UIClubActiveBord',
         Bundle: null,
-        Path: "main/new_club/active/UIClubActiveBord",
+        Path: 'main/new_club/active/UIClubActiveBord'
     },
     //共享牌局
     UIClubShareMatch: {
         UIType: UIType.Form,
-        Name: "UIClubShareMatch",
+        Name: 'UIClubShareMatch',
         Bundle: null,
-        Path: "main/new_club/shareMatch/UIClubShareMatch",
-        Title:"UIGuild_ShareGameManager",
+        Path: 'main/new_club/shareMatch/UIClubShareMatch',
+        Title: 'UIGuild_ShareGameManager'
     },
     //创建俱乐部
     UICreatelabor: {
         UIType: UIType.Form,
-        Name: "UICreatelabor",
+        Name: 'UICreatelabor',
         Bundle: null,
-        Path: "main/new_club/createClub/UICreatelabor",
+        Path: 'main/new_club/createClub/UICreatelabor'
     },
     //加入俱乐部
     UIlaborJoin: {
         UIType: UIType.Form,
-        Name: "UIlaborJoin",
+        Name: 'UIlaborJoin',
         Bundle: null,
-        Path: "main/new_club/createClub/UIlaborJoin",
+        Path: 'main/new_club/createClub/UIlaborJoin'
     },
     //加入联盟
     UIJoinUnion: {
         UIType: UIType.Form,
-        Name: "UIJoinUnion",
+        Name: 'UIJoinUnion',
         Bundle: null,
-        Path: "main/new_club/createClub/UIJoinUnion",
+        Path: 'main/new_club/createClub/UIJoinUnion'
     },
     //确认加入联盟
     UISearchJoin: {
         UIType: UIType.Form,
-        Name: "UISearchJoin",
+        Name: 'UISearchJoin',
         Bundle: null,
-        Path: "main/new_club/createClub/UISearchJoin",
+        Path: 'main/new_club/createClub/UISearchJoin'
     },
-
     UIPlayerLookLabor: {
         UIType: UIType.Form,
-        Name: "UIPlayerLookLabor",
+        Name: 'UIPlayerLookLabor',
         Bundle: null,
-        Path: "main/new_club/lookClub/UIPlayerLookLabor",
+        Path: 'main/new_club/lookClub/UIPlayerLookLabor'
     },
     UIManageLabor: {
         UIType: UIType.Form,
-        Name: "UIManageLabor",
+        Name: 'UIManageLabor',
         Bundle: null,
-        Path: "main/new_club/lookClub/UIManageLabor",
+        Path: 'main/new_club/lookClub/UIManageLabor'
     },
-
-
-
-
     /////////////////////////////////////////
     //公会贵宾详情统计
     UIClubVipStatistics: {
         UIType: UIType.Form,
-        Name: "UIClubVipStatistics",
+        Name: 'UIClubVipStatistics',
         Bundle: null,
-        Path: "main/new_club/vip/UIClubVipStatistics",
+        Path: 'main/new_club/vip/UIClubVipStatistics'
         //Title: "UIGuild_MemberDetails_VipCount"
     },
     //绑定贵宾
     UIAgentLink: {
         UIType: UIType.CommonUI,
-        Name: "UIAgentLink",
+        Name: 'UIAgentLink',
         Bundle: null,
-        Path: "main/new_club/vip/link/UIAgentLink",
+        Path: 'main/new_club/vip/link/UIAgentLink'
     },
     //解绑贵宾
     UIAgentUnlink: {
         UIType: UIType.CommonUI,
-        Name: "UIAgentUnlink",
+        Name: 'UIAgentUnlink',
         Bundle: null,
-        Path: "main/new_club/vip/link/UIAgentUnlink",
+        Path: 'main/new_club/vip/link/UIAgentUnlink'
     },
-
     //公会贵宾的线下管理
     UIClubVipOffline: {
         UIType: UIType.CommonUI,
-        Name: "UIClubVipOffline",
+        Name: 'UIClubVipOffline',
         Bundle: null,
-        Path: "main/new_club/vip/UIClubVipOffline",
-        Title: "UIGuild_MemberDetails_VipOffLine"
+        Path: 'main/new_club/vip/UIClubVipOffline',
+        Title: 'UIGuild_MemberDetails_VipOffLine'
     },
-
     //贵宾管理
     UIClubVipManage: {
         UIType: UIType.Form,
-        Name: "UIClubVipManage",
+        Name: 'UIClubVipManage',
         Bundle: null,
-        Path: "main/new_club/vip/UIClubVipManage",
-        Title: "贵宾管理"
+        Path: 'main/new_club/vip/UIClubVipManage',
+        Title: '贵宾管理'
     },
     //贵宾打开的成员详细资料
     UIClubVipMemberDetail: {
         UIType: UIType.Form,
-        Name: "UIClubVipMemberDetail",
+        Name: 'UIClubVipMemberDetail',
         Bundle: null,
-        Path: "main/new_club/vip/UIClubVipMemberDetail",
-        Title: "详细资料"
+        Path: 'main/new_club/vip/UIClubVipMemberDetail',
+        Title: '详细资料'
     },
     //贵宾的成员管理
     UIClubVipMemberManage: {
         UIType: UIType.Form,
-        Name: "UIClubVipMemberManage",
+        Name: 'UIClubVipMemberManage',
         Bundle: null,
-        Path: "main/new_club/vip/UIClubVipMemberManage",
-        Title: "成员管理"
+        Path: 'main/new_club/vip/UIClubVipMemberManage',
+        Title: '成员管理'
     },
-
     //mtt支付列表
     MttPayforList: {
         UIType: UIType.Form,
-        Name: "MttPayforList",
+        Name: 'MttPayforList',
         Bundle: null,
-        Path: "main/mtt/detail/MttPayforList",
+        Path: 'main/mtt/detail/MttPayforList'
     },
-
     MttPayforHome: {
         UIType: UIType.Form,
-        Name: "MttPayforHome",
+        Name: 'MttPayforHome',
         Bundle: null,
-        Path: "main/mtt/detail/MttPayforHome",
+        Path: 'main/mtt/detail/MttPayforHome'
     },
-
     MttAgainBuy: {
         UIType: UIType.Form,
-        Name: "MttAgainBuy",
+        Name: 'MttAgainBuy',
         Bundle: null,
-        Path: "main/mtt/detail/MttAgainBuy",
+        Path: 'main/mtt/detail/MttAgainBuy'
     },
-
     //标题通用提示面板
     UISuperDialog: {
         UIType: UIType.CommonUI,
-        Name: "UISuperDialog",
+        Name: 'UISuperDialog',
         Bundle: null,
-        Path: "main/prefab/dialog/UISuperDialog",
+        Path: 'main/prefab/dialog/UISuperDialog'
     },
     //密码输入提示面板
     UIPasswordDialog: {
         UIType: UIType.CommonUI,
-        Name: "UIPasswordDialog",
+        Name: 'UIPasswordDialog',
         Bundle: null,
-        Path: "main/prefab/dialog/UIPasswordDialog",
+        Path: 'main/prefab/dialog/UIPasswordDialog'
     },
     //背包提示面板
     UIBackDialog: {
         UIType: UIType.CommonUI,
-        Name: "UIBackDialog",
+        Name: 'UIBackDialog',
         Bundle: null,
-        Path: "main/prefab/dialog/UIBackDialog",
+        Path: 'main/prefab/dialog/UIBackDialog'
     },
     //数字钱包复制地址面板
     UIRechargeDialog: {
         UIType: UIType.CommonUI,
-        Name: "UIRechargeDialog",
+        Name: 'UIRechargeDialog',
         Bundle: null,
-        Path: "main/prefab/dialog/UIRechargeDialog",
+        Path: 'main/prefab/dialog/UIRechargeDialog'
     },
     //公会钱包列表
     UIClubWalletList: {
         UIType: UIType.CommonUI,
-        Name: "UIClubWalletList",
-        Bundle: "texas",
-        Path: "purple_prefab/ui/UIClubWalletList",
+        Name: 'UIClubWalletList',
+        Bundle: 'texas',
+        Path: 'purple_prefab/ui/UIClubWalletList'
     },
-
     //新版下拉框
     dropDownBoxNew: {
         UIType: UIType.Board,
-        Name: "dropDownBoxNew",
+        Name: 'dropDownBoxNew',
         Bundle: null,
-        Path: "common/dropDownBoxNew",
+        Path: 'common/dropDownBoxNew'
     },
     //战绩
     UICareerRecord: {
         UIType: UIType.Form,
-        Name: "UICareerRecord",
+        Name: 'UICareerRecord',
         Bundle: null,
-        Path: "main/career/UICareerRecord",
-        Title: "UICareerRecord"
+        Path: 'main/career/UICareerRecord',
+        Title: 'UICareerRecord'
     },
     //战绩详情
     UIRecordDetail: {
         UIType: UIType.Form,
-        Name: "UIRecordDetail",
+        Name: 'UIRecordDetail',
         Bundle: null,
-        Path: "main/career/UIRecordDetail",
-        Title: "战绩详情"
+        Path: 'main/career/UIRecordDetail',
+        Title: '战绩详情'
     },
     //牌谱列表
     UIRecordHands: {
         UIType: UIType.Form,
-        Name: "UIRecordHands",
+        Name: 'UIRecordHands',
         Bundle: null,
-        Path: "main/career/UIRecordHands",
-        Title: "牌谱"
+        Path: 'main/career/UIRecordHands',
+        Title: '牌谱'
     },
     //牌谱详情
     UIMine_Poker: {
         UIType: UIType.Form,
-        Name: "UIMine_Poker",
+        Name: 'UIMine_Poker',
         Bundle: null,
-        Path: "main/career/UIMine_Poker",
-        Title: "牌谱详情",
+        Path: 'main/career/UIMine_Poker',
+        Title: '牌谱详情'
     },
     //战绩详情
     UIMttRecordDetail: {
         UIType: UIType.Form,
-        Name: "UIMttRecordDetail",
+        Name: 'UIMttRecordDetail',
         Bundle: null,
-        Path: "main/career/UIMttRecordDetail",
-        Title: "战绩详情"
+        Path: 'main/career/UIMttRecordDetail',
+        Title: '战绩详情'
     },
-
     //编辑资料-new
     UIEditInformation: {
         UIType: UIType.Form,
-        Name: "UIEditInformation",
+        Name: 'UIEditInformation',
         Bundle: null,
-        Path: "main/lobby/me/UIEditInformation",
-        Title: "UIMine_UserInfoSetting_title"
+        Path: 'main/lobby/me/UIEditInformation',
+        Title: 'UIMine_UserInfoSetting_title'
     },
     //修改昵称-new
     UIChangeName: {
         UIType: UIType.Form,
-        Name: "UIChangeName",
+        Name: 'UIChangeName',
         Bundle: null,
-        Path: "main/lobby/me/UIChangeName",
-        Title: "UIMine_Mission_8"
+        Path: 'main/lobby/me/UIChangeName',
+        Title: 'UIMine_Mission_8'
     },
     //钻石商城-new
     UIMall: {
         UIType: UIType.Form,
-        Name: "UIMall",
+        Name: 'UIMall',
         Bundle: null,
-        Path: "main/lobby/me/UIMall",
-        Title: "UIHappyShop_ActivityShop"
+        Path: 'main/lobby/me/UIMall',
+        Title: 'UIHappyShop_ActivityShop'
     },
     //我的背包-new
     UIMyPack: {
         UIType: UIType.Form,
-        Name: "UIMyPack",
+        Name: 'UIMyPack',
         Bundle: null,
-        Path: "main/lobby/me/UIMyPack",
-        Title: "UIMine_Backpack"
+        Path: 'main/lobby/me/UIMyPack',
+        Title: 'UIMine_Backpack'
     },
     //我的消息
     UIMyMessage: {
         UIType: UIType.Form,
-        Name: "UIMyMessage",
+        Name: 'UIMyMessage',
         Bundle: null,
-        Path: "main/lobby/message/UIMyMessage",
-        Title: "UIMine_MsgSummary"
+        Path: 'main/lobby/message/UIMyMessage',
+        Title: 'UIMine_MsgSummary'
     },
     //我的设置
     UIMeSettings: {
         UIType: UIType.Form,
-        Name: "UIMeSettings",
+        Name: 'UIMeSettings',
         Bundle: null,
-        Path: "main/lobby/me/UIMeSettings",
-        Title: "UIMine_Setting"
+        Path: 'main/lobby/me/UIMeSettings',
+        Title: 'UIMine_Setting'
     },
     //重置密码
-    UIResetPassword:
-    {
+    UIResetPassword: {
         UIType: UIType.Form,
-        Name: "UIResetPassword",
+        Name: 'UIResetPassword',
         Bundle: null,
-        Path: "main/lobby/me/UIResetPassword",
-        Title: "UIMine_SettingPassword"
+        Path: 'main/lobby/me/UIResetPassword',
+        Title: 'UIMine_SettingPassword'
     },
     //關於我們
     UIAboutus: {
         UIType: UIType.Form,
-        Name: "UIAboutus",
+        Name: 'UIAboutus',
         Bundle: null,
-        Path: "main/lobby/me/UIAboutus",
-        Title: "tc_YQAGnw3p"
+        Path: 'main/lobby/me/UIAboutus',
+        Title: 'tc_YQAGnw3p'
     },
     //版本号
     UIVersion: {
         UIType: UIType.Form,
-        Name: "UIVersion",
+        Name: 'UIVersion',
         Bundle: null,
-        Path: "main/lobby/me/UIVersion",
-        Title: "tc_NO5NT6aa"
+        Path: 'main/lobby/me/UIVersion',
+        Title: 'tc_NO5NT6aa'
     },
     //语言
     UILanguage: {
         UIType: UIType.Form,
-        Name: "UILanguage",
+        Name: 'UILanguage',
         Bundle: null,
-        Path: "main/lobby/me/UILanguage",
-        Title: "tc_PpNL8LVJ"
+        Path: 'main/lobby/me/UILanguage',
+        Title: 'tc_PpNL8LVJ'
     },
     //问题反馈
     UIReport: {
         UIType: UIType.Form,
-        Name: "UILaUIReportnguage",
+        Name: 'UILaUIReportnguage',
         Bundle: null,
-        Path: "main/lobby/me/UIReport",
-        Title: "tc_wV5t3xsr"
+        Path: 'main/lobby/me/UIReport',
+        Title: 'tc_wV5t3xsr'
     },
     //webview通用面板
-    UIWebCommon:
-    {
+    UIWebCommon: {
         UIType: UIType.Form,
-        Name: "UIWebCommon",
+        Name: 'UIWebCommon',
         Bundle: null,
-        Path: "main/lobby/me/UIWebCommon",
+        Path: 'main/lobby/me/UIWebCommon'
     },
-
     //系统消息面板
     UIMsgSystem: {
         UIType: UIType.Form,
-        Name: "UIMsgSystem",
+        Name: 'UIMsgSystem',
         Bundle: null,
-        Path: "main/lobby/message/UIMsgSystem",
+        Path: 'main/lobby/message/UIMsgSystem'
     },
     //系统消息面板文字扩充
     UIMsgSystemEx: {
         UIType: UIType.Form,
-        Name: "UIMsgSystemEx",
+        Name: 'UIMsgSystemEx',
         Bundle: null,
-        Path: "main/lobby/message/UIMsgSystemEx",
+        Path: 'main/lobby/message/UIMsgSystemEx'
     },
     //带入申请列表
     UIMsgBring: {
         UIType: UIType.Form,
-        Name: "UIMsgBring",
+        Name: 'UIMsgBring',
         Bundle: null,
-        Path: "main/lobby/message/UIMsgBring",
+        Path: 'main/lobby/message/UIMsgBring'
     },
     //下方条目选择器
     UIDownSelector: {
         UIType: UIType.CommonUI,
-        Name: "UIDownSelector",
+        Name: 'UIDownSelector',
         Bundle: null,
-        Path: "main/prefab/component/UIDownSelector",
+        Path: 'main/prefab/component/UIDownSelector'
     },
     //键盘
     UIKeyNode: {
         UIType: UIType.Board,
-        Name: "UIKeyNode",
+        Name: 'UIKeyNode',
         Bundle: null,
-        Path: "main/new_club/createMatch/UIKeyNode",
+        Path: 'main/new_club/createMatch/UIKeyNode'
     },
     UIClubList: {
         UIType: UIType.CommonUI,
-        Name: "UIClubList",
+        Name: 'UIClubList',
         Bundle: null,
-        Path: "main/lobby/prefab/UIClubList",
+        Path: 'main/lobby/prefab/UIClubList'
     },
     UIEditMess: {
         UIType: UIType.CommonUI,
-        Name: "UIEditMess",
+        Name: 'UIEditMess',
         Bundle: '',
-        Path: "login/form/UIEditMess",
+        Path: 'login/form/UIEditMess'
     },
     // 牌桌列表界面：
-    UIPokerRoomList:{
+    UIPokerRoomList: {
         UIType: UIType.Form,
-        Name: "UIPokerRoomList",
+        Name: 'UIPokerRoomList',
         Bundle: null,
-        Path: "main/lobby/shareUI/PokerRoomList",
+        Path: 'main/lobby/shareUI/PokerRoomList'
     },
-
     //MTT比赛列表界面
     UIMTTList: {
         UIType: UIType.Form,
-        Name: "UIMTTList",
+        Name: 'UIMTTList',
         Bundle: null,
-        Path: "main/new_mtt/UIMTTList",
+        Path: 'main/new_mtt/UIMTTList'
     },
     //朋友桌数据界面
     UIFriendDataMange: {
         UIType: UIType.Form,
-        Name: "UIFriendDataMange",
+        Name: 'UIFriendDataMange',
         Bundle: null,
-        Path: "main/new_club/dataManger/UIFriendDataMange",
+        Path: 'main/new_club/dataManger/UIFriendDataMange'
     },
     //朋友桌数据详情
     UIFriendDataDetail: {
         UIType: UIType.Form,
-        Name: "UIFriendDataDetail",
+        Name: 'UIFriendDataDetail',
         Bundle: null,
-        Path: "main/new_club/dataManger/UIFriendDataDetail",
+        Path: 'main/new_club/dataManger/UIFriendDataDetail'
     },
     //MTT比赛报名页面
     UIMTTDetail: {
         UIType: UIType.Form,
-        Name: "UIMTTDetail",
+        Name: 'UIMTTDetail',
         Bundle: null,
-        Path: "main/new_mtt/UIMTTDetail",
+        Path: 'main/new_mtt/UIMTTDetail'
     },
     //MTT结算
     UIMTTMineRank: {
         UIType: UIType.CommonUI,
-        Name: "UIMTTMineRank",
+        Name: 'UIMTTMineRank',
         Bundle: null,
-        Path: "main/new_mtt/UIMTTMineRank",
+        Path: 'main/new_mtt/UIMTTMineRank'
     },
     //日历
     calendarCommpent: {
         UIType: UIType.Board,
-        Name: "calendarCommpent",
+        Name: 'calendarCommpent',
         Bundle: null,
-        Path: "common/calendarCommpent",
+        Path: 'common/calendarCommpent'
     },
     //保险列表
     UIInsurance: {
         UIType: UIType.Form,
-        Name: "UIInsurance",
+        Name: 'UIInsurance',
         Bundle: null,
-        Path: "main/career/UIInsurance",
-        Title: "UIInsurancePool"
+        Path: 'main/career/UIInsurance',
+        Title: 'UIInsurancePool'
     },
     //基金管理(发放回收)
     UIFunManage: {
         UIType: UIType.Form,
-        Name: "UIFunManage",
+        Name: 'UIFunManage',
         Bundle: null,
-        Path: "main/new_club/wallet/UIFunManage",
-        Title: "账户管理",
+        Path: 'main/new_club/wallet/UIFunManage',
+        Title: '账户管理'
     },
-
     //基金发放和回收
     UIFunRecycleGive: {
         UIType: UIType.Form,
-        Name: "UIFunRecycleGive",
+        Name: 'UIFunRecycleGive',
         Bundle: null,
-        Path: "main/new_club/wallet/UIFunRecycleGive",
+        Path: 'main/new_club/wallet/UIFunRecycleGive'
     },
     //牌局内牌谱
     UITexasHistory: {
         UIType: UIType.CommonUI,
-        Name: "UITexasHistory",
+        Name: 'UITexasHistory',
         Bundle: 'texas',
-        Path: "prefab/widgetLayer/UITexasHistory",
+        Path: 'prefab/widgetLayer/UITexasHistory'
     },
     UIBlank_dialog: {
         UIType: UIType.CommonUI,
-        Name: "UIBlank_dialog",
+        Name: 'UIBlank_dialog',
         Bundle: 'texas',
-        Path: "prefab/widgetLayer/Blank_Dialog",
-        DisAdaptScreen: true,
+        Path: 'prefab/widgetLayer/Blank_Dialog',
+        DisAdaptScreen: true
     },
     UIGameplayAddChipsAndDiamond: {
         UIType: UIType.Dialog,
-        Name: "UIGameplayAddChipsAndDiamondComponent",
+        Name: 'UIGameplayAddChipsAndDiamondComponent',
         Bundle: 'texas',
-        Path: "purple_prefab/ui/UIGameplayAddChipsAndDiamond",
-        DisAdaptScreen: true,
+        Path: 'purple_prefab/ui/UIGameplayAddChipsAndDiamond',
+        DisAdaptScreen: true
     },
     //表情弹窗
     UIEmojiDlg: {
         UIType: UIType.Board,
-        Name: "UIEmojiDlg",
+        Name: 'UIEmojiDlg',
         Bundle: 'texas',
-        Path: "prefab/ui/UIEmojiDlg",
-        DisAdaptScreen: true,
+        Path: 'prefab/ui/UIEmojiDlg',
+        DisAdaptScreen: true
     },
     //确认对话框
     UIConfirmDialog: {
         UIType: UIType.Dialog,
-        Name: "UIConfirmDialog",
+        Name: 'UIConfirmDialog',
         Bundle: 'texas',
-        Path: "purple_prefab/ui/UIConfirmDialog",
-    },
+        Path: 'purple_prefab/ui/UIConfirmDialog'
+    }
+};
 
-
-}
 //批量设置
 cc.game.on(cc.game.EVENT_GAME_INITED, () => {
     for (const key in UIDefine) {
+        const uiKey = key as UIDefineKey;
         let constructor = cc.js.getClassByName(key);
-        if (constructor) (constructor as any)['UIDefine'] = UIDefine[key];
+        if (constructor) (constructor as any)['UIDefine'] = UIDefine[uiKey];
     }
 });
 

@@ -1,13 +1,13 @@
+import ProcedureBase from './ProcedureBase';
+import H5MsgMgr from '../H5MsgMgr';
+import UIComponent, { PrefabUI, isPrefabUI } from '../ui/UIComponent';
 
-import ProcedureBase from "./ProcedureBase";
-import H5MsgMgr from "../H5MsgMgr";
-import UIComponent, { PrefabUI, isPrefabUI } from "../ui/UIComponent";
 /**
  * 回到H5
  */
 export default class ProcedureReturn extends ProcedureBase {
+    override Name: string = 'ProcedureReturn';
 
-    override Name: string = "ProcedureReturn";
     override lateEnter<T>(param?: T) {
         super.lateEnter<T>(param);
         if (isPrefabUI(param)) {

@@ -1,17 +1,16 @@
 /**
  * 大厅Session
  */
-
-import { GameConfig } from "../config/GameConfig";
-import GC from "../frame/GameControl";
-import HeartbeatComponent from "../funcomponent/HeartbeatComponent";
-import ReconnectComponent from "../funcomponent/ReconnectComponent";
-import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
-import UpdateComponent from "../funcomponent/UpdateComponent";
-import { GameCache } from "../game/GameCache";
-import GameUtil from "../game/util/GameUtil";
-import { i18nMgr } from "../i18n/i18nMgr";
-import HttpRequest from "../net/https/HttpRequest";
+import { GameConfig } from '../config/GameConfig';
+import GC from '../frame/GameControl';
+import HeartbeatComponent from '../funcomponent/HeartbeatComponent';
+import ReconnectComponent from '../funcomponent/ReconnectComponent';
+import TokenRefreshComponent from '../funcomponent/TokenRefreshComponent';
+import UpdateComponent from '../funcomponent/UpdateComponent';
+import { GameCache } from '../game/GameCache';
+import GameUtil from '../game/util/GameUtil';
+import { i18nMgr } from '../i18n/i18nMgr';
+import HttpRequest from '../net/https/HttpRequest';
 import {
     WWW,
     WebConfigGlobalConfig,
@@ -21,13 +20,12 @@ import {
     WebMsgMessageUnread,
     WebRoomCenterGroups,
     WebUserInfo,
-    WebUserRoomInsur,
-} from "../net/https/WebRequest";
-import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { ServerMessageRegister } from "../protobuf/holdem/req_g_register_pb";
-
-import GlobalSession from "./GlobalSession";
-import LoginSession from "./LoginSession";
+    WebUserRoomInsur
+} from '../net/https/WebRequest';
+import { ProtocolCode } from '../net/websocket/ProtocolCode';
+import { ServerMessageRegister } from '../protobuf/holdem/req_g_register_pb';
+import GlobalSession from './GlobalSession';
+import LoginSession from './LoginSession';
 
 export default class LobbySession {
     //房间名多语言配置
@@ -36,10 +34,8 @@ export default class LobbySession {
     static RoomLanguageDic_BR = {};
     //开关数据
     static Switch: any = {};
-
     public static tokenRefreshComponent: TokenRefreshComponent = null;
     public static heartbeatComponent: HeartbeatComponent = null;
-
     //只初始化一次
     static _initOnce: boolean = false;
 
@@ -50,27 +46,20 @@ export default class LobbySession {
             this.heartbeatComponent = new HeartbeatComponent();
             this.regiterEvents();
         }
-        cc.log("注册心跳");
+        cc.log('注册心跳');
         GC.uc.AddComponent(this.tokenRefreshComponent);
         GC.uc.AddComponent(this.heartbeatComponent);
         this.heartbeatComponent.active = false;
     }
 
     static regiterEvents() {
-        GC.notify.register(
-            ProtocolCode.Protocol_Holdem_Register,
-            this.on_Protocol_Holdem_Register,
-            this,
-        );
+        GC.notify.register(ProtocolCode.Protocol_Holdem_Register, this.on_Protocol_Holdem_Register, this);
     }
 
-    private static on_Protocol_Holdem_Register(
-        body: ServerMessageRegister.AsObject,
-    ) {
+    private static on_Protocol_Holdem_Register(body: ServerMessageRegister.AsObject) {
         if (body?.status == 0) {
             this.heartbeatComponent.active = true;
             ReconnectComponent.Instance.ChangeStatus(1);
-
             if (GameCache.Instance.CurGame) {
                 GameCache.Instance.CurGame.ReEnterRoom();
             } else {
@@ -80,6 +69,7 @@ export default class LobbySession {
             GlobalSession.Logout();
         }
     }
+
     /**
      * 获取全局配置
      */
@@ -93,10 +83,11 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this),
+                }.bind(this)
             });
         });
     }
+
     /**
      * 获取房间名多语言配置
      */
@@ -111,10 +102,11 @@ export default class LobbySession {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
-                juhua: juhua,
+                juhua: juhua
             });
         });
     }
+
     /**
      *
      * @param type 1-大厅Banner,2-公会Banner
@@ -126,10 +118,10 @@ export default class LobbySession {
             HttpRequest.Send({
                 request: WebMiscBannerList,
                 body: WebMiscBannerList.Request({
-                    lang: "en_US", //当前语言
+                    lang: 'en_US', //当前语言
                     type: type,
                     limit: limit,
-                    offset: offset,
+                    offset: offset
                 }),
                 onSuccess: function () {
                     //TODO 广播刷新
@@ -138,7 +130,7 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this),
+                }.bind(this)
             });
         });
     }
@@ -157,7 +149,7 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this),
+                }.bind(this)
             });
         });
     }
@@ -176,25 +168,26 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this),
+                }.bind(this)
             });
         });
     }
+
     /**
      * 设置该房间保险赔率表
      */
     static APIWebUserRoominsur(room_id: number) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: WebUserRoomInsur.API.replace("{id}", room_id.toString()),
+                api: WebUserRoomInsur.API.replace('{id}', room_id.toString()),
                 request: WebUserRoomInsur,
                 onSuccess: function () {
                     //TODO 广播刷新
                     //WebUserRoomInsur.Response.data
                     GameUtil.OutsList.clear();
-                    WebUserRoomInsur.Response.data.forEach((outs) => {
+                    WebUserRoomInsur.Response.data.forEach(outs => {
                         let OddsAndOuts: number[] = [];
-                        outs.detail.forEach((item) => {
+                        outs.detail.forEach(item => {
                             OddsAndOuts.push(item.odds);
                         });
                         GameUtil.OutsList.set(outs.pot_user_count, OddsAndOuts);
@@ -203,7 +196,7 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this),
+                }.bind(this)
             });
         });
     }
@@ -219,7 +212,7 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this),
+                }.bind(this)
             });
         });
     }
@@ -236,9 +229,7 @@ export default class LobbySession {
         GameCache.Instance.nick = info.nickname;
         GameCache.Instance.headPic = info.avatar;
         GameCache.Instance.userType = info.ut;
-
         GameCache.Instance.isHadClub = info.club_id > 0;
-
         //localStorage.setItem(StorageKey.KEY_USERID, `${info.un_id}`);
         //localStorage.setItem(StorageKey.KEY_PHONE, `${info.phone}`);
         //localStorage.setItem(StorageKey.KEY_PHONE_FIRST, info.area.replace("+", ""));
@@ -252,8 +243,7 @@ export default class LobbySession {
     private static parseGlobalConfig() {
         let data = WebConfigGlobalConfig.Response.data;
         LobbySession.Switch.mtt_switch = data.mtt_switch;
-        LobbySession.Switch.normal_return_profit_switch =
-            data.normal_return_profit_switch;
+        LobbySession.Switch.normal_return_profit_switch = data.normal_return_profit_switch;
         LobbySession.Switch.apple_pay_switch = data.apple_pay_switch;
         LobbySession.Switch.apple_mtt_switch = data.apple_mtt_switch;
         LobbySession.Switch.android_mtt_switch = data.android_mtt_switch;
@@ -273,6 +263,7 @@ export default class LobbySession {
             this.RoomLanguageDic_BR[room.template_id] = room.br_name;
         }
     }
+
     /**
      * 清理房间多语言配置
      */
@@ -283,17 +274,16 @@ export default class LobbySession {
     }
 
     public static getLanguageValueByKey(key: string): string {
-        key = key.split("-")[0];
-
+        key = key.split('-')[0];
         let dic = null;
         switch (i18nMgr.language) {
-            case "cn":
+            case 'cn':
                 dic = this.RoomLanguageDic_CN;
                 break;
-            case "pt":
+            case 'pt':
                 dic = this.RoomLanguageDic_BR;
                 break;
-            case "en":
+            case 'en':
                 dic = this.RoomLanguageDic_US;
                 break;
             // case "zh":
@@ -302,4 +292,5 @@ export default class LobbySession {
         return dic?.[key] || key;
     }
 }
+
 (window as any).LobbySession = LobbySession;

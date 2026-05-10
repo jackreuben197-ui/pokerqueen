@@ -1,22 +1,23 @@
-import UpdateComponent from "../funcomponent/UpdateComponent";
-import { GameCache } from "../game/GameCache";
-import TexasGame from "../game/texas/TexasGame";
-import WalletModel from "../lobby/new_club/wallet/WalletModel";
-import { Bundle_Map } from "../manager/ResManager";
-import MyMessageModel from "../new_lobby/message/MyMessageModel";
-import LobbySession from "../session/LobbySession";
-import SoundComponent from "../sound/SoundComponent";
-import MoniModel from "./data/moni/MoniModel";
-import AudioManager from "./manager/AudioManager";
-import DataManager from "./manager/DataManager";
-import LanguageManager from "./manager/LanguageManager";
-import LocalStoreManager from "./manager/LocalStoreManager";
-import { NotifyManager } from "./manager/NotifyManager";
-import SDKManager from "./manager/SDKManager";
+import UpdateComponent from '../funcomponent/UpdateComponent';
+import { GameCache } from '../game/GameCache';
+import TexasGame from '../game/texas/TexasGame';
+import WalletModel from '../lobby/new_club/wallet/WalletModel';
+import { Bundle_Map } from '../manager/ResManager';
+import MyMessageModel from '../new_lobby/message/MyMessageModel';
+import LobbySession from '../session/LobbySession';
+import SoundComponent from '../sound/SoundComponent';
+import MoniModel from './data/moni/MoniModel';
+import AudioManager from './manager/AudioManager';
+import DataManager from './manager/DataManager';
+import LanguageManager from './manager/LanguageManager';
+import LocalStoreManager from './manager/LocalStoreManager';
+import { NotifyManager } from './manager/NotifyManager';
+import SDKManager from './manager/SDKManager';
 
 class GameControl {
+
     public static get instance(): GameControl {
-        return (this as any)._instance ?? new GameControl;
+        return (this as any)._instance ?? new GameControl();
     }
     //判断游戏是否激活
     game_active: boolean = true;
@@ -67,11 +68,9 @@ class GameControl {
     // get bundle(): Map<string, cc.AssetManager.Bundle> {
     //     return Bundle_Map;
     // }
-
     // get wallet() {
     //     return WalletModel.Instance;
     // }
-
     // get message() {
     //     return MyMessageModel.Instance;
     // }
@@ -80,10 +79,9 @@ class GameControl {
         this.data.init();
         // this.sdk.init();
     }
-
 }
-
 let GC: GameControl = GameControl.instance;
+
 export default GC;
 
 (window as any).GC = GC;

@@ -1,18 +1,17 @@
-import { TClubGoldChangeLogs, TUserGoldChangeLogs } from "../../../../config/TTypeConfig";
-import TimeHelper from "../../../../helper/TimeHelper";
-import GC from "../../../GameControl";
-import ClubGoldChangeLogItem from "./ClubGoldChangeLogItem";
-import GoldChangeLogItem from "./GoldChangeLogItem";
-import UserGoldChangeLogItem from "./UserGoldChangeUserLogItem";
+import { TClubGoldChangeLogs, TUserGoldChangeLogs } from '../../../../config/TTypeConfig';
+import TimeHelper from '../../../../helper/TimeHelper';
+import GC from '../../../GameControl';
+import ClubGoldChangeLogItem from './ClubGoldChangeLogItem';
+import GoldChangeLogItem from './GoldChangeLogItem';
+import UserGoldChangeLogItem from './UserGoldChangeUserLogItem';
 
 export default class GoldChangeLogModel {
     private _reqing: boolean = false;
     private _reqEnd: boolean = false;
-
     private _offset: number = 0;
-
     private _list: Array<UserGoldChangeLogItem> = [];
     private _list_club: Array<ClubGoldChangeLogItem> = [];
+
     getList(isClub: boolean = false) {
         return isClub ? this._list_club : this._list;
     }
@@ -45,21 +44,18 @@ export default class GoldChangeLogModel {
                 } else {
                     GC.data.wallet.reqUserGoldChangeLog(offset);
                 }
-            })
+            });
         } else {
             if (isClub) {
                 GC.data.wallet.reqClubGoldChangeLog(offset);
             } else {
                 GC.data.wallet.reqUserGoldChangeLog(offset);
             }
-
         }
-
     }
 
     updateData(msg: TUserGoldChangeLogs | TClubGoldChangeLogs, isClub: boolean) {
         this._reqing = false;
-
         let list = isClub ? this._list_club : this._list;
         msg.list.forEach(log => {
             let item: GoldChangeLogItem = isClub ? new ClubGoldChangeLogItem(log) : new UserGoldChangeLogItem(log);
@@ -71,10 +67,9 @@ export default class GoldChangeLogModel {
                     item.displayTime = true;
                 }
             }
-            list.push(<any>item)
-        })
-
-        this._offset = list.length
+            list.push(<any>item);
+        });
+        this._offset = list.length;
         this._reqEnd = list.length >= msg.total;
     }
 }

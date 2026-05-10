@@ -1,6 +1,6 @@
-import GlobalSession from "../../session/GlobalSession";
-import BaseTouchBoard from "../board/BaseTouchBoard";
-import UIComponent from "../UIComponent";
+import GlobalSession from '../../session/GlobalSession';
+import BaseTouchBoard from '../board/BaseTouchBoard';
+import UIComponent from '../UIComponent';
 
 export type UIDialogContentSizeLimitParam = {
     type?: number;
@@ -8,8 +8,11 @@ export type UIDialogContentSizeLimitParam = {
     content?: string;
     contentCommit?: string;
     contentCancel?: string;
+
     actionCommit?: (noPrompt: boolean) => void;
+
     actionCancel?: () => void;
+
     actionClose?: () => void;
     isActiveCloseBtn?: boolean;
     isClose?: boolean;
@@ -19,16 +22,14 @@ export type UIDialogContentSizeLimitParam = {
     cantClickMask?: boolean;
     noAnimation?: boolean;
 };
-
 const { ccclass } = cc._decorator;
 
 @ccclass
 export default class UIDialogContentSizeLimit extends BaseTouchBoard {
     static DialogType = cc.Enum({
         Commit: 1,
-        CommitCancel: 2,
+        CommitCancel: 2
     });
-
     Button_Commit: cc.Node = null;
     Button_Cancel: cc.Node = null;
     Button_Close: cc.Node = null;
@@ -41,9 +42,11 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
     ImageNode: cc.Node = null;
     NoToggle: cc.Toggle = null;
 
-    private _actionCommit: ((noPrompt: boolean) => void) = null;
-    private _actionCancel: (() => void) = null;
-    private _actionClose: (() => void) = null;
+    private _actionCommit: (noPrompt: boolean) => void = null;
+
+    private _actionCancel: () => void = null;
+
+    private _actionClose: () => void = null;
     private _buttonCommitPos: cc.Vec3 = null;
     private _buttonCancelPos: cc.Vec3 = null;
     private _buttonCommitWidth = 0;
@@ -60,38 +63,35 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
 
     protected lateLoad(): void {
         super.lateLoad();
-
-        this.Button_Commit = this.getChildNodeOrComponent("Button_Commit");
-        this.Button_Cancel = this.getChildNodeOrComponent("Button_Cancel");
-        this.Button_Close = this.getChildNodeOrComponent("Button_Close");
-        const commitNode = this.getChildNodeOrComponent("Text_Commit");
+        this.Button_Commit = this.getChildNodeOrComponent('Button_Commit');
+        this.Button_Cancel = this.getChildNodeOrComponent('Button_Cancel');
+        this.Button_Close = this.getChildNodeOrComponent('Button_Close');
+        const commitNode = this.getChildNodeOrComponent('Text_Commit');
         this.Text_Commit = commitNode?.getComponent(cc.Label) || commitNode?.getComponent(cc.RichText) || null;
-        const cancelNode = this.getChildNodeOrComponent("Text_Cancel");
+        const cancelNode = this.getChildNodeOrComponent('Text_Cancel');
         this.Text_Cancel = cancelNode?.getComponent(cc.Label) || cancelNode?.getComponent(cc.RichText) || null;
-        this.Text_Title = this.getChildNodeOrComponent("Text_Title", cc.Label);
-        this.Image_Frame0 = this.getChildNodeOrComponent("Image_Frame0");
-        this.ImageNode = this.getChildNodeOrComponent("ImageNode");
-        this.NoToggle = this.getChildNodeOrComponent("NoToggle", cc.Toggle);
-
-        const contentNode = this.getChildNodeOrComponent("Text_Content");
+        this.Text_Title = this.getChildNodeOrComponent('Text_Title', cc.Label);
+        this.Image_Frame0 = this.getChildNodeOrComponent('Image_Frame0');
+        this.ImageNode = this.getChildNodeOrComponent('ImageNode');
+        this.NoToggle = this.getChildNodeOrComponent('NoToggle', cc.Toggle);
+        const contentNode = this.getChildNodeOrComponent('Text_Content');
         this.Text_Content_Rich = contentNode?.getComponent(cc.RichText) || null;
         this.Text_Content_Label = contentNode?.getComponent(cc.Label) || null;
-
         if (this.Button_Commit) {
             this._buttonCommitPos = this.Button_Commit.position.clone();
             this._buttonCommitWidth = this.Button_Commit.width;
             this._buttonCommitHeight = this.Button_Commit.height;
-            this._buttonCommitBg = this.Button_Commit.getChildByName("Commit_Bg");
+            this._buttonCommitBg = this.Button_Commit.getChildByName('Commit_Bg');
             this._buttonCommitBgWidth = this._buttonCommitBg?.width || 0;
-            this._buttonCommitTextNode = this.Button_Commit.getChildByName("Text_Commit");
+            this._buttonCommitTextNode = this.Button_Commit.getChildByName('Text_Commit');
             this._buttonCommitTextWidth = this._buttonCommitTextNode?.width || 0;
         }
         if (this.Button_Cancel) {
             this._buttonCancelPos = this.Button_Cancel.position.clone();
             this._buttonCancelWidth = this.Button_Cancel.width;
-            this._buttonCancelBg = this.Button_Cancel.getChildByName("Cancel_Bg");
+            this._buttonCancelBg = this.Button_Cancel.getChildByName('Cancel_Bg');
             this._buttonCancelBgWidth = this._buttonCancelBg?.width || 0;
-            this._buttonCancelTextNode = this.Button_Cancel.getChildByName("Text_Cancel");
+            this._buttonCancelTextNode = this.Button_Cancel.getChildByName('Text_Cancel');
             this._buttonCancelTextWidth = this._buttonCancelTextNode?.width || 0;
         }
     }
@@ -105,39 +105,33 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
 
     protected lateShow(param?: UIDialogContentSizeLimitParam): void {
         super.lateShow(param);
-
         const data = param || {};
         const dialogType = data.type || UIDialogContentSizeLimit.DialogType.Commit;
         const isCommitCancel = dialogType === UIDialogContentSizeLimit.DialogType.CommitCancel;
-
         this.Button_Cancel && (this.Button_Cancel.active = isCommitCancel);
         this.refreshButtonLayout(isCommitCancel);
         this.Button_Close && (this.Button_Close.active = !!data.isActiveCloseBtn);
         this.Image_Frame0 && (this.Image_Frame0.active = !!data.showTitleBg);
-
-        const titleText = data.title || "";
+        const titleText = data.title || '';
         this.setText(this.Text_Title, titleText);
         if (this.Text_Title?.node) {
             this.Text_Title.node.active = !!titleText;
         }
-        this.setText(this.Text_Commit, data.contentCommit || "Commit");
-        this.setText(this.Text_Cancel, data.contentCancel || "Cancel");
-        this.setContentText(data.content || "", !!data.isCenter);
-
+        this.setText(this.Text_Commit, data.contentCommit || 'Commit');
+        this.setText(this.Text_Cancel, data.contentCancel || 'Cancel');
+        this.setContentText(data.content || '', !!data.isCenter);
         if (this.NoToggle) {
             this.NoToggle.node.active = !!data.promptKey;
             this.NoToggle.isChecked = true;
         }
-
         if (this.ImageNode) {
-            const promptKey = data.promptKey || "";
-            const mushroom = this.ImageNode.getChildByName("mushroom");
-            const criticalhit = this.ImageNode.getChildByName("criticalhit");
-            if (mushroom) mushroom.active = promptKey === "Mushroom";
-            if (criticalhit) criticalhit.active = promptKey === "CriticalHit";
+            const promptKey = data.promptKey || '';
+            const mushroom = this.ImageNode.getChildByName('mushroom');
+            const criticalhit = this.ImageNode.getChildByName('criticalhit');
+            if (mushroom) mushroom.active = promptKey === 'Mushroom';
+            if (criticalhit) criticalhit.active = promptKey === 'CriticalHit';
             this.ImageNode.active = !!promptKey;
         }
-
         this._actionCommit = data.actionCommit || null;
         this._actionCancel = data.actionCancel || null;
         this._actionClose = data.actionClose || null;
@@ -145,12 +139,10 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
 
     private refreshButtonLayout(isCommitCancel: boolean): void {
         if (!this.Button_Commit) return;
-
         const parent = this.Button_Commit.parent;
         const layout = parent?.getComponent(cc.Layout);
         const commitWidget = this.Button_Commit.getComponent(cc.Widget);
         const cancelWidget = this.Button_Cancel?.getComponent(cc.Widget);
-
         if (isCommitCancel) {
             if (this._buttonCommitWidth > 0) {
                 this.Button_Commit.setContentSize(this._buttonCommitWidth, this._buttonCommitHeight || this.Button_Commit.height);
@@ -190,7 +182,6 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
             }
             return;
         }
-
         if (layout) {
             // 单按钮时关闭自动布局，使用手动宽度和居中位置
             layout.enabled = false;
@@ -201,7 +192,6 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
         if (cancelWidget) {
             cancelWidget.enabled = false;
         }
-
         let singleWidth = this._buttonCommitWidth;
         if (this.Button_Cancel && this._buttonCancelPos && this._buttonCommitPos) {
             const centerDistance = this._buttonCommitPos.x - this._buttonCancelPos.x;
@@ -219,9 +209,7 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
             const sidePadding = Math.max(0, this._buttonCommitWidth - this._buttonCommitTextWidth);
             this._buttonCommitTextNode.width = Math.max(0, singleWidth - sidePadding);
         }
-        const centerX = (this._buttonCommitPos && this._buttonCancelPos)
-            ? (this._buttonCommitPos.x + this._buttonCancelPos.x) * 0.5
-            : 0;
+        const centerX = this._buttonCommitPos && this._buttonCancelPos ? (this._buttonCommitPos.x + this._buttonCancelPos.x) * 0.5 : 0;
         this.Button_Commit.setPosition(cc.v3(centerX, this.Button_Commit.y, this.Button_Commit.z));
     }
 
@@ -251,7 +239,6 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
         if (data?.cantClickMask) {
             return;
         }
-
         if (data?.isClose) {
             GlobalSession.Logout();
         }
@@ -261,18 +248,16 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
 
     private onCommitClick(): void {
         const data = (this.param || {}) as UIDialogContentSizeLimitParam;
-        const promptKey = data?.promptKey || "";
+        const promptKey = data?.promptKey || '';
         const noPrompt = !!this.NoToggle?.isChecked;
         console.log('noPrompt', noPrompt);
-
         if (promptKey) {
             if (noPrompt) {
                 cc.sys.localStorage.setItem(promptKey, new Date().toISOString());
             } else {
-                cc.sys.localStorage.setItem(promptKey, "");
+                cc.sys.localStorage.setItem(promptKey, '');
             }
         }
-
         this._actionCommit?.(noPrompt);
         this.goClose();
     }
@@ -282,7 +267,7 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
     }
 
     public static IsOverDayLastUpload(key: string): boolean {
-        const lastUploadTimeStr = cc.sys.localStorage.getItem(key) || "";
+        const lastUploadTimeStr = cc.sys.localStorage.getItem(key) || '';
         if (!lastUploadTimeStr) {
             return true;
         }
@@ -290,6 +275,6 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
         if (Number.isNaN(lastUploadTime.getTime())) {
             return true;
         }
-        return (Date.now() - lastUploadTime.getTime()) >= 24 * 60 * 60 * 1000;
+        return Date.now() - lastUploadTime.getTime() >= 24 * 60 * 60 * 1000;
     }
 }

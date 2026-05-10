@@ -1,20 +1,21 @@
-import GC from "../../GameControl";
-import MttListItemModel from "./MttListItemModel";
+import GC from '../../GameControl';
+import MttListItemModel from './MttListItemModel';
 
 export default class MttListModel {
     private _reqing: boolean = false;
     private _reqEnd: boolean = false;
-
     private _offset: number = 0;
-
     private _list: Array<MttListItemModel> = [];
     private _select: MttListItemModel = null;
+
     get select() {
         return this._select;
     }
+
     set select(s) {
         this._select = s;
     }
+
     get list() {
         return this._list;
     }
@@ -46,12 +47,10 @@ export default class MttListModel {
 
     updateData(msg: any) {
         this._reqing = false;
-
         msg.records.forEach(item => {
-            this._list.push(new MttListItemModel(item))
-        })
-
-        this._offset = this._list.length
+            this._list.push(new MttListItemModel(item));
+        });
+        this._offset = this._list.length;
         this._reqEnd = this._list.length >= msg.total;
     }
 }

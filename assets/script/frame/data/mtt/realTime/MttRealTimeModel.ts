@@ -1,17 +1,15 @@
-import { TMttRank } from "../../../../config/TTypeConfig";
-import GC from "../../../GameControl";
-import MttRealTimeBlindsModel from "./MttRealTimeBlindsModel";
-import MttRealTimeRankItemModel from "./MttRealTimeRankItemModel";
-import MttRealTimeRealPrizeModel from "./MttRealTimeRealPrizeModel";
-import MttRealTimeRoomsModel from "./MttRealTimeRoomsModel";
+import { TMttRank } from '../../../../config/TTypeConfig';
+import GC from '../../../GameControl';
+import MttRealTimeBlindsModel from './MttRealTimeBlindsModel';
+import MttRealTimeRankItemModel from './MttRealTimeRankItemModel';
+import MttRealTimeRealPrizeModel from './MttRealTimeRealPrizeModel';
+import MttRealTimeRoomsModel from './MttRealTimeRoomsModel';
 
 export default class MttRealTimeModel {
     private _rankTotlePages: number = 0;
     private _ranks: Map<number, Array<MttRealTimeRankItemModel>> = new Map();
     private _rankLimit: number = 10;
     private _rankCurPage: number = 0;
-
-
 
     resetData() {
         this._ranks.clear();
@@ -43,14 +41,17 @@ export default class MttRealTimeModel {
     get ranks() {
         return this._ranks.get(this._rankCurPage);
     }
+
     get totlePage() {
         return this._rankTotlePages;
     }
+
     get curPage() {
         return this._rankCurPage;
     }
+
     set curPage(p) {
-        if (p < 0 || p > this._rankTotlePages || p == this._rankCurPage) return
+        if (p < 0 || p > this._rankTotlePages || p == this._rankCurPage) return;
         this._rankCurPage = p;
         this._rankCurPage = this._rankCurPage < 0 ? 0 : this._rankCurPage;
         this._rankCurPage = this.curPage > this._rankTotlePages ? this._rankTotlePages : this._rankCurPage;
@@ -63,32 +64,27 @@ export default class MttRealTimeModel {
     firstPage() {
         this.curPage = 0;
     }
+
     frontPage() {
         this.curPage--;
     }
+
     nextPage() {
         this.curPage++;
     }
+
     lastPage() {
         this.curPage = this._rankTotlePages;
     }
-
-
-
-
-
-
     realPrize: MttRealTimeRealPrizeModel = new MttRealTimeRealPrizeModel();
+
     updateRealPrize(msg) {
         this.realPrize.updateData(msg);
     }
-
     rooms: MttRealTimeRoomsModel = new MttRealTimeRoomsModel();
+
     updateRooms(msg) {
         this.rooms.updateData(msg);
     }
-
     blinds: MttRealTimeBlindsModel = new MttRealTimeBlindsModel();
-
-
 }

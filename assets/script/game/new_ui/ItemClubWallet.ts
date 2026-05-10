@@ -1,5 +1,4 @@
-import UIBasePlus from "../../ui/UIBasePlus";
-
+import UIBasePlus from '../../ui/UIBasePlus';
 const { ccclass, menu } = cc._decorator;
 
 @ccclass
@@ -12,8 +11,8 @@ export default class ItemClubWallet extends UIBasePlus {
     $coin: cc.Node = null;
     $usdt: cc.Node = null;
     $select: cc.Node = null;
-    ///////////////////
 
+    ///////////////////
     // "w_u_id": 0, // 用户id
     //                         "club_id": 0, // 工会ID
     //                         "tribe_id": 0, // 联盟ID
@@ -24,7 +23,6 @@ export default class ItemClubWallet extends UIBasePlus {
     //                         "gold_currency": "", // 币种三字码
     //                         "club_random_id": 929776, // 公会随机ID
     //                         "club_name": "峨眉派" // 公会名称
-
     // {
     //     "last_bring_out":null,
     //     "return_table":false,
@@ -54,5 +52,4 @@ export default class ItemClubWallet extends UIBasePlus {
         this.$usdt.active = data.data.gold_type == 2;
         this.$select.active = data.data.club_id == data.selected_wallet?.club_id;
     }
-
 }

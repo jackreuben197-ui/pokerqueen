@@ -2,11 +2,12 @@
  * 游戏玩法工具类
  * 提供游戏相关的静态工具方法
  */
-import { TableType } from "../constant/TableType";
-import { RoomOriginType } from "../constant/RoomOriginType";
-import { GameCache } from "../../../../game/GameCache";
+import { TableType } from '../constant/TableType';
+import { RoomOriginType } from '../constant/RoomOriginType';
+import { GameCache } from '../../../../game/GameCache';
 
 export default class GameplayUtil {
+
     constructor() {
         throw new Error(`${GameplayUtil.name} is a static class and cannot be instantiated`);
     }

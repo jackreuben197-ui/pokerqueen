@@ -1,11 +1,10 @@
-
-import { GameCache } from "../GameCache";
-import TexasGame from "./TexasGame";
-
+import { GameCache } from '../GameCache';
+import TexasGame from './TexasGame';
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class TexasAofGame extends TexasGame {
+
     /// <summary>
     /// 最小可玩的筹码，少于等于此数需要带入才能玩
     /// </summary>

@@ -1,23 +1,19 @@
-
-import Common_Button_Ex from "../common/Common_Button_Ex";
-import BaseComponent from "../frame/base/BaseComponent";
-import LanguageManager from "../frame/manager/LanguageManager";
-import { i18nLabel } from "../i18n/i18nLabel";
-import { ResManager } from "../manager/ResManager";
-import CCTools from "../tools/CCTools";
-import { Open_Obj } from "./UIComponent";
+import Common_Button_Ex from '../common/Common_Button_Ex';
+import BaseComponent from '../frame/base/BaseComponent';
+import LanguageManager from '../frame/manager/LanguageManager';
+import { i18nLabel } from '../i18n/i18nLabel';
+import { ResManager } from '../manager/ResManager';
+import CCTools from '../tools/CCTools';
+import { Open_Obj } from './UIComponent';
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIBase extends BaseComponent {
     // 索引
     public index: number = 0;
-
     public obj: Open_Obj;
-
     public show_animation: boolean = false;
     public close_animation: boolean = false;
-
     private _prefabs: Map<string, UIBase> = new Map();
 
     protected setSprite(sp: cc.Sprite | cc.Mask, url?: string, cb: Function = null) {
@@ -25,7 +21,6 @@ export default class UIBase extends BaseComponent {
             sp.spriteFrame = null;
             return;
         }
-
         //防止连续两次赋值，由于加载速度不同，导致图片为第一次的图片
         // let flagId = CCTools.onceNotRepeatNum;
         // sp.node["flagId"] = flagId;
@@ -38,19 +33,20 @@ export default class UIBase extends BaseComponent {
         //     }
         // }, cc.SpriteFrame);
     }
+
     protected setSpriteShowGray(sp: cc.Sprite | cc.Node | cc.Button | cc.Label | sp.Skeleton, showGray: boolean = true) {
         if (this.nodeIsValid(sp)) {
             let material = null;
             if (showGray) {
-                material = cc.Material.getBuiltinMaterial("2d-gray-sprite");
+                material = cc.Material.getBuiltinMaterial('2d-gray-sprite');
             } else {
-                material = cc.Material.getBuiltinMaterial("2d-sprite");
+                material = cc.Material.getBuiltinMaterial('2d-sprite');
             }
             if (sp instanceof cc.Button) {
                 sp.normalMaterial = material;
-                return
+                return;
             } else if (sp instanceof cc.Node) {
-                sp = sp.getComponent(cc.Sprite)
+                sp = sp.getComponent(cc.Sprite);
             }
             sp.setMaterial(0, material);
         }
@@ -61,7 +57,6 @@ export default class UIBase extends BaseComponent {
     //         sp.spriteFrame = null;
     //         return;
     //     }
-
     //     let flagId = CCTools.onceNotRepeatNum;
     //     sp.node["flagId"] = flagId;
     //     this.loadAsset(url, (spriteframe) => {
@@ -73,7 +68,6 @@ export default class UIBase extends BaseComponent {
     //         }
     //     }, cc.Texture2D);
     // }
-
     // protected loadPrefab(url: string, cb: Function = null, errorCb: Function = null) {
     //     this.loadAsset(url, (instant, res) => {
     //         if (Boolean(this)) {
@@ -85,11 +79,11 @@ export default class UIBase extends BaseComponent {
     protected setText(label: cc.Label | cc.RichText | cc.EditBox, msg: string | number, ...params: any) {
         if (this.nodeIsValid(label)) {
             if (CCTools.isNull(msg)) {
-                label.string = "";
-                return
+                label.string = '';
+                return;
             }
             let text = LanguageManager.instance.getLocal(msg, ...params);
-            if (!text.startsWith("缺少字段")) {
+            if (!text.startsWith('缺少字段')) {
                 msg = text;
             }
             label.string = String(msg);
@@ -98,7 +92,7 @@ export default class UIBase extends BaseComponent {
 
     protected setTextColor(label: cc.Label | cc.RichText, textColor: cc.Color | string) {
         if (this.nodeIsValid(label) && textColor) {
-            let color: cc.Color = (textColor instanceof cc.Color) ? textColor : new cc.Color().fromHEX(textColor);
+            let color: cc.Color = textColor instanceof cc.Color ? textColor : new cc.Color().fromHEX(textColor);
             label.node.color = color;
         }
     }
@@ -123,12 +117,16 @@ export default class UIBase extends BaseComponent {
         }
         return false;
     }
+
     //设置按钮点击
     protected setButtonClick(button: cc.Node, clickHandler: Function) {
         if (!button) return;
-        let button_com = button.getComponent(cc.Button) || button.getChildByName("BtnArea")?.getComponent(cc.Button) || button.getChildByName("click")?.getComponent(cc.Button);
+        let button_com =
+            button.getComponent(cc.Button) ||
+            button.getChildByName('BtnArea')?.getComponent(cc.Button) ||
+            button.getChildByName('click')?.getComponent(cc.Button);
         if (button_com) {
-            button_com.node.on("click", clickHandler, this);
+            button_com.node.on('click', clickHandler, this);
         }
     }
 
@@ -140,22 +138,30 @@ export default class UIBase extends BaseComponent {
     //获取按钮节点是否可交互
     public getButtonInteractable(button: cc.Node) {
         if (!button) return;
-        let button_com = button.getComponent(cc.Button) || button.getChildByName("BtnArea")?.getComponent(cc.Button) || button.getChildByName("click")?.getComponent(cc.Button);
+        let button_com =
+            button.getComponent(cc.Button) ||
+            button.getChildByName('BtnArea')?.getComponent(cc.Button) ||
+            button.getChildByName('click')?.getComponent(cc.Button);
         if (button_com) {
             return button_com.interactable;
         }
         return false;
     }
+
     //设置按钮节点是否可交互
     public setButtonInteractable(button: cc.Node, boo: boolean) {
         if (!button) return;
-        let button_com = button.getComponent(cc.Button) || button.getChildByName("BtnArea")?.getComponent(cc.Button) || button.getChildByName("click")?.getComponent(cc.Button);
+        let button_com =
+            button.getComponent(cc.Button) ||
+            button.getChildByName('BtnArea')?.getComponent(cc.Button) ||
+            button.getChildByName('click')?.getComponent(cc.Button);
         if (button_com) {
             button_com.interactable = boo;
             let ex = button_com.node.getComponent(Common_Button_Ex);
             if (ex) ex.interactable = boo;
         }
     }
+
     // /**
     // * 生成对象
     // * @param url
@@ -193,13 +199,13 @@ export default class UIBase extends BaseComponent {
     lateClose(params?: any) {
         this._prefabs.forEach(prefab => {
             prefab.lateClose();
-        })
+        });
     }
 
     onBeforeDestory() {
         this._prefabs.forEach(prefab => {
             prefab.onBeforeDestory();
-        })
+        });
     }
 
     onDestroy(release: boolean = false) {
@@ -208,9 +214,8 @@ export default class UIBase extends BaseComponent {
     }
 
     //从其他页面回退执行
-    reback() {
+    reback() {}
 
-    }
     //设置节点下的文本,包括子路径
     setChildLabel(node: cc.Node, path: string, text: string | number) {
         let label_node = cc.find(path, node);
@@ -223,24 +228,25 @@ export default class UIBase extends BaseComponent {
                 label.string = `${text}`;
             }
         } else {
-            console.log('[UI][UIBase]',"-----未找到node-----", path);
+            console.log('[UI][UIBase]', '-----未找到node-----', path);
         }
     }
+
     //设置节点下的文本颜色
     setChildColor(node: cc.Node, path: string, color: string | cc.Color) {
-
-        cc.find(path, node).color = (color instanceof cc.Color) ? color : cc.Color.BLACK.fromHEX(color);
+        cc.find(path, node).color = color instanceof cc.Color ? color : cc.Color.BLACK.fromHEX(color);
         // cc.Color.BLACK.fromHEX(color);
     }
 
     setChildVisible(node: cc.Node, path: string, visible: boolean) {
         cc.find(path, node).active = visible;
     }
+
     setChildSprite(node: cc.Node, path: string, spriteFrame: cc.SpriteFrame) {
         cc.find(path, node).getComponent(cc.Sprite).spriteFrame = spriteFrame;
     }
+
     setChildOpacity(node: cc.Node, path: string, opacity: number) {
         cc.find(path, node).opacity = opacity;
     }
-
 }

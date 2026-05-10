@@ -1,10 +1,8 @@
-import { GameConfig } from "../config/GameConfig";
-
+import { GameConfig } from '../config/GameConfig';
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class SpriteAnimationHelper extends cc.Component {
-
     @property(cc.Sprite)
     sprite: cc.Sprite = null;
     @property
@@ -15,15 +13,11 @@ export default class SpriteAnimationHelper extends cc.Component {
     autoPlay: boolean = true;
     @property
     loop: boolean = true;
-
     toPlay: boolean = false;
     //间隔时间
     stepDuration: number = 0;
-
     passTime: number = 0;
-
     frameIndex: number = 0;
-
     //完成回调
     callback: Function = null;
 
@@ -42,6 +36,7 @@ export default class SpriteAnimationHelper extends cc.Component {
         this.frameIndex = 0;
         this.render();
     }
+
     protected override update(dt: number): void {
         if (this.toPlay) {
             this.passTime += dt;
@@ -51,6 +46,7 @@ export default class SpriteAnimationHelper extends cc.Component {
             }
         }
     }
+
     //真实刷新
     realUpdate() {
         this.frameIndex++;

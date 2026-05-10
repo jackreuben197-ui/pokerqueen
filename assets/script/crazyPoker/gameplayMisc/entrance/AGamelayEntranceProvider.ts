@@ -1,37 +1,29 @@
-import AGameplayEntrance from "./AGameplayEntrance";
-import TexasGameplayEntrance from "./TexasGameplayEntrance";
-import MttTexasGameplayEntrance from "./MttTexasGameplayEntrance";
-import { RoomType } from "../../../game/util/GameUtil";
+import AGameplayEntrance from './AGameplayEntrance';
+import TexasGameplayEntrance from './TexasGameplayEntrance';
+import MttTexasGameplayEntrance from './MttTexasGameplayEntrance';
+import { RoomType } from '../../../game/util/GameUtil';
 
 export class AGameplayEntranceProvider {
+
     /**
      * 统一入口：根据房间类型创建对应的玩法实例
      */
-    public static createEntrance(
-        roomType: number, 
-        matchId: number, 
-        roomId: number
-    ): AGameplayEntrance {
-        
+    public static createEntrance(roomType: number, matchId: number, roomId: number): AGameplayEntrance {
         if (this._isRegularTexasGameplay(roomType)) {
             return new TexasGameplayEntrance(roomType, matchId, roomId);
         }
-
         if (this._isMttTexasGameplay(roomType)) {
             // TODO: MTT玩法入口
             return new MttTexasGameplayEntrance(roomType, matchId, roomId);
         }
-
         if (this._isCowboyGameplay(roomType)) {
             // TODO: 牛仔玩法入口
             // return new CowboyGameplayEntrance(roomType, matchId, roomId);
         }
-        
         throw new Error(`Unknown room type: ${roomType}`);
     }
 
     // ==================== 静态方法 ====================
-
     /**
      * 判断是否为常规德州玩法
      * @param roomType 玩法类型

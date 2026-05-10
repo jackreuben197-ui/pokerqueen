@@ -1,13 +1,12 @@
-import { EventName } from "../config/EventName";
-import { i18nLabel } from "../i18n/i18nLabel";
-import UIBase from "../ui/UIBase";
-
+import { EventName } from '../config/EventName';
+import { i18nLabel } from '../i18n/i18nLabel';
+import UIBase from '../ui/UIBase';
 const { ccclass, property, menu } = cc._decorator;
 
 export type TTabToggleData = {
-    title?: Array<string>,
-    params?: Array<any>
-}
+    title?: Array<string>;
+    params?: Array<any>;
+};
 
 export enum ETabToggle {
     text,
@@ -25,6 +24,7 @@ export default class ComTabToggles extends UIBase {
     private _type: ETabToggle = ETabToggle.sprite;
     private _params: Array<any> = null;
     private _titles: Array<string> = [];
+
     onLoad() {
         super.onLoad();
         this.initView();
@@ -38,7 +38,7 @@ export default class ComTabToggles extends UIBase {
         this._tabIndex = -1;
         this.tabToggles.forEach((node, index) => {
             this.bindClick(node, this._onTabClick, index);
-        })
+        });
     }
 
     initData(toggles: any, type: ETabToggle = ETabToggle.sprite, data?: TTabToggleData) {
@@ -54,12 +54,15 @@ export default class ComTabToggles extends UIBase {
     get tabIndex() {
         return this._tabIndex;
     }
+
     set tabIndex(index: number) {
         this._tabIndex = index;
     }
+
     set onToggle(t) {
         this._onToggle = t;
     }
+
     set type(t) {
         this._type = t;
     }
@@ -82,13 +85,13 @@ export default class ComTabToggles extends UIBase {
                 this.setActive(node, index < titles.length);
                 if (node.active) {
                     if (this._type == ETabToggle.text) {
-                        this.setTesti18(node.getChildByName("text"), titles[index])
+                        this.setTesti18(node.getChildByName('text'), titles[index]);
                     } else {
-                        this.setTesti18(node.getChildByName('normal').getChildByName("text"), titles[index])
-                        this.setTesti18(node.getChildByName('selected').getChildByName("text"), titles[index])
+                        this.setTesti18(node.getChildByName('normal').getChildByName('text'), titles[index]);
+                        this.setTesti18(node.getChildByName('selected').getChildByName('text'), titles[index]);
                     }
                 }
-            })
+            });
         }
     }
 
@@ -98,7 +101,7 @@ export default class ComTabToggles extends UIBase {
             if (i18) {
                 i18.i18NString = key;
             } else {
-                this.setText(testNode.getComponent(cc.Label), key)
+                this.setText(testNode.getComponent(cc.Label), key);
             }
         }
     }
@@ -115,7 +118,7 @@ export default class ComTabToggles extends UIBase {
 
     private async _onTabClick(index: number, data?: any) {
         if (index != this._tabIndex) {
-            let param = data ? data : (this._params ? this._params[index] : null);
+            let param = data ? data : this._params ? this._params[index] : null;
             let suc = await this._onToggle(index, param);
             if (suc || suc == undefined) {
                 this.setTabTo(index);
@@ -129,14 +132,14 @@ export default class ComTabToggles extends UIBase {
                 let text = node.getChildByName('text').getComponent(cc.Label);
                 let line = node.getChildByName('line');
                 line.active = this._tabIndex == index;
-                this.setTextColor(text, "#EEF5FF");
-                node.opacity = this._tabIndex == index ? 255 : 100
+                this.setTextColor(text, '#EEF5FF');
+                node.opacity = this._tabIndex == index ? 255 : 100;
             } else {
                 let textNormal = node.getChildByName('normal');
                 let textSelected = node.getChildByName('selected');
                 textNormal.active = this._tabIndex != index;
                 textSelected.active = this._tabIndex == index;
             }
-        })
+        });
     }
 }

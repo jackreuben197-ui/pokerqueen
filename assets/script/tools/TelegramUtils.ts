@@ -4,7 +4,6 @@
  * @description: Telegram Web App SDK 工具类
  * @FilePath: /pokerqueen/assets/script/tools/TelegramUtils.ts
  */
-
 /**
  * Telegram WebApp 工具类
  * 用于集成 Telegram Mini App SDK
@@ -34,54 +33,47 @@ export default class TelegramUtils {
             if (window && (window as any).Telegram && (window as any).Telegram.WebApp) {
                 this._webApp = (window as any).Telegram.WebApp;
                 this._isInTelegram = true;
-                
-                console.log("=== Telegram WebApp SDK 初始化 ===");
-                console.log("SDK 版本:", this._webApp.version);
-                console.log("平台:", this._webApp.platform);
-                console.log("是否已展开:", this._webApp.isExpanded);
-                console.log("视口高度:", this._webApp.viewportHeight);
-                console.log("视口稳定高度:", this._webApp.viewportStableHeight);
-                console.log("用户信息:", this._webApp.initDataUnsafe?.user);
-                
+                console.log('=== Telegram WebApp SDK 初始化 ===');
+                console.log('SDK 版本:', this._webApp.version);
+                console.log('平台:', this._webApp.platform);
+                console.log('是否已展开:', this._webApp.isExpanded);
+                console.log('视口高度:', this._webApp.viewportHeight);
+                console.log('视口稳定高度:', this._webApp.viewportStableHeight);
+                console.log('用户信息:', this._webApp.initDataUnsafe?.user);
                 // 通知 Telegram WebApp 已准备好
                 this._webApp.ready();
-                console.log("已调用 ready()");
-                
+                console.log('已调用 ready()');
                 // 使用延迟调用来确保 SDK 完全准备好
                 // 对于旧版本的 Telegram，需要给一些时间让 SDK 初始化完成
                 setTimeout(() => {
                     this.expandToFullScreen();
                 }, 100);
-                
                 // 再次尝试展开（兼容性处理）
                 setTimeout(() => {
                     if (this._webApp && !this._webApp.isExpanded) {
-                        console.log("第一次展开未成功，重试中...");
+                        console.log('第一次展开未成功，重试中...');
                         this.expandToFullScreen();
                     }
                 }, 500);
-                
                 // 第三次尝试
                 setTimeout(() => {
                     if (this._webApp && !this._webApp.isExpanded) {
-                        console.log("第二次展开未成功，再次重试...");
+                        console.log('第二次展开未成功，再次重试...');
                         this.expandToFullScreen();
                     }
                 }, 1000);
-                
                 // 设置主题颜色（延迟调用以确保兼容性）
                 setTimeout(() => {
-                    this.setHeaderColor("#1a1a1a");
+                    this.setHeaderColor('#1a1a1a');
                     this.disableVerticalSwipes();
                 }, 200);
-                
             } else {
-                console.log("不在 Telegram 环境中运行");
-                console.log("window.Telegram:", (window as any).Telegram);
+                console.log('不在 Telegram 环境中运行');
+                console.log('window.Telegram:', (window as any).Telegram);
                 this._isInTelegram = false;
             }
         } catch (error) {
-            console.error("Telegram WebApp 初始化失败:", error);
+            console.error('Telegram WebApp 初始化失败:', error);
             this._isInTelegram = false;
         }
     }
@@ -92,27 +84,25 @@ export default class TelegramUtils {
     public expandToFullScreen(): void {
         if (this._isInTelegram && this._webApp) {
             try {
-                console.log("准备展开到全屏...");
-                console.log("当前展开状态:", this._webApp.isExpanded);
-                console.log("当前视口高度:", this._webApp.viewportHeight);
-                
+                console.log('准备展开到全屏...');
+                console.log('当前展开状态:', this._webApp.isExpanded);
+                console.log('当前视口高度:', this._webApp.viewportHeight);
                 // 检查 expand 方法是否存在
                 if (typeof this._webApp.expand === 'function') {
                     this._webApp.expand();
-                    console.log("已调用 expand() 方法");
-                    
+                    console.log('已调用 expand() 方法');
                     // 延迟检查展开结果
                     setTimeout(() => {
-                        console.log("展开后状态:", this._webApp.isExpanded);
-                        console.log("展开后视口高度:", this._webApp.viewportHeight);
+                        console.log('展开后状态:', this._webApp.isExpanded);
+                        console.log('展开后视口高度:', this._webApp.viewportHeight);
                     }, 300);
                 } else {
-                    console.warn("当前 Telegram 版本不支持 expand() 方法");
+                    console.warn('当前 Telegram 版本不支持 expand() 方法');
                     // 尝试使用其他方法
                     this.tryAlternativeFullscreen();
                 }
             } catch (error) {
-                console.error("展开到全屏失败:", error);
+                console.error('展开到全屏失败:', error);
                 this.tryAlternativeFullscreen();
             }
         }
@@ -122,16 +112,14 @@ export default class TelegramUtils {
      * 尝试其他全屏方法（兼容旧版本）
      */
     private tryAlternativeFullscreen(): void {
-        console.log("尝试使用备用全屏方法...");
+        console.log('尝试使用备用全屏方法...');
         try {
             // 方法1: 设置视口样式
             const viewport = document.querySelector('meta[name="viewport"]');
             if (viewport) {
-                viewport.setAttribute('content', 
-                    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
-                console.log("已更新 viewport 设置");
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+                console.log('已更新 viewport 设置');
             }
-            
             // 方法2: 设置 body 样式强制全屏
             if (document.body) {
                 document.body.style.position = 'fixed';
@@ -140,18 +128,17 @@ export default class TelegramUtils {
                 document.body.style.width = '100%';
                 document.body.style.height = '100vh';
                 document.body.style.overflow = 'hidden';
-                console.log("已设置 body 全屏样式");
+                console.log('已设置 body 全屏样式');
             }
-            
             // 方法3: 设置 Canvas 全屏
             const canvas = document.getElementById('GameCanvas') as HTMLCanvasElement;
             if (canvas) {
                 canvas.style.width = '100%';
                 canvas.style.height = '100vh';
-                console.log("已设置 Canvas 全屏样式");
+                console.log('已设置 Canvas 全屏样式');
             }
         } catch (error) {
-            console.error("备用全屏方法失败:", error);
+            console.error('备用全屏方法失败:', error);
         }
     }
 
@@ -163,9 +150,9 @@ export default class TelegramUtils {
         if (this._isInTelegram && this._webApp) {
             try {
                 this._webApp.setHeaderColor(color);
-                console.log("设置头部颜色:", color);
+                console.log('设置头部颜色:', color);
             } catch (error) {
-                console.error("设置头部颜色失败:", error);
+                console.error('设置头部颜色失败:', error);
             }
         }
     }
@@ -178,9 +165,9 @@ export default class TelegramUtils {
         if (this._isInTelegram && this._webApp) {
             try {
                 this._webApp.setBackgroundColor(color);
-                console.log("设置背景颜色:", color);
+                console.log('设置背景颜色:', color);
             } catch (error) {
-                console.error("设置背景颜色失败:", error);
+                console.error('设置背景颜色失败:', error);
             }
         }
     }
@@ -194,12 +181,12 @@ export default class TelegramUtils {
                 // 检查方法是否存在
                 if (typeof this._webApp.disableVerticalSwipes === 'function') {
                     this._webApp.disableVerticalSwipes();
-                    console.log("已禁用垂直滑动关闭");
+                    console.log('已禁用垂直滑动关闭');
                 } else {
-                    console.warn("当前 Telegram 版本不支持 disableVerticalSwipes()");
+                    console.warn('当前 Telegram 版本不支持 disableVerticalSwipes()');
                 }
             } catch (error) {
-                console.error("禁用垂直滑动失败:", error);
+                console.error('禁用垂直滑动失败:', error);
             }
         }
     }
@@ -212,12 +199,12 @@ export default class TelegramUtils {
             try {
                 if (typeof this._webApp.enableVerticalSwipes === 'function') {
                     this._webApp.enableVerticalSwipes();
-                    console.log("已启用垂直滑动关闭");
+                    console.log('已启用垂直滑动关闭');
                 } else {
-                    console.warn("当前 Telegram 版本不支持 enableVerticalSwipes()");
+                    console.warn('当前 Telegram 版本不支持 enableVerticalSwipes()');
                 }
             } catch (error) {
-                console.error("启用垂直滑动失败:", error);
+                console.error('启用垂直滑动失败:', error);
             }
         }
     }
@@ -233,7 +220,7 @@ export default class TelegramUtils {
                 lastName: this._webApp.initDataUnsafe?.user?.last_name,
                 username: this._webApp.initDataUnsafe?.user?.username,
                 languageCode: this._webApp.initDataUnsafe?.user?.language_code,
-                isPremium: this._webApp.initDataUnsafe?.user?.is_premium,
+                isPremium: this._webApp.initDataUnsafe?.user?.is_premium
             };
         }
         return null;
@@ -244,9 +231,9 @@ export default class TelegramUtils {
      */
     public getStartParam(): string {
         if (this._isInTelegram && this._webApp) {
-            return this._webApp.initDataUnsafe?.start_param || "";
+            return this._webApp.initDataUnsafe?.start_param || '';
         }
-        return "";
+        return '';
     }
 
     /**
@@ -259,7 +246,7 @@ export default class TelegramUtils {
             this._webApp.MainButton.setText(text);
             this._webApp.MainButton.show();
             this._webApp.MainButton.onClick(onClick);
-            console.log("显示主按钮:", text);
+            console.log('显示主按钮:', text);
         }
     }
 
@@ -269,7 +256,7 @@ export default class TelegramUtils {
     public hideMainButton(): void {
         if (this._isInTelegram && this._webApp && this._webApp.MainButton) {
             this._webApp.MainButton.hide();
-            console.log("隐藏主按钮");
+            console.log('隐藏主按钮');
         }
     }
 
@@ -281,7 +268,7 @@ export default class TelegramUtils {
         if (this._isInTelegram && this._webApp && this._webApp.BackButton) {
             this._webApp.BackButton.show();
             this._webApp.BackButton.onClick(onClick);
-            console.log("显示返回按钮");
+            console.log('显示返回按钮');
         }
     }
 
@@ -291,7 +278,7 @@ export default class TelegramUtils {
     public hideBackButton(): void {
         if (this._isInTelegram && this._webApp && this._webApp.BackButton) {
             this._webApp.BackButton.hide();
-            console.log("隐藏返回按钮");
+            console.log('隐藏返回按钮');
         }
     }
 
@@ -323,7 +310,7 @@ export default class TelegramUtils {
     public sendData(data: string): void {
         if (this._isInTelegram && this._webApp) {
             this._webApp.sendData(data);
-            console.log("发送数据给机器人:", data);
+            console.log('发送数据给机器人:', data);
         }
     }
 
@@ -379,10 +366,10 @@ export default class TelegramUtils {
                 // Telegram WebApp 特有的方法
                 if (typeof this._webApp.lockOrientation === 'function') {
                     this._webApp.lockOrientation();
-                    console.log("已锁定屏幕方向");
+                    console.log('已锁定屏幕方向');
                 }
             } catch (error) {
-                console.error("锁定屏幕方向失败:", error);
+                console.error('锁定屏幕方向失败:', error);
             }
         }
     }
@@ -395,10 +382,10 @@ export default class TelegramUtils {
             try {
                 if (typeof this._webApp.unlockOrientation === 'function') {
                     this._webApp.unlockOrientation();
-                    console.log("已解锁屏幕方向");
+                    console.log('已解锁屏幕方向');
                 }
             } catch (error) {
-                console.error("解锁屏幕方向失败:", error);
+                console.error('解锁屏幕方向失败:', error);
             }
         }
     }
@@ -410,9 +397,9 @@ export default class TelegramUtils {
         if (this._isInTelegram && this._webApp) {
             try {
                 this._webApp.enableClosingConfirmation();
-                console.log("已启用关闭确认");
+                console.log('已启用关闭确认');
             } catch (error) {
-                console.error("启用关闭确认失败:", error);
+                console.error('启用关闭确认失败:', error);
             }
         }
     }
@@ -424,9 +411,9 @@ export default class TelegramUtils {
         if (this._isInTelegram && this._webApp) {
             try {
                 this._webApp.disableClosingConfirmation();
-                console.log("已禁用关闭确认");
+                console.log('已禁用关闭确认');
             } catch (error) {
-                console.error("禁用关闭确认失败:", error);
+                console.error('禁用关闭确认失败:', error);
             }
         }
     }
@@ -437,9 +424,8 @@ export default class TelegramUtils {
     public getDebugInfo(): any {
         const debugInfo: any = {
             isInTelegram: this._isInTelegram,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
         };
-
         if (this._isInTelegram && this._webApp) {
             debugInfo.webApp = {
                 version: this._webApp.version,
@@ -452,9 +438,8 @@ export default class TelegramUtils {
                 headerColor: this._webApp.headerColor,
                 backgroundColor: this._webApp.backgroundColor,
                 isClosingConfirmationEnabled: this._webApp.isClosingConfirmationEnabled,
-                isVerticalSwipesEnabled: this._webApp.isVerticalSwipesEnabled,
+                isVerticalSwipesEnabled: this._webApp.isVerticalSwipesEnabled
             };
-
             if (this._webApp.initDataUnsafe) {
                 debugInfo.user = {
                     id: this._webApp.initDataUnsafe.user?.id,
@@ -462,11 +447,10 @@ export default class TelegramUtils {
                     lastName: this._webApp.initDataUnsafe.user?.last_name,
                     username: this._webApp.initDataUnsafe.user?.username,
                     languageCode: this._webApp.initDataUnsafe.user?.language_code,
-                    isPremium: this._webApp.initDataUnsafe.user?.is_premium,
+                    isPremium: this._webApp.initDataUnsafe.user?.is_premium
                 };
                 debugInfo.startParam = this._webApp.initDataUnsafe.start_param;
             }
-
             // 检查可用方法
             debugInfo.availableMethods = {
                 expand: typeof this._webApp.expand === 'function',
@@ -475,10 +459,9 @@ export default class TelegramUtils {
                 enableVerticalSwipes: typeof this._webApp.enableVerticalSwipes === 'function',
                 setHeaderColor: typeof this._webApp.setHeaderColor === 'function',
                 setBackgroundColor: typeof this._webApp.setBackgroundColor === 'function',
-                lockOrientation: typeof this._webApp.lockOrientation === 'function',
+                lockOrientation: typeof this._webApp.lockOrientation === 'function'
             };
         }
-
         // 浏览器和设备信息
         debugInfo.browser = {
             userAgent: navigator.userAgent,
@@ -488,9 +471,8 @@ export default class TelegramUtils {
             screenHeight: window.screen.height,
             windowWidth: window.innerWidth,
             windowHeight: window.innerHeight,
-            devicePixelRatio: window.devicePixelRatio,
+            devicePixelRatio: window.devicePixelRatio
         };
-
         return debugInfo;
     }
 
@@ -499,11 +481,11 @@ export default class TelegramUtils {
      */
     public printDebugInfo(): void {
         const info = this.getDebugInfo();
-        console.log("=".repeat(50));
-        console.log("Telegram WebApp 调试信息");
-        console.log("=".repeat(50));
+        console.log('='.repeat(50));
+        console.log('Telegram WebApp 调试信息');
+        console.log('='.repeat(50));
         console.log(JSON.stringify(info, null, 2));
-        console.log("=".repeat(50));
+        console.log('='.repeat(50));
     }
 }
 

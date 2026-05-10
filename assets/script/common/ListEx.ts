@@ -1,18 +1,21 @@
-import List from "./List";
+import List from './List';
 
 export default class ListEx {
     data: any[] = null;
     offset: number = 0;
     req_ing: boolean = false;
     req_end: boolean = false;
-    constructor(public param: { list: List, nullNode?: cc.Node, request?: Function, this?: any } = null) {
+
+    constructor(public param: { list: List; nullNode?: cc.Node; request?: Function; this?: any } = null) {
         this.reset();
         this.init(param);
     }
-    init(param: { list: List, nullNode?: cc.Node, request?: Function, this?: any }) {
+
+    init(param: { list: List; nullNode?: cc.Node; request?: Function; this?: any }) {
         this.param = param;
         param && (param.list.scrollingCB = this.scrolling);
     }
+
     reset() {
         this.offset = 0;
         this.data = [];
@@ -21,13 +24,12 @@ export default class ListEx {
         this.param?.list.scrollView.scrollToTop(0);
         if (this.param?.nullNode) this.param.nullNode.active = false;
     }
-    refresh(data: any[], total: number) {
 
+    refresh(data: any[], total: number) {
         if (data == null) {
             this.param?.nullNode && (this.param.nullNode.active = true);
             return;
         }
-
         this.req_ing = false;
         this.data = this.data.concat(data);
         this.offset = this.data.length;
@@ -35,10 +37,11 @@ export default class ListEx {
         this.param.list.numItems = this.offset;
         if (this.offset >= total) this.req_end = true;
     }
+
     error() {
         this.req_ing = false;
     }
-    scrolling = (scrollView) => {
+    scrolling = scrollView => {
         if (scrollView) {
             let cur = scrollView.getScrollOffset();
             let max = scrollView.getMaxScrollOffset();
@@ -51,7 +54,8 @@ export default class ListEx {
                 }
             }
         }
-    }
+    };
+
     dropRequest() {
         this.req_ing = true;
         this.param.request?.call(this.param.this, this.offset);

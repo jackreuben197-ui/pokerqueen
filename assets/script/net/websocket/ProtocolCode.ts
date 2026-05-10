@@ -1,4 +1,5 @@
-import { Code } from "../../protobuf/holdem/code_pb";
+import { Code } from '../../protobuf/holdem/code_pb';
+
 /**
  * 消息码
  */
@@ -23,7 +24,7 @@ export enum ProtocolCode {
     Protocol_Holdem_RoomChangeNotify = Code.MSG_S_ROOM_CHANGE_NOTIFY, // Code: 140 房间变更通知(1=新增,2=更新)
     Protocol_Holdem_Rooms = Code.MSG_R_ROOMS, // Code: 202
     Protocol_Holdem_MttDetail = Code.MSG_R_MTT_DETAIL, // Code: 204
-    
+
     /**
      * 房间相关(HEAD有roomid+matchid)
      */
@@ -48,7 +49,7 @@ export enum ProtocolCode {
     Protocol_Holdem_PrivateMsg = Code.MSG_D_PRIVATE_MSG, // Code: 1020 私聊消息
     Protocol_Holdem_Roomers = Code.MSG_D_ROOMERS, // Code: 1021 房间内人员信息
     Protocol_Holdem_AgreeSecondPcsActive = Code.MSG_D_AGREE_SECOND_PCS_ACTIVE, // Code: 1022 同意/拒绝发第2套公共牌
-    Protocol_Holdem_Observers = Code.MSG_D_OBSERVERS,//Code: 1023 旁观者信息(包含历史)
+    Protocol_Holdem_Observers = Code.MSG_D_OBSERVERS, //Code: 1023 旁观者信息(包含历史)
     Protocol_Holdem_SquidInActive = Code.MSG_D_SQUID_IN_ACTIVE, // Code: 1024 主动加入/退出鱿鱼轮
     Protocol_Holdem_PlayerJackpotSummary = Code.MSG_D_PLAYER_JACKPOT_SUMMARY, // Code: 1027 Jackpot玩家汇总
     Protocol_Holdem_ShowPublicCardsOthers = Code.MSG_S_SHOW_PUBLIC_CARDS_OTHERS, // Code: 1100 其他人收到有人看公共牌
@@ -82,11 +83,10 @@ export enum ProtocolCode {
     Protocol_Holdem_JackpotAward = Code.MSG_S_JACKPOT_AWARD, // Code: 1130 Jackpot获奖
     Protocol_Holdem_AntiCheatRoomVideo = Code.MSG_S_UTIL_ANTI_CHEAT_ROOM_VIDEO, // Code: 902 触发视频防作弊（随机验证）
     Protocol_Holdem_VideoMaskChange = Code.MSG_S_VIDEO_MASK_CHANGE, // Code: 1133 视频窗花变更
-
     /**
      * 牛仔相关
      */
-    Protocol_Holdem_CbEnterRoom = Code.MSG_D_CB_ENTER_ROOM, // Code: 2001 
+    Protocol_Holdem_CbEnterRoom = Code.MSG_D_CB_ENTER_ROOM, // Code: 2001
     Protocol_Holdem_CbPlay = Code.MSG_D_CB_PLAY, // Code: 2002 下注
     Protocol_Holdem_CbCancelPlay = Code.MSG_D_CB_CANCEL_PLAY, // Code: 2003 取消下注
     Protocol_Holdem_CbLeave = Code.MSG_D_CB_LEAVE, // Code: 2004 离开房间
@@ -101,8 +101,7 @@ export enum ProtocolCode {
     Protocol_Holdem_CbWaymapUpdate = Code.MSG_S_CB_WAYMAP_UPDATE, // Code: 2104 房间路图更新
     Protocol_Holdem_CbRoomClose = Code.MSG_S_CB_ROOM_CLOSE, // Code: 2105 房间关闭(用户会被踢出房间)
     Protocol_Holdem_CbChatOthers = Code.MSG_S_CB_CHAT_OTHERS, // Code: 2106 聊天接收
-    Protocol_Holdem_CbLeaveNotification = Code.MSG_S_CB_LEAVE_NOTIFICATION, // Code: 2107 接收自己离开房间(主要针对被动离开)
-
+    Protocol_Holdem_CbLeaveNotification = Code.MSG_S_CB_LEAVE_NOTIFICATION // Code: 2107 接收自己离开房间(主要针对被动离开)
 }
 
 (window as any).ProtocolCode = ProtocolCode;

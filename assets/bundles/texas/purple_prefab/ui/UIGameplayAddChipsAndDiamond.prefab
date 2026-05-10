@@ -826,7 +826,7 @@
       "__id__": 11
     },
     "_enabled": true,
-    "i18n_string": "UITexasReport_Text_DeskScoreTip",
+    "i18n_string": "UIClub_RoomSitApplyRecords_title",
     "_id": ""
   },
   {
@@ -3653,7 +3653,7 @@
   {
     "__type__": "cc.Node",
     "_name": "bringBtn",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "_parent": {
       "__id__": 89
     },
@@ -8519,7 +8519,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 910,
-      "height": 1000
+      "height": 470
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -9137,7 +9137,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "806a3954-c5da-4310-b243-9679625f89f6"
+      "__uuid__": "62be8da2-d78e-4f56-80a4-f8be637c91b3"
     },
     "_type": 1,
     "_sizeMode": 0,

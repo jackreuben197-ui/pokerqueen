@@ -1,9 +1,10 @@
-import { TLobbyGroup } from "../../../config/TTypeConfig";
-import { GameType, PokerType } from "../../../game/util/GameUtil";
-import CCTools from "../../../tools/CCTools";
+import { TLobbyGroup } from '../../../config/TTypeConfig';
+import { GameType, PokerType } from '../../../game/util/GameUtil';
+import CCTools from '../../../tools/CCTools';
 
 export default class LobbyGroupModel {
     private _data: Map<GameType, TLobbyGroup> = new Map();
+
     updataData(msgs: Array<any>) {
         this._data.clear();
         msgs.forEach(msg => {
@@ -12,7 +13,7 @@ export default class LobbyGroupModel {
             } else {
                 this.updateOther(msg);
             }
-        })
+        });
     }
 
     private updateHoldem(msg) {
@@ -26,7 +27,7 @@ export default class LobbyGroupModel {
                     player_count: sub.player_count,
                     limit_bet_type: sub?.sub_group[0]?.limit_bet_type || 0
                 });
-            })
+            });
         }
     }
 
@@ -43,7 +44,7 @@ export default class LobbyGroupModel {
     getGroupByType(type: GameType) {
         let group = this._data.get(type);
         if (!group) {
-            group = { game_type: type, count: 0, player_count: 0, poker_type: type == GameType.Plus6 ? PokerType.SixPlus : PokerType.Normal }
+            group = { game_type: type, count: 0, player_count: 0, poker_type: type == GameType.Plus6 ? PokerType.SixPlus : PokerType.Normal };
         }
         return group;
     }
@@ -52,11 +53,9 @@ export default class LobbyGroupModel {
         let v4 = this.getGroupByType(GameType.Omaha4);
         let v5 = this.getGroupByType(GameType.Omaha5);
         let v6 = this.getGroupByType(GameType.Omaha6);
-
         return {
             count: v4.count + v5.count + v6.count,
-            player_count: v4.player_count + v5.player_count + v6.player_count,
-        }
-
+            player_count: v4.player_count + v5.player_count + v6.player_count
+        };
     }
 }

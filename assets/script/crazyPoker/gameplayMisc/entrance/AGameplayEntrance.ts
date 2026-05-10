@@ -1,7 +1,7 @@
-import { RoomRecord } from "../../../protobuf/holdem/define_pb";
-import { RoomType } from "../../../game/util/GameUtil";
-import TexasGameplayEntrance from "./TexasGameplayEntrance";
-import MyLog from "../../../tools/MyLog";
+import { RoomRecord } from '../../../protobuf/holdem/define_pb';
+import { RoomType } from '../../../game/util/GameUtil';
+import TexasGameplayEntrance from './TexasGameplayEntrance';
+import MyLog from '../../../tools/MyLog';
 
 /**
  * @description 加载指示器
@@ -11,16 +11,14 @@ export enum LoadIndicator {
      * 进入玩法的入口UI：比如大厅界面、mtt列表界面等
      */
     FROM_UI = 0,
-
     /**
      * 其他玩法
      */
     GAMEPLAY,
-
     /**
      * 进入玩法之前的UI
      */
-    ORIGIN_UI,
+    ORIGIN_UI
 }
 
 /**
@@ -30,12 +28,11 @@ export enum LoadIndicator {
 export default abstract class AGameplayEntrance {
 
     // ==================== 属性 ====================
-
     /**
      * entrance所对应的桌子id
      */
     public get tableId(): string {
-        return "";
+        return '';
     }
 
     /**
@@ -44,7 +41,6 @@ export default abstract class AGameplayEntrance {
     public get isMain(): boolean {
         return false;
     }
-
     /**
      * 玩法类型
      */
@@ -56,67 +52,51 @@ export default abstract class AGameplayEntrance {
     public get matchId(): number {
         return this._matchId;
     }
-
     /**
      * 房间id - mtt比赛玩法过程中roomId可能会变动，允许派生类型修改
      */
     public _roomId: number = 0;
-
-
     private _matchId: number = 0;
-
     /**
      * 是否需要吐司；产品认为，进入房间时仅能有一个吐司存在
      */
     public _isHasToast: boolean = false;
-
     /**
      * 玩法变体类型
      */
     public _variantType: number = 0;
-
     /**
      * 玩法控制器
      */
     public _gameplay: any = null;
-
     /**
      * 请求玩法房间信息通信协议
      */
     public _protoRoomInfo: any = null;
-
     /**
      * 进入玩法通信协议
      */
     public _protoEnterRequest: any = null;
-
     /**
      * 进入玩法通信协议响应
      */
     public _protoEnterResponse: any = null;
-
     /**
      * 玩法进入后台或离开玩法后的加载指示
      */
     public _loadIndicator: LoadIndicator = LoadIndicator.FROM_UI;
-
     /**
      * 进入房间状态码
      */
     public _enterStatus: number = 0;
-
     /**
      * 是否通过入口人脸验证
      * @remarks 只在刚进入前台时进行验证，在验证成功后，前后台切换不再重复进行人脸验证
      */
     public _isPassFaceVerification: boolean = false;
-
-
-    public _roomInfo: RoomRecord.AsObject = null; 
-
+    public _roomInfo: RoomRecord.AsObject = null;
 
     // ==================== 构造函数 ====================
-
     /**
      * 强制在构造时必须提供核心数据
      * @param roomType 玩法类型
@@ -127,11 +107,9 @@ export default abstract class AGameplayEntrance {
         this._roomType = roomType;
         this._roomId = roomId;
         this._matchId = matchId;
-
     }
 
     // ==================== 抽象方法 ====================
-
     /**
      * 通信层进入玩法 - 不考虑表现层
      * @param isEnterForeground 是否进入前台
@@ -155,7 +133,6 @@ export default abstract class AGameplayEntrance {
     protected abstract loadGameplay(): any;
 
     // ==================== 虚方法 ====================
-
     /**
      * 卸载逻辑层
      */
@@ -196,45 +173,33 @@ export default abstract class AGameplayEntrance {
      */
     public async enterForegroundAsync(): Promise<boolean> {
         console.log(`${this.constructor.name}: EnterForegroundAsync: ${this.tableId}`);
-
         try {
             // 等待通信层进入成功
             const isOk: boolean = await this.messageLayerEnterAsync(true);
-
             if (!isOk) {
                 return false;
             }
-
             // TODO: 触发消息层进入玩法的全局通知
             // 注: 在此处触发是因为为了支持多桌RTC, 需要确保ATable数据模型在加载Gameplay前先实例化
             // Game.EventSystem.Run(EventIdType.MULTI_TABLE_EVENT_MESSAGE_LAYER_ENTERED, this);
-
             // /////////////////////////////////////////////////////////////
             // 此时消息层面进入已成功, 玩法启动所需的所有必要数据都已经准备好
             // 接下来的逻辑都建立在此基础上
             // /////////////////////////////////////////////////////////////
-
             // 缓存加载玩法前的必要数据
             this.cacheGlobalDataBeforeLoad(false);
-
             // 等待加载完成并获取玩法控制器 (此玩法即为当前呈现的主玩法)
             this._gameplay = this.loadGameplay();
-
             // 缓存加载玩法后的必要数据
             this.cacheGlobalDataAfterLoad(false);
-
             return true;
-        }
-        catch (ex) {
+        } catch (ex) {
             console.error(`${this.constructor.name}: EnterForegroundAsync: ${ex}`);
-
             this.cacheGlobalDataBeforeLoad(true);
             this.cacheGlobalDataAfterLoad(true);
-
             // TODO: 没有选中多桌条上的任意一个，已经退出了牌局返回了大厅，保护性处理恢竖屏
             // ScreenManager.Instance.ChangeOrientationByExitGame();
         }
-
         return false;
     }
 
@@ -244,10 +209,7 @@ export default abstract class AGameplayEntrance {
      * @param loadIndicator 玩法进入后台后执行何种加载行为
      * @remarks 同类型玩法可以复用表现层，这样可以提升切换房间时的流畅度
      */
-    public async enterBackgroundAsync(
-        isReuseViewLayer: boolean,
-        loadIndicator: LoadIndicator = LoadIndicator.FROM_UI
-    ): Promise<boolean> {
+    public async enterBackgroundAsync(isReuseViewLayer: boolean, loadIndicator: LoadIndicator = LoadIndicator.FROM_UI): Promise<boolean> {
         // TODO: 实现进入后台的逻辑
         return true;
     }

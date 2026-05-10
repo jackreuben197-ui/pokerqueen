@@ -1,14 +1,13 @@
-import { TIssueUserList } from "../../../../config/TTypeConfig";
-import GC from "../../../GameControl";
-import GoldIssueItemModel from "./GoldIssueItemModel";
+import { TIssueUserList } from '../../../../config/TTypeConfig';
+import GC from '../../../GameControl';
+import GoldIssueItemModel from './GoldIssueItemModel';
 
 export default class GoldIssueModel {
     private _reqing: boolean = false;
     private _reqEnd: boolean = false;
-
     private _offset: number = 0;
-
     private _list: Array<GoldIssueItemModel> = [];
+
     get list() {
         return this._list;
     }
@@ -36,7 +35,6 @@ export default class GoldIssueModel {
             this.resetData();
         }
         GC.data.wallet.reqIssueList(offset);
-
     }
 
     searchUser(search) {
@@ -46,12 +44,10 @@ export default class GoldIssueModel {
 
     updateData(msg: TIssueUserList) {
         this._reqing = false;
-
         msg.list.forEach(item => {
-            this._list.push(new GoldIssueItemModel(item))
-        })
-
-        this._offset = this._list.length
+            this._list.push(new GoldIssueItemModel(item));
+        });
+        this._offset = this._list.length;
         this._reqEnd = this._list.length >= msg.total;
     }
 }

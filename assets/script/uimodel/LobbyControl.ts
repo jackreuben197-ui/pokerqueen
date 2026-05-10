@@ -1,18 +1,62 @@
-import { ClubCache } from "../frame/data/club/ClubCache";
-import { StringHelper } from "../helper/StringHelper";
-import { i18nMgr } from "../i18n/i18nMgr";
-import { ResManager } from "../manager/ResManager";
-import HttpRequest from "../net/https/HttpRequest";
-import { WebClubJoinList, WebClubQuitList, WebClubStandiNgs, WebDeleleUser, WebFriendApplyList, WebIsPhoneUser, WebLockUser, WebMsgMessageList, WebOrgClubGold, WebTicketCreate, WebUnlockUser, WebBagCurrentPendantList, WebBagpAndantDown, WebBagpandantup, WebBagPendantList, WebClubApplyAudit, WebClubApplyList, WebClubUserWallet, WebDelmsgTemplate, WebGetmsgList, WebGoldChangeLogApi, WebPropTaskList, WebPropTaskReceIve, WebSendMsg, WebSetmsgTemplate, WebWeb2DataStatPerson, WebConfigMultiLanguageTemplate, WebMiscBannerList, WebMiscGameRecordRound, WebMiscGameRemoveRound, WebMiscGameRoundList, WebMiscGameRoundStatus, WebOtherUserInfo, WebPropUserPropList, WebRoomCenterGroups, WebRoomCenterHistoryHand, WebRoomCenterHistoryList, WebRoomCenterHistoryReplay, WebRoomCenterMttDetailS, WebRoomCenterRooms, WebRoomCenterRoomsBlinds, WebStatsRoomDetail, WebStatsUserStats, WebUserCheckNickname, WebUserModifyUserInfo } from "../net/https/WebRequest";
-import UIBase from "../ui/UIBase";
-
+import { ClubCache } from '../frame/data/club/ClubCache';
+import { StringHelper } from '../helper/StringHelper';
+import { i18nMgr } from '../i18n/i18nMgr';
+import { ResManager } from '../manager/ResManager';
+import HttpRequest from '../net/https/HttpRequest';
+import {
+    WebClubJoinList,
+    WebClubQuitList,
+    WebClubStandiNgs,
+    WebDeleleUser,
+    WebFriendApplyList,
+    WebIsPhoneUser,
+    WebLockUser,
+    WebMsgMessageList,
+    WebOrgClubGold,
+    WebTicketCreate,
+    WebUnlockUser,
+    WebBagCurrentPendantList,
+    WebBagpAndantDown,
+    WebBagpandantup,
+    WebBagPendantList,
+    WebClubApplyAudit,
+    WebClubApplyList,
+    WebClubUserWallet,
+    WebDelmsgTemplate,
+    WebGetmsgList,
+    WebGoldChangeLogApi,
+    WebPropTaskList,
+    WebPropTaskReceIve,
+    WebSendMsg,
+    WebSetmsgTemplate,
+    WebWeb2DataStatPerson,
+    WebConfigMultiLanguageTemplate,
+    WebMiscBannerList,
+    WebMiscGameRecordRound,
+    WebMiscGameRemoveRound,
+    WebMiscGameRoundList,
+    WebMiscGameRoundStatus,
+    WebOtherUserInfo,
+    WebPropUserPropList,
+    WebRoomCenterGroups,
+    WebRoomCenterHistoryHand,
+    WebRoomCenterHistoryList,
+    WebRoomCenterHistoryReplay,
+    WebRoomCenterMttDetailS,
+    WebRoomCenterRooms,
+    WebRoomCenterRoomsBlinds,
+    WebStatsRoomDetail,
+    WebStatsUserStats,
+    WebUserCheckNickname,
+    WebUserModifyUserInfo
+} from '../net/https/WebRequest';
+import UIBase from '../ui/UIBase';
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     大厅逻辑控制器
         1.大厅数据（全局）
         2.UI处理
         3.网络交互
  ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ༺༒༻ ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
-
 
 export class LobbyControl {
     /********************************* 1.大厅数据（全局） ***********************************/
@@ -22,30 +66,25 @@ export class LobbyControl {
     private uiMap = {};
     /** ui父节点 创建出来的中间预制体需要挂在此节点上 */
     private Layer;
-
     private LocalDicRoomName: Map<string, { [key: string]: string }> = new Map();
-
-
     /********************************* 2.UI处理 ***********************************/
-
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         2.1 设置大厅数据 存放控制器
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
+
     setLobbyInfo(param) {
         //this.curShowUI = param.curShowUI;
         this.Layer = param.Layer;
     }
-
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         2.2 点击主界面下方4个按钮 切换中间不同显示
             name: UILobby UIChat UICareer UIMine
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
-    public async switchContent(name: string, resPath: string = "main/lobby/prefab/") {
 
+    public async switchContent(name: string, resPath: string = 'main/lobby/prefab/') {
         if (this.curShowUI && name === this.curShowUI.name) {
             return;
         }
-
         return new Promise((resolve, reject) => {
             let newUI = this.uiMap[name];
             if (newUI) {
@@ -60,7 +99,6 @@ export class LobbyControl {
                     if (err) {
                         return;
                     }
-
                     if ($this.curShowUI) $this.curShowUI.active = false;
                     newUI = cc.instantiate(asset);
                     $this.Layer.addChild(newUI);
@@ -71,25 +109,23 @@ export class LobbyControl {
                     resolve(newUI);
                 });
             }
-        })
+        });
     }
-
     /********************************* 3.网络交互 ***********************************/
-
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         3.1 请求banner数据
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
+
     async GetBannerList(param: typeof WebMiscBannerList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: WebMiscBannerList,
-                body: WebMiscBannerList.Request(
-                    {
-                        lang: param.lang,               // 语言(zh_CN:简体中文,zh_HK:繁体中文,en_US:英文，pt_BR：葡萄牙语
-                        type: param.type,               // 1-大厅Banner,2-发现页(公会)Banner
-                        limit: param.limit,             // unity 默认10
-                        offset: param.offset,           // 开始下标。例子（offset=0，limit=10，0-9。)默认0
-                    }),
+                body: WebMiscBannerList.Request({
+                    lang: param.lang, // 语言(zh_CN:简体中文,zh_HK:繁体中文,en_US:英文，pt_BR：葡萄牙语
+                    type: param.type, // 1-大厅Banner,2-发现页(公会)Banner
+                    limit: param.limit, // unity 默认10
+                    offset: param.offset // 开始下标。例子（offset=0，limit=10，0-9。)默认0
+                }),
                 onSuccess: function () {
                     resolve(WebMiscBannerList.Response);
                 }.bind(this),
@@ -118,10 +154,11 @@ export class LobbyControl {
             });
         });
     }
+
     /**
-    * @description: 请求mang信息
-    * @return {WebRoomCenterRoomsBlinds.Response}
-    */
+     * @description: 请求mang信息
+     * @return {WebRoomCenterRoomsBlinds.Response}
+     */
     async RequestSbList(param: typeof WebRoomCenterRoomsBlinds.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -136,6 +173,7 @@ export class LobbyControl {
             });
         });
     }
+
     /**
      * @description: 请求rooms信息
      * @return {WebRoomCenterRooms.Response}
@@ -155,9 +193,9 @@ export class LobbyControl {
     //     });
     // }
     /**
-    * @description: 请求rooms信息
-    * @return {WebConfigMultiLanguageTemplate.Response}
-    */
+     * @description: 请求rooms信息
+     * @return {WebConfigMultiLanguageTemplate.Response}
+     */
     async APIConfig_Multi_Language_Template(param: typeof WebConfigMultiLanguageTemplate.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -264,12 +302,12 @@ export class LobbyControl {
     }
 
     /**
-     * 战绩详情  
+     * 战绩详情
      */
     async getRecordDetailInfo(roomId, param: typeof WebStatsRoomDetail.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: WebStatsRoomDetail.API.replace("{id}", roomId.toString()),
+                api: WebStatsRoomDetail.API.replace('{id}', roomId.toString()),
                 request: WebStatsRoomDetail,
                 body: WebStatsRoomDetail.Request(param),
                 onSuccess: function () {
@@ -283,7 +321,7 @@ export class LobbyControl {
     }
 
     /**
-     * 手数列表  
+     * 手数列表
      */
     async getRecordHandInfo(param: typeof WebRoomCenterHistoryHand.RequestParams) {
         return new Promise((resolve, reject) => {
@@ -300,14 +338,13 @@ export class LobbyControl {
         });
     }
 
-
     /**
-     * MTT 比赛列表详情  
+     * MTT 比赛列表详情
      */
     async reqMTTDetailInfo(matchID, param: typeof WebRoomCenterMttDetailS.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: WebRoomCenterMttDetailS.API.replace("{id}", matchID.toString()),
+                api: WebRoomCenterMttDetailS.API.replace('{id}', matchID.toString()),
                 request: WebRoomCenterMttDetailS,
                 body: WebRoomCenterMttDetailS.Request(param),
                 onSuccess: function () {
@@ -447,8 +484,8 @@ export class LobbyControl {
     }
 
     /**
-    * 获取消息列表
-    */
+     * 获取消息列表
+     */
     async reqMessageList(param: typeof WebMsgMessageList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -506,7 +543,7 @@ export class LobbyControl {
     async reqHistoryReplay(matchID, param: typeof WebRoomCenterHistoryReplay.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: WebRoomCenterHistoryReplay.API.replace("{id}", matchID.toString()),
+                api: WebRoomCenterHistoryReplay.API.replace('{id}', matchID.toString()),
                 request: WebRoomCenterHistoryReplay,
                 body: WebRoomCenterHistoryReplay.Request(param),
                 onSuccess: function () {
@@ -628,8 +665,8 @@ export class LobbyControl {
     }
 
     /**
-    * 用户的装扮道具背包
-    */
+     * 用户的装扮道具背包
+     */
     async reqBagPendantList(param: typeof WebBagPendantList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -682,8 +719,8 @@ export class LobbyControl {
     }
 
     /**
-    * 用户移除装扮道具
-    */
+     * 用户移除装扮道具
+     */
     async reqBagPandantDown(param: typeof WebBagpAndantDown.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -797,7 +834,7 @@ export class LobbyControl {
     async reqOherUserInfo(uid, param: typeof WebOtherUserInfo.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: WebOtherUserInfo.API.replace("{id}", uid.toString()),
+                api: WebOtherUserInfo.API.replace('{id}', uid.toString()),
                 request: WebOtherUserInfo,
                 body: WebOtherUserInfo.Request(param),
                 onSuccess: function () {
@@ -824,7 +861,7 @@ export class LobbyControl {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
-                headers: [["X-Club", club_id]]
+                headers: [['X-Club', club_id]]
             });
         });
     }
@@ -843,7 +880,7 @@ export class LobbyControl {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
-                headers: ["X-Club", club_id]
+                headers: ['X-Club', club_id]
             });
         });
     }
@@ -862,10 +899,11 @@ export class LobbyControl {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
-                headers: [["X-Club", club_id]]
+                headers: [['X-Club', club_id]]
             });
         });
     }
+
     /**
      * 请求公会钱包信息
      */
@@ -880,150 +918,130 @@ export class LobbyControl {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
-                headers: [["X-Club", club_id]]
+                headers: [['X-Club', club_id]]
             });
         });
     }
-
     /********************************* 公共接口 ***********************************/
-
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         1.获取固定时间
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
-    getLongTimeStr(pNum) {//1小时3600秒      1天86400秒
-        if (pNum >= 3600)//>1小时
+
+    getLongTimeStr(pNum) {
+        //1小时3600秒      1天86400秒
+        if (pNum >= 3600) //>1小时
         {
             let tHour = Math.floor(pNum / 3600);
-            return tHour.toString().padStart(2, '0') + "小时局";
-        }
-        else if (pNum >= 60)//>1分钟
+            return tHour.toString().padStart(2, '0') + '小时局';
+        } else if (pNum >= 60) //>1分钟
         {
             let tMinutes = Math.floor(pNum / 60);
-            return tMinutes.toString().padStart(2, '0') + "分钟局";
-
-        }
-        else if (pNum < 60) {
+            return tMinutes.toString().padStart(2, '0') + '分钟局';
+        } else if (pNum < 60) {
             return pNum.toString() + '秒局';
         }
-        return "";
+        return '';
     }
-
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         2.设置输赢分颜色
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
+
     setWinColor(lbl, num, isFix = null) {
-        let bxStr = "";
+        let bxStr = '';
         bxStr = num.toString();
         if (isFix) {
             bxStr = StringHelper.GetLongString(num);
         }
         if (num >= 0) {
             if (num > 0) {
-                bxStr = "+" + num.toString();
+                bxStr = '+' + num.toString();
                 if (isFix) {
-                    bxStr = "+" + StringHelper.GetLongString(num);
+                    bxStr = '+' + StringHelper.GetLongString(num);
                 }
             }
-            lbl.node.color = cc.color(53, 163, 179)
+            lbl.node.color = cc.color(53, 163, 179);
         } else {
-            lbl.node.color = cc.color(255, 204, 0)
+            lbl.node.color = cc.color(255, 204, 0);
         }
         lbl.string = bxStr;
     }
-
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         3.获取消息多语言
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
+
     GetMsg(pType) {
-        var tValue = i18nMgr.Get("MsgInfo_" + pType.toString());
+        var tValue = i18nMgr.Get('MsgInfo_' + pType.toString());
         return tValue;
     }
-
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         4.字符串多参数解析
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
+
     formatString(localValue: string, ...params): string {
         if (params.length) {
             params.forEach((value, index) => {
                 let paramStr: string = String(value);
-
-                let reg = new RegExp(`\\{${index}\\}`, "g");
+                let reg = new RegExp(`\\{${index}\\}`, 'g');
                 localValue = localValue.replace(reg, paramStr);
-            })
+            });
         }
         return localValue;
     }
-
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         5.固定牌型
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
+
     getArchPKInfo(index) {
         let pkInfo = [-1, -1, -1, -1, -1];
-        let name = "其他";
+        let name = '其他';
         switch (index) {
             case 9:
                 pkInfo = [14, 13, 12, 11, 10];
-                name = "皇家同花顺";
+                name = '皇家同花顺';
                 break;
             case 10:
                 pkInfo = [28, 27, 26, 25, 24];
-                name = "同花顺";
+                name = '同花顺';
                 break;
             case 11:
                 pkInfo = [14, 29, 44, 59, 10];
-                name = "四条";
+                name = '四条';
                 break;
             case 12:
                 pkInfo = [13, 43, 12, 7, 22];
-                name = "葫芦";
+                name = '葫芦';
                 break;
             case 13:
                 pkInfo = [27, 24, 23, 22, 21];
-                name = "同花";
+                name = '同花';
                 break;
             case 14:
                 pkInfo = [14, 28, 42, 11, 55];
-                name = "顺子";
+                name = '顺子';
                 break;
             case 15:
                 pkInfo = [55, 25, 10, 11, 7];
-                name = "三条";
+                name = '三条';
                 break;
             case 16:
                 pkInfo = [14, 44, 26, 11, 10];
-                name = "两对";
+                name = '两对';
                 break;
             case 17:
                 pkInfo = [14, 29, 12, 11, 10];
-                name = "一对";
+                name = '一对';
                 break;
         }
         return {
             info: pkInfo,
             name: name
-        }
+        };
     }
-
     /********************************* 清除 ***********************************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private static instance: LobbyControl;
-    private constructor() { }
+
+    private constructor() {}
+
     static getInstance() {
         if (!this.instance) {
             this.instance = new LobbyControl();

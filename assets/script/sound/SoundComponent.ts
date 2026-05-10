@@ -1,22 +1,20 @@
-import GC from "../frame/GameControl";
-import StorageKey from "../session/StorageKey";
-import AssetContext, { AssetFold } from "../ui/component/AssetContext";
+import GC from '../frame/GameControl';
+import StorageKey from '../session/StorageKey';
+import AssetContext, { AssetFold } from '../ui/component/AssetContext';
 
 //声音
 export default class SoundComponent {
 
     static get Instance(): SoundComponent {
-        return (this as any).instance ??= new SoundComponent;
+        return ((this as any).instance ??= new SoundComponent());
     }
-
     soundOn: boolean = false;
 
     initSound() {
         let soundIsOpen = GC.localStore.getItem(StorageKey.soundIsOpen);
-        if (soundIsOpen == null || (+soundIsOpen) == 1) {
+        if (soundIsOpen == null || +soundIsOpen == 1) {
             this.soundOn = true;
-        }
-        else {
+        } else {
             this.soundOn = false;
         }
     }

@@ -13,8 +13,9 @@ export enum UIType {
     UITexasRule,
     UITexasReport,
     UITexasHistory,
-    CommonUI,//普通UI
+    CommonUI //普通UI
 }
+
 /**
  * 流程
  */
@@ -40,6 +41,7 @@ export enum ProcedureEnum {
     //返回H5
     Return = 99
 }
+
 /**
  * UI 渐入渐出样式
  */
@@ -50,20 +52,20 @@ export enum UIFadeStyleEnum {
     //左边渐入渐出
     LeftInOut = 2,
     //缩放渐入渐出
-    ScaleInOut = 3,
+    ScaleInOut = 3
 }
 
 /**
  * UIDefine接口
  */
 export interface IUIDefine {
-    UIType: UIType,
-    Name: string,
-    Bundle: string,
-    Path: string,
-    Title?: string,
-    DisAdaptScreen?: boolean,
-    UIFadeStyle?: UIFadeStyleEnum
+    UIType: UIType;
+    Name: string;
+    Bundle: string;
+    Path: string;
+    Title?: string;
+    DisAdaptScreen?: boolean;
+    UIFadeStyle?: UIFadeStyleEnum;
 }
 
 /**
@@ -74,7 +76,9 @@ export interface DialogParam {
     content?: string;
     confirm?: string;
     cancel?: string;
+
     confirmCallback?: () => void;
+
     cancelCallback?: () => void;
     block?: boolean;
     style?: any;
@@ -94,7 +98,6 @@ export interface INetWork {
     // AboutWeURL: string;
     // UserAgentURL: string;
     // DataAnalysURL: string;
-
     // WebURL: string;
     // PayURL: string;
     // HeadUrl: string;
@@ -102,8 +105,8 @@ export interface INetWork {
     // UploadURL: string;
     // PaipuBaseUrl: string;
     WSS?: string;
-
 }
+
 /**
  * 刷新接口
  */
@@ -118,13 +121,13 @@ export interface INetWork {
  * bundle包
  */
 export var Bundle = {
-    Texas: "texas",
-}
+    Texas: 'texas'
+};
+
 /**
  * ITweenDelay接口，注入delay延时字段
  */
 export interface ITweenDuration {
     duration: number;
 }
-
 ///////////////////////////////////////////////////

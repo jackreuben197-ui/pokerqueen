@@ -13,7 +13,12 @@ npm run sync:h5-game #pnpm run sync:h5-game
 npm run sync:proto
 ```
 
+## 格式化代码
 
+```shell
+#可能缺失pretty，需要 npm install
+node ./fmt-blanklines.js
+```
 
 ## SSH密匙使用方法
 1.

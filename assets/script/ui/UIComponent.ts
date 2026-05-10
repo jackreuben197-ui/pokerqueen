@@ -1,36 +1,32 @@
-
-import { IUIDefine, UIType } from "../define/EIDefine";
-import { i18nMgr } from "../i18n/i18nMgr";
-import Main from "../Main";
-import ToastManager, {IToastConfig} from "../manager/ToastManager";
-import UIBase from "../ui/UIBase";
-import { UIBoardMgr, UICommonMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from "./UIMgr";
-
-
+import { IUIDefine, UIType } from '../define/EIDefine';
+import { i18nMgr } from '../i18n/i18nMgr';
+import Main from '../Main';
+import ToastManager, { IToastConfig } from '../manager/ToastManager';
+import UIBase from '../ui/UIBase';
+import { UIBoardMgr, UICommonMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from './UIMgr';
 const { ccclass } = cc._decorator;
 
 export enum PrefabUI {
-    UIPreloading = "UIPreloading",
+    UIPreloading = 'UIPreloading',
     //UITexasMenuComponent = "UITexasMenuComponent",
-    UITexasMenu = "UITexasMenu",
+    UITexasMenu = 'UITexasMenu',
     //UIAddChipsComponent = "UIAddChipsComponent",
-    UIOutChipsComponent = "UIOutChipsComponent",
-    UIOperationComponent = "UIOperationComponent",
-    UIAutoOperationComponent = "UIAutoOperationComponent",
+    UIOutChipsComponent = 'UIOutChipsComponent',
+    UIOperationComponent = 'UIOperationComponent',
+    UIAutoOperationComponent = 'UIAutoOperationComponent',
     //UIInsuranceComponent = "UIInsuranceComponent",
-    UIAutoChipsComponent = "UIAutoChipsComponent",
-    UIMTTTimeComponent = "UIMTTTimeComponent",
-    UIOutChipsTipComponent = "UIOutChipsTipComponent",
-    UIAgreeSecondPcsComponent = "UIAgreeSecondPcsComponent",//第二套公共牌的同意拒绝面板
-    UIMttSignDialogComponent = "UIMttSignDialogComponent",//牌桌上的比赛重购面板
-    MttAgainBuy = "MttAgainBuy",//牌桌上的比赛重购面板
+    UIAutoChipsComponent = 'UIAutoChipsComponent',
+    UIMTTTimeComponent = 'UIMTTTimeComponent',
+    UIOutChipsTipComponent = 'UIOutChipsTipComponent',
+    UIAgreeSecondPcsComponent = 'UIAgreeSecondPcsComponent', //第二套公共牌的同意拒绝面板
+    UIMttSignDialogComponent = 'UIMttSignDialogComponent', //牌桌上的比赛重购面板
+    MttAgainBuy = 'MttAgainBuy', //牌桌上的比赛重购面板
     MttPayforHome = 'MttPayforHome',
     //////////////
-    UIBringIn = "UIBringIn",//带入记分牌
-    UIAutoBringIn = "UIAutoBringIn",//自动记分牌
-    UIBringOut = "UIBringOut",//带出记分牌
-    UIInsurancePanel = "UIInsurancePanel",//保险面板
-
+    UIBringIn = 'UIBringIn', //带入记分牌
+    UIAutoBringIn = 'UIAutoBringIn', //自动记分牌
+    UIBringOut = 'UIBringOut', //带出记分牌
+    UIInsurancePanel = 'UIInsurancePanel' //保险面板
 }
 
 export function isPrefabUI(value: any): value is PrefabUI {
@@ -38,14 +34,16 @@ export function isPrefabUI(value: any): value is PrefabUI {
 }
 
 (window as any).PrefabUI = PrefabUI;
+
 //打开面板追加参数
 export interface Open_Obj {
-    parentUI?: cc.Node;//父节点
-    SceneUI?: cc.Node;//场景节点
+    parentUI?: cc.Node; //父节点
+    SceneUI?: cc.Node; //场景节点
     animation?: boolean;
     jumpShow?: boolean; //跳過執行onShow
-    fromComponent?: any;//来自组件
+    fromComponent?: any; //来自组件
 }
+
 //关闭面板追加参数
 export interface Close_Obj {
     animation?: boolean;
@@ -54,24 +52,26 @@ export interface Close_Obj {
 @ccclass
 export default class UIComponent {
     [key: string]: any;
-
-    prefab_node_map = new Map;
+    prefab_node_map = new Map();
 
     static get Instance(): UIComponent {
-        return (<any>this).__instance ??= new UIComponent;
+        return ((<any>this).__instance ??= new UIComponent());
     }
     /**
      存储预制体节点
+
      */
     SetPrefabNode(prefab_name: string, node: cc.Node): void {
         this.prefab_node_map.set(prefab_name, node);
     }
     /**
      获取预制体节点
+
      */
     GetPrefabNode(prefab_name: string): cc.Node {
         return this.prefab_node_map.get(prefab_name);
     }
+
     /**
      * 获取预制体节点绑定的类
      */
@@ -84,17 +84,19 @@ export default class UIComponent {
             ToastManager.Instance.createToast(content, customConfig, cb);
         } else {
             //提示暂未开放
-            ToastManager.Instance.createToast(i18nMgr.Get("adaptation10301"),customConfig, cb);
+            ToastManager.Instance.createToast(i18nMgr.Get('adaptation10301'), customConfig, cb);
         }
     }
+
     ToastLanguage(content?: string) {
         if (content) {
             ToastManager.Instance.createToast(i18nMgr.Get(content));
         } else {
             //提示暂未开放
-            ToastManager.Instance.createToast(i18nMgr.Get("adaptation10301"));
+            ToastManager.Instance.createToast(i18nMgr.Get('adaptation10301'));
         }
     }
+
     //显示节点
     ShowUI<T>(com: PrefabUI, param?: T) {
         let node = this.GetPrefabNode(com);
@@ -102,11 +104,12 @@ export default class UIComponent {
             node.active = true;
             let ui_component: UIBase = node.getComponent(UIBase);
             ui_component?.onShow(param);
-            console.log("[ShowUI] PrefabUI_node", node.name);
+            console.log('[ShowUI] PrefabUI_node', node.name);
         } else {
-            console.log("[ShowUI] > 缺少相关的节点", com);
+            console.log('[ShowUI] > 缺少相关的节点', com);
         }
     }
+
     //隐藏节点
     HideUI<T>(com: PrefabUI, param?: T) {
         let node = this.GetPrefabNode(com);
@@ -114,9 +117,10 @@ export default class UIComponent {
             node.active = false;
             let ui_component: UIBase = node.getComponent(UIBase);
             ui_component?.onClose(param);
-            console.log("[HideUI]", com);
+            console.log('[HideUI]', com);
         }
     }
+
     static open<T>(UIDefine: IUIDefine, param?: T, obj?: Open_Obj) {
         if (!UIDefine) return;
         switch (UIDefine.UIType) {
@@ -162,9 +166,7 @@ export default class UIComponent {
     }
 
     static find(UIDefine: IUIDefine): UIBase {
-
         let ui: UIBase = null;
-
         switch (UIDefine.UIType) {
             case UIType.Form:
                 ui = UIFormMgr.Instance.find(UIDefine);
@@ -200,6 +202,7 @@ export default class UIComponent {
                 break;
         }
     }
+
     //无动画关闭UI
     CloseNoAnimation(UIDefine: IUIDefine, param: any = null) {
         if (!UIDefine) return;
@@ -226,20 +229,23 @@ export default class UIComponent {
             Main.Dialog.children[0].parent = Main.CacheUI;
         }
     }
+
     //////////////////////////////
     setComponent(component: UIBase) {
-        if (~component.name.indexOf("<")) return;
-        console.log("setComponent : ", component.name);
+        if (~component.name.indexOf('<')) return;
+        console.log('setComponent : ', component.name);
         this[component.name] = component;
     }
+
     getComponent<T>(component_name: string): T {
         return this[component_name] as T;
     }
+
     setComponentByName(name: string, component: cc.Component) {
         this[name] = component;
     }
     /////////////////////////////
-
 }
+
 (window as any).UIComponent = UIComponent;
 //(window as any).UIFormMgr = UIFormMgr;

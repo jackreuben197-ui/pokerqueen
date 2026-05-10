@@ -1,21 +1,23 @@
-import CCTools from "../../tools/CCTools";
-import GC from "../GameControl";
+import CCTools from '../../tools/CCTools';
+import GC from '../GameControl';
 
 export default class LocalStoreManager {
     private static _instance: LocalStoreManager = null;
+
     static get instance() {
         if (!LocalStoreManager._instance) {
             LocalStoreManager._instance = new LocalStoreManager();
         }
         return LocalStoreManager._instance;
     }
+    private _keyPre = 'dzpk_';
 
-    private _keyPre = 'dzpk_'
     get keyPre() {
         // let userId = GC?.data?.user?.info?.user_id || "";
-        let userId = "";
+        let userId = '';
         return `${this._keyPre}${userId}`;
     }
+
     set keyPre(value: string) {
         value && (this._keyPre = value);
     }
@@ -47,7 +49,6 @@ export default class LocalStoreManager {
     private encryptData(value) {
         let str = JSON.stringify(value);
         return str;
-
     }
 
     //解密 解压缩

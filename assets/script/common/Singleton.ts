@@ -1,10 +1,6 @@
-
 // const { ccclass, property } = cc._decorator;
-
 // @ccclass
-
 // export default class Singleton extends cc.Component {
-
 //     onLoad() {
 //         let name = (this.constructor as any)?.Name;
 //         if (!Singleton[name]) {
@@ -18,39 +14,44 @@
 //         }
 //     }
 //     protected lateLoad() {
-
 //     }
 // }
-class Singleton { //this: new () => T
-    static __Instance<T>(this: new () => T): T {
-        return (<any>this).instance ??= new this();
-    }
-    static get Instance(): Singleton {
-        return (<any>this).instance ??= new Singleton();
-    }
-    a() {
+class Singleton {
 
+    //this: new () => T
+
+    static __Instance<T>(this: new () => T): T {
+        return ((<any>this).instance ??= new this());
     }
+
+    static get Instance(): Singleton {
+        return ((<any>this).instance ??= new Singleton());
+    }
+
+    a() {}
 }
 
 class Bar extends Singleton {
     desc: string;
+
     public print() {
         cc.log(this.desc);
     }
 }
+
 export class A extends Singleton {
+
     constructor() {
         super();
     }
-    a() {
 
-    }
+    a() {}
 }
 
 export class B {
+
     constructor() {
         //Bar.Instance<Bar>.
-        Singleton.Instance.a
+        Singleton.Instance.a;
     }
 }

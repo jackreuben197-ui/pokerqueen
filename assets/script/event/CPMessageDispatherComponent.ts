@@ -1,4 +1,3 @@
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -8,13 +7,13 @@ export default class CPMessageDispatherComponent {
      */
     private _handlers: {
         [key: string | number]: {
-            caller: any,
-            handler: Function
-        }[]
+            caller: any;
+            handler: Function;
+        }[];
     } = {};
 
     static get Instance(): CPMessageDispatherComponent {
-        return (<any>this).instance ??= new CPMessageDispatherComponent();
+        return ((<any>this).instance ??= new CPMessageDispatherComponent());
     }
 
     /**
@@ -32,6 +31,7 @@ export default class CPMessageDispatherComponent {
             }
         }
     }
+
     /**
      * 注册事件
      * @param event 事件名称
@@ -39,11 +39,10 @@ export default class CPMessageDispatherComponent {
      * @param caller 作用域
      */
     public RegisterHandler(event: string | number, handler: Function, caller?: any): void {
-
         this._handlers[event] || (this._handlers[event] = []);
-
         this._handlers[event].push({ caller, handler });
     }
+
     /**
      * 移除事件响应
      * @param event 事件名称
@@ -70,11 +69,12 @@ export default class CPMessageDispatherComponent {
     }
 
     /**
-    * 移除所有事件
-    */
+     * 移除所有事件
+     */
     public RemoveAllListener() {
         this._handlers = {};
     }
     // update (dt) {}
 }
+
 (window as any).CPMessageDispatherComponent = CPMessageDispatherComponent;

@@ -1,15 +1,15 @@
-import { StringHelper } from "../../helper/StringHelper";
-import TimeHelper from "../../helper/TimeHelper";
-import { i18nMgr } from "../../i18n/i18nMgr";
-import { Def } from "../../protobuf/holdem/define_pb";
-import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_th_enter_room_pb";
-import { ServerMessageWinner } from "../../protobuf/holdem/recv_th_winner_pb";
-import { UIDefine } from "../../define/UIDefine";
-import UIDialogSquid from "../../ui/dialog/UIDialogSquid";
-import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
-import UIComponent from "../../ui/UIComponent";
-import { CPlayer } from "../CPlayer";
-import { GameCache } from "../GameCache";
+import { StringHelper } from '../../helper/StringHelper';
+import TimeHelper from '../../helper/TimeHelper';
+import { i18nMgr } from '../../i18n/i18nMgr';
+import { Def } from '../../protobuf/holdem/define_pb';
+import { ServerMessageEnterRoom } from '../../protobuf/holdem/req_th_enter_room_pb';
+import { ServerMessageWinner } from '../../protobuf/holdem/recv_th_winner_pb';
+import { UIDefine } from '../../define/UIDefine';
+import UIDialogSquid from '../../ui/dialog/UIDialogSquid';
+import { UISuperDialogType } from '../../ui/dialog/UISuperDialog';
+import UIComponent from '../../ui/UIComponent';
+import { CPlayer } from '../CPlayer';
+import { GameCache } from '../GameCache';
 
 interface TexasGameSquidHost {
     squidEnabled: boolean;
@@ -25,14 +25,18 @@ interface TexasGameSquidHost {
     squidOpenNumber: number;
     squidDeposit: number;
     squidExtraCount: number;
-    squidCountRates: { count: number, rate: number }[];
+    squidCountRates: { count: number; rate: number }[];
     isGameInSquidRound: boolean;
     listSeat: any[];
     mainPlayer: CPlayer;
     uirc: any;
+
     GetLocalSeatID(serverSeatID: number): number;
+
     UpdateRoomDes(): void;
+
     SendSquidInActive(enable: boolean): void;
+
     Standup(): void;
 }
 
@@ -49,20 +53,18 @@ interface SquidEndRowData {
 export default class TexasGameSquid {
     private roundEndPopupToken: number = 0;
 
-    constructor(private host: TexasGameSquidHost) {
-    }
+    constructor(private host: TexasGameSquidHost) {}
 
     public UpdateRoomConfig(rec: ServerMessageEnterRoom.AsObject): void {
         const roomInfoAny = rec.roomInfo as any;
         const entryAny = GameCache.Instance as any;
-
         this.host.squidMode = entryAny.room_squid_mode || 0;
         this.host.squidHead = entryAny.room_squid_head || 0;
         this.host.squidTail = entryAny.room_squid_tail || 0;
         this.host.squidMaxCount = entryAny.room_squid_max || 0;
-        this.host.squidBase = (roomInfoAny.squidBase || 0) > 0 ? roomInfoAny.squidBase : (entryAny.room_squid_base || 0);
+        this.host.squidBase = (roomInfoAny.squidBase || 0) > 0 ? roomInfoAny.squidBase : entryAny.room_squid_base || 0;
         this.host.squidTotalLimit = roomInfoAny.squidTotalLimit || 0;
-        this.host.squidPool = ((rec.handInfo as any)?.pools?.squidPool) || 0;
+        this.host.squidPool = (rec.handInfo as any)?.pools?.squidPool || 0;
         this.host.squidRound = roomInfoAny.rounds || 0;
         this.host.squidCurrentRound = (rec.handInfo as any)?.conRounds || 0;
         this.host.squidOpenNumber = entryAny.room_squid_open_number || 0;
@@ -89,7 +91,7 @@ export default class TexasGameSquid {
             squidExtraCount: this.host.squidExtraCount,
             squidCountRates: this.host.squidCountRates,
             seatCount: GameCache.Instance.seat_count,
-            noAnimation: true,
+            noAnimation: true
         });
     }
 
@@ -117,8 +119,8 @@ export default class TexasGameSquid {
         if (!this.CanShowJoinSwitch()) return;
         UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
             content: this.GetJoinDialogContent(),
-            commit: i18nMgr.Get("UIClub_RoomJoin"),
-            cancel: i18nMgr.Get("UITexas_Holding"),
+            commit: i18nMgr.Get('UIClub_RoomJoin'),
+            cancel: i18nMgr.Get('UITexas_Holding'),
             commit_click: () => {
                 this.host.SendSquidInActive(true);
             }
@@ -128,38 +130,35 @@ export default class TexasGameSquid {
     public OnClickStandUp(): void {
         const p = this.host.mainPlayer;
         if (!p || p.seatID < 0) {
-            UIComponent.Instance.Toast(i18nMgr.Get("Good_luck"));
+            UIComponent.Instance.Toast(i18nMgr.Get('Good_luck'));
             return;
         }
-
         if (this.host.squidEnabled && this.host.isGameInSquidRound && p.inSquid) {
             if (this.host.squidMode === 0) {
                 this.host.Standup();
                 return;
             }
-
             if (this.host.squidMode === 1) {
                 if ((p.squidCount || 0) <= 0) {
                     UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
-                        title: i18nMgr.Get("UIGuild_TipsTitle"),
-                        content: i18nMgr.Get("UISquid_Tips3"),
-                        commit: i18nMgr.Get("adaptation10012"),
-                        cancel: i18nMgr.Get("adaptation10013"),
-                        commit_click: () => this.host.Standup(),
+                        title: i18nMgr.Get('UIGuild_TipsTitle'),
+                        content: i18nMgr.Get('UISquid_Tips3'),
+                        commit: i18nMgr.Get('adaptation10012'),
+                        cancel: i18nMgr.Get('adaptation10013'),
+                        commit_click: () => this.host.Standup()
                     });
                 } else {
                     UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
-                        title: "",
-                        content: i18nMgr.Get("UIDelayLeaveTips"),
-                        commit: i18nMgr.Get("UILeave"),
-                        cancel: i18nMgr.Get("UIPause_sdXLZk7S"),
-                        commit_click: () => this.host.Standup(),
+                        title: '',
+                        content: i18nMgr.Get('UIDelayLeaveTips'),
+                        commit: i18nMgr.Get('UILeave'),
+                        cancel: i18nMgr.Get('UIPause_sdXLZk7S'),
+                        commit_click: () => this.host.Standup()
                     });
                 }
                 return;
             }
         }
-
         this.host.Standup();
     }
 
@@ -189,18 +188,18 @@ export default class TexasGameSquid {
     }
 
     public BuildRoomDesc(): string {
-        if (!this.host.squidEnabled) return "";
-        let info = "";
+        if (!this.host.squidEnabled) return '';
+        let info = '';
         if (this.host.isGameInSquidRound) {
-            info += `\n${i18nMgr.Get("UISquidOpen")}:1/1`;
+            info += `\n${i18nMgr.Get('UISquidOpen')}:1/1`;
         } else {
             const currentRound = (this.host.squidCurrentRound || 0) + 1;
             const totalRound = this.host.squidRound || 1;
-            info += `\n${i18nMgr.Get("UISquidWaitOpen")}:${currentRound}/${totalRound}`;
+            info += `\n${i18nMgr.Get('UISquidWaitOpen')}:${currentRound}/${totalRound}`;
         }
-        info += `\n${i18nMgr.Get("UIGameTableSquidShow")}:${StringHelper.GetLongString(this.host.squidBase)}`;
-        info += `\n${i18nMgr.Get("UIFantasy_dairuyajin")}:${StringHelper.GetLongString(this.host.squidDeposit)}`;
-        info += `\n${i18nMgr.Get("UISquidOpenPeopleNumber")}:${this.host.squidOpenNumber}/${GameCache.Instance.seat_count}`;
+        info += `\n${i18nMgr.Get('UIGameTableSquidShow')}:${StringHelper.GetLongString(this.host.squidBase)}`;
+        info += `\n${i18nMgr.Get('UIFantasy_dairuyajin')}:${StringHelper.GetLongString(this.host.squidDeposit)}`;
+        info += `\n${i18nMgr.Get('UISquidOpenPeopleNumber')}:${this.host.squidOpenNumber}/${GameCache.Instance.seat_count}`;
         return info;
     }
 
@@ -208,20 +207,18 @@ export default class TexasGameSquid {
         const node = this.host?.uirc?.SquidStart as cc.Node;
         const anim = this.host?.uirc?.SquidStartAnim as cc.Animation;
         if (!node || !anim) {
-            UIComponent.Instance.Toast(i18nMgr.Get("UISquidOpen"));
+            UIComponent.Instance.Toast(i18nMgr.Get('UISquidOpen'));
             return;
         }
-
         const clips = anim.getClips?.() || [];
         if (!anim.defaultClip && clips.length > 0) {
             anim.defaultClip = clips[0];
         }
-
         node.active = true;
         anim.stop();
-        anim.off("finished", this.OnSquidStartAnimFinished, this);
-        anim.on("finished", this.OnSquidStartAnimFinished, this);
-        anim.play(anim.defaultClip?.name || "squid_start");
+        anim.off('finished', this.OnSquidStartAnimFinished, this);
+        anim.on('finished', this.OnSquidStartAnimFinished, this);
+        anim.play(anim.defaultClip?.name || 'squid_start');
     }
 
     private OnSquidStartAnimFinished(): void {
@@ -236,18 +233,15 @@ export default class TexasGameSquid {
         if (!rows.length) {
             return;
         }
-
         const token = ++this.roundEndPopupToken;
         const cacheRoomID = GameCache.Instance.room_id;
         await TimeHelper.Sleep(2000);
-
         if (token !== this.roundEndPopupToken) {
             return;
         }
         if (cacheRoomID !== GameCache.Instance.room_id) {
             return;
         }
-
         UIComponent.close(UIDefine.UISquidEnd);
         UIComponent.open(UIDefine.UISquidEnd, { rows: rows });
     }
@@ -314,7 +308,6 @@ export default class TexasGameSquid {
         const mode = this.host.squidMode || 0;
         const headOn = this.host.squidHead === 1;
         const tailOn = this.host.squidTail === 1;
-
         let total = 0;
         if (mode === 1) {
             total = Math.max(this.host.squidTotalLimit || 0, this.host.squidMaxCount || 0);
@@ -356,16 +349,16 @@ export default class TexasGameSquid {
         const p = this.host.mainPlayer;
         if (this.host.squidMode === 1 && p && !p.squidRoundSeated) {
             const remain = Math.max(0, this.GetRemainCount());
-            return StringHelper.Format(i18nMgr.Get("UISquidJoinInNewTips2"), [remain, remain + 1]);
+            return StringHelper.Format(i18nMgr.Get('UISquidJoinInNewTips2'), [remain, remain + 1]);
         }
-        return i18nMgr.Get("UISquidJoinTips");
+        return i18nMgr.Get('UISquidJoinTips');
     }
 
     private RefreshJoinSwitch(): void {
         const switchNode = this.host.uirc?.SquidSwitch as cc.Node;
         const label = this.host.uirc?.SquidJoinLabel as cc.Label;
         if (label) {
-            label.string = i18nMgr.Get("UIClub_RoomJoin");
+            label.string = i18nMgr.Get('UIClub_RoomJoin');
         }
         if (switchNode) {
             switchNode.active = this.CanShowJoinSwitch();
@@ -389,52 +382,46 @@ export default class TexasGameSquid {
         if (!rec?.resultsList?.length) {
             return [];
         }
-
         const rows: SquidEndRowData[] = [];
         rec.resultsList.forEach(r => {
             const player = this.GetPlayerByServerSeatID(r.seatId);
             if (!player) {
                 return;
             }
-
             r.ehcsList?.forEach(ehc => {
                 if (ehc.ehcType !== Def.EHCType.EHC_SQUID) {
                     return;
                 }
-
                 const inNum = Number((ehc as any).pb_in || (ehc as any).in || 0);
                 const outNum = Number((ehc as any).out || 0);
                 if (inNum <= 0 && outNum <= 0) {
                     return;
                 }
-
                 rows.push({
                     userID: Number(player.userID || 0),
-                    nick: player.nick || "",
-                    avatar: player.headPic || "",
+                    nick: player.nick || '',
+                    avatar: player.headPic || '',
                     money: inNum > 0 ? inNum : -outNum,
                     squidNum: Number((r as any).squidCount || 0),
                     rate: this.GetRateBySquidNum(Number((r as any).squidCount || 0)),
-                    isPunish: false,
+                    isPunish: false
                 });
             });
         });
-
         const punishList = rec.pools?.squidDetailsList || [];
         if (rows.length > 0 && punishList.length > 0) {
             punishList.forEach(p => {
                 rows.push({
                     userID: Number(p.userRid || 0),
-                    nick: p.name || "",
-                    avatar: p.avatar || "",
+                    nick: p.name || '',
+                    avatar: p.avatar || '',
                     money: -Number(p.punishFee || 0),
                     squidNum: 0,
                     rate: 0,
-                    isPunish: true,
+                    isPunish: true
                 });
             });
         }
-
         return rows;
     }
 
@@ -448,7 +435,6 @@ export default class TexasGameSquid {
         if (!this.host.squidCountRates?.length) {
             return 0;
         }
-
         let rate = 0;
         this.host.squidCountRates.forEach(cfg => {
             if (squidNum >= cfg.count) {

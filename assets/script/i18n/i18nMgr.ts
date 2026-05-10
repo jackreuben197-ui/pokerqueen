@@ -1,10 +1,9 @@
-
-import { EventName } from "../config/EventName";
-import { GameConfig } from "../config/GameConfig";
-import GC from "../frame/GameControl";
-import StorageKey from "../session/StorageKey";
-import * as i18nLabel from "./i18nLabel";
-import * as i18nSprite from "./i18nSprite";
+import { EventName } from '../config/EventName';
+import { GameConfig } from '../config/GameConfig';
+import GC from '../frame/GameControl';
+import StorageKey from '../session/StorageKey';
+import * as i18nLabel from './i18nLabel';
+import * as i18nSprite from './i18nSprite';
 //var CSV = require("CSV");
 //上来先处理数据 当前的语言 0简中 1繁中 2英文 3葡语  let type = ["cn","zh","en","pt"]
 var LanguageAllObject: Record<string, { [key: string]: string }> = {
@@ -28,13 +27,13 @@ var excelAdd = {
     // pt: {
     //     UISettingPassword001: "Gestão de contas",
     // }
-}
-export class i18nMgr {
-    public static language = "";     // 当前语言
+};
 
-    private static labelArr: i18nLabel.i18nLabel[] = [];        // i18nLabel 列表
-    private static LanguageObject: { [key: string]: string } = {};   // 文字配置
-    private static spriteArr: i18nSprite.i18nSprite[] = [];       // i18nSprite 列表
+export class i18nMgr {
+    public static language = ''; // 当前语言
+    private static labelArr: i18nLabel.i18nLabel[] = []; // i18nLabel 列表
+    private static LanguageObject: { [key: string]: string } = {}; // 文字配置
+    private static spriteArr: i18nSprite.i18nSprite[] = []; // i18nSprite 列表
 
     // private static LanMap = {
     //     cn: "sl_bnftN7UY",
@@ -43,12 +42,12 @@ export class i18nMgr {
     // }
 
     public static isCN() {
-        return this.language == "cn";
+        return this.language == 'cn';
     }
 
     public static initLanguage() {
         // 强制简体中文，忽略本地缓存
-        this.language = "cn";
+        this.language = 'cn';
         this.LanguageObject = LanguageAllObject[this.language];
     }
 
@@ -66,14 +65,10 @@ export class i18nMgr {
     //             break;
     //     }
     // }
-
     // public static getLanguageText() {
     //     //return i18nMgr.Get("UserLanguage").split("^")[i18nMgr.getLanguage()];
     //     return i18nMgr.Get(this.LanMap[this.language]);
     // }
-
-
-
     /**
      * 设置语言
      */
@@ -102,6 +97,7 @@ export class i18nMgr {
         //     UIMatchBanner.instance.initBannerList(changeObj[this.language]);
         // }
     }
+
     /**
      * 添加或移除 i18nLabel
      */
@@ -119,10 +115,12 @@ export class i18nMgr {
     public static _getLabel(opt: string): string {
         return this.Get(opt);
     }
+
     //从表格获取内容
     public static Get(opt: string): string {
         return this.LanguageObject?.[opt] || opt;
     }
+
     /**
      * 添加或移除 i18nSprite
      */
@@ -138,8 +136,7 @@ export class i18nMgr {
     }
 
     public static _getSprite(path: string, cb: (spriteFrame: cc.SpriteFrame) => void) {
-
-        cc.resources.load("main/i18n/sprite/" + this.language + "/" + path, cc.SpriteFrame, (err, spriteFrame: cc.SpriteFrame) => {
+        cc.resources.load('main/i18n/sprite/' + this.language + '/' + path, cc.SpriteFrame, (err, spriteFrame: cc.SpriteFrame) => {
             if (err) {
                 return cb(null);
             }
@@ -152,12 +149,12 @@ export class i18nMgr {
      * @return {*}
      */
     private static refreshAllLabel() {
-
         for (let one of this.labelArr) {
             one._resetValue();
         }
-        GC.notify.post(EventName.switchLanguages)
+        GC.notify.post(EventName.switchLanguages);
     }
+
     /**
      * 解析配置表：先用 cc.resources 读取内置词典，
      * 再在 Web 环境下 fetch 外部同名 txt 文件进行补充/覆盖。
@@ -168,39 +165,41 @@ export class i18nMgr {
     //     this._praseConfig("zh", cc.resources.get("config/USER_TW", cc.TextAsset));
     //     this._praseConfig("cn", cc.resources.get("config/USER_ZH", cc.TextAsset));
     // }
-    
+
     public static _praseConfig(language: string, config: cc.TextAsset) {
         if (config && config.text) {
-            let list = config.text.split("\n");
+            let list = config.text.split('\n');
             for (let item of list) {
-                let eq_index = item.indexOf("=");
+                let eq_index = item.indexOf('=');
                 if (~eq_index) {
                     let key = item.slice(0, eq_index);
                     let value = item.slice(eq_index + 1);
-                    value = value.replace("\r", "");
-                    value = value.replace(/\\n/g, "\n");
+                    value = value.replace('\r', '');
+                    value = value.replace(/\\n/g, '\n');
                     LanguageAllObject[language][key] = value;
                 }
             }
         }
     }
+
     /**
      * 通过 cc.resources.load 加载词典资源并刷新 UI。
      * 走 Cocos 资源管道，自动享受 md5Cache 缓存刷新。
      */
     public static async loadAndRefreshConfig(): Promise<void> {
         const tasks = [
-            this._loadConfig("en", "config/USER_EN"),
-            this._loadConfig("pt", "config/USER_PT"),
-            this._loadConfig("zh", "config/USER_TW"),
-            this._loadConfig("cn", "config/USER_ZH"),
+            this._loadConfig('en', 'config/USER_EN'),
+            this._loadConfig('pt', 'config/USER_PT'),
+            this._loadConfig('zh', 'config/USER_TW'),
+            this._loadConfig('cn', 'config/USER_ZH')
         ];
         await Promise.all(tasks);
         this.LanguageObject = LanguageAllObject[this.language];
         this.refreshAllLabel();
     }
+
     private static _loadConfig(language: string, path: string): Promise<void> {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             cc.resources.load(path, cc.TextAsset, (err, asset: cc.TextAsset) => {
                 if (!err && asset) {
                     i18nMgr._praseConfig(language, asset);
@@ -209,47 +208,43 @@ export class i18nMgr {
             });
         });
     }
+
     public static get LanguageAllObject() {
         return LanguageAllObject;
     }
+
     private static reloadSprite() {
         for (let one of this.spriteArr) {
             one._resetValue();
         }
     }
-
 }
 //@ts-ignore
 window.i18nMgr = i18nMgr;
 //@ts-ignore
 window.LanguageAllObject = LanguageAllObject;
-
 /**
-     * 读取语言配置文件_csv格式
-     */
-    // public static loadLanguage_csv() {
-
-    //     return new Promise((resolve, reject) => {
-
-    //         cc.resources.load("i18n/Language", (err, data: cc.TextAsset) => {
-
-    //             if (err) {
-    //                 reject(err);
-    //             } else {
-    //                 var _csv = new CSV(data.text, { header: true });
-    //                 var _con = _csv.parse();
-    //                 for (let i = 0; i < _con.length; i++) {
-    //                     let val = _con[i];
-    //                     if (val.key) {
-    //                         LanguageAllObject.cn[val.key] = val.cn;
-    //                         LanguageAllObject.zh[val.key] = val.zh;
-    //                         LanguageAllObject.en[val.key] = val.en;
-    //                         LanguageAllObject.pt[val.key] = val.pt;
-    //                     }
-    //                 }
-    //                 resolve(1);
-    //             }
-    //         });
-    //     });
-
-    // }
+ * 读取语言配置文件_csv格式
+ */
+// public static loadLanguage_csv() {
+//     return new Promise((resolve, reject) => {
+//         cc.resources.load("i18n/Language", (err, data: cc.TextAsset) => {
+//             if (err) {
+//                 reject(err);
+//             } else {
+//                 var _csv = new CSV(data.text, { header: true });
+//                 var _con = _csv.parse();
+//                 for (let i = 0; i < _con.length; i++) {
+//                     let val = _con[i];
+//                     if (val.key) {
+//                         LanguageAllObject.cn[val.key] = val.cn;
+//                         LanguageAllObject.zh[val.key] = val.zh;
+//                         LanguageAllObject.en[val.key] = val.en;
+//                         LanguageAllObject.pt[val.key] = val.pt;
+//                     }
+//                 }
+//                 resolve(1);
+//             }
+//         });
+//     });
+// }

@@ -7,20 +7,19 @@
  * @end
  ******************************************/
 const { ccclass, property, disallowMultiple, menu, executionOrder } = cc._decorator;
-
 import UIBase from '../ui/UIBase';
 import List from './List';
 
 enum SelectedType {
     NONE = 0,
     TOGGLE = 1,
-    SWITCH = 2,
+    SWITCH = 2
 }
 
 @ccclass
 @disallowMultiple()
 @menu('common/ListItem')
-@executionOrder(-5001)          //先于List
+@executionOrder(-5001) //先于List
 export default class ListItem extends UIBase {
     //选择模式
     @property({
@@ -30,29 +29,35 @@ export default class ListItem extends UIBase {
     selectedMode: SelectedType = SelectedType.NONE;
     //被选标志
     @property({
-        type: cc.Node, tooltip: CC_DEV && '被选标识',
-        visible() { return this.selectedMode > SelectedType.NONE }
+        type: cc.Node,
+        tooltip: CC_DEV && '被选标识',
+        visible() {
+            return this.selectedMode > SelectedType.NONE;
+        }
     })
     selectedFlag: cc.Node = null;
     //被选择的SpriteFrame
     @property({
-        type: cc.SpriteFrame, tooltip: CC_DEV && '被选择的SpriteFrame',
-        visible() { return this.selectedMode == SelectedType.SWITCH }
+        type: cc.SpriteFrame,
+        tooltip: CC_DEV && '被选择的SpriteFrame',
+        visible() {
+            return this.selectedMode == SelectedType.SWITCH;
+        }
     })
     selectedSpriteFrame: cc.SpriteFrame = null;
     //未被选择的SpriteFrame
     _unselectedSpriteFrame: cc.SpriteFrame = null;
     //自适应尺寸
     @property({
-        tooltip: CC_DEV && '自适应尺寸（宽或高）',
+        tooltip: CC_DEV && '自适应尺寸（宽或高）'
     })
     adaptiveSize: boolean = false;
     //选择
     _selected: boolean = false;
+
     set selected(val: boolean) {
         this._selected = val;
-        if (!this.selectedFlag)
-            return;
+        if (!this.selectedFlag) return;
         switch (this.selectedMode) {
             case SelectedType.TOGGLE:
                 this.selectedFlag.active = val;
@@ -65,14 +70,15 @@ export default class ListItem extends UIBase {
                 break;
         }
     }
+
     get selected() {
         return this._selected;
     }
     //按钮组件
     private _btnCom: any;
+
     get btnCom() {
-        if (!this._btnCom)
-            this._btnCom = this.node.getComponent(cc.Button);
+        if (!this._btnCom) this._btnCom = this.node.getComponent(cc.Button);
         return this._btnCom;
     }
     //依赖的List组件
@@ -114,6 +120,7 @@ export default class ListItem extends UIBase {
     _onSizeChange() {
         this.list._onItemAdaptive(this.node);
     }
+
     /**
      * 创建事件
      * @param {cc.Component} component 组件脚本
@@ -122,9 +129,13 @@ export default class ListItem extends UIBase {
      * @returns cc.Component.EventHandler
      */
     createEvt(component: cc.Component, handlerName: string, node: cc.Node = null) {
-        if (!component.isValid)
-            return;//有些异步加载的，节点以及销毁了。
-        component['comName'] = component['comName'] || component.name.match(/\<(.*?)\>/g).pop().replace(/\<|>/g, '');
+        if (!component.isValid) return; //有些异步加载的，节点以及销毁了。
+        component['comName'] =
+            component['comName'] ||
+            component.name
+                .match(/\<(.*?)\>/g)
+                .pop()
+                .replace(/\<|>/g, '');
         let evt = new cc.Component.EventHandler();
         evt.target = node || component.node;
         evt.component = component['comName'];
@@ -137,28 +148,31 @@ export default class ListItem extends UIBase {
         let tween: cc.Tween;
         switch (aniType) {
             case 0: //向上消失
-                tween = cc.tween(t.node)
-                    .to(.2, { scale: .7 })
-                    .by(.3, { y: t.node.height * 2 });
+                tween = cc
+                    .tween(t.node)
+                    .to(0.2, { scale: 0.7 })
+                    .by(0.3, { y: t.node.height * 2 });
                 break;
             case 1: //向右消失
-                tween = cc.tween(t.node)
-                    .to(.2, { scale: .7 })
-                    .by(.3, { x: t.node.width * 2 });
+                tween = cc
+                    .tween(t.node)
+                    .to(0.2, { scale: 0.7 })
+                    .by(0.3, { x: t.node.width * 2 });
                 break;
             case 2: //向下消失
-                tween = cc.tween(t.node)
-                    .to(.2, { scale: .7 })
-                    .by(.3, { y: t.node.height * -2 });
+                tween = cc
+                    .tween(t.node)
+                    .to(0.2, { scale: 0.7 })
+                    .by(0.3, { y: t.node.height * -2 });
                 break;
             case 3: //向左消失
-                tween = cc.tween(t.node)
-                    .to(.2, { scale: .7 })
-                    .by(.3, { x: t.node.width * -2 });
+                tween = cc
+                    .tween(t.node)
+                    .to(0.2, { scale: 0.7 })
+                    .by(0.3, { x: t.node.width * -2 });
                 break;
             default: //默认：缩小消失
-                tween = cc.tween(t.node)
-                    .to(.3, { scale: .1 });
+                tween = cc.tween(t.node).to(0.3, { scale: 0.1 });
                 break;
         }
         if (callFunc || del) {
@@ -181,5 +195,4 @@ export default class ListItem extends UIBase {
     onClickThis() {
         this.list.selectedId = this.listId;
     }
-
 }

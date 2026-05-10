@@ -1,77 +1,54 @@
-import { EventName } from "../../config/EventName";
-import { GameConfig } from "../../config/GameConfig";
-import { UIDefine } from "../../define/UIDefine";
-import { ClubCache } from "../../frame/data/club/ClubCache";
-import GC from "../../frame/GameControl";
-import { StringHelper } from "../../helper/StringHelper";
-import { i18nLabel } from "../../i18n/i18nLabel";
-import { i18nMgr } from "../../i18n/i18nMgr";
-import { WalletType } from "../../config/TexasConfig";
-import ToastManager from "../../manager/ToastManager";
-import {
-    WebOrgClubUserInfo,
-    WebUserRoom,
-    WebUserRoomBringin,
-    WWW,
-} from "../../net/https/WebRequest";
-import UIBasePlus from "../../ui/UIBasePlus";
-import UIComponent, { PrefabUI } from "../../ui/UIComponent";
-import { OutClipsData } from "../new_ui/UIBringOut";
-import TexasGame from "../texas/TexasGame";
-import GameUtil from "../util/GameUtil";
-import { GameCache } from "../GameCache";
-
+import { UIDefine } from '../../define/UIDefine';
+import { i18nLabel } from '../../i18n/i18nLabel';
+import { i18nMgr } from '../../i18n/i18nMgr';
+import ToastManager from '../../manager/ToastManager';
+import UIBasePlus from '../../ui/UIBasePlus';
+import UIComponent, { PrefabUI } from '../../ui/UIComponent';
+import { OutClipsData } from '../new_ui/UIBringOut';
+import TexasGame from '../texas/TexasGame';
+import { GameCache } from '../GameCache';
 const { ccclass, property } = cc._decorator;
-
 const LN = '[UI][UITexasMenu]';
+
 @ccclass
 export default class UITexasMenu extends UIBasePlus {
     //文字透明度
     Text_Light_Alpha = 178;
     Text_Dark_Alpha = 70;
-
     game: TexasGame = null;
-
     transSubMenu: cc.Node = null;
     imageMenuMask: cc.Node = null;
     textTotalBean: cc.Label = null;
     //Menu_Buttons: cc.Node = null;
-
     @property(cc.Button)
-    public btnSetting : cc.Button = null;
+    public btnSetting: cc.Button = null;
     @property(cc.Button)
-    public btnRules : cc.Button = null;
+    public btnRules: cc.Button = null;
     @property(cc.Button)
-    public btnInsure : cc.Button = null;
+    public btnInsure: cc.Button = null;
     @property(cc.Button)
-    public btnBet : cc.Button = null;
+    public btnBet: cc.Button = null;
     @property(cc.Button)
-    public btnHalfLeave : cc.Button = null;
+    public btnHalfLeave: cc.Button = null;
     @property(cc.Button)
-    public btnShowBB : cc.Button = null;
-
+    public btnShowBB: cc.Button = null;
     @property(cc.Button)
-    public btnStand : cc.Button = null;
+    public btnStand: cc.Button = null;
     @property(cc.Button)
-    public btnLeaveGame : cc.Button = null;
-
+    public btnLeaveGame: cc.Button = null;
     // BB 开关图片
     @property(cc.SpriteFrame)
-    public sfUnchecked : cc.SpriteFrame = null;
+    public sfUnchecked: cc.SpriteFrame = null;
     @property(cc.SpriteFrame)
-    public sfChecked : cc.SpriteFrame = null;
+    public sfChecked: cc.SpriteFrame = null;
     // BB 开关图片节点
     @property(cc.Node)
-    public checkNode : cc.Node = null;
-
+    public checkNode: cc.Node = null;
     //按钮模板节点
     //Menu_Button: cc.Node = null;
-
     outTipNode: cc.Node = null;
     outGold: cc.Label = null;
-
     gold_click: cc.Node = null;
-
     ////////////////////////////////////
     //面板
     $panel: cc.Node = null;
@@ -87,9 +64,7 @@ export default class UITexasMenu extends UIBasePlus {
     $node_coin: cc.Node = null;
     //仓库存储节点
     $node_storage: cc.Node = null;
-
     tips_show: boolean = false;
-
     IMenuButton_Type: {
         node: cc.Node;
         text: string;
@@ -178,12 +153,10 @@ export default class UITexasMenu extends UIBasePlus {
     //         onClick: this.click_leave,
     //     },
     // ];
-
     //获取选项配置
     // public getOption(index: number) {
     //     return this.options[index];
     // }
-
     // public setOptionInteractable(index: number, boo: boolean) {
     //     let node: cc.Node = this.getOption(index).node;
     //     if (!node) return;
@@ -192,13 +165,11 @@ export default class UITexasMenu extends UIBasePlus {
     //         boo ? "#EEF5FF" : "#757CAB",
     //     );
     // }
-
     // public clearOptions() {
     //     this.options.forEach((item) => {
     //         if (item.node) item.node.active = false;
     //     });
     // }
-
     lateLoad() {
         super.lateLoad();
         // this.transSubMenu = this.getChildNodeOrComponent("SubMenu");
@@ -220,10 +191,10 @@ export default class UITexasMenu extends UIBasePlus {
         this._updateDisplay();
         //this.centerMenuContent();
         this._fadeIn();
-
         //刷新bb
         //this.refreshBB();
     }
+
     private _updateDisplay() {
         if (this.game.UserSitdown()) {
             this.btnBet.node.active = true;
@@ -234,7 +205,8 @@ export default class UITexasMenu extends UIBasePlus {
         this.btnBet.node.active = false;
         this.btnHalfLeave.node.active = false;
         this.btnStand.node.active = false;
-    } 
+    }
+
     // 菜单内容垂直居中适配
     // centerMenuContent() {
     //     let view_height = cc.view.getVisibleSize().height;
@@ -249,7 +221,6 @@ export default class UITexasMenu extends UIBasePlus {
     //     this.refreshBB_switch(GameCache.Instance.bb_on);
     //     this.click_bb_hidetips();
     // }
-
     regiterTouchEvents() {
         super.regiterTouchEvents();
         this.setButtonClick(this.$black, this.click_black);
@@ -271,7 +242,6 @@ export default class UITexasMenu extends UIBasePlus {
     // protected regiterDispatchEvent(): void {
     //     super.regiterDispatchEvent();
     // }
-
     // private buildMenuButtons() {
     //     this.options.forEach((item) => {
     //         let button = cc.instantiate(this.$option_0);
@@ -286,7 +256,6 @@ export default class UITexasMenu extends UIBasePlus {
     //     this.$option_bb.setSiblingIndex(this.$layout.childrenCount - 1);
     //     this.setOptionBB();
     // }
-
     // setOptionBB() {
     //     this.setChildButtonClick(this.$option_bb, "click", this.click_bb);
     //     this.setChildButtonClick(
@@ -300,7 +269,6 @@ export default class UITexasMenu extends UIBasePlus {
     //         this.click_bb_hidetips,
     //     );
     // }
-
     //金币点击跳转钱包
     // onGold() {
     //     if (GC.data.club?.info?.club_id) {
@@ -310,10 +278,8 @@ export default class UITexasMenu extends UIBasePlus {
     //         ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
     //     }
     // }
-
     // click_coin() {
     //     let data = WebUserRoomBringin.Response.data;
-
     //     UIComponent.open(UIDefine.UIToRecharge, {
     //         type: 1,
     //         walletType: WalletType.Club,
@@ -336,9 +302,7 @@ export default class UITexasMenu extends UIBasePlus {
     //面板移出
     private _fadeOut(animation: boolean = true) {
         let view_width = 1242;
-
         this.$panel.width = view_width;
-
         if (animation) {
             cc.tween(this.$panel).to(0.25, { x: -view_width }).start();
         } else {
@@ -364,27 +328,30 @@ export default class UITexasMenu extends UIBasePlus {
     click_stand_up() {
         this.click_black();
         if (null == this.game.mainPlayer) {
-            ToastManager.Instance.createToast(i18nMgr.Get("Good_luck"));
+            ToastManager.Instance.createToast(i18nMgr.Get('Good_luck'));
             //需要进行错误重连
             //Game.EventSystem.Run(EventIdType.GameErrorReconnect);
             return;
         }
         this.game.Standup();
     }
+
     click_insurance() {
         this.click_black();
         UIComponent.open(UIDefine.UIInsurance, { type: 1, roomData: { room_id: GameCache.Instance.room_id, match_id: GameCache.Instance.match_id } });
     }
+
     click_setting() {
         this.click_black();
         UIComponent.open(UIDefine.UITexasSettingComponent, null, {
-            parentUI: this.game.uirc.Common_Con,
+            parentUI: this.game.uirc.Common_Con
         });
     }
+
     click_rule_tips() {
         this.click_black();
         UIComponent.open(UIDefine.UITexasRule, null, {
-            parentUI: this.game.uirc.Common_Con,
+            parentUI: this.game.uirc.Common_Con
         });
     }
 
@@ -394,7 +361,6 @@ export default class UITexasMenu extends UIBasePlus {
         // if (null == this.MenuButtons_Dic.Button_SetAutoOnTable || !this.MenuButtons_Dic.Button_SetAutoOnTable.node.getComponent(cc.Button).interactable) {
         //     return;
         // }
-
         // if (GameUtil.GetFriendsOrClubTable() == 3) {
         //     WWW.Instance.CommonAPI({
         //         web_class: WebUserRoomBringin,
@@ -452,7 +418,7 @@ export default class UITexasMenu extends UIBasePlus {
         // 弹代入框CurretainMinRate
         UIComponent.Instance.ShowUI<OutClipsData>(PrefabUI.UIBringOut, {
             currentMinRate: this.game.currentMinRate,
-            tableChips: this.game.mainPlayer.chips,
+            tableChips: this.game.mainPlayer.chips
         });
     }
 
@@ -461,23 +427,22 @@ export default class UITexasMenu extends UIBasePlus {
         //     return;
         // }
         this.click_black();
-
         if (null == this.game.mainPlayer) {
-            UIComponent.Instance.Toast(i18nMgr.Get("Good_luck"));
+            UIComponent.Instance.Toast(i18nMgr.Get('Good_luck'));
             //Game.EventSystem.Run(EventIdType.GameErrorReconnect);
             return;
         }
-
         if (this.game.mainPlayer.IsAutoOp) return;
-
         this.game.SendTrustAction(true);
     }
+
     //留座离桌
     click_leave_table() {
         // this.post(EventName.updateFriendChessView)
         this.game.uirc.HideMenu();
         this.game.SendReserveSeatAction(true);
     }
+
     click_leave() {
         // this.post(EventName.updateFriendChessView)
         this.game.onClickExit();
@@ -491,16 +456,17 @@ export default class UITexasMenu extends UIBasePlus {
 
     click_bb_showtips() {
         this.tips_show = !this.tips_show;
-        this.setChildVisible(this.$option_bb, "tips", this.tips_show);
+        this.setChildVisible(this.$option_bb, 'tips', this.tips_show);
     }
+
     click_bb_hidetips() {
         this.tips_show = false;
-        this.setChildVisible(this.$option_bb, "tips", false);
+        this.setChildVisible(this.$option_bb, 'tips', false);
     }
 
     refreshBB_switch(boo: boolean) {
-        this.setChildVisible(this.$option_bb, "switch/on", boo);
-        this.setChildVisible(this.$option_bb, "switch/off", !boo);
+        this.setChildVisible(this.$option_bb, 'switch/on', boo);
+        this.setChildVisible(this.$option_bb, 'switch/off', !boo);
         if (this.checkNode) {
             let sprite = this.checkNode.getComponent(cc.Sprite);
             if (sprite) {

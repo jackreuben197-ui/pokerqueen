@@ -5,16 +5,12 @@
  */
 export enum RoomOriginType {
     UNKNOWN = 0,
-
     /** 平台（暂未使用） */
     PLATFORM = 1,
-
     /** 联盟 */
     UNION = 2,
-
     /** 俱乐部 */
     CLUB = 3,
-
     /** 朋友桌 */
-    FRIEND = 4,
+    FRIEND = 4
 }

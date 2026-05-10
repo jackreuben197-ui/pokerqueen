@@ -1,15 +1,12 @@
-
 export abstract class StateHandler {
-
-    public Name: string = "StateHandler";
-
+    public Name: string = 'StateHandler';
     public SourceData: any = null;
 
     public Enter(entity?: any) {
         cc.log(`[StateHandler] ${this.Name}:${entity.id} is Enter`);
     }
-    public Execute(entity?: any, dt?: number) {
-    }
+
+    public Execute(entity?: any, dt?: number) {}
 
     public Exit(entity?: any) {
         cc.log(`[StateHandler] ${this.Name}:${entity.id} is Exit`);

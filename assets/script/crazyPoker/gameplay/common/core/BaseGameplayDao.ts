@@ -1,6 +1,6 @@
-import { GameType } from "../constant/LogicTypeConf";
-import { GameCache } from "../../../../game/GameCache";
-import BaseGameplayData from "./BaseGameplayData";
+import { GameType } from '../constant/LogicTypeConf';
+import { GameCache } from '../../../../game/GameCache';
+import BaseGameplayData from './BaseGameplayData';
 
 /**
  * 核心玩法：数据访问层
@@ -8,6 +8,7 @@ import BaseGameplayData from "./BaseGameplayData";
  */
 export default class BaseGameplayDao {
     private static _instance: BaseGameplayDao | null = null;
+
     public static get Instance(): BaseGameplayDao {
         if (!BaseGameplayDao._instance) {
             BaseGameplayDao._instance = new BaseGameplayDao();
@@ -15,7 +16,7 @@ export default class BaseGameplayDao {
         return BaseGameplayDao._instance;
     }
 
-    private constructor() { }
+    private constructor() {}
 
     /**
      * 获取当前玩法数据
@@ -47,7 +48,6 @@ export default class BaseGameplayDao {
                 gameplayData = GameCache.Instance._texasData!;
                 break;
         }
-
         return gameplayData;
     }
 

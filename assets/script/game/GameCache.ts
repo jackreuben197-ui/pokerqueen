@@ -1,17 +1,16 @@
+import GC from '../frame/GameControl';
+import { ServerMessageEnterRoom } from '../protobuf/holdem/req_th_enter_room_pb';
+import { RoomRecord } from '../protobuf/holdem/define_pb';
+import TexasGame from './texas/TexasGame';
+import GameUtil, { GameEnterType } from './util/GameUtil';
+import TexasGameplayData from '../crazyPoker/gameplay/texas/data/TexasGameplayData';
+import { AntiCheatType } from '../crazyPoker/gameplay/common/constant/AntiCheatType';
+import { VideoModel } from '../crazyPoker/gameplay/common/constant/VideoModel';
+import { WebRoomCenterDelayTimeBlindLevelQuery } from '../net/https/web_request/WebRequestRoomCenter';
 
-import GC from "../frame/GameControl";
-import { ServerMessageEnterRoom } from "../protobuf/holdem/req_th_enter_room_pb";
-import { RoomRecord } from "../protobuf/holdem/define_pb";
-import TexasGame from "./texas/TexasGame";
-import GameUtil, { GameEnterType } from "./util/GameUtil";
-import TexasGameplayData from "../crazyPoker/gameplay/texas/data/TexasGameplayData";
-import { AntiCheatType } from "../crazyPoker/gameplay/common/constant/AntiCheatType";
-import { VideoModel } from "../crazyPoker/gameplay/common/constant/VideoModel";
-import { WebRoomCenterDelayTimeBlindLevelQuery } from "../net/https/web_request/WebRequestRoomCenter";
-
-export interface GameEnterParam { 
-    game_enter_type: GameEnterType, 
-    isLookOn: boolean 
+export interface GameEnterParam {
+    game_enter_type: GameEnterType;
+    isLookOn: boolean;
 }
 
 export class GameCache {
@@ -19,12 +18,10 @@ export class GameCache {
     /// 用户登录手机
     /// </summary>
     public strPhone: string = null;
-
     /// <summary>
     /// 用户登录手机前缀(例"86")
     /// </summary>
     public strPhoneFirst: string = null;
-
     /// <summary>
     /// 用户登录密码
     /// </summary>
@@ -33,7 +30,6 @@ export class GameCache {
     /// 用户user id
     /// </summary>
     public nUserId: number = 0;
-
     /// 短用户id
     public userId: number = 0;
     /// <summary>
@@ -43,7 +39,7 @@ export class GameCache {
     /// <summary>
     /// 登录res服务器的IP或域名
     /// </summary>
-    public resIP: string = "";
+    public resIP: string = '';
     /// <summary>
     /// 登录res服务器的端口
     /// </summary>
@@ -51,7 +47,7 @@ export class GameCache {
     /// <summary>
     /// 登录game服务器的IP或域名
     /// </summary>
-    public roomIP: string = "";
+    public roomIP: string = '';
     /// <summary>
     /// 登录game服务器的端口
     /// </summary>
@@ -67,11 +63,11 @@ export class GameCache {
     /// <summary>
     /// 头像
     /// </summary>
-    public headPic: string = "";
+    public headPic: string = '';
     /// <summary>
     /// 昵称
     /// </summary>
-    public nick: string = "";
+    public nick: string = '';
     /// <summary>
     /// 修改昵称次数
     /// </summary>
@@ -95,29 +91,28 @@ export class GameCache {
     /// <summary>
     /// 会员到期日
     /// </summary>
-    public vipEndDate: string = "";
+    public vipEndDate: string = '';
     /// <summary>
     /// 经度
     /// </summary>
-    public longitude: string = "0";
+    public longitude: string = '0';
     /// <summary>
     /// 纬度
     /// </summary>
-    public latitude: string = "0";
+    public latitude: string = '0';
     /// <summary>
     /// 定位到的地址名称
     /// </summary>
-    public locationName: string = "";
+    public locationName: string = '';
     /// <summary>
     /// 当前客户端的ip地址，在牌局内坐下带入时要用到
     /// </summary>
-    public client_ip: string = "";
-
+    public client_ip: string = '';
     /// 用户限制类型 0，1,不限制，2 除巴西 外其他国家注册账号，
     /// </summary>
     public UserlimitType: number = 2;
     /// <summary>
-    /// VIP 0 否 ，1 是 
+    /// VIP 0 否 ，1 是
     /// </summary>
     public Vip: number = 0;
     /// <summary>
@@ -135,7 +130,7 @@ export class GameCache {
     /// <summary>
     /// 房间名称
     /// </summary>
-    public roomName: string = "";
+    public roomName: string = '';
     /** 大厅入口缓存：是否鱿鱼桌（来自列表/分享房间信息） */
     public room_squid_on: number = 0;
     /** 大厅入口缓存：鱿鱼价值（优先 room.squid_base） */
@@ -155,7 +150,7 @@ export class GameCache {
     /** 大厅入口缓存：血战鱿鱼额外数量 */
     public room_squid_extra_count: number = 0;
     /** 大厅入口缓存：鱿鱼翻倍配置 */
-    public room_squid_count_rate: { count: number, rate: number }[] = [];
+    public room_squid_count_rate: { count: number; rate: number }[] = [];
     /** 大厅入口缓存：蘑菇开关 */
     public room_mushroom_mode: number = 0;
     /** 大厅入口缓存：蘑菇基础值 */
@@ -184,12 +179,10 @@ export class GameCache {
     public room_min_players: number = 0;
     /** 大厅入口缓存：自动开局最小人数（0 表示手动开始） */
     public room_autostart_min_players: number = 0;
-
-    /** 
+    /**
      * 进入房间方式
      */
     public _enterRoomType: number = 0;
-
     /** 大厅入口缓存：是否房管/房主 */
     public room_is_manager: boolean = false;
     /// <summary>
@@ -216,7 +209,6 @@ export class GameCache {
     /// 房间号
     /// </summary>
     public room_id: number = 999;
-
     /// <summary>
     /// 房间座位
     /// </summary>
@@ -311,19 +303,13 @@ export class GameCache {
     /// 只显示一次活动
     /// </summary>
     public isFirstShowActivity: boolean = true;
-
     public kDouNum: number = 0;
-
     public ClubID: number = 0;
-
     public TribeId: number = 0;
-
     /// 指定初始桌布
     /// </summary>
-    public TableClothTag: string = "";
-
+    public TableClothTag: string = '';
     public ClubRandomID: number = 0;
-
     public ClubGold: number = 0;
     /// <summary>
     /// // 延迟看牌0否 1开启
@@ -333,416 +319,321 @@ export class GameCache {
     /// //房间状态
     /// </summary>
     public GameStatus: number = 0;
-
     //public List<Web_User_Gs.TcpServiceInfo> tcpServiceInfo;
-
     public serviceId: string = null;
-
     public ClubUserType: number = 0; //1管理员；2贵宾；3玩家
-
-    public IsMTTbefor: number = 0;//MTT比赛开始前
-
+    public IsMTTbefor: number = 0; //MTT比赛开始前
     public IsAllowOpenDanmu: boolean = true;
-
-    public IsAllowOpenMatchApply: boolean = false;//报名申请开关
-
-    public IsAllowOpenShieldWord: boolean = false;//屏蔽字开关
-
-    public SimulatorName: string = null;  //模拟器名称
-
-    public isMute: boolean = false;//是否禁言
-
+    public IsAllowOpenMatchApply: boolean = false; //报名申请开关
+    public IsAllowOpenShieldWord: boolean = false; //屏蔽字开关
+    public SimulatorName: string = null; //模拟器名称
+    public isMute: boolean = false; //是否禁言
     public cacheMaxBet: number = 0; //最大加注
-
-    public cacheLeftRebuyTimes: number = 0;//剩余重构次数，请求enter  api 更新
-
+    public cacheLeftRebuyTimes: number = 0; //剩余重构次数，请求enter  api 更新
     /// <summary>
     /// 绑定银行卡所留的姓名
     /// </summary>
     public bank_UserName: string = null;
-
     /// <summary>
     /// 银行账号
     /// </summary>
     public bank_account: string = null;
-
-    public voiceprint_verify_on: number = 0;//声纹验证 0 关闭，1 开启。
-
-    public voiceprint_verify_duration: number = 0;//声纹验证 操作人时间
+    public voiceprint_verify_on: number = 0; //声纹验证 0 关闭，1 开启。
+    public voiceprint_verify_duration: number = 0; //声纹验证 操作人时间
     //#region
-    public RoomUIMode: number = 0;//房间列表UI模式开关 1 模式1 ，2 模式2 
-    public MTTEntranceMode: number = 2;//MTT开关 1 开 ，2 关
-    public ApplePayMode: number = 2;//苹果内购开关 1 开 ，2 关
-    public AppleMTTEntranceMode: number = 2;//苹果MTT开关 1 开 ，2 关
-    public NormalReturnProfitSwitch: number = 2;//返水
-    public AndroidMTTEntranceMode: number = 2;//androidMTT开关 1 开 ，2 关
-    public AndroidPayMode: number = 2;//android内购开关 1 开 ，2 关
+    public RoomUIMode: number = 0; //房间列表UI模式开关 1 模式1 ，2 模式2
+    public MTTEntranceMode: number = 2; //MTT开关 1 开 ，2 关
+    public ApplePayMode: number = 2; //苹果内购开关 1 开 ，2 关
+    public AppleMTTEntranceMode: number = 2; //苹果MTT开关 1 开 ，2 关
+    public NormalReturnProfitSwitch: number = 2; //返水
+    public AndroidMTTEntranceMode: number = 2; //androidMTT开关 1 开 ，2 关
+    public AndroidPayMode: number = 2; //android内购开关 1 开 ，2 关
     //public isTestflight = null;//苹果testflight（暂时） "IsAppStore"
     //#endregion
     public FCMToken: string = null;
-
-    public origin_type: number = 0;   // 1 平台，2 联盟，3 公会 4 朋友桌
+    public origin_type: number = 0; // 1 平台，2 联盟，3 公会 4 朋友桌
     public share_table: number = 0; //是否共享牌桌及共享牌桌类型  1 不共享 2 USDT桌 3 联盟币桌
-    public gold_type: number = 0;//房间币种类型，1 联盟币， 2 usdt, 3 记分牌
-
-
+    public gold_type: number = 0; //房间币种类型，1 联盟币， 2 usdt, 3 记分牌
     //public limit_bring_in: number = null  //是否开启带入  0/1
-    //public invitation_code: any = null  //邀请码  
+    //public invitation_code: any = null  //邀请码
     public friendBringInStatus: number = 0; // 朋友桌带入申请的状态
-
-    public FriendsTableCode: string = null;//朋友桌邀请码
-    public FriendsTableLimitBringIn: boolean = false;//朋友桌公会桌是否控制带入
-
-    public BringCheckRoomIdMap:Record<number,boolean> = {};
-
-
-    public anti_cheat_type: number = 0;//防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
+    public FriendsTableCode: string = null; //朋友桌邀请码
+    public FriendsTableLimitBringIn: boolean = false; //朋友桌公会桌是否控制带入
+    public BringCheckRoomIdMap: Record<number, boolean> = {};
+    public anti_cheat_type: number = 0; //防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证
     /** 新标签可展示最大次数（全局配置） */
     public newLabelsMaxNumber: number = 0;
-
     private securitySettingRoomsPrivate: number[] = null;
-
     //密码存储
     privateRoomPdDic: Map<number, string> = new Map();
-
     //存放 enterroom 消息返回结果
     //public enter_room_res: ServerMessageEnterRoom.AsObject = null;
-
-
     //存儲進入房間的參數
     enter_param: GameEnterParam = null;
-
-    /** 
+    /**
      * 房间记录信息
      */
     public _roomRecord: RoomRecord.AsObject = null;
-
     /**
      * 德州玩法数据
      */
     public _texasData: TexasGameplayData = new TexasGameplayData();
-
     /**
      * 房间持续时间（秒）
      */
     public _roomDurationTime: number = 0;
-
     /**
      * 房间开始时间（Unix时间戳）
      */
     public _roomStartTime: number = 0;
-
     /**
      * 房间结束时间（Unix时间戳）
      */
     public _roomEndTime: number = 0;
-
     /**
      * 服务ID
      */
-    public _serviceId: string = "";
-
+    public _serviceId: string = '';
     /**
      * Straddle最大值
      */
     public _straddleMax: number = 0;
-
     /**
      * 二副牌开关
      */
     public _secondPcsOn: boolean = false;
-
     /**
      * 已选择的outs
      */
     public _selectedOuts: number = 0;
-
     /**
      * 带入限制类型
      */
     public _bringInLimitType: number = 0;
-
     /**
      * 弃牌开关
      */
     public _muck: number = 0;
-
     /**
      * 是否显示剩余时间
      */
     public _isShowLeftTime: boolean = false;
-
     /**
      * 桌布标签
      */
-    public _tableSkin: string = "";
-
+    public _tableSkin: string = '';
     /**
      * 是否共享牌桌及共享牌桌类型
      * 1 不共享 2 USDT桌 3 联盟币桌
      */
     public _shareTableType: number = 0;
-
     /**
      * 来源类型
      */
     public _originType: number = 0;
-
     /**
      * 朋友桌邀请码
      */
-    public _friendsTableCode: string = "";
-
+    public _friendsTableCode: string = '';
     /**
      * 朋友桌带入限制
      */
     public _friendsTableLimitBringIn: boolean = false;
-
     /**
      * 聊天类型
      */
     public _chatType: number = 0;
-
     /**
      * 自动充值
      */
     public _autoRecharge: number = 0;
-
     /**
      * 当前房间ID
      */
     public _currentRoomID: number = 0;
-
     /**
      * 是否是房管
      */
     public _isRoomManager: boolean = false;
-
     /**
      * 是否有解散房间权限
      */
     public _isHasDisbandRoomPrivileges: boolean = false;
-
     /**
      * 是否有离开权限
      */
     public _isHasUseLeavePrivileges: boolean = false;
-
     /**
      * 是否有站起权限
      */
     public _isHasUserStandUpPrivileges: boolean = false;
-
     /**
      * 是否有查看视频权限
      */
     public _isHasViewVideoPrivileges: boolean = false;
-
     /**
      * 创建者ID
      */
     public _creatorId: number = 0;
-
     /**
      * 结算类型
      */
     public _settlementType: number = 0;
-
     /**
      * 抽水比例开关
      */
     public _poolRateSwitch: number = 0;
-
     /**
      * 抽水比例
      */
     public _poolRate: number = 0;
-
     /**
      * 总手数开关
      */
     public _totalHandSwitch: number = 0;
-
     /**
      * 总手数
      */
     public _totalHand: number = 0;
-
     /**
      * 随机座位
      */
     public _randomSeat: number = 0;
-
     /**
      * 强制亮牌
      */
     public _forceShowCard: number = 0;
-
     /**
      * 鱿鱼强制亮牌
      */
     public _squidForceShowCard: number = 0;
-
     /**
      * 仅iOS
      */
     public _onlyIOS: number = 0;
-
     /**
      * 游戏手数限制
      */
     public _playHandsLimit: number = 0;
-
     /**
      * 余额不足关闭时长
      */
     public _notEnoughCloseDuration: number = 0;
-
     /**
      * 游戏时长类型
      */
     public _playDurationType: number = 0;
-
     /**
      * 延迟限制次数
      */
     public _limitDelayTimes: number = 0;
-
     /**
      * 查看手牌
      */
     public _lookHandCard: number = 0;
-
     /**
      * 区块链类型
      */
     public _blockchainType: number = 0;
-
     /**
      * 带入等于庄家
      */
     public _bringinEqualLeader: number = 0;
-
     /**
      * 最小玩家筹码比例
      */
     public _minPlayerChipRate: number = 0;
-
     /**
      * 最大带入总比例
      */
     public _maxBringinTotalRate: number = 0;
-
     /**
      * Jackpot ID
      */
     public _jackpotId: number = 0;
-
     /**
      * 自动开始最小玩家数
      */
     public _autoStartMinPlayer: number = 0;
-
     /**
      * 最小玩家数
      */
     public _minPlayer: number = 0;
-
     /**
      * 操作持续时间
      */
     public _opDuration: number = 0;
-
     /**
      * 轮盘模板ID
      */
     public _wheelTemplateId: number = 0;
-
     /**
      * 反作弊类型
      */
     public _antiCheatType: AntiCheatType = AntiCheatType.UNKNOWN;
-
     /**
      * 视频模式
      */
     public _videoModel: VideoModel = VideoModel.NONE;
-
     /**
      * 普通反作弊顺序类型
      */
     public _normalAntiCheatOrderType: number = 0;
-
     /**
      * 普通反作弊麦克风类型
      */
     public _normalAntiCheatOrderMicType: number = 0;
-
     /**
      * 反作弊时间限制
      */
     public _antiCheatTimeLimit: number = 0;
-
     /**
      * 视频效果类型
      */
     public _videoEffectType: number = 0;
-
     /**
      * 视频省电模式
      */
     public _videoPowerSaving: number = 0;
-
     /**
      * 视频验证类型
      */
     public _videoVerifyType: number = 0;
-
     /**
      * H5 层同步的全局配置（syncGlobalConfig 消息的 payload.raw）
      * 字段参考 GlobalConfigData：operating_model / recharge_gold / mtt_switch / apple_pay_switch 等
      * 通过 GameCache.Instance._globalConfig.xxx 读取
      */
     public _globalConfig: { [key: string]: any } = null;
-
     /**
      * 随机验证：是否正在强制验证中
      */
     public _randomVideoActive: boolean = false;
-
     /**
      * 随机验证：倒计时结束时间戳（毫秒）
      */
     public _randomVideoEndTime: number = 0;
-
     /**
      * 麦序模式：当前是否正在自己的操作轮次中（视频不可关闭）
      */
     public _sequenceVideoActive: boolean = false;
-
     /**
      * 白名单
      */
     public _isWhiteList: boolean = false;
-
     /**
      * 多语言
      */
     public _multiLanguage: any = null;
-
     //存储bb开关的状态 room_id || match_id
-    private bb_status_map:Record<number, boolean> = {};
-
-    public curSelectWalletType: number;//当前选择钱包类别，1 基金，2 玩家钱包
-    /** 
+    private bb_status_map: Record<number, boolean> = {};
+    public curSelectWalletType: number; //当前选择钱包类别，1 基金，2 玩家钱包
+    /**
      * 来自哪个俱乐部Id
      */
     public _fromClubId: number = 0;
-
-
-    //  isActiveLeaving 
+    //  isActiveLeaving
     public isActiveLeaving: boolean = false;
-
     // mtt 相关
     public _mttRebuyLevel: number = 0;
     public _mttAddCloseRebuyLevel: number = 0;
@@ -753,21 +644,21 @@ export class GameCache {
     public _mttSourceType: number = 0;
     public _delayTimeType: number = 0;
     public _mttMaxDelayTimes: number = 0;
-    public _mttAutoDelayTime:number = 0;
+    public _mttAutoDelayTime: number = 0;
     public _sngInvitationCode: string = '';
     public _mttBlindDelayTimes: Array<typeof WebRoomCenterDelayTimeBlindLevelQuery.BlindLevel> = [];
 
     public static get Instance(): GameCache {
-        return (this as any).instance ??= new GameCache;
+        return ((this as any).instance ??= new GameCache());
     }
 
     private get securitySettingRooms(): number[] {
         if (this.securitySettingRoomsPrivate == null) {
-            const value = cc.sys.localStorage.getItem("SecuritySettingRooms") || "";
+            const value = cc.sys.localStorage.getItem('SecuritySettingRooms') || '';
             this.securitySettingRoomsPrivate = value
-                .split(",")
-                .map((v:string) => Number(v))
-                .filter((v:number) => Number.isFinite(v) && v > 0);
+                .split(',')
+                .map((v: string) => Number(v))
+                .filter((v: number) => Number.isFinite(v) && v > 0);
         }
         return this.securitySettingRoomsPrivate;
     }
@@ -779,7 +670,6 @@ export class GameCache {
 
     public SetSecuritySettingRoom(roomId: number): void {
         if (roomId <= 0) return;
-
         const list = this.securitySettingRooms;
         const idx = list.indexOf(roomId);
         if (idx >= 0) {
@@ -789,7 +679,7 @@ export class GameCache {
         if (list.length > 10) {
             list.splice(0, list.length - 10);
         }
-        cc.sys.localStorage.setItem("SecuritySettingRooms", list.join(","));
+        cc.sys.localStorage.setItem('SecuritySettingRooms', list.join(','));
     }
 
     InitTexasGame() {
@@ -797,17 +687,13 @@ export class GameCache {
     }
 
     // InitEnterRoomInfo(room_info: EnterRoomInfo) {
-
-
     //     console.log('GameCache -> InitEnterRoomInfo)');
-
     //     const subConfigs = room_info.sub_configs || [];
     //     const sub0 = (subConfigs && subConfigs.length > 0) ? subConfigs[0] : null;
     //     const roomAdminAny = (room_info as any).room_admin ?? (room_info as any).roomAdmin ?? null;
     //     const roomAdminFlag = roomAdminAny?.is_admin ?? roomAdminAny?.isAdmin;
     //     const creatorRandomId = Number((room_info as any).creator_random_id ?? (room_info as any).creatorRandomId ?? 0);
     //     const creatorId = Number((room_info as any).creator_id ?? (room_info as any).creatorId ?? 0);
-
     //     GameCache.Instance.serviceId = room_info.service_id;
     //     GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(room_info.name);
     //     GameCache.Instance.room_squid_sub_base = sub0?.sqb || 0;
@@ -886,27 +772,24 @@ export class GameCache {
     //     //GameCache.Instance.invitation_code = room_info.invitation_code;
     //     GameCache.Instance.gold_type = room_info.gold_type || 0;
     //     GameCache.Instance.anti_cheat_type = room_info.anti_cheat_type || 0;
-
     //     GameCache.Instance.FriendsTableCode = room_info.invitation_code;
     //     GameCache.Instance.FriendsTableLimitBringIn = room_info.limit_bring_in > 0;
-
     //     GameCache.Instance.ClubID = room_info.club_id;
     //     GameCache.Instance.TribeId = room_info.tribe_id;
     // }
-
     //获取bb开关
     get bb_on() {
         let id = GameCache.Instance.room_id || GameCache.Instance.match_id;
         return this.bb_status_map[id] || false;
     }
+
     //设置bb开关
     set bb_on(boo: boolean) {
         let id = GameCache.Instance.room_id || GameCache.Instance.match_id;
         this.bb_status_map[id] = boo;
     }
-
-
 }
+
 // export interface EnterRoomInfo {
 //     service_id?;
 //     name?;
@@ -970,6 +853,5 @@ export class GameCache {
 //     jackpotGold?;
 //     jackpot_parent_gold?;
 //     jackpotParentGold?;
-
 // }
 (window as any).GameCache = GameCache;
