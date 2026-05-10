@@ -1551,6 +1551,47 @@ export default class Seat {
     }
 
     /// <summary>
+    /// 在头像上方显示表情动画（6秒淡入淡出）
+    /// </summary>
+    public ShowEmojiAnimation(emojiIndex: number): void {
+        if (!this.uirc.Frame_Head) return;
+
+        cc.resources.load(`emoji/em${emojiIndex}`, cc.SpriteFrame, (err, spriteFrame: cc.SpriteFrame) => {
+            if (err || !spriteFrame) {
+                console.warn(LN, `加载表情图 emoji/em${emojiIndex} 失败`, err);
+                return;
+            }
+
+            const parentNode = this.uirc.Frame_Head;
+            // 先清理旧的
+            const old = parentNode.getChildByName('EmojiAnim');
+            if (old) old.destroy();
+
+            const emojiNode = new cc.Node('EmojiAnim');
+            const sprite = emojiNode.addComponent(cc.Sprite);
+            sprite.spriteFrame = spriteFrame;
+            emojiNode.setContentSize(70, 70);
+            emojiNode.opacity = 0;
+
+            // 显示在头像上靠上方位置
+            const headSize = parentNode.getContentSize();
+            emojiNode.x = 0;
+            emojiNode.y = headSize.height / 4;
+
+            parentNode.addChild(emojiNode);
+
+            cc.tween(emojiNode)
+                .to(0.3, { opacity: 255 }, { easing: 'sineOut' })
+                .delay(5.2)
+                .to(0.5, { opacity: 0 }, { easing: 'sineIn' })
+                .call(() => {
+                    if (emojiNode.isValid) emojiNode.destroy();
+                })
+                .start();
+        });
+    }
+
+    /// <summary>
     /// 刷新回收赢的筹码
     /// </summary>
     public UpdateRecyclingWinChip(): void {

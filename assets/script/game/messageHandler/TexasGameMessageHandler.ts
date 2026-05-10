@@ -191,6 +191,9 @@ export default class TexasGameMessageHandler {
             await SceneManager.Instance.switchScene(UIDefine.UITexas, null, GameCache.Instance.enter_param);
             this.game.SMAgency.ChangeGameState(TexasGameState.Init, response);
 
+            // 进房成功后加入 Agora 视频频道（确保场景和协议都已就绪）
+            this.game.TexasGameProtocol.JoinVideoChannelAfterEnterRoom();
+
         }
         else if (response.status == ServerErrorCode.Gameplay_AutoSeatReturnToInvalidGame && isMTT) {
             console.log(LN, `Protocol_Holdem_EnterRoom_Handler: response.state : ServerErrorCode.Gameplay_AutoSeatReturnToInvalidGame`);

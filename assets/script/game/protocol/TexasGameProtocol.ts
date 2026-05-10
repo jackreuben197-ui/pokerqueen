@@ -77,8 +77,7 @@ export default class TexasGameProtocol {
 
         console.log(LN, `RegisterMsgHandler`);
 
-        // 进入房间时加入视频频道（不依赖坐下）
-        this.JoinVideoChannelIfNeed();
+        // 视频频道加入移至 JoinVideoChannelAfterEnterRoom，在进房成功后调用
 
         GC.notify.register(ProtocolCode.Protocol_Holdem_Seated, this.HANDLER_REQ_GAME_SEND_MY_SEAT, this);//自己坐下
         GC.notify.register(ProtocolCode.Protocol_Holdem_SeatedOthers, this.HANDLER_REQ_GAME_RECV_SEAT_DOWN, this);  // 别人坐下
@@ -297,14 +296,19 @@ export default class TexasGameProtocol {
         }
         // 视频房间：坐下后渲染本地摄像头到自己的头像
         if (GameCache.Instance._videoModel !== VideoModel.NONE) {
-            this.renderLocalVideoOnMySeat().then(ok => {
-                if (!ok) {
-                    ToastManager.Instance.createToast("无法开启摄像头，请检查浏览器权限后重新入座");
-                    setTimeout(() => {
-                        this.game.TexasGameUtils.LeaveRoom();
-                    }, 3000);
-                }
-            });
+            const agora = AgoraManager.Instance;
+            if (agora.isJoined) {
+                // 频道已加入，直接渲染
+                this.renderLocalVideoOnMySeat().then(ok => {
+                    if (!ok) {
+                        ToastManager.Instance.createToast("无法开启摄像头，请检查浏览器权限后重新入座");
+                        setTimeout(() => {
+                            this.game.TexasGameUtils.LeaveRoom();
+                        }, 3000);
+                    }
+                });
+            }
+            // 频道还没加入时不弹 toast，等 JoinVideoChannelIfNeed 完成后自动补渲染
         }
 
         //房间坐下时时添加firebase事件触发
@@ -1833,11 +1837,24 @@ export default class TexasGameProtocol {
         let responseData = Broadcast.Response(json);
         let code: number = responseData.code;
         let data: string = responseData.data;
+        console.log("[Emoji] GetMsg code=", code, "data=", data);
 
         switch (code) {
             case BroadcastCode.BroadcastMsg:
+            case 10001:
                 var broadcastMsg = BroadcastMsg.Response(data);
                 console.log("[Emoji] 收到广播:", "type=", broadcastMsg.type, "user_id=", broadcastMsg.user_id, "name=", broadcastMsg.name);
+                {
+                    const EMOJI_TYPE_BASE = Def.ConsumeType.CT_EMOJI_1 * 100;
+                    const emojiOffset = broadcastMsg.type - EMOJI_TYPE_BASE;
+                    if (emojiOffset >= 0 && emojiOffset < 15) {
+                        const emojiIndex = emojiOffset + 1;
+                        const seat = this.game?.GetSeatByUserId(broadcastMsg.user_id);
+                        if (seat) {
+                            seat.ShowEmojiAnimation(emojiIndex);
+                        }
+                    }
+                }
                 break;
             case BroadcastCode.BroadcastVoiceprint:
                 // var VoiceprintData = VoiceprintMsg.Response(responseData.data);
@@ -2272,11 +2289,24 @@ export default class TexasGameProtocol {
     // ==================== 视频房间相关 ====================
 
     /**
+     * 进房成功后调用，加入 Agora 视频频道
+     * 放在 EnterRoom_Handler 里确保场景和协议都已就绪
+     */
+    public async JoinVideoChannelAfterEnterRoom(): Promise<void> {
+        try {
+            await this.JoinVideoChannelIfNeed();
+        } catch (e) {
+            console.error('[VideoRoom] JoinVideoChannelAfterEnterRoom 异常:', e);
+        }
+    }
+
+    /**
      * 进入房间时加入 Agora 视频频道
      * 注册远端回调，可以立即看到已坐下的其他玩家视频
      */
     private async JoinVideoChannelIfNeed(): Promise<void> {
         const videoModel = GameCache.Instance._videoModel;
+        console.log('[VideoRoom] JoinVideoChannelIfNeed _videoModel=', videoModel);
 
         if (videoModel === VideoModel.NONE) {
             console.log('[VideoRoom] 非视频房间，跳过');
@@ -2293,9 +2323,18 @@ export default class TexasGameProtocol {
             await this.LeaveVideoChannel();
         }
 
+        // 等 Agora SDK 加载完成（最多等 10 秒）
         if (!agora.isSDKReady) {
-            console.warn('[VideoRoom] Agora SDK 未加载，跳过');
-            return;
+            console.log('[VideoRoom] Agora SDK 未加载，等待...');
+            for (let i = 0; i < 100; i++) {
+                await new Promise<void>(r => setTimeout(r, 100));
+                if (agora.isSDKReady) break;
+            }
+            if (!agora.isSDKReady) {
+                console.error('[VideoRoom] Agora SDK 加载超时（10秒），跳过');
+                return;
+            }
+            console.log('[VideoRoom] Agora SDK 已加载');
         }
 
         agora.init();
@@ -2332,6 +2371,20 @@ export default class TexasGameProtocol {
 
         // 渲染已在座位上的远端玩家视频
         this._renderAllExistingRemoteVideos();
+
+        // 频道加入时如果自己已坐下，自动渲染本地视频（处理坐下比频道加入早的时序问题）
+        const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
+        if (mySeat && GameCache.Instance._videoModel !== VideoModel.NONE) {
+            console.log('[VideoRoom] 频道就绪时自己已坐下，补渲染本地视频');
+            this.renderLocalVideoOnMySeat().then(ok => {
+                if (!ok) {
+                    ToastManager.Instance.createToast("无法开启摄像头，请检查浏览器权限后重新入座");
+                    setTimeout(() => {
+                        this.game.TexasGameUtils.LeaveRoom();
+                    }, 3000);
+                }
+            });
+        }
 
         // 麦序模式：应用可见性规则（仅显示当前操作者）
         if (GameCache.Instance._videoModel === VideoModel.SEQUENCE) {
