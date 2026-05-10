@@ -871,7 +871,7 @@ export default class UITexas extends BaseScene {
 
     // main_menu 按钮点击
     private click_btn_emoji() {
-        UIComponent.open(UIDefine.UIBlank_dialog, { title: "表情" });
+        UIComponent.open(UIDefine.UIEmojiDlg);
     }
     private async click_btn_effect() {
         // 非视频房间
