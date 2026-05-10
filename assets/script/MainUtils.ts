@@ -213,7 +213,7 @@ export async function registerH5Listeners(): Promise<void> {
     // H5 桥接模式下，提前完成数据层初始化（含 i18n），避免跳过大厅导致懒初始化未执行
     // await initH5BridgeDependencies();
     // initH5BridgeDependencies();
-    H5MsgMgr.Instance.on('enterTable', payload => {
+    H5MsgMgr.Instance.on('enterTable', async payload => {
         console.log('[H5Bridge] 收到 enterTable:', payload);
         const { token, websocketPort, roomId, roomInfo: roomData } = payload;
         // === 1. H5 消息基本字段校验 ===
@@ -276,7 +276,7 @@ export async function registerH5Listeners(): Promise<void> {
         // === 6. 启动进入牌桌流程 ===
         // EnterTexas → 加载资源 → Texas procedure → TexasGameUtils.EnterRoom()
         // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
-        ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
+        await ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
         console.log('[H5Bridge] enterTable 已启动进桌流程, room_id:', roomData.rid, 'room:', roomData.name);
     });
 
@@ -403,7 +403,7 @@ export async function registerH5Listeners(): Promise<void> {
      * 进入德州MTT
      */
     function registerTexasMtt(): void {
-        H5MsgMgr.Instance.on('enterMtt', payload => {
+        H5MsgMgr.Instance.on('enterMtt', async payload => {
             console.log('[H5Bridge] enterMtt:', payload);
             const matchInfo = payload?.matchInfo;
             if (!matchInfo) {
@@ -419,7 +419,8 @@ export async function registerH5Listeners(): Promise<void> {
             // === 6. 启动进入牌桌流程 ===
             // EnterTexas → 加载资源 → Texas procedure → TexasGameUtils.EnterRoom()
             // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
-            ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enterPram);
+            // 要等待流程结束
+            await ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enterPram);
             console.log('[H5Bridge] enterMtt 缓存完成, matchId', GameCache.Instance.match_id, ',开始进入mtt');
         });
     }

@@ -21,17 +21,17 @@ export default class ProcedureEnterTexas extends ProcedureBase {
     override lateEnter<T>(param?: T) {
         super.lateEnter(param);
         if (!param) console.log('[ProcedureEnterTexas]', 'miss param');
-        // === 7. 通知 H5 层隐藏自身，让出 CC 层牌桌显示 ===
         H5MsgMgr.sendToH5('h5Hide', 1);
         //显示房间进入loading
-        UIComponent.Instance.ShowUI<PreloadParams>(PrefabUI.UIPreloading, {
-            preloadDefinition: PreloadDefinitionTexas,
-            complete: this.onComplete.bind(this),
-            error: this.errorHandler.bind(this)
-        });
+        // UIComponent.Instance.ShowUI<PreloadParams>(PrefabUI.UIPreloading, {
+        //     preloadDefinition: PreloadDefinitionTexas,
+        //     complete: this.onComplete.bind(this),
+        //     error: this.errorHandler.bind(this)
+        // });
         // 创建德州玩法入口
         const entrance = AGameplayEntranceProvider.createEntrance(GameCache.Instance.room_type, GameCache.Instance.match_id, GameCache.Instance.room_id);
         this._entrance = entrance;
+        this.onComplete();
     }
 
     /**

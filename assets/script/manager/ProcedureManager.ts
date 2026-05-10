@@ -21,6 +21,7 @@ export default class ProcedureManager {
     private static procedureDic: { [key: number]: ProcedureBase } = {};
     public static prevProcedure: ProcedureBase = null;
     public static currProcedure: ProcedureBase = null;
+    private static _isSwitching = false;
 
     static Init() {
         this.procedureDic[ProcedureEnum.Idle] = new ProcedureIdle(ProcedureEnum.Idle);
@@ -32,7 +33,7 @@ export default class ProcedureManager {
     }
 
     //开始某个流程
-    static StartProcedure<T>(procedureIndex: number, param: T = null) {
+    static async StartProcedure<T>(procedureIndex: number, param: T = null): Promise<void> {
         let procedure = this.procedureDic[procedureIndex];
         if (!procedure) {
             console.log('未定义流程:', ProcedureEnum[procedureIndex]);
@@ -43,10 +44,25 @@ export default class ProcedureManager {
         // console.log('[Procedure]',"DEBUG_LOG: 被调用了", new Error().stack);
         if (prevProcedure) {
             if (prevProcedure.id == procedure.id) return;
-            prevProcedure.Leave();
+            if (this._isSwitching) {
+                console.warn('[Procedure]', '流程切换中,忽略此次切换流程');
+                return;
+            }
+            this._isSwitching = true;
+            //保护性流程切换
+            try {
+                // 这里需要等待(完善流程)
+                console.log('[Procedure]', prevProcedure.Name, '开始 Leave');
+                await Promise.resolve(prevProcedure.Leave());
+            } catch (e) {
+                console.error('[Procedure]', `${prevProcedure.Name} leave error, continue switch`, e);
+            } finally {
+                this._isSwitching = false; // 无论成功失败，最后解锁
+            }
         }
         console.log('[Procedure]', '[上个流程:', prevProcedure && prevProcedure.Name, '切换到==>当前流程:', ProcedureEnum[procedure.id]);
         ProcedureManager.prevProcedure = procedure;
+        // 这里可以不等待
         procedure.Enter<T>(param);
     }
 
