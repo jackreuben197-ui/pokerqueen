@@ -1,12 +1,18 @@
 import { GameConfig } from '../config/GameConfig';
 import GC from '../frame/GameControl';
+import H5MsgMgr from '../H5MsgMgr';
 import { i18nMgr } from '../i18n/i18nMgr';
 import * as MainUtils from '../MainUtils';
+import { PreloadDefinitionTexas, PreloadParams } from '../manager/ResManager';
 import StorageKey from '../session/StorageKey';
+import UIComponent, { PrefabUI } from '../ui/UIComponent';
 import ProcedureBase from './ProcedureBase';
 
 export default class ProcedureInit extends ProcedureBase {
     Name: string = 'ProcedureInit';
+
+    private _resolveDone: (v: any) => void;
+    private _waitLoadingCompletePromise = new Promise(resolve => (this._resolveDone = resolve));
 
     async lateEnter(param?: any) {
         super.lateEnter(param);
@@ -23,10 +29,23 @@ export default class ProcedureInit extends ProcedureBase {
         }
         MainUtils.loadWebSDK();
         // 引擎设置完成，等待 H5 层发送消息驱动后续流程
-        console.log('[Procedure]', 'ProcedureInit 完成，等待 H5 层指令...');
+        console.log('[Procedure]', '等待 H5 层指令...');
+        //显示房间进入loading
+        UIComponent.Instance.ShowUI<PreloadParams>(PrefabUI.UIPreloading, {
+            preloadDefinition: PreloadDefinitionTexas,
+            complete: () => {
+                console.log('[Procedure]', 'ProcedureInit 结束，资源加载完全');
+                this._resolveDone(true);
+            },
+            error: () => {
+                console.error('[Procedure]', 'ProcedureInit show preloading error');
+            }
+        });
     }
 
-    Leave() {
+    async Leave() {
+        H5MsgMgr.sendToH5('h5Hide', 1);
+        await this._waitLoadingCompletePromise;
         super.Leave();
     }
 
