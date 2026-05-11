@@ -649,8 +649,8 @@ export default class UITexas extends BaseScene {
         UIComponent.close(UIDefine.UITexasSettingComponent);
         //关闭规则
         UIComponent.close(UIDefine.UITexasRule);
-        //关闭战绩
-        UIComponent.close(UIDefine.UITexasHistoryComponent);
+        //关闭牌谱
+        UIComponent.close(UIDefine.UITexasHistory);
     }
 
     // refreshViewOnSitAndStandup 因为站起/坐下更新视图
