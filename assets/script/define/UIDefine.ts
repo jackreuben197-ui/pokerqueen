@@ -47,7 +47,6 @@ type UIDefineKey =
     | 'UITexasSettingComponent'
     | 'UITexasRule'
     | 'UITexasReportComponent'
-    | 'UITexasHistoryComponent'
     | 'UITexasGameEnd'
     | 'UISquidEnd'
     | 'UITexasJackpotRecentAwardRecord'
@@ -537,12 +536,6 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Name: 'UITexasReport',
         Bundle: 'texas',
         Path: 'prefab/widgetLayer/UITexasReport'
-    },
-    UITexasHistoryComponent: {
-        UIType: UIType.CommonUI,
-        Name: 'UITexasHistory',
-        Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UITexasHistory'
     },
     //普通桌结算
     UITexasGameEnd: {
