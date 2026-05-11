@@ -77,6 +77,7 @@ export default class UIMTTList extends BaseFormPlus {
             }
         );
     }
+
     ///////////////////////////////////////////////////////////
     private List$list: List = null;
     private listEx: ListEx = null;

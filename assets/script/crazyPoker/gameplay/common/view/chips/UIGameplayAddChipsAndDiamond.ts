@@ -525,7 +525,6 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     }
 
     // ========== 钻石相关 ==========
-
     private refreshRecordDiamondConfig(config: any): void {
         this.config = config;
         if (this.recordFeeObj) {
@@ -826,7 +825,6 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     //         GameCache.Instance.CurGame.AddChips(anterNumber);
     //     }
     // }
-
     private onClickCommit(): void {
         // DataStatisticsManager.Instance.Record(DataStatisticsConstant.GAME_BRING_COMMIT_BUTTON);
         this.commitAct();
@@ -1257,6 +1255,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     private checkIsSixPlus(gameType: GameType, pokerType: PokerType): boolean {
         return pokerType == PokerType.SIX_PLUS && gameType == GameType.HOLDEM;
     }
+
     // public CheckUserOrderAudit(msgData: any): void {
     //     this.diamondObj?.CheckUserOrderAudit(msgData);
     // }

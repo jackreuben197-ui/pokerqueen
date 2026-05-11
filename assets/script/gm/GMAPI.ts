@@ -30,6 +30,7 @@ export class GM {
         }
         this.__DebugSwitch = list;
     }
+
     //房间id开启显示
     static switch_roomid_show: boolean = false;
 
@@ -42,6 +43,7 @@ export class GM {
     public static GetDebugSwitch(id: number): boolean {
         return this.__DebugSwitch?.indexOf(id) > -1;
     }
+
     //user/room 模拟数据
     static Moni_user_room = {
         last_bring_out: null,
@@ -283,6 +285,7 @@ export class GM {
         };
         UIComponent.open(UIDefine.UIBackDialog, dialog_param);
     }
+
     static _room_data = {
         status: 0,
         gameStatus: 3,
@@ -470,6 +473,7 @@ export class GM {
         cc.log(this._room_data);
         GC.game.UpdateRoomCommon(<ServerMessageEnterRoom.AsObject>this._room_data);
     }
+
     private steps = [
         {
             key: 'Protocol_Holdem_SeatedOthers',
@@ -794,5 +798,6 @@ export class Web_GMC_Recharge {
         this.RequestParams = param;
         return param;
     }
+
     public static Response: { code?: number; message?: string; data?: typeof Web_GMC_Recharge.ResponseData };
 }

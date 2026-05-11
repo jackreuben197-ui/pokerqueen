@@ -75,7 +75,6 @@ export default class UIBase extends BaseComponent {
     //         }
     //     }, cc.Prefab, errorCb);
     // }
-
     protected setText(label: cc.Label | cc.RichText | cc.EditBox, msg: string | number, ...params: any) {
         if (this.nodeIsValid(label)) {
             if (CCTools.isNull(msg)) {
@@ -195,7 +194,6 @@ export default class UIBase extends BaseComponent {
     //         } break;
     //     }
     // }
-
     lateClose(params?: any) {
         this._prefabs.forEach(prefab => {
             prefab.lateClose();

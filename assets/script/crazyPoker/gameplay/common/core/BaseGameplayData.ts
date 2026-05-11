@@ -32,6 +32,7 @@ export default class BaseGameplayData {
     public get _isGameStart(): boolean {
         return this._gameStatus >= GameState.HAND_STARTED && this._gameStatus < GameState.HAND_END;
     }
+
     /**
      * 是否开启IP限制
      */
@@ -59,6 +60,7 @@ export default class BaseGameplayData {
     public get _isInSafeMode(): boolean {
         return this._isSafeRoom;
     }
+
     /**
      * 是否为私人房
      */

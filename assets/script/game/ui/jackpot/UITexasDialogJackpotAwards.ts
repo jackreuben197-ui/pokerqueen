@@ -62,6 +62,7 @@ export default class UITexasDialogJackpotAwards extends BaseTouchBoard {
         }
         anim.play(anim.defaultClip?.name || '');
     }
+
     private onClickClose = (): void => {
         UIComponent.close(this.UIDefine);
     };

@@ -372,7 +372,6 @@ export default class UITexasHistory extends UIBasePlus {
     /**
      * @methos 初始化UI
      */
-
     private InitUI() {}
 
     protected async HandleHistoryReplay(ResponseData: typeof WebRoomCenterHistoryReplay.Data) {

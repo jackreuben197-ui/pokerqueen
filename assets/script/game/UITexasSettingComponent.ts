@@ -119,6 +119,7 @@ export default class UITexasSettingComponent extends UIBase {
         this.initQuickActionListen();
         this.setUpQuickActionNum();
     }
+
     /**
      * @method  牌桌背景
      */

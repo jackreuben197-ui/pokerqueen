@@ -23,6 +23,7 @@ export class WebRechargeGold extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -125,6 +126,7 @@ export class WebOrderTribeOrderList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -148,6 +150,7 @@ export class WebOrderTribeOrderAudit extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -170,6 +173,7 @@ export class WebOrderTribeRecharge extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -191,6 +195,7 @@ export class WebOrderTribeRechargeGold extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -212,6 +217,7 @@ export class WebOrderTribeTransFerDiamondToTribe extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -233,6 +239,7 @@ export class WebOrderTribeTransFerDiamondToUser extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -255,6 +262,7 @@ export class WebOrderTribeWithdraw extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -273,6 +281,7 @@ export class WebOrderUserClubOrderCancel extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -299,6 +308,7 @@ export class WebOrderUserRechargeNo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -328,6 +338,7 @@ export class WebOrderUserUsdtOrderList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -365,6 +376,7 @@ export class WebOrderUserUsdtRecharge extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

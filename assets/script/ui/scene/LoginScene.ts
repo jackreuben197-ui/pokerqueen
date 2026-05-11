@@ -468,6 +468,7 @@ export default class LoginScene extends BaseScene {
         let NowTimeS = TimeHelper.NowS;
         GC.localStore.setItem(this.codeTimeKey, NowTimeS.toString());
     }
+
     // 清空验证码倒计时状态
     resetVCodeTime = () => {
         this._vcodeBtnCanClick = true;

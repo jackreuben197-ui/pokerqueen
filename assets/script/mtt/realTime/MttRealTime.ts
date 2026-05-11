@@ -99,7 +99,6 @@ export default class MttRealTime extends UIBase {
     //         } break;
     //     }
     // }
-
     onShow(param: any, fromUI: any): void {
         // super.onShow(param, fromUI);
         // this.unscheduleAllCallbacks();

@@ -61,6 +61,7 @@ export class WebStatsUserStats extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -148,6 +149,7 @@ export class WebStatsRoomDetail extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -207,6 +209,7 @@ export class WebStatsMttRoomDetail extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -268,6 +271,7 @@ export class WebStatsOtherUserStats extends WebCommon {
         const userId = Number(bodyUserId || apiUserId || 0);
         return ['WebStatsOtherUserStats', context.method, `user:${userId}`, JSON.stringify(context.headers || [])].join('::');
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -381,6 +385,7 @@ export class WebStatsClientClickLog extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -411,6 +416,7 @@ export class WebStatsClubDataStatsDataDetailDownLoad extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -456,6 +462,7 @@ export class WebStatsClubDataStatsUserDetail extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -484,6 +491,7 @@ export class WebStatsClubDataStatsVipUser extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -530,6 +538,7 @@ export class WebStatsClubDataStatsWeeklyReport extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -568,6 +577,7 @@ export class WebStatsCowboyHistoryRoomDetail extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -593,6 +603,7 @@ export class WebStatsFriendRoomStatsUserRoomDetailList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -618,6 +629,7 @@ export class WebStatsFriendRoomStatsUserRoomIdList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -643,6 +655,7 @@ export class WebStatsFriendRoomStatsUserRoomStatsList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -684,6 +697,7 @@ export class WebStatsFriendStatsData extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -739,6 +753,7 @@ export class WebStatsJackpotAwardLogs extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -767,6 +782,7 @@ export class WebStatsJackpotGoldChangeLogs extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -793,6 +809,7 @@ export class WebStatsMttHistoryList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -846,6 +863,7 @@ export class WebStatsProfitDataStatsDataByDate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -883,6 +901,7 @@ export class WebStatsProfitDataStatsDataInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -933,6 +952,7 @@ export class WebStatsProfitDataStatsUserByDate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -968,6 +988,7 @@ export class WebStatsRoomInsuranceData extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1007,6 +1028,7 @@ export class WebStatsTribeStatsCurrent extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1067,6 +1089,7 @@ export class WebStatsTribeStatsDataByDate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1095,6 +1118,7 @@ export class WebStatsTribeStatsDataDetail extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1120,6 +1144,7 @@ export class WebStatsTribeStatsDataDetailInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1155,6 +1180,7 @@ export class WebStatsTribeStatsDataInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1184,6 +1210,7 @@ export class WebStatsTribeStatsDownLoad extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1227,6 +1254,7 @@ export class WebStatsUserStatsAllin extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1270,6 +1298,7 @@ export class WebStatsUserStatsCardType extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1311,6 +1340,7 @@ export class WebStatsUserStatsRivalRoomStats extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1380,6 +1410,7 @@ export class WebStatsUserGameRecordList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1405,6 +1436,7 @@ export class WebStatsUserRoomMatchIdList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1426,6 +1458,7 @@ export class WebStatsUserRoomMatchList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

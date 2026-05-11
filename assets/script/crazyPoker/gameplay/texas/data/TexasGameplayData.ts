@@ -113,6 +113,7 @@ export default class TexasGameplayData extends BaseGameplayData {
     public get _isSquidEnable(): boolean {
         return this._squidBase > 0;
     }
+
     /**
      * 独揽鱿鱼 1 开 0 关
      */
@@ -195,6 +196,7 @@ export default class TexasGameplayData extends BaseGameplayData {
     public get _isMushroomEnable(): boolean {
         return this._mushroomMode > 0;
     }
+
     /**
      * 子玩法的ante
      */
@@ -206,6 +208,7 @@ export default class TexasGameplayData extends BaseGameplayData {
     public get _subGamePlayAnteBB(): number {
         return this._subGamePlayAnte / this._bigBlind;
     }
+
     /**
      * 暴击玩法是否开启
      */
@@ -233,6 +236,7 @@ export default class TexasGameplayData extends BaseGameplayData {
     public get _isAnteRandomJumpEnable(): boolean {
         return this._anteRandomJumpConfig != null && this._anteRandomJumpConfig.length > 0;
     }
+
     /**
      * 购买保险池的人数
      */
@@ -280,6 +284,7 @@ export default class TexasGameplayData extends BaseGameplayData {
     public get _isAutoChangeTable(): boolean {
         return this._autoChangeTable > 0;
     }
+
     /**
      * 当前的手数
      */
@@ -295,6 +300,7 @@ export default class TexasGameplayData extends BaseGameplayData {
     public get _isAllinBanChat(): boolean {
         return this._allinBanChatType == 1;
     }
+
     /**
      * 是否自动弹出带入弹窗
      */

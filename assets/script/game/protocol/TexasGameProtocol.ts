@@ -2598,6 +2598,7 @@ export default class TexasGameProtocol {
             }
         });
     }
+
     /** 随机验证倒计时定时器 */
     private _randomVideoTimer: number = 0;
     /** 麦序操作者切换序列号，用于取消过期的 async 调用 */

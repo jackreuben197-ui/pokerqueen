@@ -71,6 +71,7 @@ export default class ReconnectComponent {
         //     }
         // )
     }
+
     private _reconnectTime: number = 0;
     //最大重连次数
     private ReconnectMaxTime: number = 3;

@@ -40,7 +40,6 @@ export class i18nMgr {
     //     pt: "sl_ptyyPutao",
     //     en: "sl_K8cPNvxU",
     // }
-
     public static isCN() {
         return this.language == 'cn';
     }
@@ -165,7 +164,6 @@ export class i18nMgr {
     //     this._praseConfig("zh", cc.resources.get("config/USER_TW", cc.TextAsset));
     //     this._praseConfig("cn", cc.resources.get("config/USER_ZH", cc.TextAsset));
     // }
-
     public static _praseConfig(language: string, config: cc.TextAsset) {
         if (config && config.text) {
             let list = config.text.split('\n');
@@ -219,6 +217,7 @@ export class i18nMgr {
         }
     }
 }
+
 //@ts-ignore
 window.i18nMgr = i18nMgr;
 //@ts-ignore

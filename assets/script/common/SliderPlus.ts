@@ -120,7 +120,6 @@ export default class SliderPlus extends cc.Component {
     }
 
     ///////////////////////////event handler/////////////////////////
-
     backTouchStart(e: cc.Event.EventTouch) {
         this._touch(e, true);
         this.data.touch_start?.call(this.data.own);

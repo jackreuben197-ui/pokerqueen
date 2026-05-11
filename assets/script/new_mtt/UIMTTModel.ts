@@ -517,6 +517,7 @@ export class UIMTTModel {
     public static get Instance(): UIMTTModel {
         return ((this as any).instance ??= new UIMTTModel());
     }
+
     //mtt_detail数据
     MttInfo: any;
 

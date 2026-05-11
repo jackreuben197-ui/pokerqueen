@@ -6,7 +6,6 @@ import TexasGameUtils from './TexasGameUtils';
 export default class MTTGameUtils extends TexasGameUtils {
 
     //Action<int>
-
     public HandlePartialBringIn(storeChips: number, resultCallback: (code: number) => void) {
         GameCache.Instance.room_id = 0; // 置空room_id
         UIMTTModel.Instance.HandleMTTJoinAction(

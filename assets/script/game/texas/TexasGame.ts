@@ -162,6 +162,7 @@ export default class TexasGame {
     public get id(): string {
         return `${GameCache.Instance.room_id}-${GameCache.Instance.match_id}-${GameCache.Instance.room_type}`;
     }
+
     /// <summary>
     /// 大盲
     /// </summary>

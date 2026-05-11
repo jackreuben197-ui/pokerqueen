@@ -117,6 +117,7 @@ export default class UIDialogEditComponent extends BaseTouchBoard {
             this._actionCancel();
         }
     }
+
     // maskFadeIn(style: any) {
     //     let mask_opacity = style?.maskOpacity >= 0 ? style.maskOpacity : this.defaultStyle.maskOpacity;
     //     if (style?.fade_switch_on == false || style?.main_fadeIn_active == false) {

@@ -102,6 +102,7 @@ export class WebChatMessageReport extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -131,6 +132,7 @@ export class WebChatRoomMessageSync extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -172,6 +174,7 @@ export class WebChatSupportChannelList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -243,6 +246,7 @@ export class WebChatSupportMessageList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -264,6 +268,7 @@ export class WebChatSupportMessageRead extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -297,6 +302,7 @@ export class WebChatSupportMessageSend extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

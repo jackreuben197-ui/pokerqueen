@@ -50,6 +50,7 @@ export class NotifyManager {
         }
         return NotifyManager._instance;
     }
+
     /** 监听数组 */
     private _listeners: Map<string | number, Array<Observer>> = new Map();
 

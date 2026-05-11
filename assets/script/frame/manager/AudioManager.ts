@@ -12,6 +12,7 @@ export default class AudioManager {
         }
         return AudioManager._instance;
     }
+
     private _cache: Map<string, cc.AudioClip> = new Map();
     private _soundIds: Array<number> = [];
     private _musicId: number = -1;

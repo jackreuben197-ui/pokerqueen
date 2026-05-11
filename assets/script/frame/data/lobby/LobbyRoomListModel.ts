@@ -70,7 +70,6 @@ export default class LobbyRoomListModel {
     //         }
     //     }
     // }
-
     updateData(msg: TRoomList, isClubRooms: boolean) {
         this._reqing = false;
         let list = isClubRooms ? this._list_club : this._list;

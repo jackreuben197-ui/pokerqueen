@@ -31,6 +31,7 @@ export class WebMsgMessageUnread extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -49,6 +50,7 @@ export class WebMsgMessageUnreadClear extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: { code?: number; message?: string; data?: any };
 }
 
@@ -103,6 +105,7 @@ export class WebMsgMessageRead extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -126,6 +129,7 @@ export class WebMsgMessageSystemBroadcastNum extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -148,6 +152,7 @@ export class WebMsgMessageTodo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -183,6 +188,7 @@ export class WebMsgMessageTodoAllInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

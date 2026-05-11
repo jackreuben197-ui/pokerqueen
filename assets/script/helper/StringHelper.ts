@@ -150,7 +150,6 @@ export class StringHelper {
     // }
     // arr.unshift(str.substring(start, end));
     // let base = arr.join(",").toString();
-
     public static FormatToString(format: string = null, num: number | string = 0) {
         let _num = +num;
         let _num_str = '';

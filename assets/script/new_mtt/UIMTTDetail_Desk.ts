@@ -52,6 +52,7 @@ export default class UIMTTDetail_Desk extends UIBasePlus {
             (res: any) => {}
         );
     }
+
     ////////////////////////////////////List/////////////////////////////
     private listEx: ListEx = null;
 

@@ -67,7 +67,6 @@ export default class ToastManager {
     }
 
     //prevContent: string = null;
-
     createToast(content: string, customConfig?: IToastConfig, cb?: () => void) {
         //防止重复提示
         // if (content == this.prevContent) return;
