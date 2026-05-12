@@ -13,6 +13,8 @@ import AssetContext, { AssetFold } from '../../ui/component/AssetContext';
 import { CardTypeUtil } from '../CardTypeUtil';
 import { GameCache } from '../GameCache';
 import GameUtil from '../util/GameUtil';
+import playerCardNode, { IPlayerCardData } from '../../crazyPoker/gameplay/common/view/cardhisory/playerCardNode';
+import { ResManager } from '../../manager/ResManager';
 
 export class HistoryInfoData {
     public bInsurance: boolean;
@@ -115,6 +117,10 @@ export default class UITexasHistory extends UIBasePlus {
     $bg_click: cc.Node = null;
     //顶部包含房间信息
     $Top: cc.Node = null;
+    // Dashboard 概览区 (Layout节点, 自动绑定)
+    $Dashboard: cc.Node = null;
+    $DetailsBtn: cc.Node = null;
+    private detailsExpanded: boolean = false;
     $Score: cc.Node = null;
     $Preflop: cc.Node = null;
     $Flop: cc.Node = null;
@@ -190,9 +196,19 @@ export default class UITexasHistory extends UIBasePlus {
     cc_Label$page: cc.Label = null;
     $left_btn: cc.Node = null;
     $right_btn: cc.Node = null;
+    // Dashboard 概览区 - 动态生成的 playerCardNode 实例列表
+    private dashboardNodes: cc.Node[] = [];
+    private playerCardPrefab: cc.Prefab = null;
 
     protected lateLoad(): void {
         super.lateLoad();
+        // 禁用 top_block 的 BlockInputEvents，它是 bg 的子节点且覆盖全屏，
+        // 会拦截触摸导致兄弟节点 Scroller 无法接收拖动事件
+        let topBlock = cc.find('bg/top_block', this.node);
+        if (topBlock) {
+            let blockComp = topBlock.getComponent(cc.BlockInputEvents);
+            if (blockComp) blockComp.enabled = false;
+        }
         this.InitUI();
         this.playerInfos = [];
         this.playerInfosPreFlop = [];
@@ -207,12 +223,19 @@ export default class UITexasHistory extends UIBasePlus {
         this.Turn_Child_Pool = new SimpleNodePool(this.$Turn_Child);
         this.River_Child_Pool = new SimpleNodePool(this.$River_Child);
         this.$Score_Childs.removeAllChildren();
+        // 预加载 playerCardNode prefab
+        this.loadPlayerCardPrefab();
+        // 隐藏 $Dashboard 下的静态 playerNode 模板
+        this.hideDashboardTemplate();
     }
 
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$bg_click, this.click_bg);
         this.setButtonClick(this.$left_btn, this.click_left);
         this.setButtonClick(this.$right_btn, this.click_right);
+        this.setButtonClick(this.$DetailsBtn, this.click_detailsBtn);
+        let exitBtn = this.$Top.getChildByName('exit_button');
+        if (exitBtn) exitBtn.on(cc.Node.EventType.TOUCH_END, this.click_bg, this);
     }
 
     onShow(obj?: any): void {
@@ -305,6 +328,29 @@ export default class UITexasHistory extends UIBasePlus {
         this.cc_Label$page.string = `${this.currentPage}/${this.totalPage}`;
     }
 
+    /** 切换详情区域的显示/隐藏 */
+    private getDetailNodes(): cc.Node[] {
+        return [this.$Score, this.$Preflop, this.$Flop, this.$Turn, this.$River, this.$Showdown];
+    }
+
+    /** 根据当前展开状态强制设置详情区域的可见性 */
+    private enforceDetailsVisibility() {
+        this.getDetailNodes().forEach(node => {
+            if (node) node.active = this.detailsExpanded;
+        });
+    }
+
+    click_detailsBtn() {
+        this.detailsExpanded = !this.detailsExpanded;
+        this.getDetailNodes().forEach(node => {
+            if (node) node.active = this.detailsExpanded;
+        });
+        let arrowsp = this.$DetailsBtn.getChildByName('arrowsp');
+        if (arrowsp) {
+            arrowsp.scaleY *= -1;
+        }
+    }
+
     click_bg() {
         UIComponent.close(this.UIDefine);
     }
@@ -374,6 +420,115 @@ export default class UITexasHistory extends UIBasePlus {
      */
 
     private InitUI() {}
+
+    /** 预加载 playerCardNode prefab */
+    private async loadPlayerCardPrefab() {
+        this.playerCardPrefab = await ResManager.GetOrLoad<cc.Prefab>('texas', 'prefab/widgetLayer/playerCardNode');
+    }
+
+    /** 隐藏 $Dashboard 下的静态 playerNode 模板节点 */
+    private hideDashboardTemplate() {
+        if (!this.$Dashboard) return;
+        let template = this.$Dashboard.getChildByName('playerNode');
+        if (template) {
+            template.active = false;
+        }
+    }
+
+    /** 清空 $Dashboard 中动态生成的 playerCardNode 实例 */
+    private clearDashboard() {
+        for (let i = 0; i < this.dashboardNodes.length; i++) {
+            if (cc.isValid(this.dashboardNodes[i])) {
+                this.dashboardNodes[i].destroy();
+            }
+        }
+        this.dashboardNodes = [];
+    }
+
+    /**
+     * 在 $Dashboard 中根据玩家数据生成 playerCardNode 实例
+     * @param playerInfos 玩家信息列表
+     * @param publicCards 公共牌数组
+     * @param responseData 完整回放数据 (用于获取 result 中的牌型、盈亏等)
+     */
+    private renderDashboard(playerInfos: PlayerInfo[], publicCards: number[], responseData: typeof WebRoomCenterHistoryReplay.Data) {
+        this.clearDashboard();
+        if (!this.$Dashboard || !this.playerCardPrefab) return;
+
+        for (let i = 0; i < playerInfos.length; i++) {
+            let pInfo = playerInfos[i];
+            let node = cc.instantiate(this.playerCardPrefab);
+            let comp = node.getComponent(playerCardNode);
+            if (!comp) {
+                comp = node.addComponent(playerCardNode);
+            }
+
+            // 获取该玩家的最后操作
+            let lastAct = this.getPlayerLastAction(pInfo.seatID, responseData);
+
+            let cardData: IPlayerCardData = {
+                userName: pInfo.userName,
+                headPic: pInfo.headPic,
+                handCards: pInfo.handCards || [],
+                publicCards: publicCards,
+                cardType: pInfo.maxCardType,
+                actName: lastAct.actName,
+                actChip: lastAct.actChip,
+                raiseTimes: lastAct.raiseTimes,
+                winAnte: pInfo.winAnte,
+                isMine: pInfo.isMine
+            };
+
+            // 插入到 $Dashboard 中，位于隐藏的静态模板之前
+            node.parent = this.$Dashboard;
+            let templateNode = this.$Dashboard.getChildByName('playerNode');
+            if (templateNode) {
+                node.setSiblingIndex(this.$Dashboard.childrenCount - 2); // 模板在最后，新节点在模板前
+            }
+            node.active = true;
+
+            comp.setData(cardData);
+            this.dashboardNodes.push(node);
+        }
+    }
+
+    /**
+     * 获取玩家在整手牌中的最后一次操作
+     * 遍历所有轮次(procedure)找到该玩家最后一次出现的操作
+     */
+    private getPlayerLastAction(seatID: number, responseData: typeof WebRoomCenterHistoryReplay.Data): { actName: string, actChip: number, raiseTimes: number } {
+        let lastAct = { actName: '', actChip: 0, raiseTimes: 0 };
+        let raiseCount = 0;
+        let allRounds = [];
+
+        // 收集所有轮次
+        if (responseData.s.procedure.preflop?.pl) {
+            allRounds.push(...responseData.s.procedure.preflop.pl);
+        }
+        if (responseData.s.procedure.flop?.pl) {
+            allRounds.push(...responseData.s.procedure.flop.pl);
+        }
+        if (responseData.s.procedure.turn?.pl) {
+            allRounds.push(...responseData.s.procedure.turn.pl);
+        }
+        if (responseData.s.procedure.river?.pl) {
+            allRounds.push(...responseData.s.procedure.river.pl);
+        }
+
+        for (let i = 0; i < allRounds.length; i++) {
+            if (allRounds[i].sn === seatID) {
+                let act = allRounds[i].act;
+                if (act === 'bet' || act === 'raise') {
+                    raiseCount++;
+                }
+                lastAct.actName = act;
+                lastAct.actChip = allRounds[i].act_amt;
+                lastAct.raiseTimes = raiseCount;
+            }
+        }
+
+        return lastAct;
+    }
 
     protected async HandleHistoryReplay(ResponseData: typeof WebRoomCenterHistoryReplay.Data) {
         this.PublicCards = [0, 0, 0, 0, 0];
@@ -488,6 +643,8 @@ export default class UITexasHistory extends UIBasePlus {
             playerInfo.insuranceGain = ResponseData.s.result[i].ins;
             playerInfo.maxCardIndex = ResponseData.s.result[i].maxcard_idx;
         }
+        // 渲染 Dashboard 概览区 (使用新的 playerCardNode prefab)
+        this.renderDashboard(this.playerInfos, this.PublicCards, ResponseData);
         this.$Score.active = ResponseData.s.result.length > 0;
         this.setChildLabel(this.$Score, 'Title/player/num', `${ResponseData.s.result.length}`);
         // #region Ante
@@ -846,6 +1003,8 @@ export default class UITexasHistory extends UIBasePlus {
         this.setChildLabel(this.$Score, 'Shows/insurance/value', StringHelper.GetSignedLongString(mInsurancePool));
         this.setChildVisible(this.$Showdown, 'Shows/insurance', mInsurancePool != 0);
         this.setChildLabel(this.$Showdown, 'Shows/insurance/value', StringHelper.GetSignedLongString(mInsurancePool));
+        // 默认折叠详情区域
+        this.enforceDetailsVisibility();
     }
 
     setBtnState() {
@@ -880,6 +1039,8 @@ export default class UITexasHistory extends UIBasePlus {
     }
 
     resetData() {
+        // 清空 Dashboard 概览区
+        this.clearDashboard();
         for (let index = 0; index < this.AllPlayerCardsInfos.length; index++) {
             const element: cc.Node = this.AllPlayerCardsInfos[index];
             element.destroy();
@@ -1314,7 +1475,7 @@ export default class UITexasHistory extends UIBasePlus {
 
     // 刷新顶部玩家数量和当前手数
     RefreshTopHandAndPlayerNumInfo(playerNum: string) {
-        this.setChildLabel(this.$Top, 'player_count_label', playerNum);
+        this.setChildLabel(this.$Top, 'player_count_label', `${playerNum}/${GameCache.Instance.seat_count}`);
         this.setChildLabel(this.$Top, 'room_id_label', `${GameCache.Instance.room_id}-${this.currentPage}`);
     }
 
@@ -1340,5 +1501,6 @@ export default class UITexasHistory extends UIBasePlus {
     onClose(param?: any): void {
         super.onClose(param);
         this.removeHandler();
+        this.clearDashboard();
     }
 }
