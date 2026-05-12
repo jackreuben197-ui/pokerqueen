@@ -19,7 +19,8 @@ import {
     WebRoomCenterIsRoomAdmin,
     WebRoomCenterRoomStart,
     WWW,
-    WebGetDiamondConfig
+    WebGetDiamondConfig,
+    WebUserInfo
 } from '../../net/https/WebRequest';
 import ProtocolAgency from '../../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../../net/websocket/ProtocolCode';
@@ -75,6 +76,7 @@ import { VideoModel } from '../../crazyPoker/gameplay/common/constant/VideoModel
 import AgoraManager from '../../net/agora/AgoraManager';
 import ToastManager from '../../manager/ToastManager';
 import { HttpRoomBringInByIDProtocol } from '../../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringInByIDProtocol';
+import { HttpUserInfoProtocol } from '../../crazyPoker/module/message/CPHotfixWebMessage/user/HttpUserInfoProtocol';
 
 //const PBTypes = Def.Types;
 class SeatMoveStruct {
@@ -1669,10 +1671,26 @@ export default class TexasGame {
     // AddChips 补充筹码
     public async StartAddChips(): Promise<void> {
         try {
-            const response = await WWW.Instance.CommonAPI<HttpRoomBringInByIDProtocol.ResponseData>({
-                web_class: WebUserRoomBringin,
-                api_id: GameCache.Instance.room_id
-            });
+            const [userInfo, response] = await Promise.all([
+                WWW.Instance.CommonAPI<HttpUserInfoProtocol.ResponseData>({
+                    web_class: WebUserInfo
+                }),
+                WWW.Instance.CommonAPI<HttpRoomBringInByIDProtocol.ResponseData>({
+                    web_class: WebUserRoomBringin,
+                    api_id: GameCache.Instance.room_id
+                })
+            ]);
+            // @TODO更新用户信息
+            //GC.data.user.info  Update
+            //被冻结
+            if (userInfo.data.user.forbid == 0) {
+                UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
+                    title: '',
+                    content: i18nMgr.Get('UIForbidBringInTips')
+                    //contentCommit: CPErrorCode.LanguageDescription(10012)
+                });
+                return;
+            }
             // 联盟币
             if (GameCache.Instance.gold_type == 1) {
                 UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, {
@@ -1685,7 +1703,8 @@ export default class TexasGame {
                     _source: BringInChipsType.SUPPLEMENT,
                     _creditNum: 0,
                     _commit: this._commitBringInCallback(),
-                    _deposit: 0 // 如果在桌上不需要带入押金，这里要判断他的押金是否不足,到时候再补 deposit -user.current.deposit  @TODO
+                    _deposit: 0, // 如果在桌上不需要带入押金，这里要判断他的押金是否不足,到时候再补 deposit -user.current.deposit  @TODO
+                    _diamonds: userInfo.data.user.diamonds
                 });
                 return;
             }
@@ -1707,11 +1726,11 @@ export default class TexasGame {
         //this.CurlimitOutChip = RoomInfo.RetainType.RT_AUTO;
         let mSeat: Seat = this.GetSeatByClientId(clientSeatId);
         if (null == mSeat) {
-            console.error(LN, `Sitdown 位置不存在 clientSeatId:${clientSeatId}`);
+            console.warn(LN, `Sitdown 位置不存在 clientSeatId:${clientSeatId}`);
             return;
         }
         if (this.mainPlayer.seatID != -1) {
-            console.error(
+            console.warn(
                 LN,
                 `Sitdown 你已在其他位置 seatID ${this.mainPlayer.seatID}, clientSeatId ${this.GetSeatByLocalSeatID(this.mainPlayer.seatID).ClientSeatId}`
             );
@@ -1719,10 +1738,24 @@ export default class TexasGame {
         }
         if (null != mSeat.Player) {
             if (mSeat.Player.userID == this.mainPlayer.userID) {
-                console.log(LN, `Sitdown 你已在该位置 clientSeatId:${clientSeatId}`);
+                console.warn(LN, `Sitdown 你已在该位置 clientSeatId:${clientSeatId}`);
                 return;
             }
-            console.error(LN, `Sitdown 该位置有其他玩家 clientSeatId:${clientSeatId}`);
+            console.warn(LN, `Sitdown 该位置有其他玩家 clientSeatId:${clientSeatId}`);
+            return;
+        }
+        const userInfo = await WWW.Instance.CommonAPI<HttpUserInfoProtocol.ResponseData>({
+            web_class: WebUserInfo
+        });
+        // @TODO更新用户信息
+        //GC.data.user.info  Update
+        //被冻结
+        if (userInfo.data.user.forbid == 0) {
+            UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
+                title: '',
+                content: i18nMgr.Get('UIForbidBringInTips')
+                //contentCommit: CPErrorCode.LanguageDescription(10012)
+            });
             return;
         }
         // 视频房间：坐下前先请求浏览器摄像头权限（不依赖 Agora 频道状态）
@@ -1783,7 +1816,8 @@ export default class TexasGame {
                 _source: BringInChipsType.BRING_IN,
                 _creditNum: response.data.user_club_gold_credit,
                 _deposit: GameCache.Instance._texasData._deposit,
-                _commit: this._commitBringInCallback(seatedData)
+                _commit: this._commitBringInCallback(seatedData),
+                _diamonds: userInfo.data.user.diamonds
             };
             // 联盟币
             if (GameCache.Instance.gold_type == 1) {

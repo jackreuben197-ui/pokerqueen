@@ -11,6 +11,9 @@ import SliderPlus from '../../../../../common/SliderPlus';
 import UIComponent from '../../../../../ui/UIComponent';
 import { UIDefine } from '../../../../../define/UIDefine';
 import UIBase from '../../../../../ui/UIBase';
+import { WebPropGoldPriceList, WWW } from '../../../../../net/https/WebRequest';
+import { HttpUSDTPriceListProtocol } from '../../../../module/message/CPHotfixWebMessage/usdt/HttpUSDTPriceListProtocol';
+import USDTDiamond from './usdtdiamond/USDTDiamond';
 const { ccclass, menu, property } = cc._decorator;
 
 /** 标题枚举 */
@@ -79,6 +82,8 @@ export class AddChipsData {
     public _creditNum: number = 0;
     /** 押金 */
     public _deposit: number = 0;
+    /** diamonds */
+    public _diamonds: number = 0;
 }
 const LN = '[UIGameplayAddChipsAndDiamondComponent]';
 
@@ -216,6 +221,17 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     /** 钻石下划线 */
     @property(cc.Node)
     private diamondLine: cc.Node = null;
+    // 钻石余额
+    @property(cc.Label)
+    private diamondAmount: cc.Label = null;
+    // 余额Label
+    @property(cc.Label)
+    private diamondAmountLabel: cc.Label = null;
+    // 购买项
+    @property(cc.Prefab)
+    private diamondItem: cc.Prefab = null;
+    @property(cc.Node)
+    private diamondBoard: cc.Node = null;
     /** 横屏下的滚动 */
     public landSpaceScroll: cc.ScrollView = null;
     // ========== end 钻石相关 ==========
@@ -357,10 +373,10 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
             }
             this.clueItemPrefab.active = false;
             this.walletScrollView.node.active = false;
-            this.sliderArea.active = false;
             this.arrowDown.angle = -0;
             this.initDiamond();
             this.setupSlider();
+            this.sliderArea.active = false;
             // 钱包列表
             this.setupWalletList();
         }
@@ -519,9 +535,34 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     /**
      * 初始化钻石相关
      */
-    private initDiamond(): void {
+    private async initDiamond(): Promise<void> {
         // this.diamondRC = this.diamondArea?.getComponent(cc.Component) || null;
         this.changeTitleType(E_TitleType.Chips);
+        this.diamondAmountLabel.string = i18nMgr.Get('UISend_diamondsNum') + ':';
+        this.diamondAmount.string = StringHelper.GetLongStringLocale(this.addChipsData._diamonds);
+        const resp = await WWW.Instance.CommonAPI<HttpUSDTPriceListProtocol.ResponseData>({
+            web_class: WebPropGoldPriceList,
+            body: {
+                source_type: 2, // 玩家
+                gold_types: [4],
+                pay_gold_types: [],
+                trader_type: 0,
+                limit: 100,
+                offset: 0
+            }
+        });
+        if (resp.code != 0) {
+            console.error(LN, 'get diamond list error', resp.code);
+            return;
+        }
+        console.log(LN, resp.data.list.length);
+        for (let i = 0; i < resp.data.list.length; i++) {
+            const item = resp.data.list[i];
+            const node = cc.instantiate(this.diamondItem);
+            node.parent = this.diamondBoard;
+            const nsdtDiamond = node.getComponent(USDTDiamond);
+            nsdtDiamond.initData(item.gold_count, item.pay_price, false);
+        }
     }
 
     // ========== 钻石相关 ==========
