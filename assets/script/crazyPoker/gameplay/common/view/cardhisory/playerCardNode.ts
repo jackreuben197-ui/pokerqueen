@@ -27,6 +27,18 @@ const PlayerActionI18NKeys = [
     '',                  // 11: insure → 保险 (直接写)
 ];
 
+// ── 私牌排列锚点 (取自 prefab 中 cardS1 / cardS6 的初始 x) ──
+const HAND_CARD_LEFT_X = -290.378;   // cardS1 的 x 坐标 (最左锚点)
+const HAND_CARD_RIGHT_X = -144.331;  // cardS6 的 x 坐标 (最右边界)
+const HAND_CARD_Y = 29;              // 私牌 Y 坐标
+const HAND_CARD_WIDTH = 84;          // 单张牌宽
+const HAND_CARD_VISIBLE_GAP = 4;     // 牌间最小可见间隙 (px)
+
+// ── 公牌位置常量 ──
+const PUBLIC_CARD_SINGLE_Y = 29;     // 单套公牌 Y (与私牌同行)
+const PUBLIC_CARD_UPPER_Y = 65.531;  // 双套公牌上排 Y
+const PUBLIC_CARD_LOWER_Y = -72.164; // 双套公牌下排 Y
+
 /**
  * 牌谱概览 - 单个玩家行数据接口
  */
@@ -35,12 +47,16 @@ export interface IPlayerCardData {
     userName: string;
     /** 头像URL */
     headPic: string;
-    /** 手牌牌值数组 */
+    /** 手牌牌值数组 (2~6张) */
     handCards: number[];
-    /** 公共牌牌值数组 (5张) */
+    /** 公共牌牌值数组 - 第一套 (最多5张) */
     publicCards: number[];
-    /** 牌型数字 */
+    /** 公共牌牌值数组 - 第二套 (双套牌局, 可选) */
+    publicCards2?: number[];
+    /** 牌型数字 - 第一套 */
     cardType: number;
+    /** 牌型数字 - 第二套 (双套牌局, 可选) */
+    cardType2?: number;
     /** 最后操作动作名 ("all in" / "raise" / "bet" / "call" / "fold" 等) */
     actName: string;
     /** 最后操作筹码 */
@@ -49,6 +65,8 @@ export interface IPlayerCardData {
     raiseTimes: number;
     /** 最终盈亏 */
     winAnte: number;
+    /** 第二套盈亏 (双套牌局, 可选) */
+    winAnte2?: number;
     /** 是否是自己 */
     isMine: boolean;
 }
@@ -56,20 +74,42 @@ export interface IPlayerCardData {
 @ccclass
 export default class playerCardNode extends UIBasePlus {
 
-    // 节点引用
+    // ── 节点引用 ──
     private playHeadImg: cc.Node = null;
     private playerName: cc.Label = null;
+
+    // 私牌 (最多6张)
     private cardS1: cc.Node = null;
     private cardS2: cc.Node = null;
+    private cardS3: cc.Node = null;
+    private cardS4: cc.Node = null;
+    private cardS5: cc.Node = null;
+    private cardS6: cc.Node = null;
+
+    // 公牌第一套 (上排)
     private cardP1: cc.Node = null;
     private cardP2: cc.Node = null;
     private cardP3: cc.Node = null;
     private cardP4: cc.Node = null;
     private cardP5: cc.Node = null;
+
+    // 公牌第二套 (下排, 双套牌局)
+    private cardP1_b: cc.Node = null;
+    private cardP2_b: cc.Node = null;
+    private cardP3_b: cc.Node = null;
+    private cardP4_b: cc.Node = null;
+    private cardP5_b: cc.Node = null;
+
     private ctLabel: cc.Label = null;
     private opAction: cc.Label = null;
     private opNum: cc.Label = null;
     private profit: cc.Label = null;
+    private profit_b: cc.Label = null;
+
+    // 缓存所有私牌 / 公牌节点数组, 方便遍历
+    private handCardNodes: cc.Node[] = [];
+    private publicCardNodes: cc.Node[] = [];
+    private publicCardNodesB: cc.Node[] = [];
 
     onLoad() {
         this.initNodes();
@@ -80,18 +120,36 @@ export default class playerCardNode extends UIBasePlus {
         this.playHeadImg = node.getChildByName('playHeadImg');
         this.playerName = cc.find('playHeadImg/playerName', node).getComponent(cc.Label);
 
+        // 私牌 1~6
         this.cardS1 = node.getChildByName('cardS1');
         this.cardS2 = node.getChildByName('cardS2');
+        this.cardS3 = node.getChildByName('cardS3');
+        this.cardS4 = node.getChildByName('cardS4');
+        this.cardS5 = node.getChildByName('cardS5');
+        this.cardS6 = node.getChildByName('cardS6');
+        this.handCardNodes = [this.cardS1, this.cardS2, this.cardS3, this.cardS4, this.cardS5, this.cardS6];
+
+        // 公牌第一套
         this.cardP1 = node.getChildByName('cardP1');
         this.cardP2 = node.getChildByName('cardP2');
         this.cardP3 = node.getChildByName('cardP3');
         this.cardP4 = node.getChildByName('cardP4');
         this.cardP5 = node.getChildByName('cardP5');
+        this.publicCardNodes = [this.cardP1, this.cardP2, this.cardP3, this.cardP4, this.cardP5];
+
+        // 公牌第二套
+        this.cardP1_b = node.getChildByName('cardP1_b');
+        this.cardP2_b = node.getChildByName('cardP2_b');
+        this.cardP3_b = node.getChildByName('cardP3_b');
+        this.cardP4_b = node.getChildByName('cardP4_b');
+        this.cardP5_b = node.getChildByName('cardP5_b');
+        this.publicCardNodesB = [this.cardP1_b, this.cardP2_b, this.cardP3_b, this.cardP4_b, this.cardP5_b];
 
         this.ctLabel = cc.find('cardType/ctLabel', node).getComponent(cc.Label);
         this.opAction = node.getChildByName('opAction').getComponent(cc.Label);
         this.opNum = node.getChildByName('opNum').getComponent(cc.Label);
         this.profit = node.getChildByName('profit').getComponent(cc.Label);
+        this.profit_b = node.getChildByName('profit_b').getComponent(cc.Label);
     }
 
     /**
@@ -100,10 +158,10 @@ export default class playerCardNode extends UIBasePlus {
     setData(data: IPlayerCardData) {
         this.setName(data.userName);
         this.setHandCards(data.handCards);
-        this.setPublicCards(data.publicCards);
+        this.setPublicCards(data.publicCards, data.publicCards2);
         this.setCardType(data.cardType);
         this.setAction(data.actName, data.actChip, data.raiseTimes);
-        this.setProfit(data.winAnte, data.isMine);
+        this.setProfit(data.winAnte, data.isMine, data.publicCards2, data.winAnte2);
         this.setHeadImg(data.headPic);
     }
 
@@ -117,51 +175,119 @@ export default class playerCardNode extends UIBasePlus {
         WebImageHelper.SetHeadImage(this.playHeadImg.getComponent(cc.Sprite), url);
     }
 
-    /** 设置手牌 */
+    /**
+     * 设置手牌 (2~6张, 左对齐紧密排列)
+     *
+     * 算法:
+     *   默认牌间距 = 牌宽 + 4px 可见间隙 (不重叠)
+     *   若牌太多超出右边界, 则压缩间距以刚好填满 leftX~rightX
+     *   spacing = min(牌宽+间隙, (rightX-leftX)/(count-1))
+     *
+     * 效果: 私牌在左侧紧密排列, 空间留给右侧与公牌的间隙
+     */
     private setHandCards(cards: number[]) {
-        const handCardNodes = [this.cardS1, this.cardS2];
-        if (!cards || cards.length <= 0) {
-            // 没有手牌数据，显示牌背
-            handCardNodes.forEach(card => {
+        const count = cards?.length || 0;
+
+        if (count <= 0) {
+            // 无手牌数据 → 显示牌背 (默认2张, 紧密排列)
+            const spacing = HAND_CARD_WIDTH + HAND_CARD_VISIBLE_GAP;
+            this.handCardNodes.forEach((card, i) => {
+                if (i < 2) {
+                    card.active = true;
+                    card.x = HAND_CARD_LEFT_X + i * spacing;
+                    card.y = HAND_CARD_Y;
+                    card.zIndex = i;
+                    card.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+                        GameUtil.GetCardNameByNum(0),
+                        AssetFold.texture_SmallCard0
+                    );
+                } else {
+                    card.active = false;
+                }
+            });
+            return;
+        }
+
+        // 紧密排列: 优先用不重叠间距, 牌多时压缩到右边界内
+        const spacing = count > 1
+            ? Math.min(
+                HAND_CARD_WIDTH + HAND_CARD_VISIBLE_GAP,
+                (HAND_CARD_RIGHT_X - HAND_CARD_LEFT_X) / (count - 1)
+            )
+            : 0;
+
+        for (let i = 0; i < this.handCardNodes.length; i++) {
+            const card = this.handCardNodes[i];
+            if (i < count) {
                 card.active = true;
+                card.x = count === 1
+                    ? HAND_CARD_LEFT_X
+                    : HAND_CARD_LEFT_X + i * spacing;
+                card.y = HAND_CARD_Y;
+                card.zIndex = i; // 右侧牌在上层
                 card.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
-                    GameUtil.GetCardNameByNum(0),
+                    GameUtil.GetCardNameByNum(cards[i] || 0),
                     AssetFold.texture_SmallCard0
                 );
-            });
-        } else {
-            handCardNodes.forEach((card, index) => {
-                let cardVal = cards[index] || 0;
-                card.active = true;
-                card.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
-                    GameUtil.GetCardNameByNum(cardVal),
-                    AssetFold.texture_SmallCard0
-                );
-            });
+            } else {
+                card.active = false;
+            }
         }
     }
 
-    /** 设置公共牌 */
-    private setPublicCards(cards: number[]) {
-        const publicCardNodes = [this.cardP1, this.cardP2, this.cardP3, this.cardP4, this.cardP5];
-        publicCardNodes.forEach((card, index) => {
-            if (cards && cards[index] > 0) {
+    /**
+     * 设置公共牌
+     *
+     * 单套牌局: 上排 (cardP1~P5) Y 移到与私牌相同位置, 下排隐藏
+     * 双套牌局: 上排在原位 (y≈65), 下排在原位 (y≈-72)
+     */
+    private setPublicCards(publicCards: number[], publicCards2?: number[]) {
+        const isDualBoard = publicCards2 && publicCards2.length > 0;
+        const upperY = isDualBoard ? PUBLIC_CARD_UPPER_Y : PUBLIC_CARD_SINGLE_Y;
+
+        // 单套牌局缩小容器高度, 双套牌局恢复原始高度
+        this.node.height = isDualBoard ? 300 : 240;
+
+        // 第一套公牌 (上排)
+        this.publicCardNodes.forEach((card, index) => {
+            if (publicCards && publicCards[index] > 0) {
                 card.active = true;
+                card.y = upperY;
                 card.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
-                    GameUtil.GetCardNameByNum(cards[index]),
+                    GameUtil.GetCardNameByNum(publicCards[index]),
                     AssetFold.texture_SmallCard0
                 );
             } else {
                 card.active = false;
             }
         });
+
+        // 第二套公牌 (下排)
+        if (isDualBoard) {
+            this.publicCardNodesB.forEach((card, index) => {
+                if (publicCards2[index] > 0) {
+                    card.active = true;
+                    card.y = PUBLIC_CARD_LOWER_Y;
+                    card.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+                        GameUtil.GetCardNameByNum(publicCards2[index]),
+                        AssetFold.texture_SmallCard0
+                    );
+                } else {
+                    card.active = false;
+                }
+            });
+        } else {
+            // 单套牌局: 隐藏下排
+            this.publicCardNodesB.forEach(card => {
+                card.active = false;
+            });
+        }
     }
 
     /** 设置牌型名称 (根据 i18n 语言) */
     private setCardType(cardType: number) {
         let name = CardTypeUtil.GetCardTypeName(cardType);
         if (!name) {
-            // 弃牌玩家没有牌型数据，显示"弃牌"
             name = i18nMgr.Get('UITexas_fold') || '弃牌';
         }
         this.ctLabel.string = name;
@@ -173,23 +299,17 @@ export default class playerCardNode extends UIBasePlus {
         let actionStr = '';
 
         if (actNum === 6 || actNum === 7) {
-            // bet 或 raise
             if (raiseTimes <= 1) {
                 actionStr = this.getActionI18N(actNum);
             } else if (raiseTimes === 2) {
-                // 再加注
-                let raiseStr = this.getActionI18N(7);
-                actionStr = raiseStr;
+                actionStr = this.getActionI18N(7);
             } else {
-                // 3加注, 4加注...
-                let raiseStr = this.getActionI18N(7);
-                actionStr = raiseTimes + raiseStr;
+                actionStr = raiseTimes + this.getActionI18N(7);
             }
         } else {
             actionStr = this.getActionI18N(actNum);
         }
 
-        // 弃牌不显示动作标签，左侧牌型已显示"弃牌"
         if (actNum === 10) {
             this.opAction.node.active = false;
             this.opNum.node.active = false;
@@ -207,7 +327,6 @@ export default class playerCardNode extends UIBasePlus {
         if (key) {
             return i18nMgr.Get(key) || '';
         }
-        // 没有专用 i18n key 的，直接返回中文
         switch (actNum) {
             case 4: return '过牌';
             case 5: return '偷鸡';
@@ -217,22 +336,42 @@ export default class playerCardNode extends UIBasePlus {
         }
     }
 
-    /** 设置最终盈亏 */
-    private setProfit(winAnte: number, isMine: boolean) {
-        this.profit.string = StringHelper.GetSignedLongString(winAnte);
+    /**
+     * 设置最终盈亏
+     * 单套牌局: profit 显示, profit_b 隐藏
+     * 双套牌局: profit 显示第一套盈亏, profit_b 显示第二套盈亏
+     */
+    private setProfit(winAnte: number, isMine: boolean, publicCards2?: number[], winAnte2?: number) {
+        const isDualBoard = publicCards2 && publicCards2.length > 0;
 
+        // 第一套盈亏
+        this.profit.string = StringHelper.GetSignedLongString(winAnte);
         if (winAnte > 0) {
-            // 赢了 - 红色
             this.profit.node.color = cc.color(255, 80, 80);
         } else if (winAnte < 0) {
-            // 输了 - 蓝色
             this.profit.node.color = cc.color(80, 160, 255);
         }
 
-        // 如果是自己，名字和盈亏用金色
+        // 第二套盈亏
+        if (isDualBoard && winAnte2 != null) {
+            this.profit_b.node.active = true;
+            this.profit_b.string = StringHelper.GetSignedLongString(winAnte2);
+            if (winAnte2 > 0) {
+                this.profit_b.node.color = cc.color(255, 80, 80);
+            } else if (winAnte2 < 0) {
+                this.profit_b.node.color = cc.color(80, 160, 255);
+            }
+        } else {
+            this.profit_b.node.active = false;
+        }
+
+        // 自己的金色高亮
         if (isMine) {
             this.playerName.node.color = cc.color(220, 186, 130);
             this.profit.node.color = cc.color(220, 186, 130);
+            if (this.profit_b.node.active) {
+                this.profit_b.node.color = cc.color(220, 186, 130);
+            }
         }
     }
 
@@ -260,8 +399,9 @@ export default class playerCardNode extends UIBasePlus {
         this.opAction.string = '';
         this.opNum.string = '';
         this.profit.string = '';
+        this.profit_b.node.active = false;
 
-        [this.cardS1, this.cardS2, this.cardP1, this.cardP2, this.cardP3, this.cardP4, this.cardP5].forEach(card => {
+        [...this.handCardNodes, ...this.publicCardNodes, ...this.publicCardNodesB].forEach(card => {
             card.active = false;
         });
     }
