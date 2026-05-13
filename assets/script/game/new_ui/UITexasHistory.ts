@@ -4,7 +4,7 @@ import { TextColor } from '../../config/GameConfig';
 import GC from '../../frame/GameControl';
 import PublicHelper from '../../helper/PublicHelper';
 import { StringHelper } from '../../helper/StringHelper';
-import { WebRoomCenterHistoryReplay } from '../../net/https/WebRequest';
+import { WebRoomCenterHistoryReplay, WebRoomCenterGameWatch, WebUserDiamondsWallet, WWW } from '../../net/https/WebRequest';
 import ProtocolAgency from '../../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../../net/websocket/ProtocolCode';
 import UIBasePlus from '../../ui/UIBasePlus';
@@ -15,6 +15,7 @@ import { GameCache } from '../GameCache';
 import GameUtil from '../util/GameUtil';
 import playerCardNode, { IPlayerCardData } from '../../crazyPoker/gameplay/common/view/cardhisory/playerCardNode';
 import { ResManager } from '../../manager/ResManager';
+import DiamondModel from '../../diamond/DiamondModel';
 
 export class HistoryInfoData {
     public bInsurance: boolean;
@@ -194,11 +195,17 @@ export default class UITexasHistory extends UIBasePlus {
     color_gray = cc.color(198, 198, 198);
     SliderPlus$slider: SliderPlus = null;
     cc_Label$page: cc.Label = null;
+    $DiamondNum: cc.Node = null;
+    $PeekButton: cc.Node = null;
+    $PeekCost: cc.Node = null;
     $left_btn: cc.Node = null;
     $right_btn: cc.Node = null;
+    $progressBlue: cc.Node = null;
     // Dashboard 概览区 - 动态生成的 playerCardNode 实例列表
     private dashboardNodes: cc.Node[] = [];
     private playerCardPrefab: cc.Prefab = null;
+    // 偷偷看：缓存已偷看到的手牌数据
+    private beWatchedUserHands: { user_rid: number; data: string }[] = [];
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -234,6 +241,7 @@ export default class UITexasHistory extends UIBasePlus {
         this.setButtonClick(this.$left_btn, this.click_left);
         this.setButtonClick(this.$right_btn, this.click_right);
         this.setButtonClick(this.$DetailsBtn, this.click_detailsBtn);
+        this.setButtonClick(this.$PeekButton, this.click_peekButton);
         let exitBtn = this.$Top.getChildByName('exit_button');
         if (exitBtn) exitBtn.on(cc.Node.EventType.TOUCH_END, this.click_bg, this);
     }
@@ -251,6 +259,8 @@ export default class UITexasHistory extends UIBasePlus {
         // buttonPrePage.interactable = false;
         // buttonNextPage.interactable = false;
         this.InitRoomInfo();
+        this.reqDiamondBalance();
+        this.reqPeekPrice();
         //初始化空心牌数量
         this.$Preflop_title_childs.children.forEach((item, index) => {
             item.active = index < GameCache.Instance.CurGame.HandCards;
@@ -285,6 +295,7 @@ export default class UITexasHistory extends UIBasePlus {
                 own: this
             });
             this.cc_Label$page.string = '0/0';
+            this.syncProgressBlue();
             return;
         }
         this.registerHandler();
@@ -322,10 +333,17 @@ export default class UITexasHistory extends UIBasePlus {
         if (this.currentPage == value) return;
         this.RefreshData(value);
         this.refreshPageLabel();
+        this.syncProgressBlue();
     }
 
     refreshPageLabel() {
         this.cc_Label$page.string = `${this.currentPage}/${this.totalPage}`;
+    }
+
+    /** 同步 $progressBlue 宽度与 slider 进度位置一致，实现双色进度条效果 */
+    private syncProgressBlue() {
+        if (!this.$progressBlue || !this.SliderPlus$slider) return;
+        this.$progressBlue.width = this.SliderPlus$slider._bar_offset;
     }
 
     /** 切换详情区域的显示/隐藏 */
@@ -349,6 +367,99 @@ export default class UITexasHistory extends UIBasePlus {
         if (arrowsp) {
             arrowsp.scaleY *= -1;
         }
+    }
+
+    /** 偷偷看按钮点击：请求看所有未亮牌玩家的手牌 */
+    click_peekButton() {
+        if (!this.$PeekButton) return;
+        // 防重复点击
+        let btn = this.$PeekButton.getComponent(cc.Button);
+        if (btn) btn.interactable = false;
+
+        WWW.Instance.CommonAPI({
+            web_class: WebRoomCenterGameWatch,
+            body: WebRoomCenterGameWatch.Request({
+                room_id: this.historyInfoData.room_id,
+                room_unique_id: this.historyInfoData.room_unique_id,
+                hand_num: this.currentPage,
+                be_watched_user_id: 0
+            })
+        }).then(
+            (res: any) => {
+                if (!cc.isValid(this.node)) return;
+                if (btn) btn.interactable = true;
+
+                if (res?.code === 0 && res?.data) {
+                    // 合并偷偷看到的手牌到缓存
+                    this.mergeWatchedHands(res.data.be_watched_user_hands);
+                    // 用新数据重新渲染界面
+                    this.HandleHistoryReplay(res.data);
+                    // 隐藏偷偷看按钮（已看过）
+                    if (this.$PeekButton) {
+                        let peekBtn = this.$PeekButton.getComponent(cc.Button);
+                        if (peekBtn) peekBtn.interactable = false;
+                        this.$PeekButton.opacity = 128;
+                    }
+                    // 刷新钻石余额
+                    this.reqDiamondBalance();
+                }
+            },
+            () => {
+                if (btn) btn.interactable = true;
+            }
+        );
+    }
+
+    /** 合并偷偷看到的手牌数据到缓存 */
+    private mergeWatchedHands(hands: { user_rid: number; data: string }[]) {
+        if (!hands || hands.length <= 0) return;
+        for (let i = 0; i < hands.length; i++) {
+            let found = false;
+            for (let j = 0; j < this.beWatchedUserHands.length; j++) {
+                if (this.beWatchedUserHands[j].user_rid === hands[i].user_rid) {
+                    this.beWatchedUserHands[j].data = hands[i].data;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                this.beWatchedUserHands.push(hands[i]);
+            }
+        }
+    }
+
+    /** 从缓存中获取偷偷看到的玩家手牌 */
+    private getWatchedHandCards(userRid: number): number[] {
+        for (let i = 0; i < this.beWatchedUserHands.length; i++) {
+            if (this.beWatchedUserHands[i].user_rid === userRid) {
+                let cards: number[] = [];
+                let parts = this.beWatchedUserHands[i].data.split(',');
+                for (let j = 0; j < parts.length; j++) {
+                    let val = parseInt(parts[j]);
+                    if (!isNaN(val)) cards.push(val);
+                }
+                return cards;
+            }
+        }
+        return null;
+    }
+
+    /** 判断是否还有未查看的手牌（控制偷偷看按钮的显示） */
+    private hasHiddenCards(ResponseData: typeof WebRoomCenterHistoryReplay.Data): boolean {
+        for (let i = 0; i < ResponseData.s.result.length; i++) {
+            let result = ResponseData.s.result[i];
+            if (result.card == null || result.card.length === 0 || result.card[0] <= 0) {
+                // 这个玩家没有亮牌，通过座位号找 uid，再检查是否已经偷看过
+                let playerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, result.sn);
+                if (playerInfo && playerInfo.playerId !== GameCache.Instance.nUserId) {
+                    let watched = this.getWatchedHandCards(playerInfo.playerId);
+                    if (!watched || watched.length === 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     click_bg() {
@@ -421,9 +532,53 @@ export default class UITexasHistory extends UIBasePlus {
 
     private InitUI() {}
 
+    /** 异步请求钻石余额并显示 */
+    private reqDiamondBalance() {
+        if (!this.$DiamondNum) return;
+        WWW.Instance.CommonAPI({
+            web_class: WebUserDiamondsWallet
+        }).then((res: any) => {
+            if (cc.isValid(this.node) && this.$DiamondNum && res?.data?.diamonds_wallet) {
+                let label = this.$DiamondNum.getComponent(cc.Label);
+                if (label) label.string = res.data.diamonds_wallet.diamonds.toLocaleString('en-US');
+            }
+        });
+    }
+
     /** 预加载 playerCardNode prefab */
     private async loadPlayerCardPrefab() {
         this.playerCardPrefab = await ResManager.GetOrLoad<cc.Prefab>('texas', 'prefab/widgetLayer/playerCardNode');
+    }
+
+    /** 请求偷偷看价格并显示到 $PeekCost 上 */
+    private async reqPeekPrice() {
+        if (!this.$PeekCost) return;
+        try {
+            // 请求 config_type=30（看全部手牌），type_ext=11（观战未坐下）
+            await DiamondModel.Instance.ReqDiamondConfig(30);
+            let diamondConfig = DiamondModel.Instance.GetDiamondConfig(11, 30);
+            let price = this.getPriceFromConfig(diamondConfig);
+            let label = this.$PeekCost.getComponent(cc.Label);
+            if (label) label.string = `${price}`;
+        } catch (e) {
+            cc.log('[UITexasHistory] reqPeekPrice failed', e);
+        }
+    }
+
+    /** 从钻石配置中按 smallBlind 匹配价格 */
+    private getPriceFromConfig(diamondConfig: any): number {
+        if (!diamondConfig?.setting) return 0;
+        let sb = GameCache.Instance.CurGame?.smallBlind || 0;
+        for (let item of diamondConfig.setting) {
+            if (item.sb === sb) {
+                return item.price || 0;
+            }
+        }
+        // 没有精确匹配则取第一个
+        if (diamondConfig.setting.length > 0) {
+            return diamondConfig.setting[0].price || 0;
+        }
+        return 0;
     }
 
     /** 隐藏 $Dashboard 下的静态 playerNode 模板节点 */
@@ -637,6 +792,22 @@ export default class UITexasHistory extends UIBasePlus {
             }
             if (playerInfo.playerId != GameCache.Instance.nUserId) {
                 playerInfo.handCards = ResponseData.s.result[i].card;
+                // 如果结果中没有手牌或手牌为空，尝试使用偷偷看缓存
+                if ((!playerInfo.handCards || playerInfo.handCards.length === 0 || playerInfo.handCards[0] <= 0)) {
+                    // 优先用接口返回的 be_watched_user_hands
+                    if (ResponseData.be_watched_user_hands && ResponseData.be_watched_user_hands.length > 0) {
+                        for (let j = 0; j < ResponseData.be_watched_user_hands.length; j++) {
+                            if (ResponseData.be_watched_user_hands[j].user_rid === playerInfo.playerId) {
+                                this.mergeWatchedHands([ResponseData.be_watched_user_hands[j]]);
+                                break;
+                            }
+                        }
+                    }
+                    let watchedCards = this.getWatchedHandCards(playerInfo.playerId);
+                    if (watchedCards && watchedCards.length > 0) {
+                        playerInfo.handCards = watchedCards;
+                    }
+                }
             }
             playerInfo.maxCardType = ResponseData.s.result[i].card_type;
             playerInfo.winAnte = ResponseData.s.result[i].win;
@@ -1003,6 +1174,13 @@ export default class UITexasHistory extends UIBasePlus {
         this.setChildLabel(this.$Score, 'Shows/insurance/value', StringHelper.GetSignedLongString(mInsurancePool));
         this.setChildVisible(this.$Showdown, 'Shows/insurance', mInsurancePool != 0);
         this.setChildLabel(this.$Showdown, 'Shows/insurance/value', StringHelper.GetSignedLongString(mInsurancePool));
+        // 偷偷看按钮：还有未查看的手牌时显示
+        if (this.$PeekButton) {
+            let peekBtn = this.$PeekButton.getComponent(cc.Button);
+            let hasHidden = this.hasHiddenCards(ResponseData);
+            if (peekBtn) peekBtn.interactable = hasHidden;
+            this.$PeekButton.opacity = hasHidden ? 255 : 128;
+        }
         // 默认折叠详情区域
         this.enforceDetailsVisibility();
     }
@@ -1041,6 +1219,8 @@ export default class UITexasHistory extends UIBasePlus {
     resetData() {
         // 清空 Dashboard 概览区
         this.clearDashboard();
+        // 清空偷偷看缓存
+        this.beWatchedUserHands = [];
         for (let index = 0; index < this.AllPlayerCardsInfos.length; index++) {
             const element: cc.Node = this.AllPlayerCardsInfos[index];
             element.destroy();
