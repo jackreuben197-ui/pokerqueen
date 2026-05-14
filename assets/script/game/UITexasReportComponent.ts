@@ -1,9 +1,10 @@
+import SliderPlus from '../common/SliderPlus';
 import { UIDefine } from '../define/UIDefine';
 import { TextColor } from '../config/GameConfig';
 import { StringHelper } from '../helper/StringHelper';
 import TimeHelper from '../helper/TimeHelper';
 import WebImageHelper from '../helper/WebImageHelper';
-import { i18nLabel } from '../i18n/i18nLabel';
+import { i18nLabel } from "../i18n/i18nLabel";
 import { i18nMgr } from '../i18n/i18nMgr';
 import { UIClubModel } from '../uimodel/UIClubModel';
 import { WebOrgFriendRoomList, APITexasSituationMushRound, APITexasSituationSquidRound, WWW } from '../net/https/WebRequest';
@@ -109,6 +110,9 @@ export default class UITexasReportComponent extends UIBase {
     rightBtn: cc.Node = null;
     pageInfoNode: cc.Node = null;
     squidRoundNode: cc.Node = null;
+    sliderPlus: SliderPlus = null;
+    progressBlue: cc.Node = null;
+    bgClickNode: cc.Node = null;
     noDataNode: cc.Node = null;
     mushDirNode: cc.Node = null;
     mushDirText: cc.Label = null;
@@ -136,6 +140,19 @@ export default class UITexasReportComponent extends UIBase {
     private isSquidListInit: boolean = false;
     private isJackpotListInit: boolean = false;
     private manualClose: boolean = false;
+    showPlayerInTableNode: cc.Node = null;
+    checkboxOnNode: cc.Node = null;
+    checkboxOffNode: cc.Node = null;
+    private _isShowOnlyTablePlayers: boolean = false;
+    private _lastRoomersData: any = null;
+    publicAreaNode: cc.Node = null;
+    totalMoneyLabel: cc.Label = null;
+    totalBringLabel: cc.Label = null;
+    curHandLabel: cc.Label = null;
+    verBottomLabel: cc.Label = null;
+    curTimeLabel: cc.Label = null;
+    insurancePoolLabel: cc.Label = null;
+    remainTimeLabel: cc.Label = null;
     private normalReportY: number = 0;
     private jackpotReportY: number = 0;
     private normalPeopleNodeY: number = 0;
@@ -144,44 +161,66 @@ export default class UITexasReportComponent extends UIBase {
 
     protected lateLoad(): void {
         super.lateLoad();
-        this.text_Time = this.getChildNodeOrComponent('Text_Time', cc.Label);
+        const bg = 'layer/bg';
+        const top = `${bg}/$Top`;
+        this.text_Time = this.getChildNodeOrComponent('time_text', cc.Label);
         this.room_id = this.getChildNodeOrComponent('room_id', cc.Label);
-        this.reportScrow = cc.find('layer/reportScrow', this.node);
-        this.squidListView = cc.find('layer/squidListView', this.node);
-        this.mushRoomListView = cc.find('layer/mushRoomListView', this.node);
-        this.jackpotListView = cc.find('layer/jackpotListView', this.node);
-        this.peopleNode = cc.find('layer/peopleNode', this.node);
-        this.peopleScrow = cc.find('layer/peopleScrow', this.node);
-        this.battle_data_content = cc.find('layer/reportScrow/view/data_content', this.node);
-        this.squid_data_content = cc.find('layer/squidListView/view/data_content', this.node);
-        this.mush_data_content = cc.find('layer/mushRoomListView/view/data_content', this.node);
-        this.jackpot_data_content = cc.find('layer/jackpotListView/view/data_content', this.node);
-        this.people_content = cc.find('layer/peopleScrow/view/people_content', this.node);
-        this.peopelNum = cc.find('layer/peopleNode/peopelNum', this.node)?.getComponent(cc.Label) || null;
-        this.listBar1 = cc.find('layer/ListBar1', this.node);
-        this.listBar3 = cc.find('layer/ListBar3', this.node);
-        this.listBarSquid = cc.find('layer/listBarSquid', this.node);
-        this.listBarMushRoom = cc.find('layer/listBarMushRoom', this.node);
-        this.listBarJackpot = cc.find('layer/listBarJackpot', this.node);
-        this.jackpotBarNode = cc.find('layer/JackpotBar', this.node);
-        const jackpotNumberNode = cc.find('layer/JackpotBar/JackpotNumber', this.node);
-        this.jackpotTotalLabel = jackpotNumberNode.getComponent(cc.Label);
-        this.listBar3ModeLabel = cc.find('layer/ListBar3/Text_Mode', this.node)?.getComponent(cc.Label) || null;
-        this.squidRoundText = cc.find('layer/squidRound/squidRoundText', this.node)?.getComponent(cc.Label) || null;
-        this.pageText = cc.find('layer/squidPageInfo/pageTextNode/pageText', this.node)?.getComponent(cc.Label) || null;
-        this.leftBtn = cc.find('layer/squidPageInfo/leftBtn', this.node);
-        this.rightBtn = cc.find('layer/squidPageInfo/rightBtn', this.node);
-        this.pageInfoNode = cc.find('layer/squidPageInfo', this.node);
-        this.squidRoundNode = cc.find('layer/squidRound', this.node);
-        this.noDataNode = cc.find('layer/noData', this.node);
-        this.mushDirNode = cc.find('layer/mushDir', this.node);
-        this.mushDirText = cc.find('layer/mushDir/mushDirText', this.node)?.getComponent(cc.Label) || null;
+        // $content 下的节点：先找到 $content，再用短路径向下查找
+        const contentNode = this.getChildNodeOrComponent('$content') as cc.Node;
+        const dataListNode = contentNode ? cc.find('dataList', contentNode) : null;
+        const headerNode = dataListNode ? cc.find('header', dataListNode) : null;
+        this.reportScrow = dataListNode ? cc.find('reportScrow', dataListNode) : null;
+        this.squidListView = dataListNode ? cc.find('squidListView', dataListNode) : null;
+        this.mushRoomListView = dataListNode ? cc.find('mushRoomListView', dataListNode) : null;
+        this.jackpotListView = dataListNode ? cc.find('jackpotListView', dataListNode) : null;
+        this.peopleNode = contentNode ? cc.find('peopleNode', contentNode) : null;
+        this.peopleScrow = contentNode ? cc.find('peopleScrow', contentNode) : null;
+        this.battle_data_content = this.reportScrow ? cc.find('view/data_content', this.reportScrow) : null;
+        this.squid_data_content = this.squidListView ? cc.find('view/data_content', this.squidListView) : null;
+        this.mush_data_content = this.mushRoomListView ? cc.find('view/data_content', this.mushRoomListView) : null;
+        this.jackpot_data_content = this.jackpotListView ? cc.find('view/data_content', this.jackpotListView) : null;
+        this.people_content = this.peopleScrow ? cc.find('view/people_content', this.peopleScrow) : null;
+        this.peopelNum = this.peopleNode ? cc.find('peopelNum', this.peopleNode)?.getComponent(cc.Label) || null : null;
+        this.listBar1 = headerNode ? cc.find('ListBar1', headerNode) : null;
+        this.listBar3 = headerNode ? cc.find('ListBar3', headerNode) : null;
+        this.listBarSquid = headerNode ? cc.find('listBarSquid', headerNode) : null;
+        this.listBarMushRoom = headerNode ? cc.find('listBarMushRoom', headerNode) : null;
+        this.listBarJackpot = headerNode ? cc.find('listBarJackpot', headerNode) : null;
+        this.jackpotBarNode = dataListNode ? cc.find('JackpotBar', dataListNode) : null;
+        const jackpotNumberNode = this.jackpotBarNode ? cc.find('JackpotNumber', this.jackpotBarNode) : null;
+        if (jackpotNumberNode) {
+            this.jackpotTotalLabel = jackpotNumberNode.getComponent(cc.Label) || jackpotNumberNode.getComponent(cc.RichText) || null;
+        }
+        this.listBar3ModeLabel = this.listBar3 ? cc.find('Text_Mode', this.listBar3)?.getComponent(cc.Label) || null : null;
+        this.showPlayerInTableNode = cc.find(`${top}/show_player_in_table`, this.node);
+        this.checkboxOnNode = cc.find(`${top}/show_player_in_table/checkbox_on`, this.node);
+        this.checkboxOffNode = cc.find(`${top}/show_player_in_table/checkbox_off`, this.node);
+        this.squidRoundText = cc.find(`${top}/squidRound/squid_text`, this.node)?.getComponent(cc.Label) || null;
+        this.pageText = cc.find(`${bg}/squidPageInfo/cc_Label$page`, this.node)?.getComponent(cc.Label) || null;
+        this.leftBtn = cc.find(`${bg}/squidPageInfo/$left_btn`, this.node);
+        this.rightBtn = cc.find(`${bg}/squidPageInfo/$right_btn`, this.node);
+        this.sliderPlus = cc.find(`${bg}/squidPageInfo/SliderPlus$slider`, this.node)?.getComponent(SliderPlus) || null;
+        this.progressBlue = cc.find(`${bg}/squidPageInfo/SliderPlus$slider/background/$progressBlue`, this.node);
+        this.bgClickNode = cc.find('layer/$bg_click', this.node);
+        this.pageInfoNode = cc.find(`${bg}/squidPageInfo`, this.node);
+        this.squidRoundNode = cc.find(`${top}/squidRound`, this.node);
+        this.noDataNode = dataListNode ? cc.find('noData', dataListNode) : null;
+        this.publicAreaNode = contentNode ? cc.find('publicArea', contentNode) : null;
+        this.totalMoneyLabel = this.publicAreaNode ? cc.find('total_money', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
+        this.totalBringLabel = this.publicAreaNode ? cc.find('total_bring', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
+        this.curHandLabel = this.publicAreaNode ? cc.find('cur_hand', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
+        this.verBottomLabel = this.publicAreaNode ? cc.find('ver_bottom', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
+        this.curTimeLabel = this.publicAreaNode ? cc.find('cur_time', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
+        this.insurancePoolLabel = this.publicAreaNode ? cc.find('insurance_pool', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
+        this.remainTimeLabel = cc.find(`${top}/remain_time`, this.node)?.getComponent(cc.Label) || null;
+        this.mushDirNode = cc.find(`${top}/mushDir`, this.node);
+        this.mushDirText = cc.find(`${top}/mushDir/mushDirText`, this.node)?.getComponent(cc.Label) || null;
         this.normalReportY = this.reportScrow ? this.reportScrow.y : 0;
         this.jackpotReportY = this.jackpotListView ? this.jackpotListView.y : this.normalReportY;
         this.normalPeopleNodeY = this.peopleNode ? this.peopleNode.y : 0;
         this.normalPeopleScrowY = this.peopleScrow ? this.peopleScrow.y : 0;
         this.normalNoDataY = this.noDataNode ? this.noDataNode.y : 0;
-        const bottomRootPath = 'layer/bottomToggle';
+        const bottomRootPath = `${bg}/bottomToggle`;
         this.bottomToggleRoot = cc.find(bottomRootPath, this.node);
         this.battleToggleBtn = cc.find(`${bottomRootPath}/battleToggle`, this.node);
         this.baoxianToggleBtn = cc.find(`${bottomRootPath}/baoxianToggle`, this.node);
@@ -205,6 +244,10 @@ export default class UITexasReportComponent extends UIBase {
         if (this.jackpotToggleBtn) this.bindClick(this.jackpotToggleBtn, () => this.onClickBottomToggle('jackpot'));
         if (this.leftBtn) this.bindClick(this.leftBtn, () => this.onClickPage(false));
         if (this.rightBtn) this.bindClick(this.rightBtn, () => this.onClickPage(true));
+        if (this.bgClickNode) this.bindClick(this.bgClickNode, () => this.imageMaskCloseClick());
+        if (this.showPlayerInTableNode) this.bindClick(this.showPlayerInTableNode, () => this.onToggleShowTablePlayers());
+        const exitBtn = cc.find('layer/bg/$Top/exit_button', this.node);
+        if (exitBtn) this.bindClick(exitBtn, () => this.imageMaskCloseClick());
     }
 
     protected regiterDispatchEvent(): void {
@@ -221,7 +264,7 @@ export default class UITexasReportComponent extends UIBase {
             MatchID: GameCache.Instance.match_id,
             Body: {
                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                history: GameCache.Instance.origin_type == 4,
+                history: true,
                 historyLimit: 1000,
                 historyOffset: 0
             }
@@ -271,6 +314,7 @@ export default class UITexasReportComponent extends UIBase {
         if (response.status == 0) {
             this.UpdateViewList(response);
             const anyResp: any = response as any;
+            this.showPublicArea(anyResp);
             if (anyResp.observersList) {
                 this.UpdateObViewList(anyResp);
             } else {
@@ -320,6 +364,7 @@ export default class UITexasReportComponent extends UIBase {
 
     onShow(param?: any): void {
         super.onShow();
+        this.regiterDispatchEvent();
         const keepState = !!param?.__keepState;
         this.manualClose = false;
         if (keepState) {
@@ -340,9 +385,12 @@ export default class UITexasReportComponent extends UIBase {
         // this.btnShowProblem = this.getChildNodeOrComponent('BtnShowProblem');
         // this.btnShowProblem.on('click', this.btnShowProblemClick, this)
         this.room_id.string = GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum;
-        this.text_Time.string = '';
+        if (this.remainTimeLabel) this.remainTimeLabel.string = '--:--:--';
         this.reportSubType = this.resolveReportSubType();
         this.curBottomTab = 'battle';
+        this._isShowOnlyTablePlayers = false;
+        this._lastRoomersData = null;
+        this.refreshTablePlayerToggle();
         this.refreshMushDir();
         this.refreshBottomToggleState();
         this.refreshContentVisible();
@@ -354,34 +402,8 @@ export default class UITexasReportComponent extends UIBase {
     }
 
     async UpdateViewList(RoomersData: any) {
-        //玩家
-        this.tInfo_0 = [];
-        this.tInfo_1 = [];
-        const playersList = RoomersData?.playersList || [];
-        this.clearPlayerListContainers();
-        for (let i = 0; i < playersList.length; i++) {
-            let tSignPlayer = new ReportPlayer();
-            tSignPlayer.userId = playersList[i].userRid;
-            tSignPlayer.nickName = playersList[i].name;
-            tSignPlayer.hand = playersList[i].handNum;
-            tSignPlayer.bringIn = playersList[i].bringInTotal;
-            tSignPlayer.score = playersList[i].win;
-            tSignPlayer.outChip = playersList[i].bringOutTotal;
-            tSignPlayer.isOnline = playersList[i].isOnline;
-            tSignPlayer.deposit = playersList[i].deposit || 0;
-            tSignPlayer.mushroomCount = playersList[i].mushroomCount || 0;
-            tSignPlayer.mushroomAmount = playersList[i].mushroomAmount || 0;
-            tSignPlayer.squidInTotal = playersList[i].squidInTotal || 0;
-            tSignPlayer.squidOutTotal = playersList[i].squidOutTotal || 0;
-            tSignPlayer.squidPunishTotal = playersList[i].squidPunishTotal || 0;
-            if (playersList[i].status == Def.CanPlayStatus.NORMAL || playersList[i].Status == Def.CanPlayStatus.AGREE_POST) {
-                this.tInfo_0.push(tSignPlayer);
-            } else {
-                this.tInfo_1.push(tSignPlayer);
-            }
-        }
-        this.tInfo_0.sort((x, y) => Number(y.score || 0) - Number(x.score || 0));
-        this.tInfo_1.sort((x, y) => Number(y.score || 0) - Number(x.score || 0));
+        this._lastRoomersData = RoomersData;
+        this.buildPlayerLists(RoomersData);
         this.refreshCurrentDataList();
         if (GameCache.Instance.origin_type == 4) {
             let result: any = await UIClubModel.mInstance.WebOrgFriendRoomList(false).catch(content => {
@@ -398,8 +420,7 @@ export default class UITexasReportComponent extends UIBase {
                     let roomLeftTime = deadLineTime / 1000 + item.play_duration - new Date().getTime() / 1000;
                     if (roomLeftTime > 0) {
                         this.mRoomLeaveTime = roomLeftTime;
-                        let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.Label);
-                        textTitle.string = TimeHelper.ShowRemainingSemicolon2(this.mRoomLeaveTime);
+                        if (this.remainTimeLabel) this.remainTimeLabel.string = TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime);
                         this.ShowLeaveTimer();
                     }
                 }
@@ -454,8 +475,11 @@ export default class UITexasReportComponent extends UIBase {
             let tItem: cc.Node = cc.instantiate(this.peopleItem);
             tItem.parent = this.people_content;
             let nick_name = StringHelper.LengthNick(RoomersData.observersList[index].name);
-            let nameLbl = tItem.getChildByName('Text_Name').getComponent(cc.Label);
-            nameLbl.string = nick_name;
+            const nameNode = tItem.getChildByName('Text_Name');
+            if (nameNode) {
+                const nameLbl = nameNode.getComponent(cc.Label);
+                if (nameLbl) nameLbl.string = nick_name;
+            }
             let icon = tItem.getChildByName('icon');
             WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar);
             const uid = RoomersData.observersList[index].userRid;
@@ -470,15 +494,114 @@ export default class UITexasReportComponent extends UIBase {
         }
     }
 
+    private buildPlayerLists(RoomersData: any): void {
+        this.tInfo_0 = [];
+        this.tInfo_1 = [];
+        const playersList = RoomersData?.playersList || [];
+        this.clearPlayerListContainers();
+        for (let i = 0; i < playersList.length; i++) {
+            const p = playersList[i];
+            if (this._isShowOnlyTablePlayers && !this.isOnTable(p.userRid)) {
+                continue;
+            }
+            let tSignPlayer = new ReportPlayer();
+            tSignPlayer.userId = p.userRid;
+            tSignPlayer.nickName = p.name;
+            tSignPlayer.hand = p.handNum;
+            tSignPlayer.bringIn = p.bringInTotal;
+            tSignPlayer.score = p.win;
+            tSignPlayer.outChip = p.bringOutTotal;
+            tSignPlayer.isOnline = p.isOnline;
+            tSignPlayer.deposit = p.deposit || 0;
+            tSignPlayer.mushroomCount = p.mushroomCount || 0;
+            tSignPlayer.mushroomAmount = p.mushroomAmount || 0;
+            tSignPlayer.squidInTotal = p.squidInTotal || 0;
+            tSignPlayer.squidOutTotal = p.squidOutTotal || 0;
+            tSignPlayer.squidPunishTotal = p.squidPunishTotal || 0;
+            if (p.isOnline !== false) {
+                this.tInfo_0.push(tSignPlayer);
+            } else {
+                this.tInfo_1.push(tSignPlayer);
+            }
+        }
+        this.tInfo_0.sort((x, y) => Number(y.score || 0) - Number(x.score || 0));
+        this.tInfo_1.sort((x, y) => Number(y.score || 0) - Number(x.score || 0));
+    }
+
+    private isOnTable(userId: number): boolean {
+        return GameCache.Instance.CurGame?.GetSeatByUserId(userId) != null;
+    }
+
+    private onToggleShowTablePlayers(): void {
+        this._isShowOnlyTablePlayers = !this._isShowOnlyTablePlayers;
+        this.refreshTablePlayerToggle();
+        this.RequestRoomers();
+    }
+
+    private refreshTablePlayerToggle(): void {
+        if (this.checkboxOnNode) this.checkboxOnNode.active = this._isShowOnlyTablePlayers;
+        if (this.checkboxOffNode) this.checkboxOffNode.active = !this._isShowOnlyTablePlayers;
+    }
+
+    private showPublicArea(data: any): void {
+        const totalPot = Number(data.totalPot || 0);
+        const totalBringin = Number(data.totalBringin || 0);
+        const totalHand = Number(data.totalHand || 0);
+        const insurance = Number(data.insurance || 0);
+        const startTime = Number(data.startTime || 0);
+
+        if (this.totalMoneyLabel) {
+            this.totalMoneyLabel.string = `${i18nMgr.Get('UISituationTotalPot')} ${StringHelper.GetLongString(totalPot)}`;
+        }
+        if (this.totalBringLabel) {
+            this.totalBringLabel.string = `${i18nMgr.Get('UISituationTotalBringIn')} ${StringHelper.GetLongString(totalBringin)}`;
+        }
+        if (this.curHandLabel) {
+            this.curHandLabel.string = `${i18nMgr.Get('UISituationCurHandNum')} ${totalHand}`;
+        }
+        if (this.verBottomLabel) {
+            const avgStr = totalHand > 0
+                ? (() => { const avg = totalPot / totalHand / 100; return Number.isInteger(avg) ? `${avg}` : avg.toFixed(2); })()
+                : '0';
+            this.verBottomLabel.string = `${i18nMgr.Get('UISituationVerBottom')} ${avgStr}`;
+        }
+        const playDuration = GameCache.Instance._roomDurationTime;
+        if (this.curTimeLabel) {
+            this.curTimeLabel.string = `${i18nMgr.Get('UISituationCurTime')} ${this.formatRoomDuration(playDuration)}`;
+        }
+        if (this.remainTimeLabel) {
+            if (playDuration > 0 && startTime > 0) {
+                const useTime = Math.floor(Date.now() / 1000) - startTime;
+                const remainTime = Math.max(0, playDuration - useTime);
+                this.remainTimeLabel.string = TimeHelper.ShowRemainingSemicolon(remainTime);
+            } else {
+                this.remainTimeLabel.string = '--:--:--';
+            }
+        }
+        if (this.insurancePoolLabel) {
+            this.insurancePoolLabel.string = `${i18nMgr.Get('UITexasHistory_insurance')} ${StringHelper.GetLongString(insurance)}`;
+        }
+    }
+
+    private formatRoomDuration(seconds: number): string {
+        if (seconds <= 0) return '--';
+        if (seconds < 3600) {
+            const minutes = Math.round(seconds / 60);
+            const tpl = i18nMgr.Get('UITexasReport_Text_MatchZmsysj');
+            return tpl ? tpl.replace('{0}', `${minutes}`) : `${minutes}min`;
+        }
+        const h = Math.floor(seconds / 3600);
+        const m = Math.round((seconds % 3600) / 60);
+        return m > 0 ? `${h}h${m}min` : `${h}h`;
+    }
+
     ShowLeaveTimer() {
         this.schedule(() => {
             if (this.mRoomLeaveTime >= 0 && this.node.isValid) {
                 this.mRoomLeaveTime--;
-                if (this.text_Time != null) this.text_Time.string = TimeHelper.ShowRemainingSemicolon2(this.mRoomLeaveTime);
+                if (this.remainTimeLabel) this.remainTimeLabel.string = TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime);
             } else {
-                if (this.text_Time != null && !cc.isValid(this.node, true)) {
-                    this.text_Time.string = '00:00';
-                }
+                if (this.remainTimeLabel) this.remainTimeLabel.string = '00:00:00';
             }
         }, 1);
     }
@@ -519,8 +642,9 @@ export default class UITexasReportComponent extends UIBase {
         // objTemp.getChildByName('Text_Num').opactiy = opactiy
         // objTemp.getChildByName('Text_All').opactiy = opactiy
         // objTemp.getChildByName('Text_All1').opactiy = opactiy
-        if (!pDto.isOnline && GameCache.Instance.origin_type == 4) {
-            ele.opacity = 50;
+        const atTable = this.isOnTable(pDto.userId);
+        if (!atTable || (!pDto.isOnline && GameCache.Instance.origin_type == 4)) {
+            ele.opacity = 150;
         } else {
             ele.opacity = 255;
         }
@@ -762,10 +886,16 @@ export default class UITexasReportComponent extends UIBase {
     }
 
     private onClickPage(next: boolean): void {
-        if (this.squidCurRound <= 0) this.squidCurRound = this.squidTotalRound;
-        this.squidCurRound = next ? this.squidCurRound + 1 : this.squidCurRound - 1;
-        if (this.squidCurRound > this.squidTotalRound) this.squidCurRound = 1;
-        if (this.squidCurRound < 1) this.squidCurRound = this.squidTotalRound;
+        if (this.squidTotalRound <= 0) return;
+        let nextRound = this.squidCurRound > 0 ? this.squidCurRound : this.squidTotalRound;
+        nextRound = next ? nextRound + 1 : nextRound - 1;
+        if (nextRound > this.squidTotalRound) nextRound = 1;
+        if (nextRound < 1) nextRound = this.squidTotalRound;
+        this.squidCurRound = nextRound;
+        if (this.sliderPlus) {
+            this.sliderPlus.value = nextRound;
+            this.syncProgressBlue();
+        }
         if (this.squidRoundDic.has(this.squidCurRound)) {
             this.UpdatePageTxt();
             this.UpdateSquidViewList();
@@ -836,6 +966,7 @@ export default class UITexasReportComponent extends UIBase {
         }
         const saveRound = this.squidCurRound > 0 ? this.squidCurRound : 1;
         this.squidRoundDic.set(saveRound, records);
+        this.setupSlider();
         this.UpdatePageTxt();
         this.UpdateSquidViewList();
     }
@@ -976,6 +1107,7 @@ export default class UITexasReportComponent extends UIBase {
     }
 
     private RefreshJackpotTotalLabel(): void {
+        if (!this.jackpotTotalLabel) return;
         const total = Math.floor(Number(GameCache.Instance.jackPot_parent_gold || 0) / 100);
         this.jackpotTotalLabel.string = `${total}`;
     }
@@ -1155,5 +1287,50 @@ export default class UITexasReportComponent extends UIBase {
             label.string = text;
             label.node.color = cc.Color.BLACK.fromHEX(color);
         }
+    }
+
+    private setupSlider(): void {
+        if (!this.sliderPlus || this.squidTotalRound <= 0) return;
+        this.sliderPlus.show({
+            min_value: 1,
+            max_value: this.squidTotalRound,
+            step: 1,
+            change: this.sliderChange,
+            touch_end: this.onSliderTouchEnd,
+            own: this
+        });
+        const targetRound = this.squidCurRound > 0 ? this.squidCurRound : this.squidTotalRound;
+        this.squidCurRound = targetRound;
+        this.sliderPlus.value = targetRound;
+        this.syncProgressBlue();
+    }
+
+    private sliderChange(value: number): void {
+        const round = Math.round(value);
+        if (this.squidCurRound === round) return;
+        this.squidCurRound = round;
+        this.UpdatePageTxt();
+        this.syncProgressBlue();
+    }
+
+    private onSliderTouchEnd(): void {
+        if (this.curBottomTab !== 'mode') return;
+        if (this.squidRoundDic.has(this.squidCurRound)) {
+            this.UpdateSquidViewList();
+        } else {
+            this.SendSquidData(this.squidCurRound);
+        }
+    }
+
+    private syncProgressBlue(): void {
+        if (!this.progressBlue || !this.sliderPlus) return;
+        const slider = this.sliderPlus;
+        const range = slider.data.max_value - slider.data.min_value;
+        if (range <= 0) {
+            this.progressBlue.width = 0;
+            return;
+        }
+        const k = (slider.value - slider.data.min_value) / range;
+        this.progressBlue.width = slider.min + (slider.max - slider.min) * k;
     }
 }
