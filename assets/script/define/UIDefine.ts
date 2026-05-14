@@ -54,6 +54,7 @@ type UIDefineKey =
     | 'UITexasDialogJackpotAwards'
     | 'UILaborPlayViewForm'
     | 'UITexasPlayerInfo'
+    | 'UIPlayerInfo'
     | 'UITexasReportPlayerInfo'
     | 'UITexasInsuranceComponent'
     | 'UIlaborMerberManager'
@@ -581,6 +582,12 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Name: 'UITexasPlayerInfo',
         Bundle: 'texas',
         Path: 'purple_prefab/ui/UITexasPlayerInfo'
+    },
+    UIPlayerInfo: {
+        UIType: UIType.CommonUI,
+        Name: 'UIPlayerInfo',
+        Bundle: 'texas',
+        Path: 'prefab/widgetLayer/UIPlayerInfo'
     },
     UITexasReportPlayerInfo: {
         UIType: UIType.CommonUI,

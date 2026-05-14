@@ -104,7 +104,7 @@ export default class TexasGameUtils {
         }
         //UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
         UIComponent.Instance.HideUI(PrefabUI.UIBringIn);
-        UIComponent.close(UIDefine.UITexasPlayerInfo);
+        UIComponent.close(UIDefine.UIPlayerInfo);
         this.game.HideOperationPanel();
         this.game.HideAutoOperationPanel();
         this.game.HideWaitBlindBtn();

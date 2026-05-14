@@ -644,7 +644,7 @@ export default class UITexas extends BaseScene {
         //关闭菜单
         this.HideMenu(false);
         //关闭个人信息
-        UIComponent.close(UIDefine.UITexasPlayerInfo);
+        UIComponent.close(UIDefine.UIPlayerInfo);
         //关闭设置
         UIComponent.close(UIDefine.UITexasSettingComponent);
         //关闭规则
