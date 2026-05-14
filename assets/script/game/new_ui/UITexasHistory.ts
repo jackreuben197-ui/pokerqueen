@@ -294,6 +294,7 @@ export default class UITexasHistory extends UIBasePlus {
                 max_value: 0,
                 step: 1,
                 change: this.sliderChange,
+                touch_end: this.sliderTouchEnd,
                 own: this
             });
             this.cc_Label$page.string = '0/0';
@@ -306,25 +307,24 @@ export default class UITexasHistory extends UIBasePlus {
             max_value: this.totalPage,
             step: 1,
             change: this.sliderChange,
+            touch_end: this.sliderTouchEnd,
             own: this
         });
         this.SliderPlus$slider.value = this.totalPage;
-        //this.RefreshData(this.totalPage);
+        this.RefreshData(this.totalPage);
     }
 
     click_left() {
         if (this.currentPage - 1 > 0) {
-            // this.RefreshData(this.currentPage - 1);
-            // this.refreshPageLabel();
             this.SliderPlus$slider.value = this.currentPage - 1;
+            this.RefreshData(this.currentPage);
         }
     }
 
     click_right() {
         if (this.currentPage + 1 <= this.totalPage) {
-            // this.RefreshData(this.currentPage + 1);
-            // this.refreshPageLabel();
             this.SliderPlus$slider.value = this.currentPage + 1;
+            this.RefreshData(this.currentPage);
         }
     }
 
@@ -333,9 +333,14 @@ export default class UITexasHistory extends UIBasePlus {
      */
     sliderChange(value: number) {
         if (this.currentPage == value) return;
-        this.RefreshData(value);
+        this.currentPage = value;
         this.refreshPageLabel();
         this.syncProgressBlue();
+    }
+
+    private sliderTouchEnd() {
+        this.RefreshPageButton();
+        this.SendClientMessagePublicReplay(this.currentPage);
     }
 
     refreshPageLabel() {
