@@ -123,40 +123,12 @@ export default class UINewDialogComponent extends BaseTouchBoard {
             this._actionCancel();
         }
     }
-    // maskFadeIn(style: any) {
-    //     let mask_opacity = style?.maskOpacity >= 0 ? style.maskOpacity : this.defaultStyle.maskOpacity;
-    //     if (style?.fade_switch_on == false || style?.main_fadeIn_active == false) {
-    //         this.mask.opacity = mask_opacity;
-    //         this.maskFadeInComplete();
-    //     } else {
-    //         this.mask.opacity = 1;
-    //         let duration = style?.mask_fadeIn_duration || this.defaultStyle.mask_fadeIn_duration;
-    //         let ease = style?.mask_fadeIn_ease || this.defaultStyle.mask_fadeIn_ease;
-    //         cc.tween(this.mask).to(duration, { opacity: mask_opacity }, ease).call(this.maskFadeInComplete, this).start();
-    //     }
-    // }
-    // mainFadeIn(style: any) {
-    //     this.top_block.active = true;
-    //     if (style?.fade_switch_on || style?.main_fadeIn_active == false) {
-    //         this.main.scale = 1;
-    //         this.mainFadeInComplete();
-    //     } else {
-    //         this.main.scale = 0;
-    //         let duration = style?.main_fadeIn_duration || this.defaultStyle.main_fadeIn_duration;
-    //         let ease = style?.main_fadeIn_ease || this.defaultStyle.main_fadeIn_ease;
-    //         cc.tween(this.main).to(duration, { scale: 1 }, ease).call(this.mainFadeInComplete, this).start();
-    //     }
-    // }
-    // maskFadeOut(style: any) {
-    //     this.mask.opacity = 1;
-    //     let duration = style?.mask_fadeOut_duration || this.defaultStyle.mask_fadeOut_duration;
-    //     let ease = style?.mask_fadeOut_ease || this.defaultStyle.mask_fadeOut_ease;
-    //     cc.tween(this.mask).to(duration, { opacity: 128 }, ease).start();
-    // }
-    // mainFadeOut(style: any) {
-    //     this.main.scale = 0;
-    //     let duration = style?.main_fadeOut_duration || this.defaultStyle.main_fadeOut_duration;
-    //     let ease = style?.main_fadeOut_ease || this.defaultStyle.main_fadeOut_ease;
-    //     cc.tween(this.main).to(duration, { scale: 1 }, ease).start();
-    // }
+
+    protected maskFadeIn(style: any) {
+        this.maskFadeInComplete();
+    }
+
+    protected mainFadeIn(style: any) {
+        this.mainFadeInComplete();
+    }
 }

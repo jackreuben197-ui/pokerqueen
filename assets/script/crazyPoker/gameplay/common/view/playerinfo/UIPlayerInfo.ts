@@ -11,10 +11,13 @@ import { CPErrorCode } from '../../../../../i18n/CPErrorCode';
 import { AntiCheatType } from '../../constant/AntiCheatType';
 import { RoomOriginType } from '../../constant/RoomOriginType';
 import UIDialogComponent, { UIDialogParam } from '../../../../../ui/dialog/UIDialogComponent';
-const { ccclass } = cc._decorator;
+const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIPlayerInfo extends UIBasePlus {
+
+    @property(cc.SpriteFrame)
+    toggleOnBg: cc.SpriteFrame = null;
     // 自动绑定 ($ 前缀节点)
     $panel_click: cc.Node = null;
     $HeadImgNode: cc.Node = null;
@@ -69,6 +72,8 @@ export default class UIPlayerInfo extends UIBasePlus {
     private _hasVideoTrack: boolean = false;
     private _isAudioClosed: boolean = false;
     private _isVideoClosed: boolean = false;
+    private static _audioClosedUsers: Set<number> = new Set();
+    private static _videoClosedUsers: Set<number> = new Set();
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -173,7 +178,7 @@ export default class UIPlayerInfo extends UIBasePlus {
             this.loadAudioVideoState();
         }
 
-        // 加载钻石余额（仅非自身，展示自己有多少钻石可赠送）
+        // 加载钻石余额（仅非自身且双方都在桌上时）
         if (!this._isSelf) {
             this.loadDiamondBalance();
         }
@@ -188,9 +193,32 @@ export default class UIPlayerInfo extends UIBasePlus {
 
     /** 根据是否自身隐藏/显示相关区域 */
     private refreshSelfState(): void {
-        // 道具操作区：仅对其他玩家显示
+        // 判断双方是否都在桌上：自己和目标玩家都在座位上
+        let bothInTable = false;
+        if (!this._isSelf) {
+            let gc = GameCache.Instance;
+            let curGame = gc.CurGame;
+            if (curGame && curGame.listSeat) {
+                let myInTable = false;
+                let targetInTable = false;
+                for (let i = 0; i < curGame.listSeat.length; i++) {
+                    let seat = curGame.listSeat[i];
+                    if (seat && seat.Player) {
+                        if (seat.Player.userID === gc.nUserId || seat.Player.userID === gc.userId) {
+                            myInTable = true;
+                        }
+                        if (seat.Player.userID === this._player.userID) {
+                            targetInTable = true;
+                        }
+                    }
+                }
+                bothInTable = myInTable && targetInTable;
+            }
+        }
+
+        // 道具操作区：仅对其他玩家且双方都在桌上时显示
         if (this.$PropOpNode) {
-            this.$PropOpNode.active = !this._isSelf;
+            this.$PropOpNode.active = !this._isSelf && bothInTable;
         }
 
         // 钻石余额显示：仅对其他玩家显示
@@ -198,10 +226,10 @@ export default class UIPlayerInfo extends UIBasePlus {
             this.$DiamondShow.active = !this._isSelf;
         }
 
-        // Gift tab（第 3 个 tab，index=2）：仅对其他玩家显示
+        // Gift tab（第 3 个 tab，index=2）：仅对其他玩家且双方都在桌上时显示
         let giftTabIndex = 2;
         if (this._tabNodes.length > giftTabIndex && this._tabNodes[giftTabIndex]) {
-            this._tabNodes[giftTabIndex].active = !this._isSelf;
+            this._tabNodes[giftTabIndex].active = !this._isSelf && bothInTable;
         }
     }
 
@@ -625,11 +653,12 @@ export default class UIPlayerInfo extends UIBasePlus {
     private loadMuteState(): void {
         if (!this._player) return;
         let gc = GameCache.Instance;
+        if (!gc.ClubID && !gc.TribeId) return;
         WWW.Instance.CommonAPI({
             web_class: WebUserMuteList,
             body: WebUserMuteList.Request({
-                club_id: gc.ClubID,
-                tribe_id: gc.ClubID,
+                club_id: gc.ClubID || undefined,
+                tribe_id: gc.TribeId || undefined,
                 user_ids: [this._player.userID]
             })
         }).then((res: any) => {
@@ -643,15 +672,19 @@ export default class UIPlayerInfo extends UIBasePlus {
     /** 禁言切换 */
     private click_chatClose(): void {
         if (!GameCache.Instance._isRoomManager || !this._player) return;
+        let gc = GameCache.Instance;
+        if (!gc.ClubID && !gc.TribeId) {
+            UIComponent.Instance.Toast('当前房间不支持禁言操作');
+            return;
+        }
         this._isChatMuted = !this._isChatMuted;
         this.refreshToggleVisual('chatCloseToggle', this._isChatMuted);
 
-        let gc = GameCache.Instance;
         WWW.Instance.CommonAPI({
             web_class: WebUserMute,
             body: WebUserMute.Request({
-                club_id: gc.ClubID,
-                tribe_id: gc.ClubID,
+                club_id: gc.ClubID || undefined,
+                tribe_id: gc.TribeId || undefined,
                 user_id: this._player.userID,
                 mute: this._isChatMuted
             })
@@ -740,10 +773,10 @@ export default class UIPlayerInfo extends UIBasePlus {
                 break;
             }
         }
-        this._hasAudioTrack = target ? target.hasAudio : false;
-        this._hasVideoTrack = target ? target.hasVideo : false;
-        this._isAudioClosed = false;
-        this._isVideoClosed = false;
+        this._hasAudioTrack = (target ? target.hasAudio : false) || UIPlayerInfo._audioClosedUsers.has(targetUid);
+        this._hasVideoTrack = (target ? target.hasVideo : false) || UIPlayerInfo._videoClosedUsers.has(targetUid);
+        this._isAudioClosed = UIPlayerInfo._audioClosedUsers.has(targetUid);
+        this._isVideoClosed = UIPlayerInfo._videoClosedUsers.has(targetUid);
         this.updateAudioVideoVisuals();
     }
 
@@ -756,9 +789,11 @@ export default class UIPlayerInfo extends UIBasePlus {
         if (audioNode) {
             if (this._hasAudioTrack) {
                 audioNode.opacity = 255;
+                this.setToggleBg(audioNode, this._isAudioClosed);
                 this.setNodeLabelString(audioNode, this._isAudioClosed ? '打开音频' : '关闭音频');
             } else {
                 audioNode.opacity = 128;
+                this.setToggleBg(audioNode, false);
                 this.setNodeLabelString(audioNode, '关闭音频');
             }
         }
@@ -768,9 +803,11 @@ export default class UIPlayerInfo extends UIBasePlus {
         if (videoNode) {
             if (this._hasVideoTrack) {
                 videoNode.opacity = 255;
+                this.setToggleBg(videoNode, this._isVideoClosed);
                 this.setNodeLabelString(videoNode, this._isVideoClosed ? '打开视频' : '关闭视频');
             } else {
                 videoNode.opacity = 128;
+                this.setToggleBg(videoNode, false);
                 this.setNodeLabelString(videoNode, '关闭视频');
             }
         }
@@ -781,6 +818,11 @@ export default class UIPlayerInfo extends UIBasePlus {
         if (!this._player || !this._hasAudioTrack) return;
         this._isAudioClosed = !this._isAudioClosed;
         AgoraManager.Instance.setRemoteAudioEnabled(!this._isAudioClosed, this._player.userID);
+        if (this._isAudioClosed) {
+            UIPlayerInfo._audioClosedUsers.add(this._player.userID);
+        } else {
+            UIPlayerInfo._audioClosedUsers.delete(this._player.userID);
+        }
         this.updateAudioVideoVisuals();
     }
 
@@ -789,6 +831,11 @@ export default class UIPlayerInfo extends UIBasePlus {
         if (!this._player || !this._hasVideoTrack) return;
         this._isVideoClosed = !this._isVideoClosed;
         AgoraManager.Instance.setRemoteVideoEnabled(!this._isVideoClosed, this._player.userID);
+        if (this._isVideoClosed) {
+            UIPlayerInfo._videoClosedUsers.add(this._player.userID);
+        } else {
+            UIPlayerInfo._videoClosedUsers.delete(this._player.userID);
+        }
         this.updateAudioVideoVisuals();
     }
 
@@ -822,13 +869,34 @@ export default class UIPlayerInfo extends UIBasePlus {
         if (!this.$OpButtonNode) return;
         let node = this.$OpButtonNode.getChildByName(name);
         if (!node) return;
-        // 优先使用 checkmark 子节点表示状态
-        let checkmark = node.getChildByName('checkmark');
-        if (checkmark) {
-            checkmark.active = isOn;
+        if (name === 'chatCloseToggle' || name === 'shieldToggle') {
+            let isMute = name === 'chatCloseToggle';
+            this.setNodeLabelString(node, isOn ? (isMute ? '取消禁言' : '取消屏蔽') : (isMute ? '禁言' : '屏蔽名字'));
+            this.setToggleBg(node, isOn);
         } else {
-            // 无 checkmark 时用透明度区分
-            node.opacity = isOn ? 255 : 150;
+            let checkmark = node.getChildByName('checkmark');
+            if (checkmark) {
+                checkmark.active = isOn;
+            } else {
+                node.opacity = isOn ? 255 : 150;
+            }
+        }
+    }
+
+    /** 切换按钮背景纹理：isOn=true 用 toggleOnBg，false 恢复原始 */
+    private setToggleBg(node: cc.Node, isOn: boolean): void {
+        let bg = node.getChildByName('background') || node;
+        let sprite = bg.getComponent(cc.Sprite);
+        if (!sprite) return;
+        if (isOn && this.toggleOnBg) {
+            if (!sprite['_origFrame']) sprite['_origFrame'] = sprite.spriteFrame;
+            sprite.spriteFrame = this.toggleOnBg;
+            sprite.type = cc.Sprite.Type.SLICED;
+        } else {
+            if (sprite['_origFrame']) {
+                sprite.spriteFrame = sprite['_origFrame'];
+                sprite['_origFrame'] = null;
+            }
         }
     }
 }
