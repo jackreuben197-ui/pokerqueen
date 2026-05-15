@@ -7,6 +7,7 @@ import UIComponent, { PrefabUI } from '../../ui/UIComponent';
 import { OutClipsData } from '../new_ui/UIBringOut';
 import TexasGame from '../texas/TexasGame';
 import { GameCache } from '../GameCache';
+import H5MsgMgr from '../../H5MsgMgr';
 const { ccclass, property } = cc._decorator;
 const LN = '[UI][UITexasMenu]';
 
@@ -196,6 +197,7 @@ export default class UITexasMenu extends UIBasePlus {
     }
 
     private _updateDisplay() {
+        this.btnInsure.node.active = this.game.insurance;
         if (this.game.UserSitdown()) {
             this.btnBet.node.active = true;
             this.btnHalfLeave.node.active = true;
@@ -338,7 +340,16 @@ export default class UITexasMenu extends UIBasePlus {
 
     click_insurance() {
         this.click_black();
-        UIComponent.open(UIDefine.UIInsurance, { type: 1, roomData: { room_id: GameCache.Instance.room_id, match_id: GameCache.Instance.match_id } });
+        H5MsgMgr.sendToH5('showPanel', 1, {
+            panelType: 'gameRule',
+            props: {
+                ruleType: 2,
+                gameInfo: {
+                    insurance_mode: this.game.insuranceMode || 0,
+                },
+            },
+        })
+        // UIComponent.open(UIDefine.UIInsurance, { type: 1, roomData: { room_id: GameCache.Instance.room_id, match_id: GameCache.Instance.match_id } });
     }
 
     click_setting() {
@@ -350,9 +361,20 @@ export default class UITexasMenu extends UIBasePlus {
 
     click_rule_tips() {
         this.click_black();
-        UIComponent.open(UIDefine.UITexasRule, null, {
-            parentUI: this.game.uirc.Common_Con
-        });
+        H5MsgMgr.sendToH5('showPanel', 1, {
+            panelType: 'gameRule',
+            props: {
+                ruleType: 1,
+                gameInfo: {
+                    game_type: GameCache.Instance.game_type || 0,
+                    poker_type: GameCache.Instance.poker_type || 0,
+                    room_critical_hit: GameCache.Instance.room_critical_hit || 0,
+                },
+            },
+        })
+        // UIComponent.open(UIDefine.UITexasRule, null, {
+        //     parentUI: this.game.uirc.Common_Con
+        // });
     }
 
     //设置自动上桌筹码
