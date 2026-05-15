@@ -2,7 +2,8 @@ import UIBasePlus from '../../../../../ui/UIBasePlus';
 import UIComponent from '../../../../../ui/UIComponent';
 import { UIDefine } from '../../../../../define/UIDefine';
 import { CPlayer } from '../../../../../game/CPlayer';
-import { WebOtherUserInfo, WebStatsOtherUserStats, WebRoomCenterRoomUserLeave, WebRoomCenterRoomUserStandUp, WebUserMute, WebUserMuteList, WebUserDiamondSend, WebUserDiamondsWallet, WWW } from '../../../../../net/https/WebRequest';
+import { WebOtherUserInfo, WebStatsOtherUserStats, WebRoomCenterRoomUserLeave, WebRoomCenterRoomUserStandUp, WebUserMute, WebUserMuteList, WebUserDiamondSend, WebUserDiamondsWallet, WebPropChatPropList, WebUserRemaRks, WWW } from '../../../../../net/https/WebRequest';
+import { WebOrgClubUserRemaRks } from '../../../../../net/https/web_request/WebRequestOrg';
 import WebImageHelper from '../../../../../helper/WebImageHelper';
 import AgoraManager from '../../../../../net/agora/AgoraManager';
 import { GameCache } from '../../../../../game/GameCache';
@@ -11,6 +12,12 @@ import { CPErrorCode } from '../../../../../i18n/CPErrorCode';
 import { AntiCheatType } from '../../constant/AntiCheatType';
 import { RoomOriginType } from '../../constant/RoomOriginType';
 import UIDialogComponent, { UIDialogParam } from '../../../../../ui/dialog/UIDialogComponent';
+import ProtocolAgency from '../../../../../net/websocket/ProtocolAgency';
+import { ProtocolCode } from '../../../../../net/websocket/ProtocolCode';
+import { ClientMessageBroadcastMsg } from '../../../../../protobuf/holdem/req_th_broadcast_msg_pb';
+import { Room, Def } from '../../../../../protobuf/holdem/define_pb';
+import { Broadcast } from '../../../../../net/websocket/ProtocolHoldemMessages';
+import TimeHelper from '../../../../../helper/TimeHelper';
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -18,6 +25,12 @@ export default class UIPlayerInfo extends UIBasePlus {
 
     @property(cc.SpriteFrame)
     toggleOnBg: cc.SpriteFrame = null;
+
+    // 扔道具 PropsID: CtEmoji2(6) * 100 = 600, 依次 +1
+    // 600=番茄, 601=花环, 602=亲吻, 603=大拇指, 604=干杯, 605=摸头,
+    // 606=鲨鱼, 607=抓鸡, 608=拳击, 609=撒钱, 610=鱼头, 611=棒球
+    private static readonly PROP_TYPE_BASE: number = Def.ConsumeType.CT_EMOJI_2 * 100; // 600
+
     // 自动绑定 ($ 前缀节点)
     $panel_click: cc.Node = null;
     $HeadImgNode: cc.Node = null;
@@ -32,6 +45,12 @@ export default class UIPlayerInfo extends UIBasePlus {
 
     private _headSprite: cc.Sprite = null;
     private _player: CPlayer = null;
+    private _dlgNode: cc.Node = null;
+
+    // 备注相关
+    private _playerNoteNode: cc.Node = null;
+    private _playerNoteLabel: cc.Label = null;
+    private _currentRemark: string = '';
 
     // Tab 相关
     private _tabNodes: cc.Node[] = [];
@@ -54,6 +73,7 @@ export default class UIPlayerInfo extends UIBasePlus {
 
     // 道具操作区
     $PropOpNode: cc.Node = null;
+    private _propListData: { payPrice: number; priceId: number }[] = [];
 
     // 钻石余额显示
     $DiamondShow: cc.Node = null;
@@ -82,16 +102,25 @@ export default class UIPlayerInfo extends UIBasePlus {
         // 手动查找无 $ 前缀的节点
         let dlg = this.node.getChildByName('PlayerInfoDlg');
         if (dlg) {
-            this._male = dlg.getChildByName('male');
-            this._female = dlg.getChildByName('female');
+            this._dlgNode = dlg;
             let playeridNode = dlg.getChildByName('playerid');
             this._playerid = playeridNode ? playeridNode.getComponent(cc.Label) : null;
+            // 阻止 PlayerInfoDlg 区域触摸事件冒泡，防止误触关闭
+            dlg.on(cc.Node.EventType.TOUCH_START, (e: cc.Event.EventTouch) => { e.stopPropagation(); });
+            dlg.on(cc.Node.EventType.TOUCH_END, (e: cc.Event.EventTouch) => { e.stopPropagation(); });
         }
+        // male/female 在 NickName 节点下面
+        if (this.cc_Label$NickName) {
+            this._male = this.cc_Label$NickName.node.getChildByName('male');
+            this._female = this.cc_Label$NickName.node.getChildByName('female');
+        }
+        this.initNoteNodes();
         this.initTabs();
         this.initDataNodes();
         this.initDiamondNodes();
         this.refreshDataDescriptions();
         this.initOpButtonEvents();
+        this.initPropNodes();
     }
 
     private initTabs(): void {
@@ -259,6 +288,163 @@ export default class UIPlayerInfo extends UIBasePlus {
         }
     }
 
+    // ─── 备注 ───
+
+    /** 初始化备注节点 */
+    private initNoteNodes(): void {
+        let nodeNode = this.$HeadImgNode ? this.$HeadImgNode.getChildByName('nodeNode') : null;
+        if (!nodeNode) return;
+        this._playerNoteNode = nodeNode.getChildByName('playerNote');
+        if (this._playerNoteNode) {
+            this._playerNoteLabel = this._playerNoteNode.getComponent(cc.Label);
+        }
+        let noteBtn = nodeNode.getChildByName('noteBtn');
+        if (noteBtn) {
+            this.bindClick(noteBtn, this.click_editNote);
+        }
+        // playerNote 文字区域也可点击编辑
+        if (this._playerNoteNode) {
+            this.bindClick(this._playerNoteNode, this.click_editNote);
+        }
+    }
+
+    /** 从备注列表 API 加载该用户的备注 */
+    private loadUserRemark(randomNum: number): void {
+        if (this._isSelf || !this._playerNoteLabel) return;
+        WWW.Instance.CommonAPI({ web_class: WebUserRemaRks }).then((res: any) => {
+            if (!cc.isValid(this.node) || !res?.data?.list) return;
+            for (let i = 0; i < res.data.list.length; i++) {
+                let item = res.data.list[i];
+                if (item.user_random_id === randomNum) {
+                    this._currentRemark = item.remark_name || '';
+                    this._playerNoteLabel.string = this._currentRemark || '点击添加备注';
+                    return;
+                }
+            }
+            // 没有备注
+            this._playerNoteLabel.string = '点击添加备注';
+        });
+    }
+
+    /** 点击备注按钮 / 文字区域：直接创建 DOM 输入框（web 端最可靠） */
+    private click_editNote(): void {
+        if (!this._player || typeof document === 'undefined') return;
+
+        // 防止重复弹出
+        if (document.getElementById('_remarkInputOverlay')) return;
+
+        let self = this;
+        let currentText = this._currentRemark;
+
+        // 创建半透明遮罩
+        let overlay = document.createElement('div');
+        overlay.id = '_remarkInputOverlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;' +
+            'background:rgba(0,0,0,0.5);z-index:10000;display:flex;align-items:center;justify-content:center;';
+
+        // 创建输入容器
+        let container = document.createElement('div');
+        container.style.cssText = 'background:#fff;border-radius:12px;padding:20px;width:280px;text-align:center;' +
+            'box-shadow:0 4px 20px rgba(0,0,0,0.3);';
+
+        // 标题
+        let title = document.createElement('div');
+        title.textContent = '编辑备注';
+        title.style.cssText = 'font-size:16px;font-weight:bold;color:#333;margin-bottom:12px;';
+
+        // 输入框
+        let input = document.createElement('input');
+        input.type = 'text';
+        input.value = currentText;
+        input.maxLength = 100;
+        input.placeholder = '请输入备注';
+        input.style.cssText = 'width:240px;padding:10px;font-size:14px;border:1px solid #ccc;' +
+            'border-radius:6px;outline:none;text-align:center;box-sizing:border-box;';
+        input.addEventListener('focus', function () { this.style.borderColor = '#7187FF'; });
+        input.addEventListener('blur', function () { this.style.borderColor = '#ccc'; });
+
+        // 按钮容器
+        let btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex;gap:10px;margin-top:16px;';
+
+        // 取消按钮
+        let cancelBtn = document.createElement('button');
+        cancelBtn.textContent = '取消';
+        cancelBtn.style.cssText = 'flex:1;padding:8px;font-size:14px;border:1px solid #ddd;' +
+            'border-radius:6px;background:#f5f5f5;color:#666;cursor:pointer;';
+
+        // 确认按钮
+        let confirmBtn = document.createElement('button');
+        confirmBtn.textContent = '保存';
+        confirmBtn.style.cssText = 'flex:1;padding:8px;font-size:14px;border:none;' +
+            'border-radius:6px;background:#7187FF;color:#fff;cursor:pointer;';
+
+        let saved = false;
+        let cleanup = function () {
+            if (overlay.parentNode) document.body.removeChild(overlay);
+        };
+        let doSave = function () {
+            if (saved) return;
+            saved = true;
+            let newText = input.value.trim();
+            cleanup();
+            if (newText !== self._currentRemark) {
+                self.saveUserRemark(newText);
+            }
+        };
+
+        cancelBtn.addEventListener('click', function (e) { e.stopPropagation(); cleanup(); });
+        confirmBtn.addEventListener('click', function (e) { e.stopPropagation(); doSave(); });
+        input.addEventListener('keydown', function (e) {
+            if ((e as KeyboardEvent).key === 'Enter') doSave();
+            if ((e as KeyboardEvent).key === 'Escape') cleanup();
+        });
+        // 点击遮罩区域关闭（不关闭输入框本身）
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) cleanup();
+        });
+
+        btnRow.appendChild(cancelBtn);
+        btnRow.appendChild(confirmBtn);
+        container.appendChild(title);
+        container.appendChild(input);
+        container.appendChild(btnRow);
+        overlay.appendChild(container);
+        document.body.appendChild(overlay);
+
+        // 在同一用户手势事件链中 focus，浏览器允许
+        input.focus();
+        input.select();
+    }
+
+    /** 保存备注到服务端 */
+    private saveUserRemark(newText: string): void {
+        let gc = GameCache.Instance;
+        WWW.Instance.CommonAPI({
+            web_class: WebOrgClubUserRemaRks,
+            body: {
+                club_id: gc.ClubID || 0,
+                user_id: this._player.userID,
+                remark_name: newText,
+                remark_desc: ''
+            }
+        }).then((res: any) => {
+            if (!cc.isValid(this.node)) return;
+            if (res && res.code === 0) {
+                this._currentRemark = newText;
+                if (this._playerNoteLabel) {
+                    this._playerNoteLabel.string = newText || '点击添加备注';
+                }
+                UIComponent.Instance.Toast('备注修改成功');
+            } else {
+                if (this._playerNoteLabel) {
+                    this._playerNoteLabel.string = this._currentRemark || '点击添加备注';
+                }
+                UIComponent.Instance.Toast((res && res.message) || '备注修改失败');
+            }
+        });
+    }
+
     /** 请求用户详细信息 */
     private reqUserInfo(userid: number) {
         WWW.Instance.CommonAPI({
@@ -290,6 +476,8 @@ export default class UIPlayerInfo extends UIBasePlus {
         if (this._playerid) {
             this._playerid.string = `${data.random_num}`;
         }
+        // 加载备注
+        this.loadUserRemark(data.random_num);
     }
 
     /** 初始化 Data 面板 LabelNode 引用 */
@@ -347,7 +535,7 @@ export default class UIPlayerInfo extends UIBasePlus {
             }
 
             // 绑定点击事件
-            this.bindClick(node, () => this.click_sendDiamond(amount));
+            this.bindClick(node, () => this.click_sendDiamond(amount, node));
             this._diamondNodes.push({ node: node, amount: amount });
         }
     }
@@ -730,8 +918,14 @@ export default class UIPlayerInfo extends UIBasePlus {
     // ─── 送钻石 ───
 
     /** 赠送钻石 */
-    private click_sendDiamond(amount: number): void {
+    private click_sendDiamond(amount: number, clickNode: cc.Node): void {
         if (!this._player) return;
+        // 检查剩余次数
+        if (this._diamondConfig && this._diamondSentCount >= this._diamondConfig.limit_time_pre_day) {
+            UIComponent.Instance.Toast(i18nMgr.Get('GiftDiamondError'));
+            return;
+        }
+        this.playClickScale(clickNode);
         WWW.Instance.CommonAPI({
             web_class: WebUserDiamondSend,
             body: WebUserDiamondSend.Request({
@@ -744,7 +938,8 @@ export default class UIPlayerInfo extends UIBasePlus {
             if (res && res.code === 0) {
                 this._diamondSentCount++;
                 this.refreshDiamondNotice();
-                UIComponent.close(UIDefine.UIPlayerInfo);
+                this.loadDiamondBalance();
+                UIComponent.Instance.Toast(`成功赠送给${this._player.nick} ${amount}个钻石`);
             } else {
                 UIComponent.Instance.Toast(
                     (res && res.message) || i18nMgr.Get('GiftDiamondError')
@@ -848,6 +1043,114 @@ export default class UIPlayerInfo extends UIBasePlus {
         if (label) label.string = text;
     }
 
+    // ─── 扔道具 ───
+
+    /** 初始化道具节点点击事件 */
+    private initPropNodes(): void {
+        if (!this.$PropOpNode) return;
+        for (let i = 1; i <= 12; i++) {
+            let node = this.$PropOpNode.getChildByName('$propOp_' + i);
+            if (node) {
+                let propIndex = i;
+                let propNode = node; // 闭包捕获
+                this.bindClick(node, () => this.click_prop(propIndex, propNode));
+            }
+        }
+        this.loadPropList();
+    }
+
+    /** 从服务端加载扔道具列表，更新 costNum 和 priceId */
+    private loadPropList(): void {
+        WWW.Instance.CommonAPI({
+            web_class: WebPropChatPropList,
+            body: WebPropChatPropList.Request({
+                prop_type: 4,
+                prop_types: [4],
+                offset: 0,
+                limit: 20
+            })
+        }).then((res: any) => {
+            if (!cc.isValid(this.node) || !res || res.code !== 0 || !res.data) return;
+            let list = res.data.list;
+            if (!list || !list.length) return;
+            this._propListData = [];
+            for (let i = 0; i < list.length; i++) {
+                let item = list[i];
+                let payPrice = item.pay_price || 0;
+                let priceId = item.price_id || Def.ConsumeType.CT_EMOJI_2;
+                this._propListData.push({ payPrice: payPrice, priceId: priceId });
+
+                // 更新对应道具节点的 costNum Label
+                let propIndex = i + 1; // $propOp_1 ~ $propOp_12
+                let propNode = this.$PropOpNode.getChildByName('$propOp_' + propIndex);
+                if (propNode) {
+                    let diamondCost = propNode.getChildByName('diamondCost');
+                    let costNum = diamondCost ? diamondCost.getChildByName('costNum') : null;
+                    if (costNum) {
+                        let label = costNum.getComponent(cc.Label);
+                        if (label && payPrice > 0) {
+                            label.string = '' + payPrice;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /** 使用道具（对目标玩家发送扔道具广播） */
+    private click_prop(propIndex: number, clickNode: cc.Node): void {
+        if (!this._player) return;
+        let gc = GameCache.Instance;
+        this.playClickScale(clickNode);
+
+        // 获取该道具的服务端 priceId 作为 consumeType，默认 CT_EMOJI_2
+        let consumeType = Def.ConsumeType.CT_EMOJI_2;
+        if (this._propListData[propIndex - 1]) {
+            consumeType = this._propListData[propIndex - 1].priceId;
+        }
+
+        // 构造内层广播消息 JSON
+        let propType = UIPlayerInfo.PROP_TYPE_BASE + (propIndex - 1); // 600 + offset
+        let broadcastMsgData = JSON.stringify({
+            name: gc.nick,
+            target_user_id: this._player.userID,
+            user_id: gc.nUserId,
+            type: propType,
+            msgType: 1,
+            time: TimeHelper.Now,
+            sex: gc.sex,
+            headUrl: gc.headPic
+        });
+
+        // 外层包装
+        let extraJson = Broadcast.Request({
+            code: 10001,
+            data: broadcastMsgData
+        });
+
+        // 构造 protobuf 消息
+        let msg = new ClientMessageBroadcastMsg();
+        let room = new Room();
+        room.setRoomId(gc.room_id);
+        room.setMatchId(gc.match_id);
+        msg.setRoom(room);
+        msg.setConsume(consumeType);
+        msg.setMsgType(Def.BroadcastMsgType.BC_MSG_THROW);
+        let extraBytes = new Uint8Array(Array.from(extraJson).map(c => c.charCodeAt(0)));
+        msg.setExtra(extraBytes);
+        msg.setMessage('');
+
+        // 发送
+        ProtocolAgency.Send<ClientMessageBroadcastMsg.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_BroadcastMsg,
+            RoomID: gc.room_id,
+            MatchID: gc.match_id,
+            Body: msg.toObject()
+        });
+
+        UIComponent.Instance.Toast(`使用道具成功`);
+    }
+
     // ─── 举报 ───
 
     /** 举报玩家 */
@@ -898,5 +1201,18 @@ export default class UIPlayerInfo extends UIBasePlus {
                 sprite['_origFrame'] = null;
             }
         }
+    }
+
+    /** 点击节点缩放动画：放大后恢复，完成后关闭面板 */
+    private playClickScale(node: cc.Node): void {
+        if (!node || !node.isValid) return;
+        let originScale = node.scale;
+        cc.tween(node)
+            .to(0.075, { scale: originScale * 1.2 })
+            .to(0.075, { scale: originScale })
+            .call(() => {
+                UIComponent.close(UIDefine.UIPlayerInfo);
+            })
+            .start();
     }
 }
