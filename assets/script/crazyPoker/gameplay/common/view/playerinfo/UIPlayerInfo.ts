@@ -65,6 +65,13 @@ export default class UIPlayerInfo extends UIBasePlus {
     // Data 面板相关
     private _dataLabels: { des: cc.Label; num: cc.Label; node: cc.Node }[] = [];
 
+    // AllIn 面板相关
+    private _allInLabels: { des: cc.Label; num: cc.Label; node: cc.Node }[] = [];
+    private _radarGfx: cc.Graphics = null;
+    private _radarNode: cc.Node = null;
+    private _radarSize: number = 80;       // 雷达图半径
+    private _radarGrids: number = 4;       // 网格层数
+
     // Diamond 面板相关
     private _diamondNodes: { node: cc.Node; amount: number }[] = [];
     private _noticeLabel: cc.Label = null;
@@ -123,6 +130,7 @@ export default class UIPlayerInfo extends UIBasePlus {
         this.initNoteNodes();
         this.initTabs();
         this.initDataNodes();
+        this.initAllInNodes();
         this.initDiamondNodes();
         this.refreshDataDescriptions();
         this.initOpButtonEvents();
@@ -465,6 +473,153 @@ export default class UIPlayerInfo extends UIBasePlus {
         }
     }
 
+    /** 初始化 AllIn 面板 LabelNode 和雷达图引用 */
+    private initAllInNodes(): void {
+        if (!this.$dataTabNode) return;
+        let allInNode = this.$dataTabNode.getChildByName('allInNode');
+        if (!allInNode) return;
+
+        // 按雷达图方位顺序：上(Positive) 左(Passive) 右(Behind) 下(Leading)
+        let labelNames = ['LabelPositive', 'LabelPassive', 'LabelBehind', 'LabelLeading'];
+        this._allInLabels = [];
+        for (let i = 0; i < labelNames.length; i++) {
+            let labelNode = allInNode.getChildByName(labelNames[i]);
+            if (!labelNode) continue;
+            let desNode = labelNode.getChildByName('des');
+            let numNode = labelNode.getChildByName('num');
+            this._allInLabels.push({
+                des: desNode ? desNode.getComponent(cc.Label) : null,
+                num: numNode ? numNode.getComponent(cc.Label) : null,
+                node: labelNode
+            });
+        }
+
+        // 雷达图节点
+        this._radarNode = allInNode.getChildByName('radarChartNode');
+        if (this._radarNode) {
+            this._radarGfx = this._radarNode.getComponent(cc.Graphics);
+            if (!this._radarGfx) {
+                this._radarGfx = this._radarNode.addComponent(cc.Graphics);
+            }
+            // 读取节点大小作为雷达图尺寸
+            this._radarSize = Math.min(this._radarNode.width, this._radarNode.height) / 2 * 0.85;
+        }
+    }
+
+    /** 刷新 AllIn 面板数据（对齐 Unity：整数百分比，截断不四舍五入） */
+    private refreshAllInPanel(data: any): void {
+        let allIn = data.allin_data;
+
+        // 顺序：Positive(主动) Passive(被动) Behind(落后) Leading(领先)
+        let items = [
+            { count: allIn ? (allIn.active_count || 0) : 0, profit: allIn ? (allIn.active_profit_count || 0) : 0 },
+            { count: allIn ? (allIn.passive_count || 0) : 0, profit: allIn ? (allIn.passive_profit_count || 0) : 0 },
+            { count: allIn ? (allIn.behind_count || 0) : 0, profit: allIn ? (allIn.behind_profit_count || 0) : 0 },
+            { count: allIn ? (allIn.ahead_count || 0) : 0, profit: allIn ? (allIn.ahead_profit_count || 0) : 0 }
+        ];
+
+        // 计算百分比（0~1 范围）
+        let percents: number[] = [];
+        for (let i = 0; i < this._allInLabels.length; i++) {
+            let item = items[i] || { count: 0, profit: 0 };
+            let pct = 0;
+            if (item.count > 0) {
+                pct = Math.trunc(item.profit / item.count * 100);
+                if (this._allInLabels[i] && this._allInLabels[i].num) {
+                    this._allInLabels[i].num.string = pct + '%';
+                }
+            } else {
+                if (this._allInLabels[i] && this._allInLabels[i].num) {
+                    this._allInLabels[i].num.string = '0%';
+                }
+            }
+            percents.push(pct / 100);
+        }
+
+        // 绘制雷达图
+        this.drawRadarChart(percents);
+    }
+
+    /**
+     * 绘制菱形雷达图
+     * 数据顺序 percents[0~3]：Positive(主动) Passive(被动) Behind(落后) Leading(领先)
+     * 绘制顺时针：上(Positive) → 右(Behind) → 下(Leading) → 左(Passive)
+     */
+    private drawRadarChart(percents: number[]): void {
+        if (!this._radarGfx) return;
+        let gfx = this._radarGfx;
+        gfx.clear();
+
+        let r = this._radarSize;
+        // 顺时针绘制顺序：上(90°) → 右(0°) → 下(270°) → 左(180°)
+        // 对应数据索引：[0:Positive, 2:Behind, 3:Leading, 1:Passive]
+        let drawOrder = [0, 2, 3, 1];
+        let angles = [90, 0, 270, 180];
+
+        // 计算轴上顶点（顺时针排列）
+        let axisPoints: cc.Vec2[] = [];
+        for (let i = 0; i < 4; i++) {
+            let rad = angles[i] * Math.PI / 180;
+            axisPoints.push(cc.v2(Math.cos(rad) * r, Math.sin(rad) * r));
+        }
+
+        // 1) 画网格层（由内到外，外侧粗、内侧细）
+        gfx.strokeColor = cc.Color.WHITE;
+        for (let g = 1; g <= this._radarGrids; g++) {
+            let scale = g / this._radarGrids;
+            let isOuter = (g === this._radarGrids);
+            gfx.lineWidth = isOuter ? 6 : 3;
+            gfx.moveTo(axisPoints[0].x * scale, axisPoints[0].y * scale);
+            for (let i = 1; i < 4; i++) {
+                gfx.lineTo(axisPoints[i].x * scale, axisPoints[i].y * scale);
+            }
+            gfx.close();
+            gfx.stroke();
+        }
+
+        // 2) 画轴线（从中心到四个顶点）
+        gfx.strokeColor = cc.Color.WHITE;
+        gfx.lineWidth = 3;
+        for (let i = 0; i < 4; i++) {
+            gfx.moveTo(0, 0);
+            gfx.lineTo(axisPoints[i].x, axisPoints[i].y);
+            gfx.stroke();
+        }
+
+        // 3) 画数据区域：按 drawOrder 取对应数据值映射到顺时针顶点
+        let dataPoints: cc.Vec2[] = [];
+        for (let i = 0; i < 4; i++) {
+            let p = percents[drawOrder[i]] || 0;
+            dataPoints.push(cc.v2(axisPoints[i].x * p, axisPoints[i].y * p));
+        }
+
+        // 填充
+        gfx.fillColor = new cc.Color(200, 200, 200, 160);
+        gfx.moveTo(dataPoints[0].x, dataPoints[0].y);
+        for (let i = 1; i < 4; i++) {
+            gfx.lineTo(dataPoints[i].x, dataPoints[i].y);
+        }
+        gfx.close();
+        gfx.fill();
+
+        // 描边
+        gfx.strokeColor = cc.Color.WHITE;
+        gfx.lineWidth = 6;
+        gfx.moveTo(dataPoints[0].x, dataPoints[0].y);
+        for (let i = 1; i < 4; i++) {
+            gfx.lineTo(dataPoints[i].x, dataPoints[i].y);
+        }
+        gfx.close();
+        gfx.stroke();
+
+        // 4) 画数据顶点圆点
+        gfx.fillColor = new cc.Color(114, 135, 255, 255);
+        for (let i = 0; i < 4; i++) {
+            gfx.circle(dataPoints[i].x, dataPoints[i].y, 3);
+            gfx.fill();
+        }
+    }
+
     /** 初始化 Diamond 面板：读取档位金额、更新 Label、绑定点击 */
     private initDiamondNodes(): void {
         if (!this.$dataTabNode) return;
@@ -609,6 +764,8 @@ export default class UIPlayerInfo extends UIBasePlus {
         } else {
             this.refreshRegularData(data);
         }
+        // AllIn 数据刷新
+        this.refreshAllInPanel(data);
     }
 
     /** 刷新 MTT 统计数据 (5项, 第6项隐藏) */
