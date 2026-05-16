@@ -7,6 +7,7 @@ import { WebOrgClubUserRemaRks } from '../../../../../net/https/web_request/WebR
 import WebImageHelper from '../../../../../helper/WebImageHelper';
 import AgoraManager from '../../../../../net/agora/AgoraManager';
 import { GameCache } from '../../../../../game/GameCache';
+import GC from '../../../../../frame/GameControl';
 import { i18nMgr } from '../../../../../i18n/i18nMgr';
 import { CPErrorCode } from '../../../../../i18n/CPErrorCode';
 import { AntiCheatType } from '../../constant/AntiCheatType';
@@ -287,14 +288,8 @@ export default class UIPlayerInfo extends UIBasePlus {
             index = 0;
         }
         this._tabIndex = index;
-        // 更新 tab 选中状态：下划线 + 颜色
-        for (let i = 0; i < this._tabLabels.length; i++) {
-            let label = this._tabLabels[i];
-            if (label) {
-                label.node.color = (i === index)
-                    ? new cc.Color(255, 255, 255, 255)
-                    : new cc.Color(150, 150, 150, 255);
-            }
+        // 更新 tab 选中状态：下划线显示/隐藏，颜色保持白色
+        for (let i = 0; i < this._underlineNodes.length; i++) {
             if (this._underlineNodes[i]) {
                 this._underlineNodes[i].active = (i === index);
             }
@@ -671,7 +666,10 @@ export default class UIPlayerInfo extends UIBasePlus {
             fee_rate: cfg.fee_rate || 0,
             limit_time_pre_day: cfg.limit_time_pre_day || 0
         };
-        this._diamondSentCount = 0;
+        // 从当前用户信息中读取今日已赠送次数
+        let userInfo = GC.data?.user?.info;
+        let todaySent = (userInfo as any)?._msg?.user_today_diamond_send_time || 0;
+        this._diamondSentCount = todaySent;
         this.refreshDiamondNotice();
     }
 
@@ -1061,13 +1059,128 @@ export default class UIPlayerInfo extends UIBasePlus {
                 this._diamondSentCount++;
                 this.refreshDiamondNotice();
                 this.loadDiamondBalance();
-                UIComponent.Instance.Toast(`成功赠送给${this._player.nick} ${amount}个钻石`);
+                // 播放赠送方和接收方的钻石飞行动画
+                this.playDiamondFlyAnimation(amount);
+            } else if (res && res.code === 20124) {
+                // 次数不足（今日赠送次数已用完）
+                this._diamondSentCount = this._diamondConfig ? this._diamondConfig.limit_time_pre_day : 999;
+                this.refreshDiamondNotice();
+                UIComponent.Instance.Toast(i18nMgr.Get('GiftDiamondError'));
             } else {
                 UIComponent.Instance.Toast(
                     (res && res.message) || i18nMgr.Get('GiftDiamondError')
                 );
             }
         });
+    }
+
+    /** 播放赠送/接收钻石飞行动画 */
+    private playDiamondFlyAnimation(amount: number): void {
+        let game = GameCache.Instance?.CurGame;
+        if (!game || !game.listSeat) return;
+
+        // 赠送方（当前玩家）
+        let myUserId = game.mainPlayer?.userID;
+        let senderSeat = myUserId ? game.GetSeatByUserId(myUserId) : null;
+        // 接收方（被查看的玩家）
+        let receiverSeat = this._player ? game.GetSeatByUserId(this._player.userID) : null;
+
+        if (!senderSeat || !receiverSeat) return;
+        if (!senderSeat.uirc?.Frame_Head || !receiverSeat.uirc?.Frame_Head) return;
+
+        let parentNode = game.uirc?.seats_content;
+        if (!parentNode || !cc.isValid(parentNode)) return;
+
+        let senderWorldPos = senderSeat.uirc.Frame_Head.parent.convertToWorldSpaceAR(senderSeat.uirc.Frame_Head.position);
+        let receiverWorldPos = receiverSeat.uirc.Frame_Head.parent.convertToWorldSpaceAR(receiverSeat.uirc.Frame_Head.position);
+
+        // 同时加载两个 prefab
+        cc.resources.load('effect/diamondFly', cc.Prefab, (err, flyPrefab: cc.Prefab) => {
+            if (err) { cc.warn('[UIPlayerInfo] diamondFly load failed:', err.message); return; }
+
+            cc.resources.load('effect/DiamondIcon', cc.Prefab, (err2, iconPrefab: cc.Prefab) => {
+                if (err2) { cc.warn('[UIPlayerInfo] DiamondIcon load failed:', err2.message); return; }
+
+                cc.resources.load('effect/diamondSpine', cc.Prefab, (err3, spinePrefab: cc.Prefab) => {
+                    if (err3) { cc.warn('[UIPlayerInfo] diamondSpine load failed:', err3.message); return; }
+
+                    // 1) 赠送方：立即播放 -amount 飞行动画
+                    this.spawnDiamondFlyNode(flyPrefab, parentNode, senderWorldPos, `-${amount}`);
+
+                    // 2) 钻石图标从赠送方头像飞到接收方头像（900ms）
+                    let icon = cc.instantiate(iconPrefab);
+                    icon.parent = parentNode;
+                    let startLocal = parentNode.convertToNodeSpaceAR(senderWorldPos);
+                    let endLocal = parentNode.convertToNodeSpaceAR(receiverWorldPos);
+                    icon.setPosition(startLocal);
+
+                    cc.tween(icon)
+                        .to(0.9, { position: endLocal }, { easing: 'quadInOut' })
+                        .call(() => {
+                            if (!cc.isValid(this.node)) return;
+                            // 3) 先播放 spine 特效
+                            let receiverLocal = parentNode.convertToNodeSpaceAR(receiverWorldPos);
+                            this.playSpineEffect(spinePrefab, parentNode, receiverLocal);
+                            // 4) 再播放 +amount 飞行动画（层级在 spine 之上）
+                            this.spawnDiamondFlyNode(flyPrefab, parentNode, receiverWorldPos, `+${amount}`);
+                            if (cc.isValid(icon)) icon.destroy();
+                        })
+                        .start();
+                });
+            });
+        });
+    }
+
+    /** 在目标位置播放 spine 特效，播完后自动销毁 */
+    private playSpineEffect(prefab: cc.Prefab, parentNode: cc.Node, localPos: cc.Vec3): void {
+        let node = cc.instantiate(prefab);
+        if (!node) return;
+        node.parent = parentNode;
+        node.setPosition(localPos);
+
+        let skeleton = node.getComponent(sp.SkeletonAnimation);
+        if (skeleton) {
+            skeleton.setCompleteListener(() => {
+                if (cc.isValid(node)) node.destroy();
+            });
+        } else {
+            // 没有 SkeletonAnimation 组件，2秒后兜底销毁
+            this.scheduleOnce(() => { if (cc.isValid(node)) node.destroy(); }, 2);
+        }
+    }
+
+    /** 生成一个钻石飞行节点并播放上浮淡出动画 */
+    private spawnDiamondFlyNode(prefab: cc.Prefab, parentNode: cc.Node, worldPos: cc.Vec3, text: string): void {
+        let node = cc.instantiate(prefab);
+        if (!node) return;
+
+        // 设置 diamondNum 文字
+        let numLabel = node.getChildByName('diamondNum');
+        if (numLabel) {
+            let label = numLabel.getComponent(cc.Label);
+            if (label) label.string = text;
+        }
+
+        // +amount 用绿色，-amount 用红色（prefab 默认红色）
+        if (text.startsWith('+') && numLabel) {
+            numLabel.color = cc.color(0, 255, 100, 255);
+        }
+
+        // 添加到父节点，设置世界坐标
+        node.parent = parentNode;
+        let localPos = parentNode.convertToNodeSpaceAR(worldPos);
+        node.setPosition(localPos);
+
+        // 阶段1 (0.4s): 上浮 150px，easeOut
+        // 阶段2 (0.9s): 继续上浮至总共 278px + 淡出
+        let finalY = localPos.y + 278;
+        cc.tween(node)
+            .to(0.4, { y: localPos.y + 150 }, { easing: 'sineOut' })
+            .to(0.9, { opacity: 0, y: finalY })
+            .call(() => {
+                if (cc.isValid(node)) node.destroy();
+            })
+            .start();
     }
 
     // ─── 音视频 ───
