@@ -2,7 +2,7 @@ import UIBasePlus from '../../../../../ui/UIBasePlus';
 import UIComponent from '../../../../../ui/UIComponent';
 import { UIDefine } from '../../../../../define/UIDefine';
 import { CPlayer } from '../../../../../game/CPlayer';
-import { WebOtherUserInfo, WebStatsOtherUserStats, WebRoomCenterRoomUserLeave, WebRoomCenterRoomUserStandUp, WebUserMute, WebUserMuteList, WebUserDiamondSend, WebUserDiamondsWallet, WebPropChatPropList, WebUserRemaRks, WWW } from '../../../../../net/https/WebRequest';
+import { WebOtherUserInfo, WebStatsOtherUserStats, WebRoomCenterRoomUserLeave, WebRoomCenterRoomUserStandUp, WebUserMute, WebUserMuteList, WebUserDiamondSend, WebUserDiamondsWallet, WebPropChatPropList, WWW } from '../../../../../net/https/WebRequest';
 import { WebOrgClubUserRemaRks } from '../../../../../net/https/web_request/WebRequestOrg';
 import WebImageHelper from '../../../../../helper/WebImageHelper';
 import AgoraManager from '../../../../../net/agora/AgoraManager';
@@ -51,6 +51,9 @@ export default class UIPlayerInfo extends UIBasePlus {
     private _playerNoteNode: cc.Node = null;
     private _playerNoteLabel: cc.Label = null;
     private _currentRemark: string = '';
+    private _noteEditBox: cc.EditBox = null;
+    private _noteBtn: cc.Node = null;
+    private _dbUserId: number = 0;  // 服务端数据库 user_id（区别于 CPlayer.userID 的 random_num）
 
     // Tab 相关
     private _tabNodes: cc.Node[] = [];
@@ -86,6 +89,9 @@ export default class UIPlayerInfo extends UIBasePlus {
     private _isChatMuted: boolean = false;
     private _isShielded: boolean = false;
     private static _shieldNameList: Set<number> = new Set();
+
+    // 备注本地缓存（保存用 club 接口，加载用 user 接口，数据源不同，本地兜底）
+    private static _savedRemarks: Map<number, string> = new Map();
 
     // 音视频 Toggle 状态
     private _hasAudioTrack: boolean = false;
@@ -172,6 +178,11 @@ export default class UIPlayerInfo extends UIBasePlus {
 
     onShow(param?: any): void {
         super.onShow(param);
+        // 每次打开都确保 noteEditBox 隐藏（防止 prefab 默认 active 或缓存复用时残留状态）
+        if (this._noteEditBox) this._noteEditBox.node.active = false;
+        if (this._playerNoteNode) this._playerNoteNode.active = true;
+        if (this._noteBtn) this._noteBtn.active = true;
+
         if (!param) return;
         this._player = param as CPlayer;
 
@@ -292,139 +303,76 @@ export default class UIPlayerInfo extends UIBasePlus {
 
     /** 初始化备注节点 */
     private initNoteNodes(): void {
-        let nodeNode = this.$HeadImgNode ? this.$HeadImgNode.getChildByName('nodeNode') : null;
-        if (!nodeNode) return;
-        this._playerNoteNode = nodeNode.getChildByName('playerNote');
+        let noteNode = this.$HeadImgNode ? this.$HeadImgNode.getChildByName('noteNode') : null;
+        if (!noteNode) return;
+        this._playerNoteNode = noteNode.getChildByName('playerNote');
         if (this._playerNoteNode) {
             this._playerNoteLabel = this._playerNoteNode.getComponent(cc.Label);
         }
-        let noteBtn = nodeNode.getChildByName('noteBtn');
-        if (noteBtn) {
-            this.bindClick(noteBtn, this.click_editNote);
+        this._noteBtn = noteNode.getChildByName('noteBtn');
+        if (this._noteBtn) {
+            this.bindClick(this._noteBtn, this.click_editNote);
         }
         // playerNote 文字区域也可点击编辑
         if (this._playerNoteNode) {
             this.bindClick(this._playerNoteNode, this.click_editNote);
         }
-    }
-
-    /** 从备注列表 API 加载该用户的备注 */
-    private loadUserRemark(randomNum: number): void {
-        if (this._isSelf || !this._playerNoteLabel) return;
-        WWW.Instance.CommonAPI({ web_class: WebUserRemaRks }).then((res: any) => {
-            if (!cc.isValid(this.node) || !res?.data?.list) return;
-            for (let i = 0; i < res.data.list.length; i++) {
-                let item = res.data.list[i];
-                if (item.user_random_id === randomNum) {
-                    this._currentRemark = item.remark_name || '';
-                    this._playerNoteLabel.string = this._currentRemark || '点击添加备注';
-                    return;
-                }
+        // noteEditBox: 初始隐藏，编辑完成时回调
+        let noteEditBoxNode = noteNode.getChildByName('noteEditBox');
+        if (noteEditBoxNode) {
+            noteEditBoxNode.active = false;
+            this._noteEditBox = noteEditBoxNode.getComponent(cc.EditBox);
+            if (this._noteEditBox) {
+                noteEditBoxNode.on('editing-did-ended', this.onNoteEditEnded, this);
             }
-            // 没有备注
-            this._playerNoteLabel.string = '点击添加备注';
-        });
+        }
     }
 
-    /** 点击备注按钮 / 文字区域：直接创建 DOM 输入框（web 端最可靠） */
+    /** 点击备注按钮 / 文字区域：显示 EditBox 开始编辑 */
     private click_editNote(): void {
-        if (!this._player || typeof document === 'undefined') return;
+        if (!this._player || !this._noteEditBox) return;
 
-        // 防止重复弹出
-        if (document.getElementById('_remarkInputOverlay')) return;
+        let editBoxNode = this._noteEditBox.node;
+        // 隐藏 playerNote 和 noteBtn，显示 EditBox
+        if (this._playerNoteNode) this._playerNoteNode.active = false;
+        if (this._noteBtn) this._noteBtn.active = false;
+        editBoxNode.active = true;
 
-        let self = this;
-        let currentText = this._currentRemark;
+        // 填入当前备注文字作为默认值
+        this._noteEditBox.string = this._currentRemark;
+        this._noteEditBox.focus();
+    }
 
-        // 创建半透明遮罩
-        let overlay = document.createElement('div');
-        overlay.id = '_remarkInputOverlay';
-        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;' +
-            'background:rgba(0,0,0,0.5);z-index:10000;display:flex;align-items:center;justify-content:center;';
+    /** EditBox 编辑结束回调：保存备注并恢复显示 */
+    private onNoteEditEnded(editBox: cc.EditBox): void {
+        let newText = editBox.string.trim();
 
-        // 创建输入容器
-        let container = document.createElement('div');
-        container.style.cssText = 'background:#fff;border-radius:12px;padding:20px;width:280px;text-align:center;' +
-            'box-shadow:0 4px 20px rgba(0,0,0,0.3);';
+        // 隐藏 EditBox，恢复 playerNote 和 noteBtn 显示
+        editBox.node.active = false;
+        if (this._playerNoteNode) this._playerNoteNode.active = true;
+        if (this._noteBtn) this._noteBtn.active = true;
 
-        // 标题
-        let title = document.createElement('div');
-        title.textContent = '编辑备注';
-        title.style.cssText = 'font-size:16px;font-weight:bold;color:#333;margin-bottom:12px;';
-
-        // 输入框
-        let input = document.createElement('input');
-        input.type = 'text';
-        input.value = currentText;
-        input.maxLength = 100;
-        input.placeholder = '请输入备注';
-        input.style.cssText = 'width:240px;padding:10px;font-size:14px;border:1px solid #ccc;' +
-            'border-radius:6px;outline:none;text-align:center;box-sizing:border-box;';
-        input.addEventListener('focus', function () { this.style.borderColor = '#7187FF'; });
-        input.addEventListener('blur', function () { this.style.borderColor = '#ccc'; });
-
-        // 按钮容器
-        let btnRow = document.createElement('div');
-        btnRow.style.cssText = 'display:flex;gap:10px;margin-top:16px;';
-
-        // 取消按钮
-        let cancelBtn = document.createElement('button');
-        cancelBtn.textContent = '取消';
-        cancelBtn.style.cssText = 'flex:1;padding:8px;font-size:14px;border:1px solid #ddd;' +
-            'border-radius:6px;background:#f5f5f5;color:#666;cursor:pointer;';
-
-        // 确认按钮
-        let confirmBtn = document.createElement('button');
-        confirmBtn.textContent = '保存';
-        confirmBtn.style.cssText = 'flex:1;padding:8px;font-size:14px;border:none;' +
-            'border-radius:6px;background:#7187FF;color:#fff;cursor:pointer;';
-
-        let saved = false;
-        let cleanup = function () {
-            if (overlay.parentNode) document.body.removeChild(overlay);
-        };
-        let doSave = function () {
-            if (saved) return;
-            saved = true;
-            let newText = input.value.trim();
-            cleanup();
-            if (newText !== self._currentRemark) {
-                self.saveUserRemark(newText);
+        // 内容有变化才请求保存
+        if (newText !== this._currentRemark) {
+            this.saveUserRemark(newText);
+        } else {
+            // 没变化也要刷新显示（保持一致性）
+            if (this._playerNoteLabel) {
+                this._playerNoteLabel.string = this._currentRemark || '点击添加备注';
             }
-        };
-
-        cancelBtn.addEventListener('click', function (e) { e.stopPropagation(); cleanup(); });
-        confirmBtn.addEventListener('click', function (e) { e.stopPropagation(); doSave(); });
-        input.addEventListener('keydown', function (e) {
-            if ((e as KeyboardEvent).key === 'Enter') doSave();
-            if ((e as KeyboardEvent).key === 'Escape') cleanup();
-        });
-        // 点击遮罩区域关闭（不关闭输入框本身）
-        overlay.addEventListener('click', function (e) {
-            if (e.target === overlay) cleanup();
-        });
-
-        btnRow.appendChild(cancelBtn);
-        btnRow.appendChild(confirmBtn);
-        container.appendChild(title);
-        container.appendChild(input);
-        container.appendChild(btnRow);
-        overlay.appendChild(container);
-        document.body.appendChild(overlay);
-
-        // 在同一用户手势事件链中 focus，浏览器允许
-        input.focus();
-        input.select();
+        }
     }
 
     /** 保存备注到服务端 */
     private saveUserRemark(newText: string): void {
         let gc = GameCache.Instance;
+        let targetUserId = this._dbUserId || this._player.userID;
+        console.log('[UIPlayerInfo] saveUserRemark _dbUserId=', this._dbUserId, 'player.userID=', this._player.userID, 'using=', targetUserId);
         WWW.Instance.CommonAPI({
             web_class: WebOrgClubUserRemaRks,
             body: {
                 club_id: gc.ClubID || 0,
-                user_id: this._player.userID,
+                user_id: targetUserId,
                 remark_name: newText,
                 remark_desc: ''
             }
@@ -432,6 +380,8 @@ export default class UIPlayerInfo extends UIBasePlus {
             if (!cc.isValid(this.node)) return;
             if (res && res.code === 0) {
                 this._currentRemark = newText;
+                // 写入本地缓存，防止下次打开时加载 API 读不到
+                UIPlayerInfo._savedRemarks.set(this._player.userID, newText);
                 if (this._playerNoteLabel) {
                     this._playerNoteLabel.string = newText || '点击添加备注';
                 }
@@ -452,6 +402,7 @@ export default class UIPlayerInfo extends UIBasePlus {
             api_id: userid
         }).then((res: any) => {
             if (!cc.isValid(this.node)) return;
+            console.log('[UIPlayerInfo] reqUserInfo response data:', JSON.stringify(res?.data));
             if (res?.data) {
                 this.refreshBasicInfo(res.data);
                 this.reqUserStats(res.data.random_num);
@@ -459,8 +410,8 @@ export default class UIPlayerInfo extends UIBasePlus {
         });
     }
 
-    /** 刷新基础信息：头像、昵称、性别、ID */
-    private refreshBasicInfo(data: { nick_name: string; avatar: string; sex: number; random_num: number }) {
+    /** 刷新基础信息：头像、昵称、性别、ID、备注 */
+    private refreshBasicInfo(data: { nick_name: string; avatar: string; sex: number; random_num: number; user_id?: number; remark_name?: string; remark_desc?: string }) {
         // 头像
         if (data.avatar) {
             WebImageHelper.SetUrlImage(this._headSprite, data.avatar);
@@ -476,8 +427,22 @@ export default class UIPlayerInfo extends UIBasePlus {
         if (this._playerid) {
             this._playerid.string = `${data.random_num}`;
         }
-        // 加载备注
-        this.loadUserRemark(data.random_num);
+        // 保存数据库 user_id（用于备注保存 API）
+        if (data.user_id) {
+            this._dbUserId = data.user_id;
+        }
+        // 备注：优先用本地缓存 > 服务端返回的 remark_name
+        let remark = UIPlayerInfo._savedRemarks.get(data.random_num);
+        if (remark === undefined && data.remark_name) {
+            remark = data.remark_name;
+        }
+        if (remark === undefined) {
+            remark = '';
+        }
+        this._currentRemark = remark;
+        if (this._playerNoteLabel) {
+            this._playerNoteLabel.string = remark || '点击添加备注';
+        }
     }
 
     /** 初始化 Data 面板 LabelNode 引用 */
