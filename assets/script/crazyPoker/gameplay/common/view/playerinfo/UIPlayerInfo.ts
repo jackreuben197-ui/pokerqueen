@@ -78,6 +78,7 @@ export default class UIPlayerInfo extends UIBasePlus {
     private _noticeLabel: cc.Label = null;
     private _diamondConfig: { fee_rate: number; limit_time_pre_day: number } = null;
     private _diamondSentCount: number = 0;
+    private _pendingDiamondAnimAmount: number = 0; // >0 表示赠送成功等待界面关闭后播动画
 
     // 操作按钮
     $OpButtonNode: cc.Node = null;
@@ -1054,17 +1055,22 @@ export default class UIPlayerInfo extends UIBasePlus {
                 amount: amount
             })
         }).then((res: any) => {
-            if (!cc.isValid(this.node)) return;
             if (res && res.code === 0) {
-                this._diamondSentCount++;
-                this.refreshDiamondNotice();
-                this.loadDiamondBalance();
-                // 播放赠送方和接收方的钻石飞行动画
-                this.playDiamondFlyAnimation(amount);
+                if (this.node.activeInHierarchy) {
+                    // 界面还在场景中，记录 pending 等 onClose 播放
+                    this._diamondSentCount++;
+                    this.refreshDiamondNotice();
+                    this.loadDiamondBalance();
+                    this._pendingDiamondAnimAmount = amount;
+                } else {
+                    // 界面已关闭（parent=null），直接播放动画
+                    this.playDiamondFlyAnimation(amount);
+                }
             } else if (res && res.code === 20124) {
-                // 次数不足（今日赠送次数已用完）
-                this._diamondSentCount = this._diamondConfig ? this._diamondConfig.limit_time_pre_day : 999;
-                this.refreshDiamondNotice();
+                if (this.node.activeInHierarchy) {
+                    this._diamondSentCount = this._diamondConfig ? this._diamondConfig.limit_time_pre_day : 999;
+                    this.refreshDiamondNotice();
+                }
                 UIComponent.Instance.Toast(i18nMgr.Get('GiftDiamondError'));
             } else {
                 UIComponent.Instance.Toast(
@@ -1449,5 +1455,15 @@ export default class UIPlayerInfo extends UIBasePlus {
                 UIComponent.close(UIDefine.UIPlayerInfo);
             })
             .start();
+    }
+
+    override onClose(param?: any): void {
+        // 界面关闭时，如果赠送成功待播放动画，立即执行
+        if (this._pendingDiamondAnimAmount > 0) {
+            let amount = this._pendingDiamondAnimAmount;
+            this._pendingDiamondAnimAmount = 0;
+            this.playDiamondFlyAnimation(amount);
+        }
+        super.onClose(param);
     }
 }
