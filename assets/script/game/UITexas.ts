@@ -30,6 +30,7 @@ import ToastManager from '../manager/ToastManager';
 import AgoraManager from '../net/agora/AgoraManager';
 import AgoraVideoRender from '../net/agora/AgoraVideoRender';
 import { VideoModel } from '../crazyPoker/gameplay/common/constant/VideoModel';
+import H5MsgMgr from '../H5MsgMgr';
 const LN = '[UI][UITexas]';
 
 export class PlayerBarrageRecord {
@@ -100,6 +101,8 @@ export default class UITexas extends BaseScene {
     // 客服
     btn_im: cc.Node = null;
     table_add_chip: cc.Node = null;
+    //安全卫士
+    btn_safety_guard: cc.Node = null;
     // main_menu 按钮
     // 战绩
     btn_report: cc.Node = null;
@@ -263,6 +266,10 @@ export default class UITexas extends BaseScene {
         this.btn_report = this.getChildNodeOrComponent('btn_report');
         this.btn_poker = this.getChildNodeOrComponent('btn_poker');
         this.btn_im = this.getChildNodeOrComponent('btn_im');
+        this.btn_safety_guard = this.getChildNodeOrComponent('btn_safety_guard');
+        if (this.btn_safety_guard) {
+            this.btn_safety_guard.active = false
+        }
         this.table_add_chip = this.getChildNodeOrComponent('table_add_chip');
         // main_menu 按钮（main_menu 在 side_btns 下，load_all_object 已递归索引）
         this.btn_emoji = this.getChildNodeOrComponent('btn_emoji');
@@ -467,6 +474,7 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.btn_report, this.click_side_button);
         this.setButtonClick(this.btn_poker, this.click_side_button);
         this.setButtonClick(this.btn_im, this.click_btn_im);
+        this.setButtonClick(this.btn_safety_guard, this.click_btn_safety_guard);
         if (this.table_add_chip) {
             this.table_add_chip.on(cc.Node.EventType.TOUCH_END, this.click_table_add_chip, this);
         }
@@ -1047,6 +1055,17 @@ export default class UITexas extends BaseScene {
 
     private click_btn_im() {
         UIComponent.open(UIDefine.UIBlank_dialog, { title: '客服界面' });
+    }
+    private click_btn_safety_guard() {
+        console.log('============');
+        console.log({ game: this.game });
+
+        H5MsgMgr.sendToH5('showPanel', 1, {
+            panelType: 'safetyGuard',
+            props: {
+                tribeId: this.game.tribeId
+            },
+        })
     }
 
     private click_table_add_chip() {
