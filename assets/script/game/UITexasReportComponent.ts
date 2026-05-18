@@ -253,6 +253,146 @@ export default class UITexasReportComponent extends UIBase {
         else if (handValueType === CardType.StraightFlush) rec.straightFlushCount += 1;
         else if (handValueType === CardType.FourOfAKind) rec.fourOfaKindCount += 1;
     }
+    // ─────────────────────────────────────────────
+    // 静态缓存增量更新方法（对应 Unity TexasSituationController）
+    // 返回 true 表示是新玩家（需要调用方 dispatch SituationRefresh）
+    // ─────────────────────────────────────────────
+
+    /**
+     * 对应 Unity TexasSituationController.SitDown。
+     * 已存在的玩家：覆盖 bringIn/deposit/isOnline，重算 totalBringin，不发刷新事件。
+     * 新玩家：追加到列表，累加 totalBringin，返回 true（调用方发刷新事件）。
+     */
+    public static applySitDown(
+        userRid: number, totalBringIn: number, deposit: number,
+        name: string = '', avatar: string = ''
+    ): boolean {
+        const roomId = GameCache.Instance.room_id;
+        let cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (!cached) {
+            cached = { playersList: [], totalBringin: 0 };
+            UITexasReportComponent._roomersCache.set(roomId, cached);
+        }
+        const playersList: any[] = cached.playersList || (cached.playersList = []);
+        const mushroomBase = Number(
+            GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0
+        );
+
+        const existing = playersList.find(p => Number(p.userRid) === Number(userRid));
+        if (existing) {
+            // Unity: 覆盖 bringInTotal，重算 totalBringin，不发事件
+            existing.isOnline = true;
+            existing.bringIn = totalBringIn;
+            existing.deposit = mushroomBase > 0 ? mushroomBase : deposit;
+            cached.totalBringin = playersList.reduce((s, p) => s + (p.bringIn || 0), 0);
+            return false;
+        }
+
+        // 新玩家
+        const player: any = {
+            userRid, bringIn: totalBringIn,
+            deposit: mushroomBase > 0 ? mushroomBase : deposit,
+            isOnline: true,
+            name: name || '', avatar: avatar || '',
+            win: 0, handNum: 0, poolCount: 0, storeChips: 0, mushroomAmount: 0, mushroomCount: 0
+        };
+        playersList.push(player);
+        cached.totalBringin = (cached.totalBringin || 0) + totalBringIn;
+        return true;
+    }
+
+    /**
+     * 对应 Unity TexasSituationController.StandUp。
+     * 已存在：累加 bringOutTotal，isOnline=false，不发事件。
+     * 新玩家（兜底）：追加，返回 true。
+     */
+    public static applyStandUp(
+        userRid: number, bringOut: number,
+        name: string = '', avatar: string = ''
+    ): boolean {
+        const roomId = GameCache.Instance.room_id;
+        const cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (!cached) return false;
+        const playersList: any[] = cached.playersList || [];
+        const mushroomBase = Number(
+            GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0
+        );
+
+        const existing = playersList.find(p => Number(p.userRid) === Number(userRid));
+        if (existing) {
+            existing.bringOutTotal = (existing.bringOutTotal || 0) + bringOut;
+            existing.isOnline = false;
+            if (mushroomBase > 0) existing.deposit = 0;
+            return false;
+        }
+
+        // 兜底：新玩家（通常不会走到这里）
+        const player: any = {
+            userRid, bringOutTotal: bringOut, isOnline: false,
+            name: name || '', avatar: avatar || '',
+            bringIn: 0, win: 0, handNum: 0, poolCount: 0
+        };
+        if (mushroomBase > 0) player.deposit = 0;
+        playersList.push(player);
+        return true;
+    }
+
+    /**
+     * 对应 Unity TexasSituationController.ChipChange。
+     * 只在 ChipChangeReason == CcNone 时调用（由 UITexas 负责过滤）。
+     * 已存在：bringInTotal += newBringIn，totalBringin += newBringIn，不发事件。
+     * 新玩家（兜底）：追加，返回 true。
+     */
+    public static applyChipChange(
+        userRid: number, newBringIn: number,
+        name: string = '', avatar: string = ''
+    ): boolean {
+        const roomId = GameCache.Instance.room_id;
+        let cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (!cached) {
+            cached = { playersList: [], totalBringin: 0 };
+            UITexasReportComponent._roomersCache.set(roomId, cached);
+        }
+        const playersList: any[] = cached.playersList || (cached.playersList = []);
+        const mushroomBase = Number(
+            GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0
+        );
+
+        const existing = playersList.find(p => Number(p.userRid) === Number(userRid));
+        if (existing) {
+            existing.isOnline = true;
+            existing.bringIn = (existing.bringIn || 0) + newBringIn;
+            if (mushroomBase > 0) existing.deposit = mushroomBase;
+            cached.totalBringin = (cached.totalBringin || 0) + newBringIn;
+            return false;
+        }
+
+        // 兜底：新玩家
+        const player: any = {
+            userRid, bringIn: newBringIn, isOnline: true,
+            name: name || '', avatar: avatar || '',
+            deposit: mushroomBase > 0 ? mushroomBase : 0,
+            win: 0, handNum: 0, poolCount: 0
+        };
+        playersList.push(player);
+        cached.totalBringin = (cached.totalBringin || 0) + newBringIn;
+        return true;
+    }
+
+    /**
+     * 对应 Unity TexasSituationController.OnStartInfo。
+     * 仅当缓存里 startTime <= 0 时补写一次当前时间（单位：秒）。
+     * Unity 不发 SituationRefresh，Cocos 同样不发。
+     */
+    public static applyStartInfo(): void {
+        const roomId = GameCache.Instance.room_id;
+        const cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (!cached) return;
+        if ((cached.startTime || 0) <= 0) {
+            cached.startTime = Math.floor(Date.now() / 1000);
+        }
+    }
+
     private squidRoundDic: Map<number, SquidOrMushRecord[]> = new Map();
     private jackpotRecords: JackpotRecord[] = [];
     private squidTotalRound: number = 0;

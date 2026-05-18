@@ -526,9 +526,20 @@ export default class UITexas extends BaseScene {
         this.EnterInitUI();
         // 进入牌桌后请求一次战绩数据，填充缓存，使战绩面板打开时可以立即显示
         this.requestRoomersForCache();
-        // Roomers 响应写入缓存（仅进入时首次请求的响应）
+        // ── 实时战绩缓存增量更新监听（对应 Unity TexasSituationController） ──
+        // Roomers 回包：写入基线缓存
         this.listen(ProtocolCode.Protocol_Holdem_Roomers, this.onGlobalRoomersUpdate);
-        // Winner 消息到达时增量更新缓存（对应 Unity HandResult，不重新请求网络）
+        // 自己坐下
+        this.listen(ProtocolCode.Protocol_Holdem_Seated, this.onSeatedUpdate);
+        // 别人坐下
+        this.listen(ProtocolCode.Protocol_Holdem_SeatedOthers, this.onSeatedOthersUpdate);
+        // 补充筹码（只处理 CcNone）
+        this.listen(ProtocolCode.Protocol_Holdem_ChipsChange, this.onChipsChangeUpdate);
+        // 站起（下桌）
+        this.listen(ProtocolCode.Protocol_Holdem_Standup, this.onStandupUpdate);
+        // 开始新一手：补写 startTime
+        this.listen(ProtocolCode.Protocol_Holdem_StartInfo, this.onStartInfoUpdate);
+        // Winner：每手结算增量更新
         this.listen(ProtocolCode.Protocol_Holdem_Winner, this.onWinnerUpdate);
     }
 
@@ -547,6 +558,62 @@ export default class UITexas extends BaseScene {
                 historyOffset: 0
             }
         });
+    }
+
+    // ── 自己坐下（Protocol_Holdem_Seated） ──
+    private onSeatedUpdate(response: any): void {
+        if (!response) return;
+        const userRid = GameCache.Instance.nUserId;
+        const name = GameCache.Instance.nick || '';
+        const avatar = GameCache.Instance.headPic || '';
+        const isNew = UITexasReportComponent.applySitDown(
+            userRid, response.totalBringin || 0, response.deposit || 0, name, avatar
+        );
+        if (isNew) this.post(GGEvent.SituationRefresh);
+    }
+
+    // ── 别人坐下（Protocol_Holdem_SeatedOthers） ──
+    private onSeatedOthersUpdate(response: any): void {
+        if (!response) return;
+        const isNew = UITexasReportComponent.applySitDown(
+            response.userRid, response.totalBringin || 0, response.deposit || 0,
+            response.name || '', response.avatar || ''
+        );
+        if (isNew) this.post(GGEvent.SituationRefresh);
+    }
+
+    // ── 补充筹码（Protocol_Holdem_ChipsChange），只处理 CcNone ──
+    private onChipsChangeUpdate(response: any): void {
+        if (!response) return;
+        let hasNew = false;
+        for (const change of (response.changesList || [])) {
+            if (change.reason !== 0 /* Def.ChipChangeReason.CC_NONE */) continue;
+            const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(change.seatId);
+            if (!seat?.Player) continue;
+            const isNew = UITexasReportComponent.applyChipChange(
+                seat.Player.userID, change.chips || 0,
+                seat.Player.nick || '', seat.Player.headPic || ''
+            );
+            if (isNew) hasNew = true;
+        }
+        if (hasNew) this.post(GGEvent.SituationRefresh);
+    }
+
+    // ── 下桌（Protocol_Holdem_Standup） ──
+    private onStandupUpdate(response: any): void {
+        if (!response) return;
+        const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(response.seatId);
+        if (!seat?.Player) return;
+        const isNew = UITexasReportComponent.applyStandUp(
+            seat.Player.userID, response.bringOut || 0,
+            seat.Player.nick || '', seat.Player.headPic || ''
+        );
+        if (isNew) this.post(GGEvent.SituationRefresh);
+    }
+
+    // ── 开始新一手，补写 startTime（Protocol_Holdem_StartInfo） ──
+    private onStartInfoUpdate(_response: any): void {
+        UITexasReportComponent.applyStartInfo();
     }
 
     private onWinnerUpdate(response: any): void {
