@@ -564,6 +564,7 @@ export default class TexasGame {
     // StateMachine.Start then to launchState(EnterRoom => send enterRoom)
     // enterRoom(Callback: switchScene & to initState)
     Enter() {
+        this.IsDispose = false;
         this.listSeat = [];
         this.pots = [];
         this.dicSeatOnlyClient = new Map<number, Seat>();
@@ -3500,6 +3501,11 @@ export default class TexasGame {
     /// <param name="complete"></param>
     protected KillAllTweener(complete = false): void {
         console.log(LN, 'TexasGame KillAllTweener');
+        if (this.sequencePlayDealAnimation?.tween) {
+            this.sequencePlayDealAnimation.IsPlaying = false;
+            cc.Tween.stopAllByTarget(this.uirc.node);
+            this.sequencePlayDealAnimation = null;
+        }
         if (null != this.sequenceUpdatePublicCards && this.sequenceUpdatePublicCards.IsPlaying) {
             this.sequenceUpdatePublicCards.Kill();
         }
@@ -4181,6 +4187,7 @@ export default class TexasGame {
      */
     Dispose() {
         console.log(LN, 'TexasGame >>>> Dispose');
+        this.IsDispose = true;
         this.reportKeepOpen = false;
         this.ClearTableUI();
         this.ClearOther();

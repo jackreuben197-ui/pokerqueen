@@ -556,6 +556,10 @@ export default class TexasGameProtocol {
     private __PlayDealAnimation(responseData: any) {
         this.game.ResetSeatMoveStruct();
         this.game.PlayDealAnimation(() => {
+            if (this.game?.IsDispose || !this.game?.mainPlayer || !this.game?.listSeat?.length) {
+                cc.warn('[TexasGameProtocol] skip stale deal callback after dispose');
+                return;
+            }
             cc.log('发牌结束');
             this.game.UpdateAlreadAnte();
             let mSeat0: Seat = null;
