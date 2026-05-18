@@ -22,4 +22,6 @@ export default class GGEvent {
     static Refresh_Unread: string = 'Refresh_Unread';
     //刷新申请带入提示
     static Apply_Refresh_MsgNum: string = 'Apply_Refresh_MsgNum';
+    // 每手结算后刷新实时战绩 UI（对应 Unity EVENT_GAMPLAY_SITUATION_REFRESH）
+    static SituationRefresh: string = 'SituationRefresh';
 }

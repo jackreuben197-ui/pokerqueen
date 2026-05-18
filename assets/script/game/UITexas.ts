@@ -31,6 +31,10 @@ import AgoraManager from '../net/agora/AgoraManager';
 import AgoraVideoRender from '../net/agora/AgoraVideoRender';
 import { VideoModel } from '../crazyPoker/gameplay/common/constant/VideoModel';
 import H5MsgMgr from '../H5MsgMgr';
+import ProtocolAgency from '../net/websocket/ProtocolAgency';
+import { ProtocolCode } from '../net/websocket/ProtocolCode';
+import UITexasReportComponent from './UITexasReportComponent';
+import GGEvent from '../event/GGEvent';
 const LN = '[UI][UITexas]';
 
 export class PlayerBarrageRecord {
@@ -520,6 +524,41 @@ export default class UITexas extends BaseScene {
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
         this.EnterInitUI();
+        // 进入牌桌后请求一次战绩数据，填充缓存，使战绩面板打开时可以立即显示
+        this.requestRoomersForCache();
+        // Roomers 响应写入缓存（仅进入时首次请求的响应）
+        this.listen(ProtocolCode.Protocol_Holdem_Roomers, this.onGlobalRoomersUpdate);
+        // Winner 消息到达时增量更新缓存（对应 Unity HandResult，不重新请求网络）
+        this.listen(ProtocolCode.Protocol_Holdem_Winner, this.onWinnerUpdate);
+    }
+
+    private requestRoomersForCache(): void {
+        const roomId = GameCache.Instance.room_id;
+        const matchId = GameCache.Instance.match_id;
+        if (!roomId) return;
+        ProtocolAgency.Send({
+            Code: ProtocolCode.Protocol_Holdem_Roomers,
+            RoomID: roomId,
+            MatchID: matchId,
+            Body: {
+                room: { roomId, matchId },
+                history: true,
+                historyLimit: 1000,
+                historyOffset: 0
+            }
+        });
+    }
+
+    private onWinnerUpdate(response: any): void {
+        // 对应 Unity: TexasSituationController.HandResult() 更新缓存
+        UITexasReportComponent.applyWinnerResult(response);
+        // 对应 Unity: Game.EventSystem.Run(EventIdType.EVENT_GAMPLAY_SITUATION_REFRESH)
+        this.post(GGEvent.SituationRefresh, response);
+    }
+
+    private onGlobalRoomersUpdate(response: any): void {
+        if (!response || response.status !== 0) return;
+        UITexasReportComponent.updateRoomersCache(GameCache.Instance.room_id, response);
     }
 
     //适配
@@ -671,6 +710,7 @@ export default class UITexas extends BaseScene {
     }
 
     override Exit(param: any): void {
+        // Unity 策略：离房不主动清 roomers 缓存，进房时 requestRoomersForCache() 的回包会覆盖当前房间缓存
         super.Exit(param);
     }
 

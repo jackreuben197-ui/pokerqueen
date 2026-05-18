@@ -16,6 +16,9 @@ import { ServerMessageLeave } from '../protobuf/holdem/req_th_leave_pb';
 import { ClientMessageObservers } from '../protobuf/holdem/req_th_observers_pb';
 import { ClientMessagePlayerJackpotSummary, ServerMessagePlayerJackpotSummary } from '../protobuf/holdem/req_th_player_jackpot_summary_pb';
 import { ClientMessageRoomers, ServerMessageRoomers } from '../protobuf/holdem/req_th_roomers_pb';
+import { ServerMessageWinner } from '../protobuf/holdem/recv_th_winner_pb';
+import GGEvent from '../event/GGEvent';
+import { CardType } from './CardTypeUtil';
 import UIBase from '../ui/UIBase';
 import UIComponent from '../ui/UIComponent';
 import Main from '../Main';
@@ -34,16 +37,17 @@ export class ReportPlayer {
     public userId;
     public nickName;
     public hand;
-    public bringIn; //带入
-    public score; //输赢
-    public outChip; //带出
-    public isOnline; //是否在线
-    public deposit; //押金
-    public mushroomCount; //蘑菇数
-    public mushroomAmount; //蘑菇额
-    public squidInTotal; //鱿鱼入
-    public squidOutTotal; //鱿鱼出
-    public squidPunishTotal; //鱿鱼惩罚
+    public bringIn;       // 总带入
+    public score;         // 实时盈亏 = win + storeChips
+    public storeChips;    // 藏钱（显示在带入旁括号内）
+    public poolRate;      // 入池率 * 1000（与 Unity 保持一致，显示时除以 10）
+    public isOnline;      // 是否在线
+    public deposit;       // 押金
+    public mushroomCount; // 蘑菇数
+    public mushroomAmount;// 蘑菇额
+    public squidInTotal;  // 鱿鱼入
+    public squidOutTotal; // 鱿鱼出
+    public squidPunishTotal; // 鱿鱼惩罚
 }
 
 interface SquidOrMushRecord {
@@ -131,6 +135,124 @@ export default class UITexasReportComponent extends UIBase {
     baoxianTextNode: cc.Node = null;
     jackpotTextNode: cc.Node = null;
     squidTextNode: cc.Node = null;
+    // Unity: _situation._roomersMap — 按房间 ID 缓存最新 roomers 数据，Socket 推送时更新，打开面板时优先读取缓存
+    private static _roomersCache: Map<number, any> = new Map();
+
+    /** 写入缓存（UITexas 常驻监听 和 面板内监听 共用同一写入入口） */
+    public static updateRoomersCache(roomId: number, data: any): void {
+        UITexasReportComponent._roomersCache.set(roomId, data);
+    }
+
+    /** 离开房间时调用，清除指定房间缓存 */
+    public static clearRoomersCache(roomId: number): void {
+        UITexasReportComponent._roomersCache.delete(roomId);
+    }
+
+    /**
+     * 每手结束收到 Protocol_Holdem_Winner 时，直接在缓存上增量更新战绩。
+     * 对应 Unity TexasSituationController.HandResult + CalculateWinner。
+     * 不发网络请求，由 UITexas 在全局 Winner 消息回调中调用。
+     */
+    /**
+     * 对应 Unity TexasSituationController.HandResult + CalculateWinner。
+     * 收到 Protocol_Holdem_Winner 后由 UITexas 调用，直接在缓存上增量更新，不发网络请求。
+     */
+    public static applyWinnerResult(response: ServerMessageWinner.AsObject): void {
+        if (!response) return;
+        const roomId = GameCache.Instance.room_id;
+        const cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (!cached) {
+            console.log('[UITexasReport] applyWinnerResult: 房间未缓存，无法结算');
+            return;
+        }
+
+        const playersList: any[] = cached.playersList || [];
+        // Unity: roomers.TotalHand = result.HandNum
+        cached.totalHand = response.handNum;
+
+        const mushroomBase = Number(
+            GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0
+        );
+
+        for (const winner of (response.resultsList || [])) {
+            const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(winner.seatId);
+            if (!seat?.Player) continue;
+            const userId = seat.Player.userID;
+
+            const player = playersList.find(p => Number(p.userRid) === Number(userId));
+            if (!player) continue;
+
+            // Unity: player.PoolCount / HandNum / IsOnline
+            player.poolCount = (player.poolCount || 0) + (winner.inPool ? 1 : 0);
+            player.handNum = (player.handNum || 0) + 1;
+            player.isOnline = true;
+
+            // Unity CalculateWinner: 赢了扣手续费和奖池费，输了只算输额，再叠加保险
+            let win: number;
+            if (winner.win > winner.handBet) {
+                win = winner.win - winner.handBet - (winner.fee || 0) - (winner.jackpotFee || 0);
+            } else {
+                win = winner.win - winner.handBet;
+            }
+            win += (winner.insuranceWin || 0) - (winner.insurance || 0);
+            player.win = (player.win || 0) + win;
+
+            // Unity: roomers.TotalPot += winner.Win（原始 win，非扣费后）
+            cached.totalPot = (cached.totalPot || 0) + (winner.win || 0);
+
+            // Unity: 蘑菇 MushroomCount += ehc.In / mushroomBase, MushroomAmount += ehc.In
+            for (const ehc of (winner.ehcsList || [])) {
+                if (ehc.ehcType !== Def.EHCType.EHC_MUSHROOM) continue;
+                const amount = ehc.pb_in || 0;
+                player.mushroomAmount = (player.mushroomAmount || 0) + amount;
+                player.mushroomCount = (player.mushroomCount || 0) +
+                    (mushroomBase > 0 ? Math.floor(amount / mushroomBase) : 0);
+            }
+
+            // Unity: Jackpot 贡献 contributeTotal += jackpotFee
+            if ((winner.jackpotFee || 0) > 0) {
+                UITexasReportComponent._applyJackpotContribute(
+                    player.userRid, player.name, winner.jackpotFee
+                );
+            }
+            // Unity: Jackpot 奖励 awardTotal += jawd，按 handValueType 记牌型次数
+            if ((winner.jawd || 0) > 0) {
+                UITexasReportComponent._applyJackpotAward(
+                    player.userRid, player.name, winner.jawd, winner.handValueType
+                );
+            }
+        }
+    }
+
+    /** Jackpot 静态缓存（对应 Unity _situation._jackpot）*/
+    private static _jackpotCache: Map<number, JackpotRecord> = new Map();
+
+    public static clearJackpotCache(): void {
+        UITexasReportComponent._jackpotCache.clear();
+    }
+
+    private static _applyJackpotContribute(userRid: number, name: string, fee: number): void {
+        let rec = UITexasReportComponent._jackpotCache.get(userRid);
+        if (!rec) {
+            rec = { userRid, name, avatar: '', sex: 0, contributeTotal: 0, awardTotal: 0,
+                    royalFlushCount: 0, straightFlushCount: 0, fourOfaKindCount: 0 };
+            UITexasReportComponent._jackpotCache.set(userRid, rec);
+        }
+        rec.contributeTotal += fee;
+    }
+
+    private static _applyJackpotAward(userRid: number, name: string, jawd: number, handValueType: number): void {
+        let rec = UITexasReportComponent._jackpotCache.get(userRid);
+        if (!rec) {
+            rec = { userRid, name, avatar: '', sex: 0, contributeTotal: 0, awardTotal: 0,
+                    royalFlushCount: 0, straightFlushCount: 0, fourOfaKindCount: 0 };
+            UITexasReportComponent._jackpotCache.set(userRid, rec);
+        }
+        rec.awardTotal += jawd;
+        if (handValueType === CardType.RoyalFlush) rec.royalFlushCount += 1;
+        else if (handValueType === CardType.StraightFlush) rec.straightFlushCount += 1;
+        else if (handValueType === CardType.FourOfAKind) rec.fourOfaKindCount += 1;
+    }
     private squidRoundDic: Map<number, SquidOrMushRecord[]> = new Map();
     private jackpotRecords: JackpotRecord[] = [];
     private squidTotalRound: number = 0;
@@ -253,22 +375,31 @@ export default class UITexasReportComponent extends UIBase {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler);
-        this.listen(ProtocolCode.Protocol_Holdem_Observers, this.ProtocolHoldemObserverHandler);
         this.listen(ProtocolCode.Protocol_Holdem_PlayerJackpotSummary, this.ProtocolHoldemPlayerJackpotSummaryHandler);
+        // 对应 Unity EVENT_GAMPLAY_SITUATION_REFRESH → UIGameplaySituationComponent.RefreshSituationData
+        this.listen(GGEvent.SituationRefresh, this.onSituationRefresh);
     }
 
     RequestRoomers() {
-        ProtocolAgency.Send<ClientMessageRoomers.AsObject>({
-            Code: ProtocolCode.Protocol_Holdem_Roomers,
-            RoomID: GameCache.Instance.room_id,
-            MatchID: GameCache.Instance.match_id,
-            Body: {
-                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                history: true,
-                historyLimit: 1000,
-                historyOffset: 0
-            }
-        });
+        const roomId = GameCache.Instance.room_id;
+        const cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (cached) {
+            // 有缓存直接渲染——缓存由 UITexas 在进入时 + 每局 HandClear 后维护，面板不发任何请求
+            this.applyRoomersData(cached);
+        }
+        // 缓存为空时不发请求：进入牌桌时 UITexas 已发过请求，等响应回来后缓存会被填充
+        // 若真的为空（极端情况），显示空列表即可，不阻塞用户
+    }
+
+    private applyRoomersData(response: any): void {
+        this.buildPlayerLists(response);
+        this.refreshCurrentDataList();
+        this.showPublicArea(response);
+        if (response.observersList) {
+            this.UpdateObViewList(response);
+        } else {
+            this.UpdateObViewList({ observersList: [] });
+        }
     }
 
     RequestObservers() {
@@ -312,14 +443,9 @@ export default class UITexasReportComponent extends UIBase {
             return;
         }
         if (response.status == 0) {
+            // Unity: 收到推送后更新缓存（UITexas 的常驻监听也会更新，此处面板开着时同步处理）
+            UITexasReportComponent.updateRoomersCache(GameCache.Instance.room_id, response);
             this.UpdateViewList(response);
-            const anyResp: any = response as any;
-            this.showPublicArea(anyResp);
-            if (anyResp.observersList) {
-                this.UpdateObViewList(anyResp);
-            } else {
-                this.UpdateObViewList({ observersList: [] });
-            }
         }
     }
 
@@ -398,13 +524,20 @@ export default class UITexasReportComponent extends UIBase {
         this.RefreshJackpotTotalLabel();
         this.SendSquidData(0);
         this.RequestRoomers();
-        this.RequestObservers();
+        // 观众数据已内嵌在 Roomers 响应的 observersList 中，Protocol_Holdem_Observers 未在 ProtocolMap 注册，无需单独请求
     }
 
     async UpdateViewList(RoomersData: any) {
         this._lastRoomersData = RoomersData;
         this.buildPlayerLists(RoomersData);
         this.refreshCurrentDataList();
+        this.showPublicArea(RoomersData);
+        const anyResp: any = RoomersData as any;
+        if (anyResp.observersList) {
+            this.UpdateObViewList(anyResp);
+        } else {
+            this.UpdateObViewList({ observersList: [] });
+        }
         if (GameCache.Instance.origin_type == 4) {
             let result: any = await UIClubModel.mInstance.WebOrgFriendRoomList(false).catch(content => {
                 console.log(`>> catch error:${WebOrgFriendRoomList.API}`, content);
@@ -509,8 +642,12 @@ export default class UITexasReportComponent extends UIBase {
             tSignPlayer.nickName = p.name;
             tSignPlayer.hand = p.handNum;
             tSignPlayer.bringIn = p.bringInTotal;
-            tSignPlayer.score = p.win;
-            tSignPlayer.outChip = p.bringOutTotal;
+            // Unity: _win = Win + StoreChips（藏钱计入实时盈亏）
+            tSignPlayer.score = (p.win || 0) + (p.storeChips || 0);
+            tSignPlayer.storeChips = p.storeChips || 0;
+            // Unity: _poolRate = PoolCount * 1000 / HandNum
+            const handNum = p.handNum || 0;
+            tSignPlayer.poolRate = handNum > 0 ? Math.floor((p.poolCount || 0) * 1000 / handNum) : 0;
             tSignPlayer.isOnline = p.isOnline;
             tSignPlayer.deposit = p.deposit || 0;
             tSignPlayer.mushroomCount = p.mushroomCount || 0;
@@ -535,7 +672,14 @@ export default class UITexasReportComponent extends UIBase {
     private onToggleShowTablePlayers(): void {
         this._isShowOnlyTablePlayers = !this._isShowOnlyTablePlayers;
         this.refreshTablePlayerToggle();
-        this.RequestRoomers();
+        // Unity: 筛选为客户端行为，直接用缓存数据重新过滤，无需网络请求
+        const cached = UITexasReportComponent._roomersCache.get(GameCache.Instance.room_id);
+        if (cached) {
+            this.buildPlayerLists(cached);
+            this.refreshCurrentDataList();
+        } else {
+            this.RequestRoomers();
+        }
     }
 
     private refreshTablePlayerToggle(): void {
@@ -651,9 +795,18 @@ export default class UITexasReportComponent extends UIBase {
         ele.getChildByName('Text_Name').getComponent(cc.Label).string = StringHelper.LengthNick(pDto.nickName);
         ele.getChildByName('Text_Num').getComponent(cc.Label).string = pDto.hand + '';
         ele.getChildByName('Text_All').getComponent(cc.Label).string = StringHelper.GetLongString(pDto.bringIn);
-        let outChip = pDto.outChip != 0 ? StringHelper.GetLongString(pDto.outChip) : 0;
-        ele.getChildByName('Text_All1').getComponent(cc.Label).string = '(' + outChip + ')';
+        // Unity: bugin/Text_outChip 显示藏钱(storeChips)，非零时才显示
+        const storeChipsStr = pDto.storeChips ? StringHelper.GetLongString(pDto.storeChips) : '';
+        ele.getChildByName('Text_All1').getComponent(cc.Label).string = storeChipsStr ? `(${storeChipsStr})` : '';
         this.setCountText(ele.getChildByName('Text_Count'), pDto.score);
+        // Unity: Text_Pool 显示入池率，poolRate/10 = 百分比
+        const poolNode = ele.getChildByName('Text_Pool');
+        if (poolNode) {
+            const poolLabel = poolNode.getComponent(cc.Label);
+            if (poolLabel) {
+                poolLabel.string = `(${(pDto.poolRate / 10).toFixed(1)}%)`;
+            }
+        }
         if (useInfo3) {
             const depositLabel = ele.getChildByName('Text_Deposit')?.getComponent(cc.Label);
             if (depositLabel) depositLabel.string = StringHelper.GetLongString(pDto.deposit || 0);
@@ -757,7 +910,6 @@ export default class UITexasReportComponent extends UIBase {
         }
         if (this.curBottomTab === 'jackpot') {
             this.RequestJackpotSummary();
-            this.RequestObservers();
         }
     }
 
@@ -827,6 +979,28 @@ export default class UITexasReportComponent extends UIBase {
         if (this.peopleNode) this.peopleNode.y = this.normalPeopleNodeY + deltaY;
         if (this.peopleScrow) this.peopleScrow.y = this.normalPeopleScrowY + deltaY;
         if (this.noDataNode) this.noDataNode.y = this.normalNoDataY + deltaY;
+    }
+
+    /**
+     * 对应 Unity UIGameplaySituationComponent.RefreshSituationData。
+     * Winner 结算后由 GGEvent.SituationRefresh 事件触发，面板开着时刷新各列表。
+     */
+    private onSituationRefresh(_response: any): void {
+        this.refreshSituationData();
+    }
+
+    private refreshSituationData(): void {
+        const roomId = GameCache.Instance.room_id;
+        const cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (!cached) return;
+        // Unity: UpdateUpViewList — 刷新主玩家列表（reportScrow）
+        this.buildPlayerLists(cached);
+        this.showPublicArea(cached);
+        this.refreshCurrentDataList();
+        // Unity: InitJackpotSuperView — 如果 jackpot tab 处于激活状态则刷新
+        if (this.curBottomTab === 'jackpot' && this.isJackpotListInit) {
+            this.UpdateJackpotViewList();
+        }
     }
 
     private refreshCurrentDataList(): void {
