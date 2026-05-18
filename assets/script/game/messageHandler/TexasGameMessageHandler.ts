@@ -4,7 +4,6 @@ import GC from '../../frame/GameControl';
 import ReconnectComponent from '../../funcomponent/ReconnectComponent';
 import { CPErrorCode } from '../../i18n/CPErrorCode';
 import { i18nMgr } from '../../i18n/i18nMgr';
-import Main from '../../Main';
 import ProcedureManager from '../../manager/ProcedureManager';
 import SceneManager from '../../manager/SceneManager';
 import { ProtocolCode } from '../../net/websocket/ProtocolCode';
@@ -38,7 +37,7 @@ const LN = '[TexasGameMessageHandler]';
 
 export default class TexasGameMessageHandler {
 
-    constructor(public game: TexasGame) {}
+    constructor(public game: TexasGame) { }
 
     public RegisterMessageHandler() {
         console.log(LN, 'RegisterMessageHandler');
@@ -355,21 +354,31 @@ export default class TexasGameMessageHandler {
                         const gamePlaySubType = this.game?.squidEnabled
                             ? GamePlaySubType.SQUID
                             : this.game?.mushroomEnabled
-                              ? GamePlaySubType.MUSH
-                              : GamePlaySubType.NONE;
-                        UIComponent.open(
-                            UIDefine.UITexasGameEnd,
-                            {
-                                roomID: GameCache.Instance.room_id.toString(),
-                                blind: GameCache.Instance.CurGame.smallBlind,
-                                roomName: GameCache.Instance.roomName,
-                                game_type: GameCache.Instance.game_type,
-                                bet_type: GameCache.Instance.bet_type,
-                                poker_type: GameCache.Instance.poker_type,
-                                gamePlaySubType: gamePlaySubType
-                            },
-                            { parentUI: Main.Dialog }
-                        );
+                                ? GamePlaySubType.MUSH
+                                : GamePlaySubType.NONE;
+                        const roomId = String(GameCache.Instance.room_id || '');
+                        const query: Record<string, string> = {
+                            roomId,
+                            from: 'cocos',
+                            reason: String(response.reason ?? ''),
+                            roomName: String(GameCache.Instance.roomName || ''),
+                            gameType: String(GameCache.Instance.game_type ?? ''),
+                            betType: String(GameCache.Instance.bet_type ?? ''),
+                            pokerType: String(GameCache.Instance.poker_type ?? ''),
+                            gamePlaySubType: String(gamePlaySubType),
+                        };
+                        const h5NavigatePayload = {
+                            path: '/tableGameEnd',
+                            query,
+                            replace: false,
+                            ensureVisible: true
+                        };
+                        console.log(LN, '[game-end] queue h5 navigate after exit cleanup', h5NavigatePayload);
+                        this.game.SMAgency.ChangeGameState(TexasGameState.Exit, {
+                            response,
+                            h5NavigatePayload
+                        });
+                        break;
                     }
                     this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);
                 }

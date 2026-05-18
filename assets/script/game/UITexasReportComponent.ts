@@ -175,11 +175,17 @@ export default class UITexasReportComponent extends UIBase {
         );
 
         for (const winner of (response.resultsList || [])) {
-            const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(winner.seatId);
-            if (!seat?.Player) continue;
-            const userId = seat.Player.userID;
-
-            const player = playersList.find(p => Number(p.userRid) === Number(userId));
+            let player = playersList.find(p => Number(p.seatId || 0) === Number(winner.seatId || 0));
+            if (!player) {
+                const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(winner.seatId);
+                const userId = seat?.Player?.userID;
+                if (userId != null) {
+                    player = playersList.find(p => Number(p.userRid) === Number(userId));
+                    if (player && !player.seatId) {
+                        player.seatId = winner.seatId;
+                    }
+                }
+            }
             if (!player) continue;
 
             // Unity: player.PoolCount / HandNum / IsOnline
@@ -932,12 +938,13 @@ export default class UITexasReportComponent extends UIBase {
         } else {
             ele.opacity = 255;
         }
+        const textAllCol = ele.getChildByName('Text_All_Col');
         ele.getChildByName('Text_Name').getComponent(cc.Label).string = StringHelper.LengthNick(pDto.nickName);
         ele.getChildByName('Text_Num').getComponent(cc.Label).string = pDto.hand + '';
-        ele.getChildByName('Text_All').getComponent(cc.Label).string = StringHelper.GetLongString(pDto.bringIn);
+        textAllCol.getChildByName('Text_All').getComponent(cc.Label).string = StringHelper.GetLongString(pDto.bringIn);
         // Unity: bugin/Text_outChip 显示藏钱(storeChips)，非零时才显示
         const storeChipsStr = pDto.storeChips ? StringHelper.GetLongString(pDto.storeChips) : '';
-        ele.getChildByName('Text_All1').getComponent(cc.Label).string = storeChipsStr ? `(${storeChipsStr})` : '';
+        textAllCol.getChildByName('Text_All1').getComponent(cc.Label).string = storeChipsStr ? `(${storeChipsStr})` : '';
         this.setCountText(ele.getChildByName('Text_Count'), pDto.score);
         // Unity: Text_Pool 显示入池率，poolRate/10 = 百分比
         const poolNode = ele.getChildByName('Text_Pool');

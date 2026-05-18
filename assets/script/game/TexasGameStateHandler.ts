@@ -12,6 +12,12 @@ import UIComponent, { PrefabUI } from '../ui/UIComponent';
 import { GameCache } from './GameCache';
 import TexasGame from './texas/TexasGame';
 import { TexasGameState } from './TexasGameState';
+import type { ProcedureReturnNavigateParam } from '../procedure/ProcedureReturn';
+
+interface TexasGameExitSourceData {
+    response?: unknown;
+    h5NavigatePayload?: Record<string, unknown>;
+}
 
 export class TexasGameStateHandlerNetworkException extends StateHandler {
     public Name: string = 'TexasGameStateHandlerNetworkException';
@@ -96,7 +102,14 @@ export class TexasGameStateHandlerExit extends StateHandler {
         //     UIComponent.Instance.HideUI(UIType.UIMatch_Loading);
         // }
         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
-        game.TexasGameUtils.ExitRoom();
+        console.log('========退出退出1=========');
+        console.log('========退出退出1=========');
+        console.log('========退出退出1=========');
+        const exitSource = this.SourceData as TexasGameExitSourceData | null;
+        const returnParam: ProcedureReturnNavigateParam | undefined = exitSource?.h5NavigatePayload
+            ? { h5NavigatePayload: exitSource.h5NavigatePayload }
+            : undefined;
+        game.TexasGameUtils.ExitRoom(returnParam);
     }
 
     public Execute(entity?: any): void {}
