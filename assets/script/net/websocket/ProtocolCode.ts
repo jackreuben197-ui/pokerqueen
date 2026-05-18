@@ -81,6 +81,7 @@ export enum ProtocolCode {
     Protocol_Holdem_NextChange = Code.MSG_S_NEXT_CHANGE, // Code: 1126 下一手房间配置变更
     Protocol_Holdem_JackpotGoldChange = Code.MSG_S_JACKPOT_GOLD_CHANGE, // Code: 1129 Jackpot金额变化
     Protocol_Holdem_JackpotAward = Code.MSG_S_JACKPOT_AWARD, // Code: 1130 Jackpot获奖
+    Protocol_Holdem_RoomUserSendDiamond = Code.MSG_S_ROOM_USER_SEND_DIAMOND, // Code: 132 赠送钻石广播
     Protocol_Holdem_AntiCheatRoomVideo = Code.MSG_S_UTIL_ANTI_CHEAT_ROOM_VIDEO, // Code: 902 触发视频防作弊（随机验证）
     Protocol_Holdem_VideoMaskChange = Code.MSG_S_VIDEO_MASK_CHANGE, // Code: 1133 视频窗花变更
     /**

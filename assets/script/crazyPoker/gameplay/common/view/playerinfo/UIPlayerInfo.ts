@@ -7,6 +7,7 @@ import { WebOrgClubUserRemaRks } from '../../../../../net/https/web_request/WebR
 import WebImageHelper from '../../../../../helper/WebImageHelper';
 import AgoraManager from '../../../../../net/agora/AgoraManager';
 import { GameCache } from '../../../../../game/GameCache';
+import GC from '../../../../../frame/GameControl';
 import { i18nMgr } from '../../../../../i18n/i18nMgr';
 import { CPErrorCode } from '../../../../../i18n/CPErrorCode';
 import { AntiCheatType } from '../../constant/AntiCheatType';
@@ -26,10 +27,16 @@ export default class UIPlayerInfo extends UIBasePlus {
     @property(cc.SpriteFrame)
     toggleOnBg: cc.SpriteFrame = null;
 
-    // 扔道具 PropsID: CtEmoji2(6) * 100 = 600, 依次 +1
+    // 扔道具 PropsID: CtEmoji2(6) * 100 = 600
     // 600=番茄, 601=花环, 602=亲吻, 603=大拇指, 604=干杯, 605=摸头,
     // 606=鲨鱼, 607=抓鸡, 608=拳击, 609=撒钱, 610=鱼头, 611=棒球
+    // prefab 视觉布局: 亲吻,撒钱,拳击,摸头,番茄,鱼头 / 棒球,大拇指,干杯,抓鸡,花环,鲨鱼
     private static readonly PROP_TYPE_BASE: number = Def.ConsumeType.CT_EMOJI_2 * 100; // 600
+    /** propIndex(1~12) → propType，对应 prefab 中 $propOp_1 ~ $propOp_12 的视觉位置 */
+    private static readonly PROP_TYPE_MAP: number[] = [
+        602, 609, 608, 605, 600, 610, // 第一行: 亲吻,撒钱,拳击,摸头,番茄,鱼头
+        611, 603, 604, 607, 601, 606  // 第二行: 棒球,大拇指,干杯,抓鸡,花环,鲨鱼
+    ];
 
     // 自动绑定 ($ 前缀节点)
     $panel_click: cc.Node = null;
@@ -287,14 +294,8 @@ export default class UIPlayerInfo extends UIBasePlus {
             index = 0;
         }
         this._tabIndex = index;
-        // 更新 tab 选中状态：下划线 + 颜色
-        for (let i = 0; i < this._tabLabels.length; i++) {
-            let label = this._tabLabels[i];
-            if (label) {
-                label.node.color = (i === index)
-                    ? new cc.Color(255, 255, 255, 255)
-                    : new cc.Color(150, 150, 150, 255);
-            }
+        // 更新 tab 选中状态：下划线显示/隐藏，颜色保持白色
+        for (let i = 0; i < this._underlineNodes.length; i++) {
             if (this._underlineNodes[i]) {
                 this._underlineNodes[i].active = (i === index);
             }
@@ -671,7 +672,10 @@ export default class UIPlayerInfo extends UIBasePlus {
             fee_rate: cfg.fee_rate || 0,
             limit_time_pre_day: cfg.limit_time_pre_day || 0
         };
-        this._diamondSentCount = 0;
+        // 从当前用户信息中读取今日已赠送次数
+        let userInfo = GC.data?.user?.info;
+        let todaySent = (userInfo as any)?._msg?.user_today_diamond_send_time || 0;
+        this._diamondSentCount = todaySent;
         this.refreshDiamondNotice();
     }
 
@@ -1056,12 +1060,27 @@ export default class UIPlayerInfo extends UIBasePlus {
                 amount: amount
             })
         }).then((res: any) => {
-            if (!cc.isValid(this.node)) return;
             if (res && res.code === 0) {
                 this._diamondSentCount++;
-                this.refreshDiamondNotice();
-                this.loadDiamondBalance();
-                UIComponent.Instance.Toast(`成功赠送给${this._player.nick} ${amount}个钻石`);
+                if (this.node.activeInHierarchy) {
+                    this.refreshDiamondNotice();
+                    this.loadDiamondBalance();
+                }
+                // 发送者在本地播放动画（服务端广播负责其他玩家）
+                let game = GameCache.Instance?.CurGame;
+                if (game?.throwPropMgr && this._player) {
+                    game.throwPropMgr.playDiamondAnimation(
+                        GameCache.Instance.nUserId,
+                        this._player.userID,
+                        amount
+                    );
+                }
+            } else if (res && res.code === 20124) {
+                if (this.node.activeInHierarchy) {
+                    this._diamondSentCount = this._diamondConfig ? this._diamondConfig.limit_time_pre_day : 999;
+                    this.refreshDiamondNotice();
+                }
+                UIComponent.Instance.Toast(i18nMgr.Get('GiftDiamondError'));
             } else {
                 UIComponent.Instance.Toast(
                     (res && res.message) || i18nMgr.Get('GiftDiamondError')
@@ -1232,7 +1251,7 @@ export default class UIPlayerInfo extends UIBasePlus {
         }
 
         // 构造内层广播消息 JSON
-        let propType = UIPlayerInfo.PROP_TYPE_BASE + (propIndex - 1); // 600 + offset
+        let propType = UIPlayerInfo.PROP_TYPE_MAP[propIndex - 1] || UIPlayerInfo.PROP_TYPE_BASE;
         let broadcastMsgData = JSON.stringify({
             name: gc.nick,
             target_user_id: this._player.userID,
@@ -1262,6 +1281,16 @@ export default class UIPlayerInfo extends UIBasePlus {
         msg.setExtra(extraBytes);
         msg.setMessage('');
 
+        // 暂存道具数据，等服务端返回成功后在本地播放动画
+        let game = GameCache.Instance?.CurGame;
+        if (game?.TexasGameProtocol) {
+            game.TexasGameProtocol.pendingPropData = {
+                type: propType,
+                user_id: gc.nUserId,
+                target_user_id: this._player.userID
+            };
+        }
+
         // 发送
         ProtocolAgency.Send<ClientMessageBroadcastMsg.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_BroadcastMsg,
@@ -1270,7 +1299,6 @@ export default class UIPlayerInfo extends UIBasePlus {
             Body: msg.toObject()
         });
 
-        UIComponent.Instance.Toast(`使用道具成功`);
     }
 
     // ─── 举报 ───
@@ -1336,5 +1364,9 @@ export default class UIPlayerInfo extends UIBasePlus {
                 UIComponent.close(UIDefine.UIPlayerInfo);
             })
             .start();
+    }
+
+    override onClose(param?: any): void {
+        super.onClose(param);
     }
 }
