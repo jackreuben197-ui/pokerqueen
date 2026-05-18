@@ -562,7 +562,7 @@ export default class UITexas extends BaseScene {
 
     // ── 自己坐下（Protocol_Holdem_Seated） ──
     private onSeatedUpdate(response: any): void {
-        if (!response) return;
+        if (!response || response.status !== 0) return; // 失败（如带入不足）不写缓存
         const userRid = GameCache.Instance.nUserId;
         const name = GameCache.Instance.nick || '';
         const avatar = GameCache.Instance.headPic || '';

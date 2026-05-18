@@ -282,15 +282,15 @@ export default class UITexasReportComponent extends UIBase {
         if (existing) {
             // Unity: 覆盖 bringInTotal，重算 totalBringin，不发事件
             existing.isOnline = true;
-            existing.bringIn = totalBringIn;
+            existing.bringInTotal = totalBringIn;
             existing.deposit = mushroomBase > 0 ? mushroomBase : deposit;
-            cached.totalBringin = playersList.reduce((s, p) => s + (p.bringIn || 0), 0);
+            cached.totalBringin = playersList.reduce((s, p) => s + (p.bringInTotal || 0), 0);
             return false;
         }
 
         // 新玩家
         const player: any = {
-            userRid, bringIn: totalBringIn,
+            userRid, bringInTotal: totalBringIn,
             deposit: mushroomBase > 0 ? mushroomBase : deposit,
             isOnline: true,
             name: name || '', avatar: avatar || '',
@@ -330,7 +330,7 @@ export default class UITexasReportComponent extends UIBase {
         const player: any = {
             userRid, bringOutTotal: bringOut, isOnline: false,
             name: name || '', avatar: avatar || '',
-            bringIn: 0, win: 0, handNum: 0, poolCount: 0
+            bringInTotal: 0, win: 0, handNum: 0, poolCount: 0
         };
         if (mushroomBase > 0) player.deposit = 0;
         playersList.push(player);
@@ -361,7 +361,7 @@ export default class UITexasReportComponent extends UIBase {
         const existing = playersList.find(p => Number(p.userRid) === Number(userRid));
         if (existing) {
             existing.isOnline = true;
-            existing.bringIn = (existing.bringIn || 0) + newBringIn;
+            existing.bringInTotal = (existing.bringInTotal || 0) + newBringIn;
             if (mushroomBase > 0) existing.deposit = mushroomBase;
             cached.totalBringin = (cached.totalBringin || 0) + newBringIn;
             return false;
@@ -369,7 +369,7 @@ export default class UITexasReportComponent extends UIBase {
 
         // 兜底：新玩家
         const player: any = {
-            userRid, bringIn: newBringIn, isOnline: true,
+            userRid, bringInTotal: newBringIn, isOnline: true,
             name: name || '', avatar: avatar || '',
             deposit: mushroomBase > 0 ? mushroomBase : 0,
             win: 0, handNum: 0, poolCount: 0
