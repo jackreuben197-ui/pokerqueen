@@ -57,8 +57,8 @@ export default class ThrowPropManager {
         { pattern: 'B', spines: ['spine/Expression_Touch/touch'], anims: ['animation'] },
         // 6: 鲨鱼 (606) — 模式C
         { pattern: 'C', spines: ['spine/Expression_Shark/shark'], anims: ['shark_set', 'shark_receive'] },
-        // 7: 抓鸡 (607) — 模式C (简化，无伸手)
-        { pattern: 'C', spines: ['spine/Expression_Chicken/chicken_spine'], anims: ['chicken_receive'] },
+        // 7: 抓鸡 (607) — 模式C (伸手飞行 + 抓鸡)
+        { pattern: 'C', spines: ['spine/Expression_Chicken/chicken_spine'], anims: ['chicken_set', 'chicken_receive'] },
         // 8: 拳击 (608) — 模式D
         { pattern: 'D', spines: ['spine/Expression_Box/box_local', 'spine/Expression_Box_Screen/box_full'], anims: [] },
         // 9: 撒钱 (609) — 模式C (简化，无伸手)
@@ -336,15 +336,34 @@ export default class ThrowPropManager {
                     this.playSound(soundName);
                 }
             } else if (config.anims.length >= 2) {
-                // 鲨鱼(6)：发送者位置播游泳，目标位置播吃
+                // 抓鸡(7)：伸手从发送者飞到目标 + 目标位置播抓鸡；鲨鱼(6)：发送者游泳 + 目标被吃
                 const senderPos = this.getHeadLocalPos(senderSeat);
-                // 发送者：游泳动画
-                const senderNode = this.createSpineNode(allData[0], config.anims[0], false, root, senderPos);
-                this.destroyAfterComplete(senderNode, 4);
-                // 目标：被吃动画，动画开始时播放音效（对应Unity spine "sfx"事件）
-                const targetNode = this.createSpineNode(allData[0], config.anims[1], false, root, targetPos);
-                this.destroyAfterComplete(targetNode, 4);
-                this.playSound(soundName);
+                if (offset === 7) {
+                    // 1. 伸手飞行 (chicken_set) — 动画播放与飞行同时进行
+                    const handNode = new cc.Node('PropSpine');
+                    const handSkeleton = handNode.addComponent(sp.Skeleton);
+                    handSkeleton.skeletonData = allData[0];
+                    handNode.parent = root;
+                    handNode.setPosition(senderPos);
+                    handSkeleton.setAnimation(0, config.anims[0], false);
+                    this.destroyAfterComplete(handNode, 4);
+                    // 飞向目标 (0.5秒，与Unity一致)
+                    cc.tween(handNode)
+                        .to(0.5, { x: targetPos.x, y: targetPos.y }, { easing: 'quadInOut' })
+                        .start();
+                    // 2. 目标位置抓鸡动画 (chicken_receive)
+                    const targetNode = this.createSpineNode(allData[0], config.anims[1], false, root, targetPos);
+                    this.destroyAfterComplete(targetNode, 4);
+                    this.playSound(soundName);
+                } else {
+                    // 鲨鱼(6)：发送者位置播游泳，目标位置播吃（无飞行）
+                    const senderNode = this.createSpineNode(allData[0], config.anims[0], false, root, senderPos);
+                    this.destroyAfterComplete(senderNode, 4);
+                    // 目标：被吃动画，动画开始时播放音效（对应Unity spine "sfx"事件）
+                    const targetNode = this.createSpineNode(allData[0], config.anims[1], false, root, targetPos);
+                    this.destroyAfterComplete(targetNode, 4);
+                    this.playSound(soundName);
+                }
             }
         }).catch(() => { });
     }
