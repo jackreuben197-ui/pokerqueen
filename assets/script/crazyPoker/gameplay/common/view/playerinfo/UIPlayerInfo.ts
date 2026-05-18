@@ -27,10 +27,16 @@ export default class UIPlayerInfo extends UIBasePlus {
     @property(cc.SpriteFrame)
     toggleOnBg: cc.SpriteFrame = null;
 
-    // 扔道具 PropsID: CtEmoji2(6) * 100 = 600, 依次 +1
+    // 扔道具 PropsID: CtEmoji2(6) * 100 = 600
     // 600=番茄, 601=花环, 602=亲吻, 603=大拇指, 604=干杯, 605=摸头,
     // 606=鲨鱼, 607=抓鸡, 608=拳击, 609=撒钱, 610=鱼头, 611=棒球
+    // prefab 视觉布局: 亲吻,撒钱,拳击,摸头,番茄,鱼头 / 棒球,大拇指,干杯,抓鸡,花环,鲨鱼
     private static readonly PROP_TYPE_BASE: number = Def.ConsumeType.CT_EMOJI_2 * 100; // 600
+    /** propIndex(1~12) → propType，对应 prefab 中 $propOp_1 ~ $propOp_12 的视觉位置 */
+    private static readonly PROP_TYPE_MAP: number[] = [
+        602, 609, 608, 605, 600, 610, // 第一行: 亲吻,撒钱,拳击,摸头,番茄,鱼头
+        611, 603, 604, 607, 601, 606  // 第二行: 棒球,大拇指,干杯,抓鸡,花环,鲨鱼
+    ];
 
     // 自动绑定 ($ 前缀节点)
     $panel_click: cc.Node = null;
@@ -78,7 +84,6 @@ export default class UIPlayerInfo extends UIBasePlus {
     private _noticeLabel: cc.Label = null;
     private _diamondConfig: { fee_rate: number; limit_time_pre_day: number } = null;
     private _diamondSentCount: number = 0;
-    private _pendingDiamondAnimAmount: number = 0; // >0 表示赠送成功等待界面关闭后播动画
 
     // 操作按钮
     $OpButtonNode: cc.Node = null;
@@ -1056,15 +1061,19 @@ export default class UIPlayerInfo extends UIBasePlus {
             })
         }).then((res: any) => {
             if (res && res.code === 0) {
+                this._diamondSentCount++;
                 if (this.node.activeInHierarchy) {
-                    // 界面还在场景中，记录 pending 等 onClose 播放
-                    this._diamondSentCount++;
                     this.refreshDiamondNotice();
                     this.loadDiamondBalance();
-                    this._pendingDiamondAnimAmount = amount;
-                } else {
-                    // 界面已关闭（parent=null），直接播放动画
-                    this.playDiamondFlyAnimation(amount);
+                }
+                // 发送者在本地播放动画（服务端广播负责其他玩家）
+                let game = GameCache.Instance?.CurGame;
+                if (game?.throwPropMgr && this._player) {
+                    game.throwPropMgr.playDiamondAnimation(
+                        GameCache.Instance.nUserId,
+                        this._player.userID,
+                        amount
+                    );
                 }
             } else if (res && res.code === 20124) {
                 if (this.node.activeInHierarchy) {
@@ -1078,115 +1087,6 @@ export default class UIPlayerInfo extends UIBasePlus {
                 );
             }
         });
-    }
-
-    /** 播放赠送/接收钻石飞行动画 */
-    private playDiamondFlyAnimation(amount: number): void {
-        let game = GameCache.Instance?.CurGame;
-        if (!game || !game.listSeat) return;
-
-        // 赠送方（当前玩家）
-        let myUserId = game.mainPlayer?.userID;
-        let senderSeat = myUserId ? game.GetSeatByUserId(myUserId) : null;
-        // 接收方（被查看的玩家）
-        let receiverSeat = this._player ? game.GetSeatByUserId(this._player.userID) : null;
-
-        if (!senderSeat || !receiverSeat) return;
-        if (!senderSeat.uirc?.Frame_Head || !receiverSeat.uirc?.Frame_Head) return;
-
-        let parentNode = game.uirc?.seats_content;
-        if (!parentNode || !cc.isValid(parentNode)) return;
-
-        let senderWorldPos = senderSeat.uirc.Frame_Head.parent.convertToWorldSpaceAR(senderSeat.uirc.Frame_Head.position);
-        let receiverWorldPos = receiverSeat.uirc.Frame_Head.parent.convertToWorldSpaceAR(receiverSeat.uirc.Frame_Head.position);
-
-        // 同时加载两个 prefab
-        cc.resources.load('effect/diamondFly', cc.Prefab, (err, flyPrefab: cc.Prefab) => {
-            if (err) { cc.warn('[UIPlayerInfo] diamondFly load failed:', err.message); return; }
-
-            cc.resources.load('effect/DiamondIcon', cc.Prefab, (err2, iconPrefab: cc.Prefab) => {
-                if (err2) { cc.warn('[UIPlayerInfo] DiamondIcon load failed:', err2.message); return; }
-
-                cc.resources.load('effect/diamondSpine', cc.Prefab, (err3, spinePrefab: cc.Prefab) => {
-                    if (err3) { cc.warn('[UIPlayerInfo] diamondSpine load failed:', err3.message); return; }
-
-                    // 1) 赠送方：立即播放 -amount 飞行动画
-                    this.spawnDiamondFlyNode(flyPrefab, parentNode, senderWorldPos, `-${amount}`);
-
-                    // 2) 钻石图标从赠送方头像飞到接收方头像（900ms）
-                    let icon = cc.instantiate(iconPrefab);
-                    icon.parent = parentNode;
-                    let startLocal = parentNode.convertToNodeSpaceAR(senderWorldPos);
-                    let endLocal = parentNode.convertToNodeSpaceAR(receiverWorldPos);
-                    icon.setPosition(startLocal);
-
-                    cc.tween(icon)
-                        .to(0.9, { position: endLocal }, { easing: 'quadInOut' })
-                        .call(() => {
-                            if (!cc.isValid(this.node)) return;
-                            // 3) 先播放 spine 特效
-                            let receiverLocal = parentNode.convertToNodeSpaceAR(receiverWorldPos);
-                            this.playSpineEffect(spinePrefab, parentNode, receiverLocal);
-                            // 4) 再播放 +amount 飞行动画（层级在 spine 之上）
-                            this.spawnDiamondFlyNode(flyPrefab, parentNode, receiverWorldPos, `+${amount}`);
-                            if (cc.isValid(icon)) icon.destroy();
-                        })
-                        .start();
-                });
-            });
-        });
-    }
-
-    /** 在目标位置播放 spine 特效，播完后自动销毁 */
-    private playSpineEffect(prefab: cc.Prefab, parentNode: cc.Node, localPos: cc.Vec3): void {
-        let node = cc.instantiate(prefab);
-        if (!node) return;
-        node.parent = parentNode;
-        node.setPosition(localPos);
-
-        let skeleton = node.getComponent(sp.SkeletonAnimation);
-        if (skeleton) {
-            skeleton.setCompleteListener(() => {
-                if (cc.isValid(node)) node.destroy();
-            });
-        } else {
-            // 没有 SkeletonAnimation 组件，2秒后兜底销毁
-            this.scheduleOnce(() => { if (cc.isValid(node)) node.destroy(); }, 2);
-        }
-    }
-
-    /** 生成一个钻石飞行节点并播放上浮淡出动画 */
-    private spawnDiamondFlyNode(prefab: cc.Prefab, parentNode: cc.Node, worldPos: cc.Vec3, text: string): void {
-        let node = cc.instantiate(prefab);
-        if (!node) return;
-
-        // 设置 diamondNum 文字
-        let numLabel = node.getChildByName('diamondNum');
-        if (numLabel) {
-            let label = numLabel.getComponent(cc.Label);
-            if (label) label.string = text;
-        }
-
-        // +amount 用绿色，-amount 用红色（prefab 默认红色）
-        if (text.startsWith('+') && numLabel) {
-            numLabel.color = cc.color(0, 255, 100, 255);
-        }
-
-        // 添加到父节点，设置世界坐标
-        node.parent = parentNode;
-        let localPos = parentNode.convertToNodeSpaceAR(worldPos);
-        node.setPosition(localPos);
-
-        // 阶段1 (0.4s): 上浮 150px，easeOut
-        // 阶段2 (0.9s): 继续上浮至总共 278px + 淡出
-        let finalY = localPos.y + 278;
-        cc.tween(node)
-            .to(0.4, { y: localPos.y + 150 }, { easing: 'sineOut' })
-            .to(0.9, { opacity: 0, y: finalY })
-            .call(() => {
-                if (cc.isValid(node)) node.destroy();
-            })
-            .start();
     }
 
     // ─── 音视频 ───
@@ -1351,7 +1251,7 @@ export default class UIPlayerInfo extends UIBasePlus {
         }
 
         // 构造内层广播消息 JSON
-        let propType = UIPlayerInfo.PROP_TYPE_BASE + (propIndex - 1); // 600 + offset
+        let propType = UIPlayerInfo.PROP_TYPE_MAP[propIndex - 1] || UIPlayerInfo.PROP_TYPE_BASE;
         let broadcastMsgData = JSON.stringify({
             name: gc.nick,
             target_user_id: this._player.userID,
@@ -1381,6 +1281,16 @@ export default class UIPlayerInfo extends UIBasePlus {
         msg.setExtra(extraBytes);
         msg.setMessage('');
 
+        // 暂存道具数据，等服务端返回成功后在本地播放动画
+        let game = GameCache.Instance?.CurGame;
+        if (game?.TexasGameProtocol) {
+            game.TexasGameProtocol.pendingPropData = {
+                type: propType,
+                user_id: gc.nUserId,
+                target_user_id: this._player.userID
+            };
+        }
+
         // 发送
         ProtocolAgency.Send<ClientMessageBroadcastMsg.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_BroadcastMsg,
@@ -1389,7 +1299,6 @@ export default class UIPlayerInfo extends UIBasePlus {
             Body: msg.toObject()
         });
 
-        UIComponent.Instance.Toast(`使用道具成功`);
     }
 
     // ─── 举报 ───
@@ -1458,12 +1367,6 @@ export default class UIPlayerInfo extends UIBasePlus {
     }
 
     override onClose(param?: any): void {
-        // 界面关闭时，如果赠送成功待播放动画，立即执行
-        if (this._pendingDiamondAnimAmount > 0) {
-            let amount = this._pendingDiamondAnimAmount;
-            this._pendingDiamondAnimAmount = 0;
-            this.playDiamondFlyAnimation(amount);
-        }
         super.onClose(param);
     }
 }

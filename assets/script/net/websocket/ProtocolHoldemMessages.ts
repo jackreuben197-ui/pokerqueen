@@ -51,6 +51,7 @@ import { ClientMessageAgreePost, ServerMessageAgreePost } from '../../protobuf/h
 import { ClientMessagePlayerJackpotSummary, ServerMessagePlayerJackpotSummary } from '../../protobuf/holdem/req_th_player_jackpot_summary_pb';
 import { ServerMessageJackpotGoldChange } from '../../protobuf/holdem/recv_th_jackpot_gold_change_pb';
 import { ServerMessageJackpotAward } from '../../protobuf/holdem/recv_th_jackpot_award_pb';
+import { ServerMessageRoomUserSendDiamond } from '../../protobuf/holdem/recv_g_room_user_send_diamond_pb';
 import { ClientMessageRooms, ServerMessageRooms } from '../../protobuf/holdem/req_rpc_rooms_pb';
 import { ServerMessageRoomChangeNotify } from '../../protobuf/holdem/recv_g_room_change_notify_pb';
 import { ServerMessageUtilAntiCheatRoomVideo } from '../../protobuf/holdem/recv_util_anti_cheat_room_video_pb';
@@ -386,6 +387,9 @@ export const ProtocolMap = {
     },
     [ProtocolCode.Protocol_Holdem_JackpotAward]: {
         Server: ServerMessageJackpotAward
+    },
+    [ProtocolCode.Protocol_Holdem_RoomUserSendDiamond]: {
+        Server: ServerMessageRoomUserSendDiamond
     },
     [ProtocolCode.Protocol_Holdem_Rooms]: {
         Client: ClientMessageRooms,

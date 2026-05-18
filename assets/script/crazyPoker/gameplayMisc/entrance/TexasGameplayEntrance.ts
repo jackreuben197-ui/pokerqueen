@@ -6,6 +6,8 @@ import { AntiCheatType } from '../../gameplay/common/constant/AntiCheatType';
 import AGameplayEntrance, { LoadIndicator } from './AGameplayEntrance';
 import ProcedureManager from '../../../manager/ProcedureManager';
 import { ProcedureEnum } from '../../../define/EIDefine';
+import UIComponent from '../../../ui/UIComponent';
+import { i18nMgr } from '../../../i18n/i18nMgr';
 
 /**
  * @description 德州玩法入口
@@ -97,6 +99,12 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
                 return -1;
             }
             this._roomInfo = resp.roomsList[0];
+            // 检查房间是否已关闭/已结束 (status >= 3)
+            if (this._roomInfo.status >= 3) {
+                console.error(`${this.constructor.name}: room is closed, status=${this._roomInfo.status}`);
+                UIComponent.Instance.Toast(i18nMgr.Get("GameRoom_ForceCloseTips"));
+                return -1;
+            }
             return 0;
         } catch (error) {
             console.error(`${this.constructor.name}: requestRoomInfoAsync: wait room info failed, ${error}`);
@@ -109,6 +117,11 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
      * @param isEnterForeground 是否进入前台
      */
     private async checkCanEnterAsync(isEnterForeground: boolean): Promise<boolean> {
+        // 房间已关闭或已结束，不允许进入
+        if (this._roomInfo && this._roomInfo.status >= 3) {
+            console.error(`${this.constructor.name}: checkCanEnterAsync: room is closed, status=${this._roomInfo.status}`);
+            return false;
+        }
         // TODO: 检查是否可以进入房间（人脸验证、金币检查等）
         return true;
     }

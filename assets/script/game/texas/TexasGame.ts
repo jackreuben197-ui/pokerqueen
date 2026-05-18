@@ -56,6 +56,7 @@ import TexasGameMushroom from './TexasGameMushroom';
 import TexasGameSquid from './TexasGameSquid';
 import TexasGameBombPot from './TexasGameBombPot';
 import TexasGameJackpot from './TexasGameJackpot';
+import ThrowPropManager from '../../crazyPoker/gameplay/common/util/ThrowPropManager';
 import { CardType, CardTypeUtil } from './../CardTypeUtil';
 import { CPlayer } from './../CPlayer';
 import FSMLogicComponent from './../FSMLogicComponent';
@@ -105,6 +106,7 @@ export default class TexasGame {
     private squidFeature: TexasGameSquid = null;
     private bombPotFeature: TexasGameBombPot = null;
     jackpotFeature: TexasGameJackpot = null;
+    throwPropMgr: ThrowPropManager = null;
     ///////////////////////////////
     private setting: { deskType: any; pokerType: any } = {
         deskType: null,
@@ -546,6 +548,7 @@ export default class TexasGame {
         this.squidFeature = new TexasGameSquid(this);
         this.bombPotFeature = new TexasGameBombPot(this);
         this.jackpotFeature = new TexasGameJackpot(this);
+        this.throwPropMgr = new ThrowPropManager(this);
         this.seatMoveStruct = new SeatMoveStruct();
         this.RCInit();
     }
@@ -1675,6 +1678,10 @@ export default class TexasGame {
                 api_id: GameCache.Instance.room_id
             });
             // 联盟币
+            if (!this.mainPlayer) {
+                console.warn(LN, 'BringIn mainPlayer is null, abort');
+                return;
+            }
             if (GameCache.Instance.gold_type == 1) {
                 UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, {
                     _bigBlind: GameCache.Instance._texasData._bigBlind,
@@ -1754,6 +1761,11 @@ export default class TexasGame {
             // 请求异常
             if (response.code != 0) {
                 console.error(LN, `Sitdown 坐下查询带入失败 ${response.code}`);
+                return;
+            }
+            // 异步请求期间可能已被清理
+            if (!this.mainPlayer) {
+                console.warn(LN, 'Sitdown mainPlayer is null, abort');
                 return;
             }
             let seatedData: ClientMessageSeated.AsObject = {
@@ -4173,6 +4185,8 @@ export default class TexasGame {
         this.ClearTableUI();
         this.ClearOther();
         this.RemoveMsgHandler();
+        this.throwPropMgr?.cleanup();
+        this.throwPropMgr = null;
         //停止状态机刷新
         GC.uc.RemoveComponent(this.GameLogicSMComponent);
         //移除资源
