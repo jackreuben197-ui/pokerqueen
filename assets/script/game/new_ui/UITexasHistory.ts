@@ -16,6 +16,7 @@ import GameUtil from '../util/GameUtil';
 import playerCardNode, { IPlayerCardData } from '../../crazyPoker/gameplay/common/view/cardhisory/playerCardNode';
 import { ResManager } from '../../manager/ResManager';
 import DiamondModel from '../../diamond/DiamondModel';
+import { replayGet, replaySet, roomKey, matchKey } from '../../tools/ReplayCacheDB';
 
 export class HistoryInfoData {
     public bInsurance: boolean;
@@ -65,6 +66,7 @@ const { ccclass, property } = cc._decorator;
 export default class UITexasHistory extends UIBasePlus {
     currentPage = 0;
     totalPage = 0;
+    private _pendingHandNum: number = -1;
     historyInfoData: HistoryInfoData;
     AllPlayerPaiPu: cc.Node = null;
     AllPlayerPaiPuInfoObj: cc.Node = null;
@@ -500,12 +502,19 @@ export default class UITexasHistory extends UIBasePlus {
     }
 
     Protocol_Holdem_PublicReplay_Handler(response) {
+        if (this._pendingHandNum < 0) return; // 预取响应，非本面板请求，忽略
         if (response?.data == '' || response?.data == null) {
-            //没有数据
+            this._pendingHandNum = -1;
             return;
         }
-        let data = PublicHelper.Base64ToJsonString(response.data);
-        this.HandleHistoryReplay(JSON.parse(data));
+        const handNum = this._pendingHandNum;
+        this._pendingHandNum = -1;
+        let data = JSON.parse(PublicHelper.Base64ToJsonString(response.data));
+        const roomId = GameCache.Instance.room_id;
+        const matchId = GameCache.Instance.match_id;
+        replaySet(roomKey(roomId, handNum), data);
+        if (matchId) replaySet(matchKey(matchId, handNum), data);
+        this.HandleHistoryReplay(data);
     }
 
     //请求个人历史并刷新界面
@@ -525,13 +534,23 @@ export default class UITexasHistory extends UIBasePlus {
         // this.Text_num.string = `${this.currentPage}/${this.totalPage}`;
     }
 
-    SendClientMessagePublicReplay(handNum) {
+    async SendClientMessagePublicReplay(handNum) {
+        const roomId = GameCache.Instance.room_id;
+        const matchId = GameCache.Instance.match_id;
+        const cached =
+            (await replayGet(roomKey(roomId, handNum))) ??
+            (matchId ? await replayGet(matchKey(matchId, handNum)) : null);
+        if (cached) {
+            this.HandleHistoryReplay(cached);
+            return;
+        }
+        this._pendingHandNum = handNum;
         ProtocolAgency.Send({
             Code: ProtocolCode.Protocol_Holdem_PublicReplay,
-            RoomID: GameCache.Instance.room_id,
-            MatchID: GameCache.Instance.match_id,
+            RoomID: roomId,
+            MatchID: matchId,
             Body: {
-                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                room: { roomId: roomId, matchId: matchId },
                 handNum: handNum,
                 uniqueId: GameCache.Instance.CurGame.cacheUniqueId
             }

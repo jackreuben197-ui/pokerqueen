@@ -33,6 +33,9 @@ import TexasGame from '../texas/TexasGame';
 import { TexasGameState } from '../TexasGameState';
 import { GamePlaySubType } from '../ui/UITexasGameEnd';
 import GameUtil, { RoomType } from '../util/GameUtil';
+import PublicHelper from '../../helper/PublicHelper';
+import ProtocolAgency from '../../net/websocket/ProtocolAgency';
+import { replaySet, roomKey, matchKey } from '../../tools/ReplayCacheDB';
 const LN = '[TexasGameMessageHandler]';
 
 export default class TexasGameMessageHandler {
@@ -78,6 +81,7 @@ export default class TexasGameMessageHandler {
         GC.notify.register(ProtocolCode.Protocol_Holdem_JackpotGoldChange, this.Protocol_Holdem_JackpotGoldChange_Handler, this);
         GC.notify.register(ProtocolCode.Protocol_Holdem_JackpotAward, this.Protocol_Holdem_JackpotAward_Handler, this);
         GC.notify.register(ProtocolCode.Protocol_Holdem_Error, this.Protocol_Holdem_Error_Handler, this);
+        GC.notify.register(ProtocolCode.Protocol_Holdem_PublicReplay, this.Prefetch_PublicReplay_Handler, this);
     }
 
     public RemoveMessageHandler() {
@@ -118,6 +122,7 @@ export default class TexasGameMessageHandler {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_JackpotGoldChange, this.Protocol_Holdem_JackpotGoldChange_Handler, this);
         GC.notify.remove(ProtocolCode.Protocol_Holdem_JackpotAward, this.Protocol_Holdem_JackpotAward_Handler, this);
         GC.notify.remove(ProtocolCode.Protocol_Holdem_Error, this.Protocol_Holdem_Error_Handler, this);
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_PublicReplay, this.Prefetch_PublicReplay_Handler, this);
     }
 
     /// <summary>
@@ -432,6 +437,38 @@ export default class TexasGameMessageHandler {
             return;
         }
         this.game.SMAgency.ChangeGameState(TexasGameState.HandEnd, response);
+        if (response.handNum > 0) {
+            this.PrefetchHandReplay(response.handNum);
+        }
+    }
+
+    private _prefetchHandNum: number = -1;
+
+    public PrefetchHandReplay(handNum: number): void {
+        this._prefetchHandNum = handNum;
+        ProtocolAgency.Send({
+            Code: ProtocolCode.Protocol_Holdem_PublicReplay,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                handNum: handNum,
+                uniqueId: this.game.cacheUniqueId
+            }
+        });
+    }
+
+    private Prefetch_PublicReplay_Handler(response: any): void {
+        if (this._prefetchHandNum < 0) return;
+        if (!response?.data) return;
+        const handNum = this._prefetchHandNum;
+        this._prefetchHandNum = -1;
+        const data = JSON.parse(PublicHelper.Base64ToJsonString(response.data));
+        const roomId = GameCache.Instance.room_id;
+        const matchId = GameCache.Instance.match_id;
+        replaySet(roomKey(roomId, handNum), data);
+        if (matchId) replaySet(matchKey(matchId, handNum), data);
+        console.log(LN, `预取牌谱缓存完成 handNum=${handNum}`);
     }
 
     Protocol_Holdem_BringInOrStoreFail_Handler(Protocol_Holdem_BringInOrStoreFail: ProtocolCode, Protocol_Holdem_BringInOrStoreFail_Handler: any, arg2: this) {
