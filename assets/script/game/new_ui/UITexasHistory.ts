@@ -417,8 +417,10 @@ export default class UITexasHistory extends UIBasePlus {
                 if (btn) btn.interactable = true;
 
                 if (res?.code === 0 && res?.data) {
-                    // 合并偷偷看到的手牌到缓存
+                    // 合并偷偷看到的手牌到当前手牌缓存数据中（对齐 Unity ExecuteWatchUser）
                     this.mergeWatchedHands(res.data.be_watched_user_hands);
+                    // 将偷看数据写回该手牌的缓存，确保切换后再切回来时数据不丢失
+                    this.updateReplayCacheWithWatchedHands();
                     // 用新数据重新渲染界面
                     this.HandleHistoryReplay(res.data);
                     // 隐藏偷偷看按钮（已看过）
@@ -452,6 +454,34 @@ export default class UITexasHistory extends UIBasePlus {
             if (!found) {
                 this.beWatchedUserHands.push(hands[i]);
             }
+        }
+    }
+
+    /** 将偷看数据写回当前手牌的 replaySet 缓存（对齐 Unity：更新 _recordData 后写入 GameCache） */
+    private async updateReplayCacheWithWatchedHands() {
+        const roomId = GameCache.Instance.room_id;
+        const matchId = GameCache.Instance.match_id;
+        const handNum = this.currentPage;
+        // 从缓存中取出当前手牌数据
+        const cached =
+            (await replayGet(roomKey(roomId, handNum))) ??
+            (matchId ? await replayGet(matchKey(matchId, handNum)) : null);
+        if (cached) {
+            // 将偷看数据合并到缓存数据的 be_watched_user_hands 字段
+            if (!cached.be_watched_user_hands) {
+                cached.be_watched_user_hands = [];
+            }
+            for (const hand of this.beWatchedUserHands) {
+                const existing = cached.be_watched_user_hands.find(h => h.user_rid === hand.user_rid);
+                if (existing) {
+                    existing.data = hand.data;
+                } else {
+                    cached.be_watched_user_hands.push({ user_rid: hand.user_rid, data: hand.data });
+                }
+            }
+            // 写回缓存
+            replaySet(roomKey(roomId, handNum), cached);
+            if (matchId) replaySet(matchKey(matchId, handNum), cached);
         }
     }
 
@@ -732,6 +762,8 @@ export default class UITexasHistory extends UIBasePlus {
     }
 
     protected async HandleHistoryReplay(ResponseData: typeof WebRoomCenterHistoryReplay.Data) {
+        // 切换手牌时清空偷看缓存，防止上一手的偷看数据污染当前手
+        this.beWatchedUserHands = [];
         this.PublicCards = [0, 0, 0, 0, 0];
         this.SecondPublicCards = [];
         // 保存上一手的双套状态，用于正确回收节点池
