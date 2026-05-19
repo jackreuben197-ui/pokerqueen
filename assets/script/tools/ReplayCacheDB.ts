@@ -1,6 +1,7 @@
 /**
  * 局内牌谱 IndexedDB 缓存
- * key = `${roomId}_${handNum}` (roomId 优先) 或 `m${matchId}_${handNum}` (matchId 回退)
+ * key = `${userId}_${roomId}_${handNum}` (roomId 优先) 或 `${userId}_m${matchId}_${handNum}` (matchId 回退)
+ * 含 userId 是因为服务端响应的 d 字段携带请求方私人底牌，跨账号缓存会导致隐私泄露
  */
 const DB_NAME = 'poker_replay_cache';
 const STORE_NAME = 'replays';
@@ -26,12 +27,12 @@ function openDB(): Promise<IDBDatabase> {
     });
 }
 
-export function roomKey(roomId: number, handNum: number): string {
-    return `${roomId}_${handNum}`;
+export function roomKey(userId: number, roomId: number, handNum: number): string {
+    return `${userId}_${roomId}_${handNum}`;
 }
 
-export function matchKey(matchId: number, handNum: number): string {
-    return `m${matchId}_${handNum}`;
+export function matchKey(userId: number, matchId: number, handNum: number): string {
+    return `${userId}_m${matchId}_${handNum}`;
 }
 
 export async function replayGet(key: string): Promise<any | null> {

@@ -464,10 +464,11 @@ export default class TexasGameMessageHandler {
         const handNum = this._prefetchHandNum;
         this._prefetchHandNum = -1;
         const data = JSON.parse(PublicHelper.Base64ToJsonString(response.data));
+        const userId = GameCache.Instance.nUserId;
         const roomId = GameCache.Instance.room_id;
         const matchId = GameCache.Instance.match_id;
-        replaySet(roomKey(roomId, handNum), data);
-        if (matchId) replaySet(matchKey(matchId, handNum), data);
+        replaySet(roomKey(userId, roomId, handNum), data);
+        if (matchId) replaySet(matchKey(userId, matchId, handNum), data);
         console.log(LN, `预取牌谱缓存完成 handNum=${handNum}`);
     }
 

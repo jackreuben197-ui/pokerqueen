@@ -459,13 +459,14 @@ export default class UITexasHistory extends UIBasePlus {
 
     /** 将偷看数据写回当前手牌的 replaySet 缓存（对齐 Unity：更新 _recordData 后写入 GameCache） */
     private async updateReplayCacheWithWatchedHands() {
+        const userId = GameCache.Instance.nUserId;
         const roomId = GameCache.Instance.room_id;
         const matchId = GameCache.Instance.match_id;
         const handNum = this.currentPage;
         // 从缓存中取出当前手牌数据
         const cached =
-            (await replayGet(roomKey(roomId, handNum))) ??
-            (matchId ? await replayGet(matchKey(matchId, handNum)) : null);
+            (await replayGet(roomKey(userId, roomId, handNum))) ??
+            (matchId ? await replayGet(matchKey(userId, matchId, handNum)) : null);
         if (cached) {
             // 将偷看数据合并到缓存数据的 be_watched_user_hands 字段
             if (!cached.be_watched_user_hands) {
@@ -480,8 +481,8 @@ export default class UITexasHistory extends UIBasePlus {
                 }
             }
             // 写回缓存
-            replaySet(roomKey(roomId, handNum), cached);
-            if (matchId) replaySet(matchKey(matchId, handNum), cached);
+            replaySet(roomKey(userId, roomId, handNum), cached);
+            if (matchId) replaySet(matchKey(userId, matchId, handNum), cached);
         }
     }
 
@@ -540,10 +541,11 @@ export default class UITexasHistory extends UIBasePlus {
         const handNum = this._pendingHandNum;
         this._pendingHandNum = -1;
         let data = JSON.parse(PublicHelper.Base64ToJsonString(response.data));
+        const userId = GameCache.Instance.nUserId;
         const roomId = GameCache.Instance.room_id;
         const matchId = GameCache.Instance.match_id;
-        replaySet(roomKey(roomId, handNum), data);
-        if (matchId) replaySet(matchKey(matchId, handNum), data);
+        replaySet(roomKey(userId, roomId, handNum), data);
+        if (matchId) replaySet(matchKey(userId, matchId, handNum), data);
         this.HandleHistoryReplay(data);
     }
 
@@ -565,11 +567,12 @@ export default class UITexasHistory extends UIBasePlus {
     }
 
     async SendClientMessagePublicReplay(handNum) {
+        const userId = GameCache.Instance.nUserId;
         const roomId = GameCache.Instance.room_id;
         const matchId = GameCache.Instance.match_id;
         const cached =
-            (await replayGet(roomKey(roomId, handNum))) ??
-            (matchId ? await replayGet(matchKey(matchId, handNum)) : null);
+            (await replayGet(roomKey(userId, roomId, handNum))) ??
+            (matchId ? await replayGet(matchKey(userId, matchId, handNum)) : null);
         if (cached) {
             this.HandleHistoryReplay(cached);
             return;
