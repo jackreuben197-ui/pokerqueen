@@ -7,7 +7,7 @@ import WebImageHelper from '../helper/WebImageHelper';
 import { i18nLabel } from "../i18n/i18nLabel";
 import { i18nMgr } from '../i18n/i18nMgr';
 import { UIClubModel } from '../uimodel/UIClubModel';
-import { WebOrgFriendRoomList, APITexasSituationMushRound, APITexasSituationSquidRound, WWW } from '../net/https/WebRequest';
+import { WebOrgFriendRoomList, APITexasSituationMushRound, APITexasSituationSquidRound, WWW, WebStatsRoomInsuranceData } from '../net/https/WebRequest';
 import ProtocolAgency from '../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../net/websocket/ProtocolCode';
 import { ClubCache } from '../frame/data/club/ClubCache';
@@ -70,6 +70,15 @@ interface JackpotRecord {
     straightFlushCount: number;
     fourOfaKindCount: number;
 }
+
+interface InsuranceRecord {
+    userRid: number;
+    name: string;
+    handNum: number;
+    insurBet: number;
+    insurWin: number;
+    createTime: number;
+}
 type ReportBottomTab = 'battle' | 'insurance' | 'jackpot' | 'mode';
 
 @ccclass
@@ -105,6 +114,7 @@ export default class UITexasReportComponent extends UIBase {
     listBarSquid: cc.Node = null;
     listBarMushRoom: cc.Node = null;
     listBarJackpot: cc.Node = null;
+    listBar4: cc.Node = null;
     jackpotBarNode: cc.Node = null;
     jackpotTotalLabel: cc.Label | cc.RichText = null;
     listBar3ModeLabel: cc.Label = null;
@@ -401,6 +411,8 @@ export default class UITexasReportComponent extends UIBase {
 
     private squidRoundDic: Map<number, SquidOrMushRecord[]> = new Map();
     private jackpotRecords: JackpotRecord[] = [];
+    private insuranceRecords: InsuranceRecord[] = [];
+    private isInsuranceListInit: boolean = false;
     private squidTotalRound: number = 0;
     private squidCurRound: number = 0;
     private squidStartHand: number = 0;
@@ -454,6 +466,7 @@ export default class UITexasReportComponent extends UIBase {
         this.listBarSquid = headerNode ? cc.find('listBarSquid', headerNode) : null;
         this.listBarMushRoom = headerNode ? cc.find('listBarMushRoom', headerNode) : null;
         this.listBarJackpot = headerNode ? cc.find('listBarJackpot', headerNode) : null;
+        this.listBar4 = headerNode ? cc.find('ListBar4', headerNode) : null;
         this.jackpotBarNode = dataListNode ? cc.find('JackpotBar', dataListNode) : null;
         const jackpotNumberNode = this.jackpotBarNode ? cc.find('JackpotNumber', this.jackpotBarNode) : null;
         if (jackpotNumberNode) {
@@ -648,6 +661,9 @@ export default class UITexasReportComponent extends UIBase {
             this.RefreshJackpotTotalLabel();
             if (this.curBottomTab === 'jackpot' && !this.isJackpotListInit) {
                 this.RequestJackpotSummary();
+            }
+            if (this.curBottomTab === 'insurance' && !this.isInsuranceListInit) {
+                this.RequestInsuranceData();
             }
             this.updateNoDataState();
             return;
@@ -993,12 +1009,14 @@ export default class UITexasReportComponent extends UIBase {
         this.tInfo_1 = [];
         this.squidRoundDic.clear();
         this.jackpotRecords = [];
+        this.insuranceRecords = [];
         this.squidTotalRound = 0;
         this.squidCurRound = 0;
         this.squidStartHand = 0;
         this.squidEndHand = 0;
         this.isSquidListInit = false;
         this.isJackpotListInit = false;
+        this.isInsuranceListInit = false;
         this.clearPlayerListContainers();
         if (this.people_content) this.people_content.removeAllChildren();
         if (this.peopelNum) this.peopelNum.string = '0';
@@ -1013,10 +1031,13 @@ export default class UITexasReportComponent extends UIBase {
         if (this.listBarSquid) this.listBarSquid.active = false;
         if (this.listBarMushRoom) this.listBarMushRoom.active = false;
         if (this.listBarJackpot) this.listBarJackpot.active = false;
+        if (this.listBar4) this.listBar4.active = false;
         if (this.curBottomTab === 'battle') {
             const useBar3 = subType !== 'none';
             if (this.listBar1) this.listBar1.active = !useBar3;
             if (this.listBar3) this.listBar3.active = useBar3;
+        } else if (this.curBottomTab === 'insurance') {
+            if (this.listBar4) this.listBar4.active = true;
         } else if (this.curBottomTab === 'mode') {
             if (subType === 'squid' && this.listBarSquid) this.listBarSquid.active = true;
             if (subType === 'mush' && this.listBarMushRoom) this.listBarMushRoom.active = true;
@@ -1034,7 +1055,7 @@ export default class UITexasReportComponent extends UIBase {
 
     private onClickBottomToggle(tab: ReportBottomTab): void {
         this.reportSubType = this.resolveReportSubType();
-        if (tab === 'insurance') {
+        if (tab === 'insurance' && !this.isInsuranceEnabled()) {
             return;
         }
         if (tab === 'mode' && this.reportSubType === 'none') {
@@ -1058,6 +1079,9 @@ export default class UITexasReportComponent extends UIBase {
         if (this.curBottomTab === 'jackpot') {
             this.RequestJackpotSummary();
         }
+        if (this.curBottomTab === 'insurance' && !this.isInsuranceListInit) {
+            this.RequestInsuranceData();
+        }
     }
 
     private refreshBottomToggleState(): void {
@@ -1065,12 +1089,13 @@ export default class UITexasReportComponent extends UIBase {
         this.refreshMushDir();
         const showModeToggle = this.reportSubType !== 'none';
         const showJackpotToggle = this.isJackpotEnabled();
-        const showBottomToggle = showModeToggle || showJackpotToggle;
+        const showInsuranceToggle = this.isInsuranceEnabled();
+        const showBottomToggle = showModeToggle || showJackpotToggle || showInsuranceToggle;
         this.refreshModeToggleTitle();
         if (this.bottomToggleRoot) this.bottomToggleRoot.active = showBottomToggle;
         if (this.battleToggleBtn) this.battleToggleBtn.active = showBottomToggle;
         if (this.squidToggleBtn) this.squidToggleBtn.active = showModeToggle;
-        if (this.baoxianToggleBtn) this.baoxianToggleBtn.active = false;
+        if (this.baoxianToggleBtn) this.baoxianToggleBtn.active = showInsuranceToggle;
         if (this.jackpotToggleBtn) this.jackpotToggleBtn.active = showJackpotToggle;
         if (!showBottomToggle) {
             this.curBottomTab = 'battle';
@@ -1078,13 +1103,15 @@ export default class UITexasReportComponent extends UIBase {
             this.curBottomTab = 'battle';
         } else if (this.curBottomTab === 'jackpot' && !showJackpotToggle) {
             this.curBottomTab = showModeToggle ? 'mode' : 'battle';
+        } else if (this.curBottomTab === 'insurance' && !showInsuranceToggle) {
+            this.curBottomTab = 'battle';
         }
         if (this.battleCheckmark) this.battleCheckmark.active = showBottomToggle && this.curBottomTab === 'battle';
-        if (this.baoxianCheckmark) this.baoxianCheckmark.active = false;
+        if (this.baoxianCheckmark) this.baoxianCheckmark.active = showInsuranceToggle && this.curBottomTab === 'insurance';
         if (this.jackpotCheckmark) this.jackpotCheckmark.active = showJackpotToggle && this.curBottomTab === 'jackpot';
         if (this.squidCheckmark) this.squidCheckmark.active = showModeToggle && this.curBottomTab === 'mode';
         this.setToggleTextColor(this.battleTextNode, showBottomToggle && this.curBottomTab === 'battle');
-        this.setToggleTextColor(this.baoxianTextNode, false);
+        this.setToggleTextColor(this.baoxianTextNode, showInsuranceToggle && this.curBottomTab === 'insurance');
         this.setToggleTextColor(this.jackpotTextNode, showJackpotToggle && this.curBottomTab === 'jackpot');
         this.setToggleTextColor(this.squidTextNode, showModeToggle && this.curBottomTab === 'mode');
     }
@@ -1105,9 +1132,10 @@ export default class UITexasReportComponent extends UIBase {
 
     private refreshContentVisible(): void {
         const isBattle = this.curBottomTab === 'battle';
+        const isInsurance = this.curBottomTab === 'insurance';
         const isJackpot = this.curBottomTab === 'jackpot';
         const isMode = this.curBottomTab === 'mode';
-        if (this.reportScrow) this.reportScrow.active = isBattle;
+        if (this.reportScrow) this.reportScrow.active = isBattle || isInsurance;
         if (this.jackpotListView) this.jackpotListView.active = isJackpot;
         if (this.jackpotBarNode) this.jackpotBarNode.active = isJackpot;
         if (this.squidListView) this.squidListView.active = isMode && this.reportSubType === 'squid';
@@ -1159,6 +1187,10 @@ export default class UITexasReportComponent extends UIBase {
             this.UpdateJackpotViewList();
             return;
         }
+        if (this.curBottomTab === 'insurance') {
+            this.UpdateInsuranceViewList();
+            return;
+        }
         const content = this.getCurrentDataContent();
         if (!content) {
             return;
@@ -1178,6 +1210,9 @@ export default class UITexasReportComponent extends UIBase {
 
     private getCurrentDataContent(): cc.Node {
         if (this.curBottomTab === 'battle') {
+            return this.battle_data_content;
+        }
+        if (this.curBottomTab === 'insurance') {
             return this.battle_data_content;
         }
         if (this.curBottomTab === 'jackpot') {
@@ -1418,13 +1453,115 @@ export default class UITexasReportComponent extends UIBase {
     private updateNoDataState(): void {
         const isMode = this.curBottomTab === 'mode';
         const isJackpot = this.curBottomTab === 'jackpot';
-        const noData = isMode ? this.getCurrentSquidRecords().length <= 0 : isJackpot ? this.jackpotRecords.length <= 0 : false;
-        if (this.noDataNode) this.noDataNode.active = (isMode || isJackpot) && noData;
+        const isInsurance = this.curBottomTab === 'insurance';
+        let noData = false;
+        if (isMode) noData = this.getCurrentSquidRecords().length <= 0;
+        else if (isJackpot) noData = this.jackpotRecords.length <= 0;
+        else if (isInsurance) noData = this.isInsuranceListInit && this.insuranceRecords.length <= 0;
+        if (this.noDataNode) this.noDataNode.active = (isMode || isJackpot || isInsurance) && noData;
     }
 
     private isJackpotEnabled(): boolean {
         const curGame: any = GameCache.Instance.CurGame;
         return Number(curGame?.jackpot || GameCache.Instance.jackPot_on || 0) === 1;
+    }
+
+    private isInsuranceEnabled(): boolean {
+        return !!GameCache.Instance.insurance;
+    }
+
+    private RequestInsuranceData(): void {
+        const roomId = Number(GameCache.Instance.room_id || 0);
+        if (roomId <= 0) return;
+        WWW.Instance.CommonAPI({
+            web_class: WebStatsRoomInsuranceData,
+            body: { room_id: roomId, limit: 200, offset: 0 },
+            club_id: ClubCache.club_id,
+            juhua: false
+        }).then(
+            (response: any) => {
+                this.InitInsuranceViewList(response);
+            },
+            () => {
+                this.isInsuranceListInit = true;
+                this.updateNoDataState();
+            }
+        );
+    }
+
+    private InitInsuranceViewList(response: any): void {
+        this.isInsuranceListInit = true;
+        const list: any[] = (response?.data?.list || []) as any[];
+        this.insuranceRecords = list.map(item => ({
+            userRid: Number(item.user_rid || 0),
+            name: `${item.nick_name || ''}`,
+            handNum: Number(item.hand_num || 0),
+            insurBet: Number(item.insur_bet || 0),
+            insurWin: Number(item.insur_win || 0),
+            createTime: Number(item.create_time || 0)
+        }));
+        if (this.curBottomTab === 'insurance') {
+            this.UpdateInsuranceViewList();
+        }
+    }
+
+    private UpdateInsuranceViewList(): void {
+        const content = this.battle_data_content;
+        if (!content) return;
+        content.removeAllChildren();
+        if (this.insuranceRecords.length <= 0) {
+            this.updateNoDataState();
+            return;
+        }
+        for (let i = 0; i < this.insuranceRecords.length; i++) {
+            const item = this.OnGetInsuranceItemByIndex(i);
+            if (item) item.parent = content;
+        }
+        this.updateNoDataState();
+    }
+
+    private OnGetInsuranceItemByIndex(index: number): cc.Node {
+        if (index < 0 || index >= this.insuranceRecords.length) return null;
+        const dto = this.insuranceRecords[index];
+        if (!dto) return null;
+        const item: cc.Node = cc.instantiate(this.dataItem);
+        const itemInfo1 = item.getChildByName('item_info1');
+        const itemInfo3 = item.getChildByName('item_info3');
+        const squidNode = item.getChildByName('room_scrollview_sqiud');
+        const mushNode = item.getChildByName('room_scrollview_mushRoom');
+        const jackpotNode = item.getChildByName('room_scrollview_jackpot');
+        const insuranceNode = item.getChildByName('room_scrollview_insurance');
+        if (itemInfo1) itemInfo1.active = false;
+        if (itemInfo3) itemInfo3.active = false;
+        if (squidNode) squidNode.active = false;
+        if (mushNode) mushNode.active = false;
+        if (jackpotNode) jackpotNode.active = false;
+        if (insuranceNode) {
+            insuranceNode.active = true;
+            this.SetInsuranceItemInfo(insuranceNode, dto);
+        }
+        return item;
+    }
+
+    private SetInsuranceItemInfo(node: cc.Node, dto: InsuranceRecord): void {
+        if (!node || !dto) return;
+        const nameTxt = node.getChildByName('Text_Name')?.getComponent(cc.Label);
+        const numTxt = node.getChildByName('Text_Num')?.getComponent(cc.Label);
+        const allTxt = node.getChildByName('Text_All')?.getComponent(cc.Label);
+        const cardTxtNode = node.getChildByName('Text_Card');
+        const ownNode = node.getChildByName('own');
+        if (nameTxt) nameTxt.string = StringHelper.LengthNick(dto.name || '', 20);
+        // 投保时间：create_time 为秒级时间戳
+        if (numTxt) {
+            numTxt.string = dto.createTime > 0
+                ? TimeHelper.TimeToString(dto.createTime * 1000, 'MM/dd HH:mm')
+                : '--';
+        }
+        // 投保额/Ev
+        if (allTxt) allTxt.string = StringHelper.GetLongString(dto.insurBet || 0);
+        // 赔付：insur_win * -1 与 Unity 保持一致（服务端以负值表示赔出）
+        this.setSignedText(cardTxtNode, -(dto.insurWin || 0));
+        if (ownNode) ownNode.active = Number(dto.userRid || 0) === Number(GameCache.Instance.nUserId || 0);
     }
 
     private RefreshJackpotTotalLabel(): void {
