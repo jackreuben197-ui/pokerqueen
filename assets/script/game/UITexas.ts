@@ -1164,9 +1164,6 @@ export default class UITexas extends BaseScene {
         UIComponent.open(UIDefine.UIBlank_dialog, { title: '客服界面' });
     }
     private click_btn_safety_guard() {
-        console.log('============');
-        console.log({ game: this.game });
-
         H5MsgMgr.sendToH5('showPanel', 1, {
             panelType: 'safetyGuard',
             props: {

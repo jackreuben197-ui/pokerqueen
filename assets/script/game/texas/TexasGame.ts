@@ -857,7 +857,6 @@ export default class TexasGame {
         this.jackpot = Number(roomInfoAny?.jackpot || 0);
         GameCache.Instance.jackPot_on = this.jackpot;
         GameCache.Instance._enterRoomType = 1;
-        GameCache.Instance.jackPot_id = roomInfoAny.jackpot;
         GameCache.Instance.jackPot_gold = roomInfoAny.jackpotGold;
         GameCache.Instance.jackPot_parent_gold = roomInfoAny.jackpotParentGold;
         GameCache.Instance.jackPot_fund = GameCache.Instance.jackPot_parent_gold;
