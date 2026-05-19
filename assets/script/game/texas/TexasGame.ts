@@ -568,6 +568,10 @@ export default class TexasGame {
         this.listSeat = [];
         this.pots = [];
         this.dicSeatOnlyClient = new Map<number, Seat>();
+        // Dispose() 会将 throwPropMgr 置 null，重新进入房间时需要重建
+        if (!this.throwPropMgr) {
+            this.throwPropMgr = new ThrowPropManager(this);
+        }
         this.SMAgency.LoadGameStateConf();
         GC.uc.AddComponent(this.GameLogicSMComponent);
     }

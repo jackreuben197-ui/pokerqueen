@@ -742,17 +742,16 @@ export default class UITexasHistory extends UIBasePlus {
         //显示滚动容器
         this.$content.active = true;
         this.RefreshTopHandAndPlayerNumInfo(ResponseData.s.table.pl.length.toString());
-        //缓存公共牌
-        if (ResponseData.s.procedure.flop.card != null) {
-            // for (let i = 0; i < ResponseData.s.procedure.flop.card.length; i++) {
-            //     this.PublicCards[i] = ResponseData.s.procedure.flop.card[i];
-            // }
-            this.PublicCards = ResponseData.s.procedure.flop.card;
+        //缓存公共牌 — 逐个复制到固定 5 元素数组，避免引用替换导致数组长度不一致
+        if (ResponseData.s.procedure.flop?.card) {
+            for (let i = 0; i < ResponseData.s.procedure.flop.card.length && i < 5; i++) {
+                this.PublicCards[i] = ResponseData.s.procedure.flop.card[i];
+            }
         }
-        if (ResponseData.s.procedure.turn.card?.length > 0) {
+        if (ResponseData.s.procedure.turn?.card?.length > 0) {
             this.PublicCards[3] = ResponseData.s.procedure.turn.card[0];
         }
-        if (ResponseData.s.procedure.river.card?.length > 0) {
+        if (ResponseData.s.procedure.river?.card?.length > 0) {
             this.PublicCards[4] = ResponseData.s.procedure.river.card[0];
         }
         //判断是否有第二套牌，并赋值
@@ -929,15 +928,17 @@ export default class UITexasHistory extends UIBasePlus {
         // //Flop
         this.$Flop.active = ResponseData.s.procedure.flop.pl.length > 0;
         this.setChildLabel(this.$Flop, 'Title/player/num', `${ResponseData.s.procedure.flop.pl.length}`);
-        if (ResponseData.s.procedure.flop.pl.length > 0) {
-            this.$Flop_Cards.children.forEach((item, index) => {
-                item.active = this.PublicCards[index] > 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+        // 卡牌显示不受 pl 条件限制：即使该街无玩家动作，社区牌仍需正确渲染
+        this.$Flop_Cards.children.forEach((item, index) => {
+            let sprite = item.getComponent(cc.Sprite) || item.getComponentInChildren(cc.Sprite);
+            if (sprite) {
+                sprite.spriteFrame = AssetContext.getAsset(
                     GameUtil.GetCardNameByNum(this.PublicCards[index]),
                     AssetFold.texture_SmallCard0
                 );
-            });
-        }
+            }
+            item.active = this.PublicCards[index] > 0;
+        });
         times = 0;
         for (let i = 0; i < ResponseData.s.procedure.flop.pl.length; i++) {
             let seatID = ResponseData.s.procedure.flop.pl[i].sn;
@@ -977,15 +978,17 @@ export default class UITexasHistory extends UIBasePlus {
         // //Turn
         this.$Turn.active = ResponseData.s.procedure.turn.pl.length > 0;
         this.setChildLabel(this.$Turn, 'Title/player/num', `${ResponseData.s.procedure.turn.pl.length}`);
-        if (ResponseData.s.procedure.turn.pl.length > 0) {
-            this.$Turn_Cards.children.forEach((item, index) => {
-                item.active = this.PublicCards[index] > 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+        // 卡牌显示不受 pl 条件限制：全进等场景 pl 为空但牌已发出，必须无条件更新
+        this.$Turn_Cards.children.forEach((item, index) => {
+            let sprite = item.getComponent(cc.Sprite) || item.getComponentInChildren(cc.Sprite);
+            if (sprite) {
+                sprite.spriteFrame = AssetContext.getAsset(
                     GameUtil.GetCardNameByNum(this.PublicCards[index]),
                     AssetFold.texture_SmallCard0
                 );
-            });
-        }
+            }
+            item.active = this.PublicCards[index] > 0;
+        });
         times = 0;
         for (let i = 0; i < ResponseData.s.procedure.turn.pl.length; i++) {
             let seatID = ResponseData.s.procedure.turn.pl[i].sn;
@@ -1025,15 +1028,18 @@ export default class UITexasHistory extends UIBasePlus {
         // //River
         this.$River.active = ResponseData.s.procedure.river.pl.length > 0;
         this.setChildLabel(this.$River, 'Title/player/num', `${ResponseData.s.procedure.river.pl.length}`);
-        if (ResponseData.s.procedure.river.pl.length > 0) {
-            this.$River_Cards.children.forEach((item, index) => {
-                item.active = this.PublicCards[index] > 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
-                    GameUtil.GetCardNameByNum(this.PublicCards[index]),
+        // 卡牌显示不受 pl 条件限制：全进等场景 pl 为空但牌已发出，必须无条件更新
+        this.$River_Cards.children.forEach((item, index) => {
+            let cardValue = this.PublicCards[index];
+            let sprite = item.getComponent(cc.Sprite) || item.getComponentInChildren(cc.Sprite);
+            if (sprite) {
+                sprite.spriteFrame = AssetContext.getAsset(
+                    GameUtil.GetCardNameByNum(cardValue),
                     AssetFold.texture_SmallCard0
                 );
-            });
-        }
+            }
+            item.active = cardValue > 0;
+        });
         times = 0;
         for (let i = 0; i < ResponseData.s.procedure.river.pl.length; i++) {
             let seatID = ResponseData.s.procedure.river.pl[i].sn;
