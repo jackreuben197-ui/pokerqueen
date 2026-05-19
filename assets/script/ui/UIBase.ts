@@ -218,13 +218,13 @@ export default class UIBase extends BaseComponent {
     setChildLabel(node: cc.Node, path: string, text: string | number) {
         let label_node = cc.find(path, node);
         if (label_node) {
-            let i18n = label_node.getComponent(i18nLabel);
-            if (i18n) {
-                i18n.i18NString = `${text}`;
-            } else {
-                let label = label_node.getComponent(cc.Label) || label_node.getComponent(cc.RichText);
-                label.string = `${text}`;
-            }
+            // let i18n = label_node.getComponent(i18nLabel);
+            // if (i18n) {
+            //     i18n.i18NString = `${text}`;
+            //} else {
+            let label = label_node.getComponent(cc.Label) || label_node.getComponent(cc.RichText);
+            label.string = `${text}`;
+            //}
         } else {
             console.log('[UI][UIBase]', '-----未找到node-----', path);
         }

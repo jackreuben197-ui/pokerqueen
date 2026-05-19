@@ -99,11 +99,11 @@ export class UIFormMgr {
                 ui.node.x = 0;
                 ui.node.y = 0;
             } else {
-                if (ui instanceof BaseForm) {
-                    ui.onShow(param, this.currUI?.node, obj?.SceneUI);
-                } else {
+                // if (ui instanceof BaseForm) {
+                //     ui.onShow(param, this.currUI?.node, obj?.SceneUI);
+                // } else {
                     ui.onShow(param);
-                }
+                //}
             }
             this.currUI = ui;
             this.showUIs.push(ui);

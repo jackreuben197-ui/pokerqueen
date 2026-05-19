@@ -10,11 +10,11 @@ export class StringHelper {
         return `${(num / 100) ^ 0}`;
     }
 
-    static GetLongString(num: number | string): string {
+    static GetLongString(num: number | string, ratio = 100, fixed = 2): string {
         num = +num;
-        let n: number = num / 100;
+        let n: number = num / ratio;
         if (!Number.isInteger(n)) {
-            return n.toFixed(2);
+            return n.toFixed(fixed);
         }
         // let str: string = `${n}`;
         // if (~str.indexOf(".") && str.split(".")[1].length > 2) {
@@ -23,12 +23,12 @@ export class StringHelper {
         return n.toString();
     }
 
-    static GetLongStringLocale(num: number): string {
+    static GetLongStringLocale(num: number, ratio = 100, fixed = 2): string {
         if (num % 100 != 0) {
-            const n: number = num / 100;
+            const n: number = num / ratio;
             return n.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+                minimumFractionDigits: fixed,
+                maximumFractionDigits: fixed
             });
         }
         return (num / 100).toLocaleString('en-US');

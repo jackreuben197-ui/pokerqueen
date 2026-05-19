@@ -1,8 +1,13 @@
 import { StringHelper } from '../../../../../../helper/StringHelper';
+import { i18nMgr } from '../../../../../../i18n/i18nMgr';
+import { HttpUSDTRechargeProtocol } from '../../../../../module/message/CPHotfixWebMessage/usdt/HttpUSDTRechargeProtocol';
 const { ccclass, property } = cc._decorator;
+
+const LN = '[USDTDiamond]';
 
 @ccclass
 export default class USDTDiamond extends cc.Component {
+    public onChooseOneCallback: (payData: HttpUSDTRechargeProtocol.RequestData, isSp:boolean, payType: number) => void = null;
     @property(cc.Label)
     private amount: cc.Label = null;
     @property(cc.Label)
@@ -22,9 +27,61 @@ export default class USDTDiamond extends cc.Component {
     private spIntroNode: cc.Node = null;
     @property(cc.Label)
     private spIntroText: cc.Label = null;
+    private _amountForCaculate: number = 0;
+    private _priceID: number = 0;
+    private _cost: number = 0;
+    private _payID: number = 0;
+    private _isSp: boolean = false;
+    private _payType: number = 0;  // 1 数字钱包 2：API 3：客服撮合 （只有再updateCost以后才会有value)
+    public get isSp():boolean { return this._isSp};
+    public get payType(): number { 
+        if (this._payID == 0) {
+            console.error(LN, 'updateCost should be called'); 
+            return 0;
+        }  
+        return this._payType;
+    };
 
-    public initData(amount: number, usdtAmount: number, isSp: boolean) {
+    public initData(id: number, amount: number, moreAmount: number, isSp: boolean) {
+        this._priceID = id;
+        this._amountForCaculate = amount;
         this.amount.string = amount.toString();
-        this.usdtAmount.string = StringHelper.GetLongStringLocale(usdtAmount);
+        if (moreAmount > 0) {
+            this.intro.string = StringHelper.FormatString(i18nMgr.Get('UIBuyDiamondMore'), moreAmount);
+        }else{
+            this.intro.node.active =false;
+        }
+        this._isSp = isSp;
+        if (isSp) {
+            this.sp.active = true;
+        }else{
+            this.sp.active = false;
+        }
+    }
+
+    public updateCost(payID: number, payType: number, rate:number, discount: number): HttpUSDTRechargeProtocol.RequestData{
+        this._payID = payID;
+        this._payType = payType;
+        this._cost = this._amountForCaculate * rate - discount 
+        this.usdtAmount.string = StringHelper.GetLongStringLocale(this._cost, 1, 4);
+        return {
+                price_id: this._priceID,
+                pay_price: this._cost,
+                pay_id: this._payID,
+                gold_count: this._amountForCaculate,
+            };
+        
+    }
+
+    private onChooseOne(toggle: cc.Toggle) {
+        if (!toggle.isChecked) return;
+        if (this.onChooseOneCallback) {
+            this.onChooseOneCallback( {
+                price_id: this._priceID,
+                pay_price: this._cost,
+                pay_id: this._payID,
+                gold_count: this._amountForCaculate,
+            }, this._isSp, this._payType)
+        }
     }
 }

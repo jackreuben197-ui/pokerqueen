@@ -1714,7 +1714,8 @@ export default class TexasGame {
                     _creditNum: 0,
                     _commit: this._commitBringInCallback(),
                     _deposit: 0, // 如果在桌上不需要带入押金，这里要判断他的押金是否不足,到时候再补 deposit -user.current.deposit  @TODO
-                    _diamonds: userInfo.data.user.diamonds
+                    _diamonds: userInfo.data.user.diamonds,
+                    _isTrader: userInfo.data.user.isTrader,
                 });
                 return;
             }
@@ -1832,7 +1833,8 @@ export default class TexasGame {
                 _creditNum: response.data.user_club_gold_credit,
                 _deposit: GameCache.Instance._texasData._deposit,
                 _commit: this._commitBringInCallback(seatedData),
-                _diamonds: userInfo.data.user.diamonds
+                _diamonds: userInfo.data.user.diamonds,
+                _isTrader: userInfo.data.user.isTrader
             };
             // 联盟币
             if (GameCache.Instance.gold_type == 1) {

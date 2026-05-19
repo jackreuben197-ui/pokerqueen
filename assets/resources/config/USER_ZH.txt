@@ -7268,3 +7268,5 @@ UICantOpenVideoOnMicSeq=麦序模式下无法关闭视频UIEffectNoVideo=当前�
 UIEffectNoPowerSaving=当前房间未开启窗花特效
 UIEffectNoCamera=请先开启摄像头
 UIFirstLoadingTips=第一次资源加载速度微慢，请耐心等待...
+UIBuyDiamondMore=增{0}钻石
+UIBuyDiamondExchangeRate=汇率：1USDT={0}钻石

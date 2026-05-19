@@ -87,6 +87,10 @@ export namespace HttpUserInfoProtocol {
         public forbid: number = 0;
         /** 玩家的IP属地 */
         public ip_addr: string = '';
+
+        public get isTrader(): boolean {
+            return Date.now() < this.trader_expire_time * 1000;
+        }
     }
     export class UserExtraStatus {
         /** 是否完成分享引导 */

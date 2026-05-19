@@ -16,7 +16,7 @@ const { ccclass, menu, property } = cc._decorator;
 export type UIConfirmDialogParam = {
     this?: any; //点击回调的this作用域
     title?: string; //富文本
-    content?: string; //富文本
+    content: string; //富文本
     ok?: string; //富文本
     cancel?: string; //富文本
     commit?: string; //富文本
@@ -40,11 +40,16 @@ export default class UIConfirmDialog extends UIBasePlus {
     $commit: cc.Node = null;
     @property(cc.Node)
     $back: cc.Node = null;
+    @property(cc.RichText)
+    okLabel:cc.RichText = null;
+    @property(cc.RichText)
+    commitLabel:cc.RichText = null;
+    @property(cc.RichText)
+    cancelLabel:cc.RichText = null;
 
     onShow(param?: any): void {
         super.onShow(param);
         this.refreshUI(param);
-        console.log('[UIConfirmDialog]', this.$back, this.cc_RichText$title, this._param);
     }
 
     protected regiterTouchEvents(): void {
@@ -58,12 +63,22 @@ export default class UIConfirmDialog extends UIBasePlus {
         this.$cancel.active = !data.ok_click;
         this.$commit.active = !data.ok_click;
         this.$ok.active = !!data.ok_click;
-        this.cc_RichText$title.node.active = data.title?.length > 0;
-        this.cc_RichText$title.string = data.title || i18nMgr.Get('UIGuild_NoticeTitle');
-        this.cc_RichText$content.string = data.content || i18nMgr.Get('adaptation10005');
-        this.setChildLabel(this.$ok, 'label', data.ok || i18nMgr.Get('adaptation10008'));
-        this.setChildLabel(this.$commit, 'label', data.commit || i18nMgr.Get('adaptation10012'));
-        this.setChildLabel(this.$cancel, 'label', data.cancel || i18nMgr.Get('adaptation10013'));
+        if (data.title?.length > 0) {
+            this.cc_RichText$title.node.active = true;
+            this.cc_RichText$title.string = data.title
+        }else{
+            this.cc_RichText$title.node.active = false;
+        }
+        this.cc_RichText$content.string = data.content;
+        if (data.ok?.length > 0) {
+            this.okLabel.string = data.ok;
+        }
+         if (data.commit?.length > 0) {
+            this.commitLabel.string = data.commit;
+        }
+        if (data.cancel?.length > 0) {
+            this.cancelLabel.string = data.cancel;
+        }
     }
 
     onClickOK() {
