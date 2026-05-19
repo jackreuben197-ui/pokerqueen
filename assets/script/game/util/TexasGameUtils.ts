@@ -13,6 +13,7 @@ import { ActionLimit, Def } from '../../protobuf/holdem/define_pb';
 import { ClientMessageAgreeSecondPcsActive } from '../../protobuf/holdem/req_th_agree_second_pcs_active_pb';
 import { ClientMessageEnterRoom } from '../../protobuf/holdem/req_th_enter_room_pb';
 import { ClientMessageLeave } from '../../protobuf/holdem/req_th_leave_pb';
+import type { ProcedureReturnNavigateParam } from '../../procedure/ProcedureReturn';
 import UIComponent, { PrefabUI } from '../../ui/UIComponent';
 import { CardType } from '../CardTypeUtil';
 import { CPlayer } from '../CPlayer';
@@ -104,7 +105,7 @@ export default class TexasGameUtils {
         }
         //UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
         UIComponent.Instance.HideUI(PrefabUI.UIBringIn);
-        UIComponent.close(UIDefine.UITexasPlayerInfo);
+        UIComponent.close(UIDefine.UIPlayerInfo);
         this.game.HideOperationPanel();
         this.game.HideAutoOperationPanel();
         this.game.HideWaitBlindBtn();
@@ -249,7 +250,7 @@ export default class TexasGameUtils {
     /// <summary>
     /// 退出房间
     /// </summary>
-    public ExitRoom(): void {
+    public ExitRoom(returnParam?: ProcedureReturnNavigateParam): void {
         // UIComponent.Instance.Remove(UIType.UITexas);
         // UIComponent.Instance.Remove(UIType.UIInsurance);
         // UIComponent.Instance.Remove(UIType.UITexasHistory);
@@ -286,7 +287,7 @@ export default class TexasGameUtils {
         GameCache.Instance.isActiveLeaving = false;
         //#endregion
         // 通知 H5 层恢复显示
-        ProcedureManager.StartProcedure(ProcedureEnum.Return);
+        ProcedureManager.StartProcedure(ProcedureEnum.Return, returnParam);
     }
 
     //得到 当前 在场玩家     不包括自己

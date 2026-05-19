@@ -33,12 +33,15 @@ export default class UITexasPlayerInfo extends UIBasePlus {
 
     onShow(param?: any): void {
         super.onShow(param);
+        if (!param) return;
         let player: CPlayer = param;
         //标题文本
-        if (GameCache.Instance.CurGame.isMTT) {
-            this.cc_Label$title.string = i18nMgr.Get('UIGame_UserInfoTipsMtt');
-        } else {
-            this.cc_Label$title.string = i18nMgr.Get('UIGame_UserInfoTips');
+        if (this.cc_Label$title) {
+            if (GameCache.Instance.CurGame.isMTT) {
+                this.cc_Label$title.string = i18nMgr.Get('UIGame_UserInfoTipsMtt');
+            } else {
+                this.cc_Label$title.string = i18nMgr.Get('UIGame_UserInfoTips');
+            }
         }
         this.refreshDownTips();
         this.reqUserInfo(player.userID);
@@ -50,8 +53,11 @@ export default class UITexasPlayerInfo extends UIBasePlus {
             api_id: userid
         }).then(
             (res: any) => {
-                res?.data && this.refreshUserInfo(res.data);
-                this.reqUserStats(res.data.random_num);
+                if (!cc.isValid(this.node)) return;
+                if (res?.data) {
+                    this.refreshUserInfo(res.data);
+                    this.reqUserStats(res.data.random_num);
+                }
             },
             (res: any) => {}
         );
@@ -70,14 +76,15 @@ export default class UITexasPlayerInfo extends UIBasePlus {
     }
 
     refreshUserInfo(data) {
-        WebImageHelper.SetUrlImage(this.cc_Sprite$head, data.avatar);
-        this.cc_Label$nick.string = data.nick_name;
-        this.cc_Label$id.string = `ID:${data.random_num}`;
-        this.$icon_sex1.active = data.sex == 1;
-        this.$icon_sex2.active = data.sex == 2;
+        if (this.cc_Sprite$head) WebImageHelper.SetUrlImage(this.cc_Sprite$head, data.avatar);
+        if (this.cc_Label$nick) this.cc_Label$nick.string = data.nick_name;
+        if (this.cc_Label$id) this.cc_Label$id.string = `ID:${data.random_num}`;
+        if (this.$icon_sex1) this.$icon_sex1.active = data.sex == 1;
+        if (this.$icon_sex2) this.$icon_sex2.active = data.sex == 2;
     }
 
     refreshDownValues(data) {
+        if (!this.$values) return;
         if (GameCache.Instance.room_type == RoomType.MTTTexasHoldemStandardNoLimit) {
             this.$values.children[0].getComponent(cc.Label).string = `${data.mtt_room_data.frist_times}`;
             this.$values.children[1].getComponent(cc.Label).string = `${data.mtt_room_data.second_times}`;
@@ -94,6 +101,7 @@ export default class UITexasPlayerInfo extends UIBasePlus {
     }
 
     refreshDownTips() {
+        if (!this.$tips) return;
         if (GameCache.Instance.room_type == RoomType.MTTTexasHoldemStandardNoLimit) {
             this.$tips.children[0].getComponent(cc.Label).string = i18nMgr.Get('UIData_YGvXd5iXr_006');
             this.$tips.children[1].getComponent(cc.Label).string = i18nMgr.Get('UIData_YGvXd5iXr_007');

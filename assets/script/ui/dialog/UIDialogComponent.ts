@@ -117,6 +117,7 @@ export default class UIDialogComponent extends BaseTouchBoard {
         }
     }
 
+<<<<<<< HEAD
     // maskFadeIn(style: any) {
     //     let mask_opacity = style?.maskOpacity >= 0 ? style.maskOpacity : this.defaultStyle.maskOpacity;
     //     if (style?.fade_switch_on == false || style?.main_fadeIn_active == false) {
@@ -153,4 +154,13 @@ export default class UIDialogComponent extends BaseTouchBoard {
     //     let ease = style?.main_fadeOut_ease || this.defaultStyle.main_fadeOut_ease;
     //     cc.tween(this.main).to(duration, { scale: 1 }, ease).start();
     // }
+=======
+    protected maskFadeIn(style: any) {
+        this.maskFadeInComplete();
+    }
+
+    protected mainFadeIn(style: any) {
+        this.mainFadeInComplete();
+    }
+>>>>>>> b07437bfd146f25725028ee9c7b61a00a7063b2b
 }

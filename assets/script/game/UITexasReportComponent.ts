@@ -1,9 +1,10 @@
+import SliderPlus from '../common/SliderPlus';
 import { UIDefine } from '../define/UIDefine';
 import { TextColor } from '../config/GameConfig';
 import { StringHelper } from '../helper/StringHelper';
 import TimeHelper from '../helper/TimeHelper';
 import WebImageHelper from '../helper/WebImageHelper';
-import { i18nLabel } from '../i18n/i18nLabel';
+import { i18nLabel } from "../i18n/i18nLabel";
 import { i18nMgr } from '../i18n/i18nMgr';
 import { UIClubModel } from '../uimodel/UIClubModel';
 import { WebOrgFriendRoomList, APITexasSituationMushRound, APITexasSituationSquidRound, WWW } from '../net/https/WebRequest';
@@ -15,6 +16,9 @@ import { ServerMessageLeave } from '../protobuf/holdem/req_th_leave_pb';
 import { ClientMessageObservers } from '../protobuf/holdem/req_th_observers_pb';
 import { ClientMessagePlayerJackpotSummary, ServerMessagePlayerJackpotSummary } from '../protobuf/holdem/req_th_player_jackpot_summary_pb';
 import { ClientMessageRoomers, ServerMessageRoomers } from '../protobuf/holdem/req_th_roomers_pb';
+import { ServerMessageWinner } from '../protobuf/holdem/recv_th_winner_pb';
+import GGEvent from '../event/GGEvent';
+import { CardType } from './CardTypeUtil';
 import UIBase from '../ui/UIBase';
 import UIComponent from '../ui/UIComponent';
 import Main from '../Main';
@@ -33,16 +37,17 @@ export class ReportPlayer {
     public userId;
     public nickName;
     public hand;
-    public bringIn; //带入
-    public score; //输赢
-    public outChip; //带出
-    public isOnline; //是否在线
-    public deposit; //押金
-    public mushroomCount; //蘑菇数
-    public mushroomAmount; //蘑菇额
-    public squidInTotal; //鱿鱼入
-    public squidOutTotal; //鱿鱼出
-    public squidPunishTotal; //鱿鱼惩罚
+    public bringIn;       // 总带入
+    public score;         // 实时盈亏 = win + storeChips
+    public storeChips;    // 藏钱（显示在带入旁括号内）
+    public poolRate;      // 入池率 * 1000（与 Unity 保持一致，显示时除以 10）
+    public isOnline;      // 是否在线
+    public deposit;       // 押金
+    public mushroomCount; // 蘑菇数
+    public mushroomAmount;// 蘑菇额
+    public squidInTotal;  // 鱿鱼入
+    public squidOutTotal; // 鱿鱼出
+    public squidPunishTotal; // 鱿鱼惩罚
 }
 
 interface SquidOrMushRecord {
@@ -109,6 +114,9 @@ export default class UITexasReportComponent extends UIBase {
     rightBtn: cc.Node = null;
     pageInfoNode: cc.Node = null;
     squidRoundNode: cc.Node = null;
+    sliderPlus: SliderPlus = null;
+    progressBlue: cc.Node = null;
+    bgClickNode: cc.Node = null;
     noDataNode: cc.Node = null;
     mushDirNode: cc.Node = null;
     mushDirText: cc.Label = null;
@@ -127,6 +135,270 @@ export default class UITexasReportComponent extends UIBase {
     baoxianTextNode: cc.Node = null;
     jackpotTextNode: cc.Node = null;
     squidTextNode: cc.Node = null;
+    // Unity: _situation._roomersMap — 按房间 ID 缓存最新 roomers 数据，Socket 推送时更新，打开面板时优先读取缓存
+    private static _roomersCache: Map<number, any> = new Map();
+
+    /** 写入缓存（UITexas 常驻监听 和 面板内监听 共用同一写入入口） */
+    public static updateRoomersCache(roomId: number, data: any): void {
+        UITexasReportComponent._roomersCache.set(roomId, data);
+    }
+
+    /** 离开房间时调用，清除指定房间缓存 */
+    public static clearRoomersCache(roomId: number): void {
+        UITexasReportComponent._roomersCache.delete(roomId);
+    }
+
+    /**
+     * 每手结束收到 Protocol_Holdem_Winner 时，直接在缓存上增量更新战绩。
+     * 对应 Unity TexasSituationController.HandResult + CalculateWinner。
+     * 不发网络请求，由 UITexas 在全局 Winner 消息回调中调用。
+     */
+    /**
+     * 对应 Unity TexasSituationController.HandResult + CalculateWinner。
+     * 收到 Protocol_Holdem_Winner 后由 UITexas 调用，直接在缓存上增量更新，不发网络请求。
+     */
+    public static applyWinnerResult(response: ServerMessageWinner.AsObject): void {
+        if (!response) return;
+        const roomId = GameCache.Instance.room_id;
+        const cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (!cached) {
+            console.log('[UITexasReport] applyWinnerResult: 房间未缓存，无法结算');
+            return;
+        }
+
+        const playersList: any[] = cached.playersList || [];
+        // Unity: roomers.TotalHand = result.HandNum
+        cached.totalHand = response.handNum;
+
+        const mushroomBase = Number(
+            GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0
+        );
+
+        for (const winner of (response.resultsList || [])) {
+            let player = playersList.find(p => Number(p.seatId || 0) === Number(winner.seatId || 0));
+            if (!player) {
+                const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(winner.seatId);
+                const userId = seat?.Player?.userID;
+                if (userId != null) {
+                    player = playersList.find(p => Number(p.userRid) === Number(userId));
+                    if (player && !player.seatId) {
+                        player.seatId = winner.seatId;
+                    }
+                }
+            }
+            if (!player) continue;
+
+            // Unity: player.PoolCount / HandNum / IsOnline
+            player.poolCount = (player.poolCount || 0) + (winner.inPool ? 1 : 0);
+            player.handNum = (player.handNum || 0) + 1;
+            player.isOnline = true;
+
+            // Unity CalculateWinner: 赢了扣手续费和奖池费，输了只算输额，再叠加保险
+            let win: number;
+            if (winner.win > winner.handBet) {
+                win = winner.win - winner.handBet - (winner.fee || 0) - (winner.jackpotFee || 0);
+            } else {
+                win = winner.win - winner.handBet;
+            }
+            win += (winner.insuranceWin || 0) - (winner.insurance || 0);
+            player.win = (player.win || 0) + win;
+
+            // Unity: roomers.TotalPot += winner.Win（原始 win，非扣费后）
+            cached.totalPot = (cached.totalPot || 0) + (winner.win || 0);
+
+            // Unity: 蘑菇 MushroomCount += ehc.In / mushroomBase, MushroomAmount += ehc.In
+            for (const ehc of (winner.ehcsList || [])) {
+                if (ehc.ehcType !== Def.EHCType.EHC_MUSHROOM) continue;
+                const amount = ehc.pb_in || 0;
+                player.mushroomAmount = (player.mushroomAmount || 0) + amount;
+                player.mushroomCount = (player.mushroomCount || 0) +
+                    (mushroomBase > 0 ? Math.floor(amount / mushroomBase) : 0);
+            }
+
+            // Unity: Jackpot 贡献 contributeTotal += jackpotFee
+            if ((winner.jackpotFee || 0) > 0) {
+                UITexasReportComponent._applyJackpotContribute(
+                    player.userRid, player.name, winner.jackpotFee
+                );
+            }
+            // Unity: Jackpot 奖励 awardTotal += jawd，按 handValueType 记牌型次数
+            if ((winner.jawd || 0) > 0) {
+                UITexasReportComponent._applyJackpotAward(
+                    player.userRid, player.name, winner.jawd, winner.handValueType
+                );
+            }
+        }
+    }
+
+    /** Jackpot 静态缓存（对应 Unity _situation._jackpot）*/
+    private static _jackpotCache: Map<number, JackpotRecord> = new Map();
+
+    public static clearJackpotCache(): void {
+        UITexasReportComponent._jackpotCache.clear();
+    }
+
+    private static _applyJackpotContribute(userRid: number, name: string, fee: number): void {
+        let rec = UITexasReportComponent._jackpotCache.get(userRid);
+        if (!rec) {
+            rec = { userRid, name, avatar: '', sex: 0, contributeTotal: 0, awardTotal: 0,
+                    royalFlushCount: 0, straightFlushCount: 0, fourOfaKindCount: 0 };
+            UITexasReportComponent._jackpotCache.set(userRid, rec);
+        }
+        rec.contributeTotal += fee;
+    }
+
+    private static _applyJackpotAward(userRid: number, name: string, jawd: number, handValueType: number): void {
+        let rec = UITexasReportComponent._jackpotCache.get(userRid);
+        if (!rec) {
+            rec = { userRid, name, avatar: '', sex: 0, contributeTotal: 0, awardTotal: 0,
+                    royalFlushCount: 0, straightFlushCount: 0, fourOfaKindCount: 0 };
+            UITexasReportComponent._jackpotCache.set(userRid, rec);
+        }
+        rec.awardTotal += jawd;
+        if (handValueType === CardType.RoyalFlush) rec.royalFlushCount += 1;
+        else if (handValueType === CardType.StraightFlush) rec.straightFlushCount += 1;
+        else if (handValueType === CardType.FourOfAKind) rec.fourOfaKindCount += 1;
+    }
+    // ─────────────────────────────────────────────
+    // 静态缓存增量更新方法（对应 Unity TexasSituationController）
+    // 返回 true 表示是新玩家（需要调用方 dispatch SituationRefresh）
+    // ─────────────────────────────────────────────
+
+    /**
+     * 对应 Unity TexasSituationController.SitDown。
+     * 已存在的玩家：覆盖 bringIn/deposit/isOnline，重算 totalBringin，不发刷新事件。
+     * 新玩家：追加到列表，累加 totalBringin，返回 true（调用方发刷新事件）。
+     */
+    public static applySitDown(
+        userRid: number, totalBringIn: number, deposit: number,
+        name: string = '', avatar: string = ''
+    ): boolean {
+        const roomId = GameCache.Instance.room_id;
+        let cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (!cached) {
+            cached = { playersList: [], totalBringin: 0 };
+            UITexasReportComponent._roomersCache.set(roomId, cached);
+        }
+        const playersList: any[] = cached.playersList || (cached.playersList = []);
+        const mushroomBase = Number(
+            GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0
+        );
+
+        const existing = playersList.find(p => Number(p.userRid) === Number(userRid));
+        if (existing) {
+            // Unity: 覆盖 bringInTotal，重算 totalBringin，不发事件
+            existing.isOnline = true;
+            existing.bringInTotal = totalBringIn;
+            existing.deposit = mushroomBase > 0 ? mushroomBase : deposit;
+            cached.totalBringin = playersList.reduce((s, p) => s + (p.bringInTotal || 0), 0);
+            return false;
+        }
+
+        // 新玩家
+        const player: any = {
+            userRid, bringInTotal: totalBringIn,
+            deposit: mushroomBase > 0 ? mushroomBase : deposit,
+            isOnline: true,
+            name: name || '', avatar: avatar || '',
+            win: 0, handNum: 0, poolCount: 0, storeChips: 0, mushroomAmount: 0, mushroomCount: 0
+        };
+        playersList.push(player);
+        cached.totalBringin = (cached.totalBringin || 0) + totalBringIn;
+        return true;
+    }
+
+    /**
+     * 对应 Unity TexasSituationController.StandUp。
+     * 已存在：累加 bringOutTotal，isOnline=false，不发事件。
+     * 新玩家（兜底）：追加，返回 true。
+     */
+    public static applyStandUp(
+        userRid: number, bringOut: number,
+        name: string = '', avatar: string = ''
+    ): boolean {
+        const roomId = GameCache.Instance.room_id;
+        const cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (!cached) return false;
+        const playersList: any[] = cached.playersList || [];
+        const mushroomBase = Number(
+            GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0
+        );
+
+        const existing = playersList.find(p => Number(p.userRid) === Number(userRid));
+        if (existing) {
+            existing.bringOutTotal = (existing.bringOutTotal || 0) + bringOut;
+            existing.isOnline = false;
+            if (mushroomBase > 0) existing.deposit = 0;
+            return false;
+        }
+
+        // 兜底：新玩家（通常不会走到这里）
+        const player: any = {
+            userRid, bringOutTotal: bringOut, isOnline: false,
+            name: name || '', avatar: avatar || '',
+            bringInTotal: 0, win: 0, handNum: 0, poolCount: 0
+        };
+        if (mushroomBase > 0) player.deposit = 0;
+        playersList.push(player);
+        return true;
+    }
+
+    /**
+     * 对应 Unity TexasSituationController.ChipChange。
+     * 只在 ChipChangeReason == CcNone 时调用（由 UITexas 负责过滤）。
+     * 已存在：bringInTotal += newBringIn，totalBringin += newBringIn，不发事件。
+     * 新玩家（兜底）：追加，返回 true。
+     */
+    public static applyChipChange(
+        userRid: number, newBringIn: number,
+        name: string = '', avatar: string = ''
+    ): boolean {
+        const roomId = GameCache.Instance.room_id;
+        let cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (!cached) {
+            cached = { playersList: [], totalBringin: 0 };
+            UITexasReportComponent._roomersCache.set(roomId, cached);
+        }
+        const playersList: any[] = cached.playersList || (cached.playersList = []);
+        const mushroomBase = Number(
+            GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0
+        );
+
+        const existing = playersList.find(p => Number(p.userRid) === Number(userRid));
+        if (existing) {
+            existing.isOnline = true;
+            existing.bringInTotal = (existing.bringInTotal || 0) + newBringIn;
+            if (mushroomBase > 0) existing.deposit = mushroomBase;
+            cached.totalBringin = (cached.totalBringin || 0) + newBringIn;
+            return false;
+        }
+
+        // 兜底：新玩家
+        const player: any = {
+            userRid, bringInTotal: newBringIn, isOnline: true,
+            name: name || '', avatar: avatar || '',
+            deposit: mushroomBase > 0 ? mushroomBase : 0,
+            win: 0, handNum: 0, poolCount: 0
+        };
+        playersList.push(player);
+        cached.totalBringin = (cached.totalBringin || 0) + newBringIn;
+        return true;
+    }
+
+    /**
+     * 对应 Unity TexasSituationController.OnStartInfo。
+     * 仅当缓存里 startTime <= 0 时补写一次当前时间（单位：秒）。
+     * Unity 不发 SituationRefresh，Cocos 同样不发。
+     */
+    public static applyStartInfo(): void {
+        const roomId = GameCache.Instance.room_id;
+        const cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (!cached) return;
+        if ((cached.startTime || 0) <= 0) {
+            cached.startTime = Math.floor(Date.now() / 1000);
+        }
+    }
+
     private squidRoundDic: Map<number, SquidOrMushRecord[]> = new Map();
     private jackpotRecords: JackpotRecord[] = [];
     private squidTotalRound: number = 0;
@@ -136,6 +408,19 @@ export default class UITexasReportComponent extends UIBase {
     private isSquidListInit: boolean = false;
     private isJackpotListInit: boolean = false;
     private manualClose: boolean = false;
+    showPlayerInTableNode: cc.Node = null;
+    checkboxOnNode: cc.Node = null;
+    checkboxOffNode: cc.Node = null;
+    private _isShowOnlyTablePlayers: boolean = false;
+    private _lastRoomersData: any = null;
+    publicAreaNode: cc.Node = null;
+    totalMoneyLabel: cc.Label = null;
+    totalBringLabel: cc.Label = null;
+    curHandLabel: cc.Label = null;
+    verBottomLabel: cc.Label = null;
+    curTimeLabel: cc.Label = null;
+    insurancePoolLabel: cc.Label = null;
+    remainTimeLabel: cc.Label = null;
     private normalReportY: number = 0;
     private jackpotReportY: number = 0;
     private normalPeopleNodeY: number = 0;
@@ -144,44 +429,66 @@ export default class UITexasReportComponent extends UIBase {
 
     protected lateLoad(): void {
         super.lateLoad();
-        this.text_Time = this.getChildNodeOrComponent('Text_Time', cc.Label);
+        const bg = 'layer/bg';
+        const top = `${bg}/$Top`;
+        this.text_Time = this.getChildNodeOrComponent('time_text', cc.Label);
         this.room_id = this.getChildNodeOrComponent('room_id', cc.Label);
-        this.reportScrow = cc.find('layer/reportScrow', this.node);
-        this.squidListView = cc.find('layer/squidListView', this.node);
-        this.mushRoomListView = cc.find('layer/mushRoomListView', this.node);
-        this.jackpotListView = cc.find('layer/jackpotListView', this.node);
-        this.peopleNode = cc.find('layer/peopleNode', this.node);
-        this.peopleScrow = cc.find('layer/peopleScrow', this.node);
-        this.battle_data_content = cc.find('layer/reportScrow/view/data_content', this.node);
-        this.squid_data_content = cc.find('layer/squidListView/view/data_content', this.node);
-        this.mush_data_content = cc.find('layer/mushRoomListView/view/data_content', this.node);
-        this.jackpot_data_content = cc.find('layer/jackpotListView/view/data_content', this.node);
-        this.people_content = cc.find('layer/peopleScrow/view/people_content', this.node);
-        this.peopelNum = cc.find('layer/peopleNode/peopelNum', this.node)?.getComponent(cc.Label) || null;
-        this.listBar1 = cc.find('layer/ListBar1', this.node);
-        this.listBar3 = cc.find('layer/ListBar3', this.node);
-        this.listBarSquid = cc.find('layer/listBarSquid', this.node);
-        this.listBarMushRoom = cc.find('layer/listBarMushRoom', this.node);
-        this.listBarJackpot = cc.find('layer/listBarJackpot', this.node);
-        this.jackpotBarNode = cc.find('layer/JackpotBar', this.node);
-        const jackpotNumberNode = cc.find('layer/JackpotBar/JackpotNumber', this.node);
-        this.jackpotTotalLabel = jackpotNumberNode.getComponent(cc.Label);
-        this.listBar3ModeLabel = cc.find('layer/ListBar3/Text_Mode', this.node)?.getComponent(cc.Label) || null;
-        this.squidRoundText = cc.find('layer/squidRound/squidRoundText', this.node)?.getComponent(cc.Label) || null;
-        this.pageText = cc.find('layer/squidPageInfo/pageTextNode/pageText', this.node)?.getComponent(cc.Label) || null;
-        this.leftBtn = cc.find('layer/squidPageInfo/leftBtn', this.node);
-        this.rightBtn = cc.find('layer/squidPageInfo/rightBtn', this.node);
-        this.pageInfoNode = cc.find('layer/squidPageInfo', this.node);
-        this.squidRoundNode = cc.find('layer/squidRound', this.node);
-        this.noDataNode = cc.find('layer/noData', this.node);
-        this.mushDirNode = cc.find('layer/mushDir', this.node);
-        this.mushDirText = cc.find('layer/mushDir/mushDirText', this.node)?.getComponent(cc.Label) || null;
+        // $content 下的节点：先找到 $content，再用短路径向下查找
+        const contentNode = this.getChildNodeOrComponent('$content') as cc.Node;
+        const dataListNode = contentNode ? cc.find('dataList', contentNode) : null;
+        const headerNode = dataListNode ? cc.find('header', dataListNode) : null;
+        this.reportScrow = dataListNode ? cc.find('reportScrow', dataListNode) : null;
+        this.squidListView = dataListNode ? cc.find('squidListView', dataListNode) : null;
+        this.mushRoomListView = dataListNode ? cc.find('mushRoomListView', dataListNode) : null;
+        this.jackpotListView = dataListNode ? cc.find('jackpotListView', dataListNode) : null;
+        this.peopleNode = contentNode ? cc.find('peopleNode', contentNode) : null;
+        this.peopleScrow = contentNode ? cc.find('peopleScrow', contentNode) : null;
+        this.battle_data_content = this.reportScrow ? cc.find('view/data_content', this.reportScrow) : null;
+        this.squid_data_content = this.squidListView ? cc.find('view/data_content', this.squidListView) : null;
+        this.mush_data_content = this.mushRoomListView ? cc.find('view/data_content', this.mushRoomListView) : null;
+        this.jackpot_data_content = this.jackpotListView ? cc.find('view/data_content', this.jackpotListView) : null;
+        this.people_content = this.peopleScrow ? cc.find('view/people_content', this.peopleScrow) : null;
+        this.peopelNum = this.peopleNode ? cc.find('peopelNum', this.peopleNode)?.getComponent(cc.Label) || null : null;
+        this.listBar1 = headerNode ? cc.find('ListBar1', headerNode) : null;
+        this.listBar3 = headerNode ? cc.find('ListBar3', headerNode) : null;
+        this.listBarSquid = headerNode ? cc.find('listBarSquid', headerNode) : null;
+        this.listBarMushRoom = headerNode ? cc.find('listBarMushRoom', headerNode) : null;
+        this.listBarJackpot = headerNode ? cc.find('listBarJackpot', headerNode) : null;
+        this.jackpotBarNode = dataListNode ? cc.find('JackpotBar', dataListNode) : null;
+        const jackpotNumberNode = this.jackpotBarNode ? cc.find('JackpotNumber', this.jackpotBarNode) : null;
+        if (jackpotNumberNode) {
+            this.jackpotTotalLabel = jackpotNumberNode.getComponent(cc.Label) || jackpotNumberNode.getComponent(cc.RichText) || null;
+        }
+        this.listBar3ModeLabel = this.listBar3 ? cc.find('Text_Mode', this.listBar3)?.getComponent(cc.Label) || null : null;
+        this.showPlayerInTableNode = cc.find(`${top}/show_player_in_table`, this.node);
+        this.checkboxOnNode = cc.find(`${top}/show_player_in_table/checkbox_on`, this.node);
+        this.checkboxOffNode = cc.find(`${top}/show_player_in_table/checkbox_off`, this.node);
+        this.squidRoundText = cc.find(`${top}/squidRound/squid_text`, this.node)?.getComponent(cc.Label) || null;
+        this.pageText = cc.find(`${bg}/squidPageInfo/cc_Label$page`, this.node)?.getComponent(cc.Label) || null;
+        this.leftBtn = cc.find(`${bg}/squidPageInfo/$left_btn`, this.node);
+        this.rightBtn = cc.find(`${bg}/squidPageInfo/$right_btn`, this.node);
+        this.sliderPlus = cc.find(`${bg}/squidPageInfo/SliderPlus$slider`, this.node)?.getComponent(SliderPlus) || null;
+        this.progressBlue = cc.find(`${bg}/squidPageInfo/SliderPlus$slider/background/$progressBlue`, this.node);
+        this.bgClickNode = cc.find('layer/$bg_click', this.node);
+        this.pageInfoNode = cc.find(`${bg}/squidPageInfo`, this.node);
+        this.squidRoundNode = cc.find(`${top}/squidRound`, this.node);
+        this.noDataNode = dataListNode ? cc.find('noData', dataListNode) : null;
+        this.publicAreaNode = contentNode ? cc.find('publicArea', contentNode) : null;
+        this.totalMoneyLabel = this.publicAreaNode ? cc.find('total_money', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
+        this.totalBringLabel = this.publicAreaNode ? cc.find('total_bring', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
+        this.curHandLabel = this.publicAreaNode ? cc.find('cur_hand', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
+        this.verBottomLabel = this.publicAreaNode ? cc.find('ver_bottom', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
+        this.curTimeLabel = this.publicAreaNode ? cc.find('cur_time', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
+        this.insurancePoolLabel = this.publicAreaNode ? cc.find('insurance_pool', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
+        this.remainTimeLabel = cc.find(`${top}/remain_time`, this.node)?.getComponent(cc.Label) || null;
+        this.mushDirNode = cc.find(`${top}/mushDir`, this.node);
+        this.mushDirText = cc.find(`${top}/mushDir/mushDirText`, this.node)?.getComponent(cc.Label) || null;
         this.normalReportY = this.reportScrow ? this.reportScrow.y : 0;
         this.jackpotReportY = this.jackpotListView ? this.jackpotListView.y : this.normalReportY;
         this.normalPeopleNodeY = this.peopleNode ? this.peopleNode.y : 0;
         this.normalPeopleScrowY = this.peopleScrow ? this.peopleScrow.y : 0;
         this.normalNoDataY = this.noDataNode ? this.noDataNode.y : 0;
-        const bottomRootPath = 'layer/bottomToggle';
+        const bottomRootPath = `${bg}/bottomToggle`;
         this.bottomToggleRoot = cc.find(bottomRootPath, this.node);
         this.battleToggleBtn = cc.find(`${bottomRootPath}/battleToggle`, this.node);
         this.baoxianToggleBtn = cc.find(`${bottomRootPath}/baoxianToggle`, this.node);
@@ -205,27 +512,40 @@ export default class UITexasReportComponent extends UIBase {
         if (this.jackpotToggleBtn) this.bindClick(this.jackpotToggleBtn, () => this.onClickBottomToggle('jackpot'));
         if (this.leftBtn) this.bindClick(this.leftBtn, () => this.onClickPage(false));
         if (this.rightBtn) this.bindClick(this.rightBtn, () => this.onClickPage(true));
+        if (this.bgClickNode) this.bindClick(this.bgClickNode, () => this.imageMaskCloseClick());
+        if (this.showPlayerInTableNode) this.bindClick(this.showPlayerInTableNode, () => this.onToggleShowTablePlayers());
+        const exitBtn = cc.find('layer/bg/$Top/exit_button', this.node);
+        if (exitBtn) this.bindClick(exitBtn, () => this.imageMaskCloseClick());
     }
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler);
-        this.listen(ProtocolCode.Protocol_Holdem_Observers, this.ProtocolHoldemObserverHandler);
         this.listen(ProtocolCode.Protocol_Holdem_PlayerJackpotSummary, this.ProtocolHoldemPlayerJackpotSummaryHandler);
+        // 对应 Unity EVENT_GAMPLAY_SITUATION_REFRESH → UIGameplaySituationComponent.RefreshSituationData
+        this.listen(GGEvent.SituationRefresh, this.onSituationRefresh);
     }
 
     RequestRoomers() {
-        ProtocolAgency.Send<ClientMessageRoomers.AsObject>({
-            Code: ProtocolCode.Protocol_Holdem_Roomers,
-            RoomID: GameCache.Instance.room_id,
-            MatchID: GameCache.Instance.match_id,
-            Body: {
-                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                history: GameCache.Instance.origin_type == 4,
-                historyLimit: 1000,
-                historyOffset: 0
-            }
-        });
+        const roomId = GameCache.Instance.room_id;
+        const cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (cached) {
+            // 有缓存直接渲染——缓存由 UITexas 在进入时 + 每局 HandClear 后维护，面板不发任何请求
+            this.applyRoomersData(cached);
+        }
+        // 缓存为空时不发请求：进入牌桌时 UITexas 已发过请求，等响应回来后缓存会被填充
+        // 若真的为空（极端情况），显示空列表即可，不阻塞用户
+    }
+
+    private applyRoomersData(response: any): void {
+        this.buildPlayerLists(response);
+        this.refreshCurrentDataList();
+        this.showPublicArea(response);
+        if (response.observersList) {
+            this.UpdateObViewList(response);
+        } else {
+            this.UpdateObViewList({ observersList: [] });
+        }
     }
 
     RequestObservers() {
@@ -269,13 +589,9 @@ export default class UITexasReportComponent extends UIBase {
             return;
         }
         if (response.status == 0) {
+            // Unity: 收到推送后更新缓存（UITexas 的常驻监听也会更新，此处面板开着时同步处理）
+            UITexasReportComponent.updateRoomersCache(GameCache.Instance.room_id, response);
             this.UpdateViewList(response);
-            const anyResp: any = response as any;
-            if (anyResp.observersList) {
-                this.UpdateObViewList(anyResp);
-            } else {
-                this.UpdateObViewList({ observersList: [] });
-            }
         }
     }
 
@@ -320,6 +636,7 @@ export default class UITexasReportComponent extends UIBase {
 
     onShow(param?: any): void {
         super.onShow();
+        this.regiterDispatchEvent();
         const keepState = !!param?.__keepState;
         this.manualClose = false;
         if (keepState) {
@@ -340,9 +657,12 @@ export default class UITexasReportComponent extends UIBase {
         // this.btnShowProblem = this.getChildNodeOrComponent('BtnShowProblem');
         // this.btnShowProblem.on('click', this.btnShowProblemClick, this)
         this.room_id.string = GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum;
-        this.text_Time.string = '';
+        if (this.remainTimeLabel) this.remainTimeLabel.string = '--:--:--';
         this.reportSubType = this.resolveReportSubType();
         this.curBottomTab = 'battle';
+        this._isShowOnlyTablePlayers = false;
+        this._lastRoomersData = null;
+        this.refreshTablePlayerToggle();
         this.refreshMushDir();
         this.refreshBottomToggleState();
         this.refreshContentVisible();
@@ -350,39 +670,20 @@ export default class UITexasReportComponent extends UIBase {
         this.RefreshJackpotTotalLabel();
         this.SendSquidData(0);
         this.RequestRoomers();
-        this.RequestObservers();
+        // 观众数据已内嵌在 Roomers 响应的 observersList 中，Protocol_Holdem_Observers 未在 ProtocolMap 注册，无需单独请求
     }
 
     async UpdateViewList(RoomersData: any) {
-        //玩家
-        this.tInfo_0 = [];
-        this.tInfo_1 = [];
-        const playersList = RoomersData?.playersList || [];
-        this.clearPlayerListContainers();
-        for (let i = 0; i < playersList.length; i++) {
-            let tSignPlayer = new ReportPlayer();
-            tSignPlayer.userId = playersList[i].userRid;
-            tSignPlayer.nickName = playersList[i].name;
-            tSignPlayer.hand = playersList[i].handNum;
-            tSignPlayer.bringIn = playersList[i].bringInTotal;
-            tSignPlayer.score = playersList[i].win;
-            tSignPlayer.outChip = playersList[i].bringOutTotal;
-            tSignPlayer.isOnline = playersList[i].isOnline;
-            tSignPlayer.deposit = playersList[i].deposit || 0;
-            tSignPlayer.mushroomCount = playersList[i].mushroomCount || 0;
-            tSignPlayer.mushroomAmount = playersList[i].mushroomAmount || 0;
-            tSignPlayer.squidInTotal = playersList[i].squidInTotal || 0;
-            tSignPlayer.squidOutTotal = playersList[i].squidOutTotal || 0;
-            tSignPlayer.squidPunishTotal = playersList[i].squidPunishTotal || 0;
-            if (playersList[i].status == Def.CanPlayStatus.NORMAL || playersList[i].Status == Def.CanPlayStatus.AGREE_POST) {
-                this.tInfo_0.push(tSignPlayer);
-            } else {
-                this.tInfo_1.push(tSignPlayer);
-            }
-        }
-        this.tInfo_0.sort((x, y) => Number(y.score || 0) - Number(x.score || 0));
-        this.tInfo_1.sort((x, y) => Number(y.score || 0) - Number(x.score || 0));
+        this._lastRoomersData = RoomersData;
+        this.buildPlayerLists(RoomersData);
         this.refreshCurrentDataList();
+        this.showPublicArea(RoomersData);
+        const anyResp: any = RoomersData as any;
+        if (anyResp.observersList) {
+            this.UpdateObViewList(anyResp);
+        } else {
+            this.UpdateObViewList({ observersList: [] });
+        }
         if (GameCache.Instance.origin_type == 4) {
             let result: any = await UIClubModel.mInstance.WebOrgFriendRoomList(false).catch(content => {
                 console.log(`>> catch error:${WebOrgFriendRoomList.API}`, content);
@@ -398,8 +699,7 @@ export default class UITexasReportComponent extends UIBase {
                     let roomLeftTime = deadLineTime / 1000 + item.play_duration - new Date().getTime() / 1000;
                     if (roomLeftTime > 0) {
                         this.mRoomLeaveTime = roomLeftTime;
-                        let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.Label);
-                        textTitle.string = TimeHelper.ShowRemainingSemicolon2(this.mRoomLeaveTime);
+                        if (this.remainTimeLabel) this.remainTimeLabel.string = TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime);
                         this.ShowLeaveTimer();
                     }
                 }
@@ -454,8 +754,11 @@ export default class UITexasReportComponent extends UIBase {
             let tItem: cc.Node = cc.instantiate(this.peopleItem);
             tItem.parent = this.people_content;
             let nick_name = StringHelper.LengthNick(RoomersData.observersList[index].name);
-            let nameLbl = tItem.getChildByName('Text_Name').getComponent(cc.Label);
-            nameLbl.string = nick_name;
+            const nameNode = tItem.getChildByName('Text_Name');
+            if (nameNode) {
+                const nameLbl = nameNode.getComponent(cc.Label);
+                if (nameLbl) nameLbl.string = nick_name;
+            }
             let icon = tItem.getChildByName('icon');
             WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar);
             const uid = RoomersData.observersList[index].userRid;
@@ -470,15 +773,125 @@ export default class UITexasReportComponent extends UIBase {
         }
     }
 
+    private buildPlayerLists(RoomersData: any): void {
+        this.tInfo_0 = [];
+        this.tInfo_1 = [];
+        const playersList = RoomersData?.playersList || [];
+        this.clearPlayerListContainers();
+        for (let i = 0; i < playersList.length; i++) {
+            const p = playersList[i];
+            if (this._isShowOnlyTablePlayers && !this.isOnTable(p.userRid)) {
+                continue;
+            }
+            let tSignPlayer = new ReportPlayer();
+            tSignPlayer.userId = p.userRid;
+            tSignPlayer.nickName = p.name;
+            tSignPlayer.hand = p.handNum;
+            tSignPlayer.bringIn = p.bringInTotal;
+            // Unity: _win = Win + StoreChips（藏钱计入实时盈亏）
+            tSignPlayer.score = (p.win || 0) + (p.storeChips || 0);
+            tSignPlayer.storeChips = p.storeChips || 0;
+            // Unity: _poolRate = PoolCount * 1000 / HandNum
+            const handNum = p.handNum || 0;
+            tSignPlayer.poolRate = handNum > 0 ? Math.floor((p.poolCount || 0) * 1000 / handNum) : 0;
+            tSignPlayer.isOnline = p.isOnline;
+            tSignPlayer.deposit = p.deposit || 0;
+            tSignPlayer.mushroomCount = p.mushroomCount || 0;
+            tSignPlayer.mushroomAmount = p.mushroomAmount || 0;
+            tSignPlayer.squidInTotal = p.squidInTotal || 0;
+            tSignPlayer.squidOutTotal = p.squidOutTotal || 0;
+            tSignPlayer.squidPunishTotal = p.squidPunishTotal || 0;
+            if (p.isOnline !== false) {
+                this.tInfo_0.push(tSignPlayer);
+            } else {
+                this.tInfo_1.push(tSignPlayer);
+            }
+        }
+        this.tInfo_0.sort((x, y) => Number(y.score || 0) - Number(x.score || 0));
+        this.tInfo_1.sort((x, y) => Number(y.score || 0) - Number(x.score || 0));
+    }
+
+    private isOnTable(userId: number): boolean {
+        return GameCache.Instance.CurGame?.GetSeatByUserId(userId) != null;
+    }
+
+    private onToggleShowTablePlayers(): void {
+        this._isShowOnlyTablePlayers = !this._isShowOnlyTablePlayers;
+        this.refreshTablePlayerToggle();
+        // Unity: 筛选为客户端行为，直接用缓存数据重新过滤，无需网络请求
+        const cached = UITexasReportComponent._roomersCache.get(GameCache.Instance.room_id);
+        if (cached) {
+            this.buildPlayerLists(cached);
+            this.refreshCurrentDataList();
+        } else {
+            this.RequestRoomers();
+        }
+    }
+
+    private refreshTablePlayerToggle(): void {
+        if (this.checkboxOnNode) this.checkboxOnNode.active = this._isShowOnlyTablePlayers;
+        if (this.checkboxOffNode) this.checkboxOffNode.active = !this._isShowOnlyTablePlayers;
+    }
+
+    private showPublicArea(data: any): void {
+        const totalPot = Number(data.totalPot || 0);
+        const totalBringin = Number(data.totalBringin || 0);
+        const totalHand = Number(data.totalHand || 0);
+        const insurance = Number(data.insurance || 0);
+        const startTime = Number(data.startTime || 0);
+
+        if (this.totalMoneyLabel) {
+            this.totalMoneyLabel.string = `${i18nMgr.Get('UISituationTotalPot')} ${StringHelper.GetLongString(totalPot)}`;
+        }
+        if (this.totalBringLabel) {
+            this.totalBringLabel.string = `${i18nMgr.Get('UISituationTotalBringIn')} ${StringHelper.GetLongString(totalBringin)}`;
+        }
+        if (this.curHandLabel) {
+            this.curHandLabel.string = `${i18nMgr.Get('UISituationCurHandNum')} ${totalHand}`;
+        }
+        if (this.verBottomLabel) {
+            const avgStr = totalHand > 0
+                ? (() => { const avg = totalPot / totalHand / 100; return Number.isInteger(avg) ? `${avg}` : avg.toFixed(2); })()
+                : '0';
+            this.verBottomLabel.string = `${i18nMgr.Get('UISituationVerBottom')} ${avgStr}`;
+        }
+        const playDuration = GameCache.Instance._roomDurationTime;
+        if (this.curTimeLabel) {
+            this.curTimeLabel.string = `${i18nMgr.Get('UISituationCurTime')} ${this.formatRoomDuration(playDuration)}`;
+        }
+        if (this.remainTimeLabel) {
+            if (playDuration > 0 && startTime > 0) {
+                const useTime = Math.floor(Date.now() / 1000) - startTime;
+                const remainTime = Math.max(0, playDuration - useTime);
+                this.remainTimeLabel.string = TimeHelper.ShowRemainingSemicolon(remainTime);
+            } else {
+                this.remainTimeLabel.string = '--:--:--';
+            }
+        }
+        if (this.insurancePoolLabel) {
+            this.insurancePoolLabel.string = `${i18nMgr.Get('UITexasHistory_insurance')} ${StringHelper.GetLongString(insurance)}`;
+        }
+    }
+
+    private formatRoomDuration(seconds: number): string {
+        if (seconds <= 0) return '--';
+        if (seconds < 3600) {
+            const minutes = Math.round(seconds / 60);
+            const tpl = i18nMgr.Get('UITexasReport_Text_MatchZmsysj');
+            return tpl ? tpl.replace('{0}', `${minutes}`) : `${minutes}min`;
+        }
+        const h = Math.floor(seconds / 3600);
+        const m = Math.round((seconds % 3600) / 60);
+        return m > 0 ? `${h}h${m}min` : `${h}h`;
+    }
+
     ShowLeaveTimer() {
         this.schedule(() => {
             if (this.mRoomLeaveTime >= 0 && this.node.isValid) {
                 this.mRoomLeaveTime--;
-                if (this.text_Time != null) this.text_Time.string = TimeHelper.ShowRemainingSemicolon2(this.mRoomLeaveTime);
+                if (this.remainTimeLabel) this.remainTimeLabel.string = TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime);
             } else {
-                if (this.text_Time != null && !cc.isValid(this.node, true)) {
-                    this.text_Time.string = '00:00';
-                }
+                if (this.remainTimeLabel) this.remainTimeLabel.string = '00:00:00';
             }
         }, 1);
     }
@@ -519,17 +932,28 @@ export default class UITexasReportComponent extends UIBase {
         // objTemp.getChildByName('Text_Num').opactiy = opactiy
         // objTemp.getChildByName('Text_All').opactiy = opactiy
         // objTemp.getChildByName('Text_All1').opactiy = opactiy
-        if (!pDto.isOnline && GameCache.Instance.origin_type == 4) {
-            ele.opacity = 50;
+        const atTable = this.isOnTable(pDto.userId);
+        if (!atTable || (!pDto.isOnline && GameCache.Instance.origin_type == 4)) {
+            ele.opacity = 150;
         } else {
             ele.opacity = 255;
         }
+        const textAllCol = ele.getChildByName('Text_All_Col');
         ele.getChildByName('Text_Name').getComponent(cc.Label).string = StringHelper.LengthNick(pDto.nickName);
         ele.getChildByName('Text_Num').getComponent(cc.Label).string = pDto.hand + '';
-        ele.getChildByName('Text_All').getComponent(cc.Label).string = StringHelper.GetLongString(pDto.bringIn);
-        let outChip = pDto.outChip != 0 ? StringHelper.GetLongString(pDto.outChip) : 0;
-        ele.getChildByName('Text_All1').getComponent(cc.Label).string = '(' + outChip + ')';
+        textAllCol.getChildByName('Text_All').getComponent(cc.Label).string = StringHelper.GetLongString(pDto.bringIn);
+        // Unity: bugin/Text_outChip 显示藏钱(storeChips)，非零时才显示
+        const storeChipsStr = pDto.storeChips ? StringHelper.GetLongString(pDto.storeChips) : '';
+        textAllCol.getChildByName('Text_All1').getComponent(cc.Label).string = storeChipsStr ? `(${storeChipsStr})` : '';
         this.setCountText(ele.getChildByName('Text_Count'), pDto.score);
+        // Unity: Text_Pool 显示入池率，poolRate/10 = 百分比
+        const poolNode = ele.getChildByName('Text_Pool');
+        if (poolNode) {
+            const poolLabel = poolNode.getComponent(cc.Label);
+            if (poolLabel) {
+                poolLabel.string = `(${(pDto.poolRate / 10).toFixed(1)}%)`;
+            }
+        }
         if (useInfo3) {
             const depositLabel = ele.getChildByName('Text_Deposit')?.getComponent(cc.Label);
             if (depositLabel) depositLabel.string = StringHelper.GetLongString(pDto.deposit || 0);
@@ -633,7 +1057,6 @@ export default class UITexasReportComponent extends UIBase {
         }
         if (this.curBottomTab === 'jackpot') {
             this.RequestJackpotSummary();
-            this.RequestObservers();
         }
     }
 
@@ -705,6 +1128,28 @@ export default class UITexasReportComponent extends UIBase {
         if (this.noDataNode) this.noDataNode.y = this.normalNoDataY + deltaY;
     }
 
+    /**
+     * 对应 Unity UIGameplaySituationComponent.RefreshSituationData。
+     * Winner 结算后由 GGEvent.SituationRefresh 事件触发，面板开着时刷新各列表。
+     */
+    private onSituationRefresh(_response: any): void {
+        this.refreshSituationData();
+    }
+
+    private refreshSituationData(): void {
+        const roomId = GameCache.Instance.room_id;
+        const cached = UITexasReportComponent._roomersCache.get(roomId);
+        if (!cached) return;
+        // Unity: UpdateUpViewList — 刷新主玩家列表（reportScrow）
+        this.buildPlayerLists(cached);
+        this.showPublicArea(cached);
+        this.refreshCurrentDataList();
+        // Unity: InitJackpotSuperView — 如果 jackpot tab 处于激活状态则刷新
+        if (this.curBottomTab === 'jackpot' && this.isJackpotListInit) {
+            this.UpdateJackpotViewList();
+        }
+    }
+
     private refreshCurrentDataList(): void {
         if (this.curBottomTab === 'mode') {
             this.UpdateSquidViewList();
@@ -762,10 +1207,16 @@ export default class UITexasReportComponent extends UIBase {
     }
 
     private onClickPage(next: boolean): void {
-        if (this.squidCurRound <= 0) this.squidCurRound = this.squidTotalRound;
-        this.squidCurRound = next ? this.squidCurRound + 1 : this.squidCurRound - 1;
-        if (this.squidCurRound > this.squidTotalRound) this.squidCurRound = 1;
-        if (this.squidCurRound < 1) this.squidCurRound = this.squidTotalRound;
+        if (this.squidTotalRound <= 0) return;
+        let nextRound = this.squidCurRound > 0 ? this.squidCurRound : this.squidTotalRound;
+        nextRound = next ? nextRound + 1 : nextRound - 1;
+        if (nextRound > this.squidTotalRound) nextRound = 1;
+        if (nextRound < 1) nextRound = this.squidTotalRound;
+        this.squidCurRound = nextRound;
+        if (this.sliderPlus) {
+            this.sliderPlus.value = nextRound;
+            this.syncProgressBlue();
+        }
         if (this.squidRoundDic.has(this.squidCurRound)) {
             this.UpdatePageTxt();
             this.UpdateSquidViewList();
@@ -836,6 +1287,7 @@ export default class UITexasReportComponent extends UIBase {
         }
         const saveRound = this.squidCurRound > 0 ? this.squidCurRound : 1;
         this.squidRoundDic.set(saveRound, records);
+        this.setupSlider();
         this.UpdatePageTxt();
         this.UpdateSquidViewList();
     }
@@ -976,6 +1428,7 @@ export default class UITexasReportComponent extends UIBase {
     }
 
     private RefreshJackpotTotalLabel(): void {
+        if (!this.jackpotTotalLabel) return;
         const total = Math.floor(Number(GameCache.Instance.jackPot_parent_gold || 0) / 100);
         this.jackpotTotalLabel.string = `${total}`;
     }
@@ -1155,5 +1608,50 @@ export default class UITexasReportComponent extends UIBase {
             label.string = text;
             label.node.color = cc.Color.BLACK.fromHEX(color);
         }
+    }
+
+    private setupSlider(): void {
+        if (!this.sliderPlus || this.squidTotalRound <= 0) return;
+        this.sliderPlus.show({
+            min_value: 1,
+            max_value: this.squidTotalRound,
+            step: 1,
+            change: this.sliderChange,
+            touch_end: this.onSliderTouchEnd,
+            own: this
+        });
+        const targetRound = this.squidCurRound > 0 ? this.squidCurRound : this.squidTotalRound;
+        this.squidCurRound = targetRound;
+        this.sliderPlus.value = targetRound;
+        this.syncProgressBlue();
+    }
+
+    private sliderChange(value: number): void {
+        const round = Math.round(value);
+        if (this.squidCurRound === round) return;
+        this.squidCurRound = round;
+        this.UpdatePageTxt();
+        this.syncProgressBlue();
+    }
+
+    private onSliderTouchEnd(): void {
+        if (this.curBottomTab !== 'mode') return;
+        if (this.squidRoundDic.has(this.squidCurRound)) {
+            this.UpdateSquidViewList();
+        } else {
+            this.SendSquidData(this.squidCurRound);
+        }
+    }
+
+    private syncProgressBlue(): void {
+        if (!this.progressBlue || !this.sliderPlus) return;
+        const slider = this.sliderPlus;
+        const range = slider.data.max_value - slider.data.min_value;
+        if (range <= 0) {
+            this.progressBlue.width = 0;
+            return;
+        }
+        const k = (slider.value - slider.data.min_value) / range;
+        this.progressBlue.width = slider.min + (slider.max - slider.min) * k;
     }
 }

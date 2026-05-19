@@ -57,6 +57,7 @@ import TexasGameMushroom from './TexasGameMushroom';
 import TexasGameSquid from './TexasGameSquid';
 import TexasGameBombPot from './TexasGameBombPot';
 import TexasGameJackpot from './TexasGameJackpot';
+import ThrowPropManager from '../../crazyPoker/gameplay/common/util/ThrowPropManager';
 import { CardType, CardTypeUtil } from './../CardTypeUtil';
 import { CPlayer } from './../CPlayer';
 import FSMLogicComponent from './../FSMLogicComponent';
@@ -107,6 +108,7 @@ export default class TexasGame {
     private squidFeature: TexasGameSquid = null;
     private bombPotFeature: TexasGameBombPot = null;
     jackpotFeature: TexasGameJackpot = null;
+    throwPropMgr: ThrowPropManager = null;
     ///////////////////////////////
     private setting: { deskType: any; pokerType: any } = {
         deskType: null,
@@ -549,6 +551,7 @@ export default class TexasGame {
         this.squidFeature = new TexasGameSquid(this);
         this.bombPotFeature = new TexasGameBombPot(this);
         this.jackpotFeature = new TexasGameJackpot(this);
+        this.throwPropMgr = new ThrowPropManager(this);
         this.seatMoveStruct = new SeatMoveStruct();
         this.RCInit();
     }
@@ -558,12 +561,13 @@ export default class TexasGame {
         this.TexasGameProtocol = new TexasGameProtocol(this);
     }
 
-    Update(dt: number) {}
+    Update(dt: number) { }
 
     // Enter (called by procedureManager.startProcedure(Texas))
     // StateMachine.Start then to launchState(EnterRoom => send enterRoom)
     // enterRoom(Callback: switchScene & to initState)
     Enter() {
+        this.IsDispose = false;
         this.listSeat = [];
         this.pots = [];
         this.dicSeatOnlyClient = new Map<number, Seat>();
@@ -829,6 +833,8 @@ export default class TexasGame {
         if (rec.myInfo != null) {
             this.callTimeCount = Number((rec.myInfo as any).callTimeCount || this.callTimeCount || 0);
         }
+        this.tribeId = GameCache.Instance.TribeId;
+        this.ShowSafetyGuardBtn();
         this.bringinEqualLeader = GameCache.Instance._bringinEqualLeader;
         this.minPlayerChipRate = GameCache.Instance._minPlayerChipRate;
         this.maxBringinTotalRate = GameCache.Instance._maxBringinTotalRate;
@@ -1692,6 +1698,10 @@ export default class TexasGame {
                 return;
             }
             // 联盟币
+            if (!this.mainPlayer) {
+                console.warn(LN, 'BringIn mainPlayer is null, abort');
+                return;
+            }
             if (GameCache.Instance.gold_type == 1) {
                 UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, {
                     _bigBlind: GameCache.Instance._texasData._bigBlind,
@@ -1786,6 +1796,11 @@ export default class TexasGame {
             // 请求异常
             if (response.code != 0) {
                 console.error(LN, `Sitdown 坐下查询带入失败 ${response.code}`);
+                return;
+            }
+            // 异步请求期间可能已被清理
+            if (!this.mainPlayer) {
+                console.warn(LN, 'Sitdown mainPlayer is null, abort');
                 return;
             }
             let seatedData: ClientMessageSeated.AsObject = {
@@ -1942,6 +1957,9 @@ export default class TexasGame {
     /// <returns></returns>
     public GetRemoteSeatID(localSeatID: number): number {
         return localSeatID + 1;
+    }
+    public ShowSafetyGuardBtn(): void {
+        this.uirc.btn_safety_guard.active = this.tribeId > 0
     }
 
     /// <summary>
@@ -3481,9 +3499,7 @@ export default class TexasGame {
 
     // 牌桌玩家信息
     public CheckPlayerInfo(userId: number, player: CPlayer = null): void {
-        // GameCache.Instance.CurGame.texasGameProtocol.HANDLER_REQ_INSURANCE_TRIGGED(null);
-        //UIComponent.open(UIDefine.UITexasPlayerInfo, [userId, false, player], { parentUI: Main.Marquee });
-        UIComponent.open(UIDefine.UITexasPlayerInfo, player, {
+        UIComponent.open(UIDefine.UIPlayerInfo, player, {
             parentUI: Main.Marquee
         });
     }
@@ -3520,6 +3536,11 @@ export default class TexasGame {
     /// <param name="complete"></param>
     protected KillAllTweener(complete = false): void {
         console.log(LN, 'TexasGame KillAllTweener');
+        if (this.sequencePlayDealAnimation?.tween) {
+            this.sequencePlayDealAnimation.IsPlaying = false;
+            cc.Tween.stopAllByTarget(this.uirc.node);
+            this.sequencePlayDealAnimation = null;
+        }
         if (null != this.sequenceUpdatePublicCards && this.sequenceUpdatePublicCards.IsPlaying) {
             this.sequenceUpdatePublicCards.Kill();
         }
@@ -3705,7 +3726,7 @@ export default class TexasGame {
 
     /////////////////////////////////////////////////
     //点击AddOn按钮响应,子类覆盖
-    public onClickAddOn() {}
+    public onClickAddOn() { }
 
     //点击开始游戏
     public onClickStartGame(): void {
@@ -3912,18 +3933,18 @@ export default class TexasGame {
                                                 menu.$node_coin.getChildByName('label').getComponent(cc.Label).string = `${res.data.apply_bring_in}`;
                                             }
                                         },
-                                        () => {}
+                                        () => { }
                                     );
                                     /////////////////////////////////////////////////////
                                 }
                             },
-                            () => {}
+                            () => { }
                         );
                         ////////////////////////////////////////////
                     }
                 }
             },
-            () => {}
+            () => { }
         );
         menu.$node_coin.getChildByName('uc').active = GameCache.Instance.gold_type == 1;
         menu.$node_coin.getChildByName('gc').active = GameCache.Instance.gold_type == 2;
@@ -4005,7 +4026,7 @@ export default class TexasGame {
     }
 
     //托管相关
-    public SendTrustAction(enable: boolean = false) {}
+    public SendTrustAction(enable: boolean = false) { }
     ///////////////////////////////////////////////////////////////////重构部分
     //多套公共牌
     public public_cards: number[][];
@@ -4201,10 +4222,13 @@ export default class TexasGame {
      */
     Dispose() {
         console.log(LN, 'TexasGame >>>> Dispose');
+        this.IsDispose = true;
         this.reportKeepOpen = false;
         this.ClearTableUI();
         this.ClearOther();
         this.RemoveMsgHandler();
+        this.throwPropMgr?.cleanup();
+        this.throwPropMgr = null;
         //停止状态机刷新
         GC.uc.RemoveComponent(this.GameLogicSMComponent);
         //移除资源

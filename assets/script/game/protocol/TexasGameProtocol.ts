@@ -19,6 +19,7 @@ import { ServerMessageInsuranceTrigged } from '../../protobuf/holdem/recv_th_ins
 import { ServerMessageKeepSeat } from '../../protobuf/holdem/recv_th_keep_seat_pb';
 import { ServerMessagePostStatusChange } from '../../protobuf/holdem/recv_th_post_status_change_pb';
 import { ServerMessagePublicCards } from '../../protobuf/holdem/recv_th_public_cards_pb';
+import { ServerMessageRoomUserSendDiamond } from '../../protobuf/holdem/recv_g_room_user_send_diamond_pb';
 import { ServerMessageNextChange } from '../../protobuf/holdem/recv_th_next_change_pb';
 import { ServerMessageSeatedOthers } from '../../protobuf/holdem/recv_th_seated_others_pb';
 import { ServerMessageShowcards } from '../../protobuf/holdem/recv_th_showcards_pb';
@@ -89,6 +90,9 @@ const LN = '[TexasGameProtocol]';
 
 export default class TexasGameProtocol {
 
+    /** 暂存发送的道具数据，等服务端返回成功后触发本地动画 */
+    public pendingPropData: { type: number; user_id: number; target_user_id: number } | null = null;
+
     constructor(public game: TexasGame) {}
 
     public RegisterMsgHandler(): void {
@@ -126,6 +130,7 @@ export default class TexasGameProtocol {
         GC.notify.register(ProtocolCode.Protocol_Holdem_NextChange, this.HANDLER_REQ_NEXT_CHANGE, this); // 下一手配置变更
         GC.notify.register(ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo, this.HANDLER_RANDOM_VIDEO_VERIFY, this); // 随机视频验证
         GC.notify.register(ProtocolCode.Protocol_Holdem_VideoMaskChange, this.HANDLER_REQ_VIDEO_MASK_CHANGE, this); // 视频窗花变更
+        GC.notify.register(ProtocolCode.Protocol_Holdem_RoomUserSendDiamond, this.ProtocolHoldemRoomUserSendDiamondHandler, this); // 赠送钻石广播
     }
 
     public RemoveMsgHandler(): void {
@@ -164,6 +169,7 @@ export default class TexasGameProtocol {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_NextChange, this.HANDLER_REQ_NEXT_CHANGE, this); // 下一手配置变更
         GC.notify.remove(ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo, this.HANDLER_RANDOM_VIDEO_VERIFY, this); // 随机视频验证
         GC.notify.remove(ProtocolCode.Protocol_Holdem_VideoMaskChange, this.HANDLER_REQ_VIDEO_MASK_CHANGE, this); // 视频窗花变更
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_RoomUserSendDiamond, this.ProtocolHoldemRoomUserSendDiamondHandler, this); // 赠送钻石广播
         // 清理随机验证倒计时
         this._clearRandomVideoTimer();
     }
@@ -550,6 +556,10 @@ export default class TexasGameProtocol {
     private __PlayDealAnimation(responseData: any) {
         this.game.ResetSeatMoveStruct();
         this.game.PlayDealAnimation(() => {
+            if (this.game?.IsDispose || !this.game?.mainPlayer || !this.game?.listSeat?.length) {
+                cc.warn('[TexasGameProtocol] skip stale deal callback after dispose');
+                return;
+            }
             cc.log('发牌结束');
             this.game.UpdateAlreadAnte();
             let mSeat0: Seat = null;
@@ -1662,8 +1672,25 @@ export default class TexasGameProtocol {
         this.game.UpdateStartGameState();
     }
 
-    ProtocolHoldemBroadcastMsgHandler(rec: any) {
+    ProtocolHoldemBroadcastMsgHandler(rec: { status: number }) {
         console.log('[Emoji] BroadcastMsg response:', rec);
+        // 扔道具：服务端返回成功后，用暂存数据在发送者本地播放动画
+        if (rec?.status === 0 && this.pendingPropData) {
+            console.log('[ThrowProp] 服务端确认成功，本地播放动画');
+            this.game?.throwPropMgr?.handlePropMessage(this.pendingPropData);
+            this.pendingPropData = null;
+        }
+    }
+
+    /** 赠送钻石广播（所有玩家都收到，包括发送者） */
+    private ProtocolHoldemRoomUserSendDiamondHandler(rec: ServerMessageRoomUserSendDiamond.AsObject) {
+        if (!rec) return;
+        console.log('[Diamond] 收到赠送钻石广播:', rec);
+        this.game?.throwPropMgr?.playDiamondAnimation(
+            rec.senderId,
+            rec.recieveId,
+            rec.amount
+        );
     }
 
     protected ProtocolHoldemGetMsgHandler(rec: ServerMessageGetMsg.AsObject) {
@@ -1690,6 +1717,16 @@ export default class TexasGameProtocol {
                         if (seat) {
                             seat.ShowEmojiAnimation(emojiIndex);
                         }
+                    }
+                }
+                // 扔道具处理 (type 600-611)
+                {
+                    const PROP_TYPE_BASE = Def.ConsumeType.CT_EMOJI_2 * 100; // 600
+                    const propOffset = broadcastMsg.type - PROP_TYPE_BASE;
+                    console.log('[ThrowProp] 检测道具 type=', broadcastMsg.type, 'base=', PROP_TYPE_BASE, 'offset=', propOffset);
+                    if (propOffset >= 0 && propOffset < 12) {
+                        console.log('[ThrowProp] 进入道具分支, throwPropMgr=', !!this.game?.throwPropMgr);
+                        this.game?.throwPropMgr?.handlePropMessage(broadcastMsg);
                     }
                 }
                 break;

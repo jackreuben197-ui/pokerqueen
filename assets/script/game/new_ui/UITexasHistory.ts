@@ -4,7 +4,7 @@ import { TextColor } from '../../config/GameConfig';
 import GC from '../../frame/GameControl';
 import PublicHelper from '../../helper/PublicHelper';
 import { StringHelper } from '../../helper/StringHelper';
-import { WebRoomCenterHistoryReplay } from '../../net/https/WebRequest';
+import { WebRoomCenterHistoryReplay, WebRoomCenterGameWatch, WebUserDiamondsWallet, WWW } from '../../net/https/WebRequest';
 import ProtocolAgency from '../../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../../net/websocket/ProtocolCode';
 import UIBasePlus from '../../ui/UIBasePlus';
@@ -13,6 +13,9 @@ import AssetContext, { AssetFold } from '../../ui/component/AssetContext';
 import { CardTypeUtil } from '../CardTypeUtil';
 import { GameCache } from '../GameCache';
 import GameUtil from '../util/GameUtil';
+import playerCardNode, { IPlayerCardData } from '../../crazyPoker/gameplay/common/view/cardhisory/playerCardNode';
+import { ResManager } from '../../manager/ResManager';
+import DiamondModel from '../../diamond/DiamondModel';
 
 export class HistoryInfoData {
     public bInsurance: boolean;
@@ -115,12 +118,17 @@ export default class UITexasHistory extends UIBasePlus {
     $bg_click: cc.Node = null;
     //顶部包含房间信息
     $Top: cc.Node = null;
+    // Dashboard 概览区 (Layout节点, 自动绑定)
+    $Dashboard: cc.Node = null;
+    $DetailsBtn: cc.Node = null;
+    private detailsExpanded: boolean = false;
     $Score: cc.Node = null;
     $Preflop: cc.Node = null;
     $Flop: cc.Node = null;
     $Turn: cc.Node = null;
     $River: cc.Node = null;
     $Showdown: cc.Node = null;
+    $Showdown2: cc.Node = null;
     /////////////////////////////////////
     //1.Score
     $Score_Childs: cc.Node = null;
@@ -188,11 +196,27 @@ export default class UITexasHistory extends UIBasePlus {
     color_gray = cc.color(198, 198, 198);
     SliderPlus$slider: SliderPlus = null;
     cc_Label$page: cc.Label = null;
+    $DiamondNum: cc.Node = null;
+    $PeekButton: cc.Node = null;
+    $PeekCost: cc.Node = null;
     $left_btn: cc.Node = null;
     $right_btn: cc.Node = null;
+    $progressBlue: cc.Node = null;
+    // Dashboard 概览区 - 动态生成的 playerCardNode 实例列表
+    private dashboardNodes: cc.Node[] = [];
+    private playerCardPrefab: cc.Prefab = null;
+    // 偷偷看：缓存已偷看到的手牌数据
+    private beWatchedUserHands: { user_rid: number; data: string }[] = [];
 
     protected lateLoad(): void {
         super.lateLoad();
+        // 禁用 top_block 的 BlockInputEvents，它是 bg 的子节点且覆盖全屏，
+        // 会拦截触摸导致兄弟节点 Scroller 无法接收拖动事件
+        let topBlock = cc.find('bg/top_block', this.node);
+        if (topBlock) {
+            let blockComp = topBlock.getComponent(cc.BlockInputEvents);
+            if (blockComp) blockComp.enabled = false;
+        }
         this.InitUI();
         this.playerInfos = [];
         this.playerInfosPreFlop = [];
@@ -206,13 +230,22 @@ export default class UITexasHistory extends UIBasePlus {
         this.Flop_Child_Pool = new SimpleNodePool(this.$Flop_Child);
         this.Turn_Child_Pool = new SimpleNodePool(this.$Turn_Child);
         this.River_Child_Pool = new SimpleNodePool(this.$River_Child);
+        this.Showdown2_Child_Pool = new SimpleNodePool(this.$Score_Child);
         this.$Score_Childs.removeAllChildren();
+        // 预加载 playerCardNode prefab
+        this.loadPlayerCardPrefab();
+        // 隐藏 $Dashboard 下的静态 playerNode 模板
+        this.hideDashboardTemplate();
     }
 
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$bg_click, this.click_bg);
         this.setButtonClick(this.$left_btn, this.click_left);
         this.setButtonClick(this.$right_btn, this.click_right);
+        this.setButtonClick(this.$DetailsBtn, this.click_detailsBtn);
+        this.setButtonClick(this.$PeekButton, this.click_peekButton);
+        let exitBtn = this.$Top.getChildByName('exit_button');
+        if (exitBtn) exitBtn.on(cc.Node.EventType.TOUCH_END, this.click_bg, this);
     }
 
     onShow(obj?: any): void {
@@ -228,6 +261,8 @@ export default class UITexasHistory extends UIBasePlus {
         // buttonPrePage.interactable = false;
         // buttonNextPage.interactable = false;
         this.InitRoomInfo();
+        this.reqDiamondBalance();
+        this.reqPeekPrice();
         //初始化空心牌数量
         this.$Preflop_title_childs.children.forEach((item, index) => {
             item.active = index < GameCache.Instance.CurGame.HandCards;
@@ -259,9 +294,11 @@ export default class UITexasHistory extends UIBasePlus {
                 max_value: 0,
                 step: 1,
                 change: this.sliderChange,
+                touch_end: this.sliderTouchEnd,
                 own: this
             });
             this.cc_Label$page.string = '0/0';
+            this.syncProgressBlue();
             return;
         }
         this.registerHandler();
@@ -270,25 +307,24 @@ export default class UITexasHistory extends UIBasePlus {
             max_value: this.totalPage,
             step: 1,
             change: this.sliderChange,
+            touch_end: this.sliderTouchEnd,
             own: this
         });
         this.SliderPlus$slider.value = this.totalPage;
-        //this.RefreshData(this.totalPage);
+        this.RefreshData(this.totalPage);
     }
 
     click_left() {
         if (this.currentPage - 1 > 0) {
-            // this.RefreshData(this.currentPage - 1);
-            // this.refreshPageLabel();
             this.SliderPlus$slider.value = this.currentPage - 1;
+            this.RefreshData(this.currentPage);
         }
     }
 
     click_right() {
         if (this.currentPage + 1 <= this.totalPage) {
-            // this.RefreshData(this.currentPage + 1);
-            // this.refreshPageLabel();
             this.SliderPlus$slider.value = this.currentPage + 1;
+            this.RefreshData(this.currentPage);
         }
     }
 
@@ -297,12 +333,158 @@ export default class UITexasHistory extends UIBasePlus {
      */
     sliderChange(value: number) {
         if (this.currentPage == value) return;
-        this.RefreshData(value);
+        this.currentPage = value;
         this.refreshPageLabel();
+        this.syncProgressBlue();
+    }
+
+    private sliderTouchEnd() {
+        this.RefreshPageButton();
+        this.SendClientMessagePublicReplay(this.currentPage);
     }
 
     refreshPageLabel() {
         this.cc_Label$page.string = `${this.currentPage}/${this.totalPage}`;
+    }
+
+    /** 同步 $progressBlue 宽度与 slider 进度位置一致，实现双色进度条效果 */
+    private syncProgressBlue() {
+        if (!this.$progressBlue || !this.SliderPlus$slider) return;
+        // 直接从 slider.value 计算目标宽度，不依赖 _bar_offset
+        // 原因：点击 progressBar 时 _touch() 先触发 change 回调再通过 tween 更新 _bar_offset，
+        // 导致回调中读取的 _bar_offset 是旧值；而 slider.value (curr_value) 在回调前已更新
+        let slider = this.SliderPlus$slider;
+        let range = slider.data.max_value - slider.data.min_value;
+        if (range <= 0) {
+            this.$progressBlue.width = 0;
+            return;
+        }
+        let k = (slider.value - slider.data.min_value) / range;
+        this.$progressBlue.width = slider.min + (slider.max - slider.min) * k;
+    }
+
+    /** 切换详情区域的显示/隐藏 */
+    private getDetailNodes(): cc.Node[] {
+        return [this.$Score, this.$Preflop, this.$Flop, this.$Turn, this.$River, this.$Showdown, this.$Showdown2];
+    }
+
+    /** 根据当前展开状态强制设置详情区域的可见性 */
+    private enforceDetailsVisibility() {
+        this.getDetailNodes().forEach(node => {
+            if (node) node.active = this.detailsExpanded;
+        });
+        // Showdown2 仅在双套牌且展开时显示
+        if (this.$Showdown2 && !this.HaveSecondCard) {
+            this.$Showdown2.active = false;
+        }
+    }
+
+    click_detailsBtn() {
+        this.detailsExpanded = !this.detailsExpanded;
+        this.getDetailNodes().forEach(node => {
+            if (node) node.active = this.detailsExpanded;
+        });
+        // Showdown2 仅在双套牌且展开时显示
+        if (this.$Showdown2 && !this.HaveSecondCard) {
+            this.$Showdown2.active = false;
+        }
+        let arrowsp = this.$DetailsBtn.getChildByName('arrowsp');
+        if (arrowsp) {
+            arrowsp.scaleY *= -1;
+        }
+    }
+
+    /** 偷偷看按钮点击：请求看所有未亮牌玩家的手牌 */
+    click_peekButton() {
+        if (!this.$PeekButton) return;
+        // 防重复点击
+        let btn = this.$PeekButton.getComponent(cc.Button);
+        if (btn) btn.interactable = false;
+
+        WWW.Instance.CommonAPI({
+            web_class: WebRoomCenterGameWatch,
+            body: WebRoomCenterGameWatch.Request({
+                room_id: this.historyInfoData.room_id,
+                room_unique_id: this.historyInfoData.room_unique_id,
+                hand_num: this.currentPage,
+                be_watched_user_id: 0
+            })
+        }).then(
+            (res: any) => {
+                if (!cc.isValid(this.node)) return;
+                if (btn) btn.interactable = true;
+
+                if (res?.code === 0 && res?.data) {
+                    // 合并偷偷看到的手牌到缓存
+                    this.mergeWatchedHands(res.data.be_watched_user_hands);
+                    // 用新数据重新渲染界面
+                    this.HandleHistoryReplay(res.data);
+                    // 隐藏偷偷看按钮（已看过）
+                    if (this.$PeekButton) {
+                        let peekBtn = this.$PeekButton.getComponent(cc.Button);
+                        if (peekBtn) peekBtn.interactable = false;
+                        this.$PeekButton.opacity = 128;
+                    }
+                    // 刷新钻石余额
+                    this.reqDiamondBalance();
+                }
+            },
+            () => {
+                if (btn) btn.interactable = true;
+            }
+        );
+    }
+
+    /** 合并偷偷看到的手牌数据到缓存 */
+    private mergeWatchedHands(hands: { user_rid: number; data: string }[]) {
+        if (!hands || hands.length <= 0) return;
+        for (let i = 0; i < hands.length; i++) {
+            let found = false;
+            for (let j = 0; j < this.beWatchedUserHands.length; j++) {
+                if (this.beWatchedUserHands[j].user_rid === hands[i].user_rid) {
+                    this.beWatchedUserHands[j].data = hands[i].data;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                this.beWatchedUserHands.push(hands[i]);
+            }
+        }
+    }
+
+    /** 从缓存中获取偷偷看到的玩家手牌 */
+    private getWatchedHandCards(userRid: number): number[] {
+        for (let i = 0; i < this.beWatchedUserHands.length; i++) {
+            if (this.beWatchedUserHands[i].user_rid === userRid) {
+                let cards: number[] = [];
+                let parts = this.beWatchedUserHands[i].data.split(',');
+                for (let j = 0; j < parts.length; j++) {
+                    let val = parseInt(parts[j]);
+                    if (!isNaN(val)) cards.push(val);
+                }
+                return cards;
+            }
+        }
+        return null;
+    }
+
+    /** 判断是否还有未查看的手牌（控制偷偷看按钮的显示） */
+    private hasHiddenCards(ResponseData: typeof WebRoomCenterHistoryReplay.Data): boolean {
+        for (let i = 0; i < ResponseData.s.result.length; i++) {
+            let result = ResponseData.s.result[i];
+            if (result.card == null || result.card.length === 0 || result.card[0] <= 0) {
+                // 这个玩家没有亮牌，通过座位号找 uid，再检查是否已经偷看过
+                let playerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, result.sn);
+                if (playerInfo && playerInfo.playerId !== GameCache.Instance.nUserId) {
+                    let watched = this.getWatchedHandCards(playerInfo.playerId);
+                    if (!watched || watched.length === 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     click_bg() {
@@ -374,23 +556,182 @@ export default class UITexasHistory extends UIBasePlus {
      */
     private InitUI() {}
 
+    /** 异步请求钻石余额并显示 */
+    private reqDiamondBalance() {
+        if (!this.$DiamondNum) return;
+        WWW.Instance.CommonAPI({
+            web_class: WebUserDiamondsWallet
+        }).then((res: any) => {
+            if (cc.isValid(this.node) && this.$DiamondNum && res?.data?.diamonds_wallet) {
+                let label = this.$DiamondNum.getComponent(cc.Label);
+                if (label) label.string = res.data.diamonds_wallet.diamonds.toLocaleString('en-US');
+            }
+        });
+    }
+
+    /** 预加载 playerCardNode prefab */
+    private async loadPlayerCardPrefab() {
+        this.playerCardPrefab = await ResManager.GetOrLoad<cc.Prefab>('texas', 'prefab/widgetLayer/playerCardNode');
+    }
+
+    /** 请求偷偷看价格并显示到 $PeekCost 上 */
+    private async reqPeekPrice() {
+        if (!this.$PeekCost) return;
+        try {
+            // 请求 config_type=30（看全部手牌），type_ext=11（观战未坐下）
+            await DiamondModel.Instance.ReqDiamondConfig(30);
+            let diamondConfig = DiamondModel.Instance.GetDiamondConfig(11, 30);
+            let price = this.getPriceFromConfig(diamondConfig);
+            let label = this.$PeekCost.getComponent(cc.Label);
+            if (label) label.string = `${price}`;
+        } catch (e) {
+            cc.log('[UITexasHistory] reqPeekPrice failed', e);
+        }
+    }
+
+    /** 从钻石配置中按 smallBlind 匹配价格 */
+    private getPriceFromConfig(diamondConfig: any): number {
+        if (!diamondConfig?.setting) return 0;
+        let sb = GameCache.Instance.CurGame?.smallBlind || 0;
+        for (let item of diamondConfig.setting) {
+            if (item.sb === sb) {
+                return item.price || 0;
+            }
+        }
+        // 没有精确匹配则取第一个
+        if (diamondConfig.setting.length > 0) {
+            return diamondConfig.setting[0].price || 0;
+        }
+        return 0;
+    }
+
+    /** 隐藏 $Dashboard 下的静态 playerNode 模板节点 */
+    private hideDashboardTemplate() {
+        if (!this.$Dashboard) return;
+        let template = this.$Dashboard.getChildByName('playerNode');
+        if (template) {
+            template.active = false;
+        }
+    }
+
+    /** 清空 $Dashboard 中动态生成的 playerCardNode 实例 */
+    private clearDashboard() {
+        for (let i = 0; i < this.dashboardNodes.length; i++) {
+            if (cc.isValid(this.dashboardNodes[i])) {
+                this.dashboardNodes[i].destroy();
+            }
+        }
+        this.dashboardNodes = [];
+    }
+
+    /**
+     * 在 $Dashboard 中根据玩家数据生成 playerCardNode 实例
+     * @param playerInfos 玩家信息列表
+     * @param publicCards 公共牌数组
+     * @param responseData 完整回放数据 (用于获取 result 中的牌型、盈亏等)
+     */
+    private renderDashboard(playerInfos: PlayerInfo[], publicCards: number[], responseData: typeof WebRoomCenterHistoryReplay.Data) {
+        this.clearDashboard();
+        if (!this.$Dashboard || !this.playerCardPrefab) return;
+
+        for (let i = 0; i < playerInfos.length; i++) {
+            let pInfo = playerInfos[i];
+            let node = cc.instantiate(this.playerCardPrefab);
+            let comp = node.getComponent(playerCardNode);
+            if (!comp) {
+                comp = node.addComponent(playerCardNode);
+            }
+
+            // 获取该玩家的最后操作
+            let lastAct = this.getPlayerLastAction(pInfo.seatID, responseData);
+
+            let cardData: IPlayerCardData = {
+                userName: pInfo.userName,
+                headPic: pInfo.headPic,
+                handCards: pInfo.handCards || [],
+                publicCards: publicCards,
+                publicCards2: this.HaveSecondCard && this.SecondPublicCards.length > 0
+                    ? this.SecondPublicCards : undefined,
+                cardType: pInfo.maxCardType,
+                actName: lastAct.actName,
+                actChip: lastAct.actChip,
+                raiseTimes: lastAct.raiseTimes,
+                winAnte: pInfo.winAnte,
+                isMine: pInfo.isMine
+            };
+
+            // 插入到 $Dashboard 中，位于隐藏的静态模板之前
+            node.parent = this.$Dashboard;
+            let templateNode = this.$Dashboard.getChildByName('playerNode');
+            if (templateNode) {
+                node.setSiblingIndex(this.$Dashboard.childrenCount - 2); // 模板在最后，新节点在模板前
+            }
+            node.active = true;
+
+            comp.setData(cardData);
+            this.dashboardNodes.push(node);
+        }
+    }
+
+    /**
+     * 获取玩家在整手牌中的最后一次操作
+     * 遍历所有轮次(procedure)找到该玩家最后一次出现的操作
+     */
+    private getPlayerLastAction(seatID: number, responseData: typeof WebRoomCenterHistoryReplay.Data): { actName: string, actChip: number, raiseTimes: number } {
+        let lastAct = { actName: '', actChip: 0, raiseTimes: 0 };
+        let raiseCount = 0;
+        let allRounds = [];
+
+        // 收集所有轮次
+        if (responseData.s.procedure.preflop?.pl) {
+            allRounds.push(...responseData.s.procedure.preflop.pl);
+        }
+        if (responseData.s.procedure.flop?.pl) {
+            allRounds.push(...responseData.s.procedure.flop.pl);
+        }
+        if (responseData.s.procedure.turn?.pl) {
+            allRounds.push(...responseData.s.procedure.turn.pl);
+        }
+        if (responseData.s.procedure.river?.pl) {
+            allRounds.push(...responseData.s.procedure.river.pl);
+        }
+
+        for (let i = 0; i < allRounds.length; i++) {
+            if (allRounds[i].sn === seatID) {
+                let act = allRounds[i].act;
+                if (act === 'bet' || act === 'raise') {
+                    raiseCount++;
+                }
+                lastAct.actName = act;
+                lastAct.actChip = allRounds[i].act_amt;
+                lastAct.raiseTimes = raiseCount;
+            }
+        }
+
+        return lastAct;
+    }
+
     protected async HandleHistoryReplay(ResponseData: typeof WebRoomCenterHistoryReplay.Data) {
         this.PublicCards = [0, 0, 0, 0, 0];
+        this.SecondPublicCards = [];
+        // 保存上一手的双套状态，用于正确回收节点池
+        const prevHaveSecondCard = this.HaveSecondCard;
         this.HaveSecondCard = false;
+        // 清理上一手双套牌残留的 UI（含节点池污染修复）
+        this.clearSecondBoardUI(prevHaveSecondCard);
         //显示滚动容器
         this.$content.active = true;
         this.RefreshTopHandAndPlayerNumInfo(ResponseData.s.table.pl.length.toString());
-        //缓存公共牌
-        if (ResponseData.s.procedure.flop.card != null) {
-            // for (let i = 0; i < ResponseData.s.procedure.flop.card.length; i++) {
-            //     this.PublicCards[i] = ResponseData.s.procedure.flop.card[i];
-            // }
-            this.PublicCards = ResponseData.s.procedure.flop.card;
+        //缓存公共牌 — 逐个复制到固定 5 元素数组，避免引用替换导致数组长度不一致
+        if (ResponseData.s.procedure.flop?.card) {
+            for (let i = 0; i < ResponseData.s.procedure.flop.card.length && i < 5; i++) {
+                this.PublicCards[i] = ResponseData.s.procedure.flop.card[i];
+            }
         }
-        if (ResponseData.s.procedure.turn.card?.length > 0) {
+        if (ResponseData.s.procedure.turn?.card?.length > 0) {
             this.PublicCards[3] = ResponseData.s.procedure.turn.card[0];
         }
-        if (ResponseData.s.procedure.river.card?.length > 0) {
+        if (ResponseData.s.procedure.river?.card?.length > 0) {
             this.PublicCards[4] = ResponseData.s.procedure.river.card[0];
         }
         //判断是否有第二套牌，并赋值
@@ -481,12 +822,30 @@ export default class UITexasHistory extends UIBasePlus {
             }
             if (playerInfo.playerId != GameCache.Instance.nUserId) {
                 playerInfo.handCards = ResponseData.s.result[i].card;
+                // 如果结果中没有手牌或手牌为空，尝试使用偷偷看缓存
+                if ((!playerInfo.handCards || playerInfo.handCards.length === 0 || playerInfo.handCards[0] <= 0)) {
+                    // 优先用接口返回的 be_watched_user_hands
+                    if (ResponseData.be_watched_user_hands && ResponseData.be_watched_user_hands.length > 0) {
+                        for (let j = 0; j < ResponseData.be_watched_user_hands.length; j++) {
+                            if (ResponseData.be_watched_user_hands[j].user_rid === playerInfo.playerId) {
+                                this.mergeWatchedHands([ResponseData.be_watched_user_hands[j]]);
+                                break;
+                            }
+                        }
+                    }
+                    let watchedCards = this.getWatchedHandCards(playerInfo.playerId);
+                    if (watchedCards && watchedCards.length > 0) {
+                        playerInfo.handCards = watchedCards;
+                    }
+                }
             }
             playerInfo.maxCardType = ResponseData.s.result[i].card_type;
             playerInfo.winAnte = ResponseData.s.result[i].win;
             playerInfo.insuranceGain = ResponseData.s.result[i].ins;
             playerInfo.maxCardIndex = ResponseData.s.result[i].maxcard_idx;
         }
+        // 渲染 Dashboard 概览区 (使用新的 playerCardNode prefab)
+        this.renderDashboard(this.playerInfos, this.PublicCards, ResponseData);
         this.$Score.active = ResponseData.s.result.length > 0;
         this.setChildLabel(this.$Score, 'Title/player/num', `${ResponseData.s.result.length}`);
         // #region Ante
@@ -549,15 +908,17 @@ export default class UITexasHistory extends UIBasePlus {
         // //Flop
         this.$Flop.active = ResponseData.s.procedure.flop.pl.length > 0;
         this.setChildLabel(this.$Flop, 'Title/player/num', `${ResponseData.s.procedure.flop.pl.length}`);
-        if (ResponseData.s.procedure.flop.pl.length > 0) {
-            this.$Flop_Cards.children.forEach((item, index) => {
-                item.active = this.PublicCards[index] > 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+        // 卡牌显示不受 pl 条件限制：即使该街无玩家动作，社区牌仍需正确渲染
+        this.$Flop_Cards.children.forEach((item, index) => {
+            let sprite = item.getComponent(cc.Sprite) || item.getComponentInChildren(cc.Sprite);
+            if (sprite) {
+                sprite.spriteFrame = AssetContext.getAsset(
                     GameUtil.GetCardNameByNum(this.PublicCards[index]),
                     AssetFold.texture_SmallCard0
                 );
-            });
-        }
+            }
+            item.active = this.PublicCards[index] > 0;
+        });
         times = 0;
         for (let i = 0; i < ResponseData.s.procedure.flop.pl.length; i++) {
             let seatID = ResponseData.s.procedure.flop.pl[i].sn;
@@ -597,15 +958,17 @@ export default class UITexasHistory extends UIBasePlus {
         // //Turn
         this.$Turn.active = ResponseData.s.procedure.turn.pl.length > 0;
         this.setChildLabel(this.$Turn, 'Title/player/num', `${ResponseData.s.procedure.turn.pl.length}`);
-        if (ResponseData.s.procedure.turn.pl.length > 0) {
-            this.$Turn_Cards.children.forEach((item, index) => {
-                item.active = this.PublicCards[index] > 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+        // 卡牌显示不受 pl 条件限制：全进等场景 pl 为空但牌已发出，必须无条件更新
+        this.$Turn_Cards.children.forEach((item, index) => {
+            let sprite = item.getComponent(cc.Sprite) || item.getComponentInChildren(cc.Sprite);
+            if (sprite) {
+                sprite.spriteFrame = AssetContext.getAsset(
                     GameUtil.GetCardNameByNum(this.PublicCards[index]),
                     AssetFold.texture_SmallCard0
                 );
-            });
-        }
+            }
+            item.active = this.PublicCards[index] > 0;
+        });
         times = 0;
         for (let i = 0; i < ResponseData.s.procedure.turn.pl.length; i++) {
             let seatID = ResponseData.s.procedure.turn.pl[i].sn;
@@ -645,15 +1008,18 @@ export default class UITexasHistory extends UIBasePlus {
         // //River
         this.$River.active = ResponseData.s.procedure.river.pl.length > 0;
         this.setChildLabel(this.$River, 'Title/player/num', `${ResponseData.s.procedure.river.pl.length}`);
-        if (ResponseData.s.procedure.river.pl.length > 0) {
-            this.$River_Cards.children.forEach((item, index) => {
-                item.active = this.PublicCards[index] > 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
-                    GameUtil.GetCardNameByNum(this.PublicCards[index]),
+        // 卡牌显示不受 pl 条件限制：全进等场景 pl 为空但牌已发出，必须无条件更新
+        this.$River_Cards.children.forEach((item, index) => {
+            let cardValue = this.PublicCards[index];
+            let sprite = item.getComponent(cc.Sprite) || item.getComponentInChildren(cc.Sprite);
+            if (sprite) {
+                sprite.spriteFrame = AssetContext.getAsset(
+                    GameUtil.GetCardNameByNum(cardValue),
                     AssetFold.texture_SmallCard0
                 );
-            });
-        }
+            }
+            item.active = cardValue > 0;
+        });
         times = 0;
         for (let i = 0; i < ResponseData.s.procedure.river.pl.length; i++) {
             let seatID = ResponseData.s.procedure.river.pl[i].sn;
@@ -705,6 +1071,18 @@ export default class UITexasHistory extends UIBasePlus {
         //赢牌底池
         this.setChildLabel(this.$Showdown, 'Title/coin/num', StringHelper.GetLongString(mPool));
         this.setChildLabel(this.$Score, 'Title/coin/num', StringHelper.GetLongString(mPool));
+        //第二套结算区显示
+        if (this.$Showdown2) {
+            this.$Showdown2.active = this.HaveSecondCard && ResponseData.s.result.length > 0;
+            if (this.HaveSecondCard) {
+                this.setChildLabel(this.$Showdown2, 'Title/player/num', `${ResponseData.s.result.length}`);
+                this.setChildLabel(this.$Showdown2, 'Title/coin/num', StringHelper.GetLongString(mPool / 2));
+            } else {
+                // 单套牌局时清空标签，防止从双套牌局切换后残留旧数据
+                this.setChildLabel(this.$Showdown2, 'Title/player/num', '');
+                this.setChildLabel(this.$Showdown2, 'Title/coin/num', '');
+            }
+        }
         //ShowdownInfoList2.gameObject.SetActive(ResponseData.s.result.Count > 0 && HaveSecondCard);
         //ShowdownNum2.gameObject.SetActive(ResponseData.s.result.Count > 0 && HaveSecondCard);
         // //本手结束时底池
@@ -769,8 +1147,6 @@ export default class UITexasHistory extends UIBasePlus {
             }
             this.playerInfosWinner.push(player);
         }
-        //刷新手牌位置
-        let offsetx_x = this.cards_position[GameCache.Instance.CurGame.HandCards];
         //赋值玩家数据
         this.clearChilds(this.$Score_Childs, this.Score_Child_Pool);
         this.clearChilds(this.$Preflop_Childs, this.Preflop_Child_Pool);
@@ -778,6 +1154,7 @@ export default class UITexasHistory extends UIBasePlus {
         this.clearChilds(this.$Turn_Childs, this.Turn_Child_Pool);
         this.clearChilds(this.$River_Childs, this.River_Child_Pool);
         this.clearChilds(this.$Showdown_Childs, this.Score_Child_Pool);
+        this.clearChilds(this.$Showdown2_Childs, this.Showdown2_Child_Pool);
         for (let i = 0; i < this.playerInfos.length; i++) {
             let pool = this.HaveSecondCard ? this.Score_Second_Child_Pool : this.Score_Child_Pool;
             let go = this.GetCreatePrefab(pool, this.$Score_Childs);
@@ -788,7 +1165,11 @@ export default class UITexasHistory extends UIBasePlus {
             } else {
                 this.SetPlayerCardItem(go, this.playerInfos[i]);
             }
-            go.getChildByName('cards_position').x = offsetx_x;
+            // layoutDetailHandCards 已将手牌约束在固定范围内，无需按牌数动态偏移
+            // Score_Child prefab: cards_position 默认 X=-142
+            // Score_Second_Child prefab: cards_position 默认 X=-367.499，补偿差值 -225.499
+            const secondBoardOffset = this.HaveSecondCard ? -225.499 : 0;
+            go.getChildByName('cards_position').x = -142 + secondBoardOffset;
         }
         for (let i = 0; i < this.playerInfosPreFlop.length; i++) {
             let go = this.GetCreatePrefab(this.Preflop_Child_Pool, this.$Preflop_Childs);
@@ -818,23 +1199,15 @@ export default class UITexasHistory extends UIBasePlus {
             let go = this.GetCreatePrefab(this.Score_Child_Pool, this.$Showdown_Childs);
             this.AllPlayerCardsInfosWinner.push(go);
             go.active = true;
-            this.SetPlayerCardItem(go, this.playerInfosWinner[i], this.HaveSecondCard);
+            this.SetPlayerCardItem(go, this.playerInfosWinner[i]);
             this.m_winUserId = this.playerInfosWinner[i].playerId;
         }
         //结果的第二套牌
         if (this.HaveSecondCard) {
             for (let i = 0; i < this.playerInfosWinner.length; i++) {
-                // 	GameObject go = GetCreatePrefab(AllPlayerPaiPuInfoObj.gameObject, ShowdownNum2);
-                // AllPlayerCardsInfoswinner.Add(go);
-                // go.SetActive(true);
-                // SetPlayerCardItem(go, playerInfosWinner[i], HaveSecondCard, 1);
-                // m_winUserId = playerInfosWinner[i].playerId;
-                // ContentHeight += 180;
-                // let go = this.GetCreatePrefab(this.Score_Child_Pool, this.$Showdown_Cards);
-                // this.AllPlayerCardsInfosRiver.push(go);
-                // go.active = true;
-                // this.SetPlayerCardItem(go, this.playerInfosWinner[i], this.HaveSecondCard);
-                // this.m_winUserId = this.playerInfosWinner[i].playerId;
+                let go = this.GetCreatePrefab(this.Showdown2_Child_Pool, this.$Showdown2_Childs);
+                go.active = true;
+                this.SetShowdown2CardItem(go, this.playerInfosWinner[i]);
             }
         }
         // if (this.historyInfoData.bInsurance) {
@@ -845,6 +1218,15 @@ export default class UITexasHistory extends UIBasePlus {
         this.setChildLabel(this.$Score, 'Shows/insurance/value', StringHelper.GetSignedLongString(mInsurancePool));
         this.setChildVisible(this.$Showdown, 'Shows/insurance', mInsurancePool != 0);
         this.setChildLabel(this.$Showdown, 'Shows/insurance/value', StringHelper.GetSignedLongString(mInsurancePool));
+        // 偷偷看按钮：还有未查看的手牌时显示
+        if (this.$PeekButton) {
+            let peekBtn = this.$PeekButton.getComponent(cc.Button);
+            let hasHidden = this.hasHiddenCards(ResponseData);
+            if (peekBtn) peekBtn.interactable = hasHidden;
+            this.$PeekButton.opacity = hasHidden ? 255 : 128;
+        }
+        // 默认折叠详情区域
+        this.enforceDetailsVisibility();
     }
 
     setBtnState() {
@@ -879,6 +1261,10 @@ export default class UITexasHistory extends UIBasePlus {
     }
 
     resetData() {
+        // 清空 Dashboard 概览区
+        this.clearDashboard();
+        // 清空偷偷看缓存
+        this.beWatchedUserHands = [];
         for (let index = 0; index < this.AllPlayerCardsInfos.length; index++) {
             const element: cc.Node = this.AllPlayerCardsInfos[index];
             element.destroy();
@@ -978,6 +1364,46 @@ export default class UITexasHistory extends UIBasePlus {
         }
     }
 
+    /**
+     * 详情页手牌紧密排列
+     * 参照 playerCardNode 的排列算法:
+     *   spacing = min(牌宽+间隙, (rightX-leftX)/(count-1))
+     *   2张 → 不重叠平铺; 4~6张 → 等距叠加
+     *
+     * @param handCardsNode  cards_position/hand_cards 节点
+     * @param cardCount      需要显示的牌数 (2~6)
+     * @param leftX          prefab 中最左侧牌的中心 x
+     * @param rightX         prefab 中最右侧牌的中心 x
+     * @param cards          牌值数组, null 时显示牌背
+     */
+    private layoutDetailHandCards(handCardsNode: cc.Node, cardCount: number, leftX: number, rightX: number, cards: number[] | null) {
+        const CARD_WIDTH = 84;
+        const VISIBLE_GAP = 4;
+        const spacing = cardCount > 1
+            ? Math.min(CARD_WIDTH + VISIBLE_GAP, (rightX - leftX) / (cardCount - 1))
+            : 0;
+
+        const children = handCardsNode.children;
+        for (let i = 0; i < children.length; i++) {
+            const item = children[i];
+            if (i < cardCount) {
+                item.active = true;
+                item.x = cardCount === 1 ? leftX : leftX + i * spacing;
+                item.zIndex = i;
+                let sprite = item.getComponent(cc.Sprite);
+                if (sprite) {
+                    let cardVal = cards ? (cards[i] || 0) : 0;
+                    sprite.spriteFrame = AssetContext.getAsset(
+                        GameUtil.GetCardNameByNum(cardVal),
+                        AssetFold.texture_SmallCard0
+                    );
+                }
+            } else {
+                item.active = false;
+            }
+        }
+    }
+
     tryParse(x: string) {
         let y = x.indexOf('.') + 1; //获取小数点的位置
         let length = x.length - y; //获取小数点后的个数
@@ -990,6 +1416,70 @@ export default class UITexasHistory extends UIBasePlus {
 
     GetShowCardType(cardType) {
         return CardTypeUtil.GetCardTypeEnglishName(cardType);
+    }
+
+    /**
+     * Showdown 第二套结算区渲染
+     * 模板使用 Score_Child（单套公牌布局），渲染第二套公共牌、第二套牌型、第二套盈亏和高亮
+     */
+    private SetShowdown2CardItem(go: cc.Node, element: PlayerInfo) {
+        //玩家名字
+        this.setChildLabel(go, 'cards_position/nick/label', StringHelper.LengthNick(element.userName));
+        //第二套盈亏
+        let winStr = '';
+        if (element.winAnte2 && element.winAnte2.length > 1) {
+            winStr = StringHelper.GetLongString(element.winAnte2[1]);
+        }
+        this.setChildLabel(go, 'win', winStr);
+        //保险
+        if (element.insuranceGain != 0) {
+            this.setChildLabel(go, 'score', StringHelper.GetSignedLongString(element.insuranceGain));
+        } else {
+            this.setChildLabel(go, 'score', '');
+        }
+        //位置
+        this.setChildLabel(go, 'SB/label', this.PlayerPositionStr[element.playerPosition]);
+        //第二套牌型
+        this.setChildLabel(go, 'pai_type', element.maxCardType2 != null ? this.GetShowCardType(element.maxCardType2) : '');
+        //手牌 + 公共牌
+        let hand_cards: cc.Node = cc.find('cards_position/hand_cards', go);
+        let public_cards = cc.find('cards_position/public_cards', go);
+        //手牌紧密排列
+        let cardCount = GameCache.Instance.CurGame.HandCards;
+        this.layoutDetailHandCards(hand_cards, cardCount, -477, -331.32,
+            element.handCards.length <= 0 ? null : element.handCards);
+        //第二套公共牌显示
+        public_cards.children.forEach((item, index) => {
+            let sprite = item.getComponent(cc.Sprite);
+            if (!sprite) return;
+            let cardVal = this.SecondPublicCards[index] || 0;
+            item.active = cardVal > 0;
+            sprite.spriteFrame = AssetContext.getAsset(
+                GameUtil.GetCardNameByNum(cardVal),
+                AssetFold.texture_SmallCard0
+            );
+        });
+        //高亮牌显示 — 使用第二套高亮索引
+        if (element.maxCardIndex2 != null && element.maxCardIndex2.length > 0) {
+            //手牌置灰
+            hand_cards.children.forEach(item => {
+                item.color = cc.color(127, 127, 127);
+            });
+            //公共牌置灰
+            public_cards.children.forEach(item => {
+                item.color = cc.color(127, 127, 127);
+            });
+            //高亮第二套赢牌
+            for (let i = 0; i < element.maxCardIndex2.length; i++) {
+                if (element.maxCardIndex2[i] >= 5) {
+                    let child = hand_cards.children[element.maxCardIndex2[i] - 5];
+                    if (child) child.color = cc.color(255, 255, 255);
+                } else {
+                    let child = public_cards.children[element.maxCardIndex2[i]];
+                    if (child) child.color = cc.color(255, 255, 255);
+                }
+            }
+        }
     }
 
     SetPlayerCardItem(go, element, isSecond = false, SpcsIndex = 0) {
@@ -1040,19 +1530,10 @@ export default class UITexasHistory extends UIBasePlus {
         //         }
         let hand_cards: cc.Node = cc.find('cards_position/hand_cards', go);
         let public_cards = cc.find('cards_position/public_cards', go);
-        //手牌显示
-        if (element.handCards.length <= 0) {
-            hand_cards.children.forEach((item, index) => {
-                item.active = index < GameCache.Instance.CurGame.HandCards;
-                item.active && (item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(0), AssetFold.texture_SmallCard0));
-            });
-        } else {
-            hand_cards.children.forEach((item, index) => {
-                item.active = index < GameCache.Instance.CurGame.HandCards;
-                let card = element.handCards[index] || 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(card), AssetFold.texture_SmallCard0);
-            });
-        }
+        //手牌显示 + 紧密排列 (Score_Child prefab: card[0]=-477, card[5]=-331.32)
+        let cardCount = GameCache.Instance.CurGame.HandCards;
+        this.layoutDetailHandCards(hand_cards, cardCount, -477, -331.32,
+            element.handCards.length <= 0 ? null : element.handCards);
         if (isSecond) public_cards = public_cards.children[0];
         if (isSecond && SpcsIndex != 0) {
             //公共牌显示
@@ -1071,8 +1552,10 @@ export default class UITexasHistory extends UIBasePlus {
         } else {
             //第一套公共牌显示
             public_cards.children.forEach((item, index) => {
+                let sprite = item.getComponent(cc.Sprite);
+                if (!sprite) return;
                 item.active = this.PublicCards[index] > 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+                sprite.spriteFrame = AssetContext.getAsset(
                     GameUtil.GetCardNameByNum(this.PublicCards[index]),
                     AssetFold.texture_SmallCard0
                 );
@@ -1114,9 +1597,11 @@ export default class UITexasHistory extends UIBasePlus {
                 });
                 for (let i = 0; i < element.maxCardIndex.length; i++) {
                     if (element.maxCardIndex[i] >= 5) {
-                        hand_cards.children[element.maxCardIndex[i] - 5].color = cc.color(255, 255, 255);
+                        let child = hand_cards.children[element.maxCardIndex[i] - 5];
+                        if (child) child.color = cc.color(255, 255, 255);
                     } else {
-                        public_cards.children[element.maxCardIndex[i]].color = cc.color(255, 255, 255);
+                        let child = public_cards.children[element.maxCardIndex[i]];
+                        if (child) child.color = cc.color(255, 255, 255);
                     }
                 }
             }
@@ -1127,10 +1612,14 @@ export default class UITexasHistory extends UIBasePlus {
         //玩家名字
         this.setChildLabel(go, 'cards_position/nick/label', StringHelper.LengthNick(element.userName));
         //输赢筹码
-        let str;
-        str = element.winAnte2[0] / 100;
         this.setChildLabel(go, 'win1', StringHelper.GetDecimalN(element.winAnte2[0] / 100));
         this.setChildLabel(go, 'win2', StringHelper.GetDecimalN(element.winAnte2[1] / 100));
+        //保险
+        if (element.insuranceGain != 0) {
+            this.setChildLabel(go, 'score', StringHelper.GetSignedLongString(element.insuranceGain));
+        } else {
+            this.setChildLabel(go, 'score', '');
+        }
         //判断是否是自己
         if (element.isMine) {
             // cc.find('PositionImageBg/PositionText', go).color = cc.color(220, 186, 130, 255);
@@ -1153,77 +1642,78 @@ export default class UITexasHistory extends UIBasePlus {
         }
         //位置
         this.setChildLabel(go, 'SB/label', this.PlayerPositionStr[element.playerPosition]);
+        //牌型
+        this.setChildLabel(go, 'pai_type', this.GetShowCardType(element.maxCardType));
         //#region  牌
         let hand_cards: cc.Node = cc.find('cards_position/hand_cards', go);
         let public_cards1 = cc.find('cards_position/public_cards/cards1', go);
         let public_cards2 = cc.find('cards_position/public_cards/cards2', go);
-        //手牌显示
-        if (element.handCards.length <= 0) {
-            hand_cards.children.forEach((item, index) => {
-                item.active = index < GameCache.Instance.CurGame.HandCards;
-                item.active && (item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(0), AssetFold.texture_SmallCard0));
-            });
-        } else {
-            hand_cards.children.forEach((item, index) => {
-                item.active = index < GameCache.Instance.CurGame.HandCards;
-                let card = element.handCards[index] || 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(card), AssetFold.texture_SmallCard0);
-            });
-        }
+        //手牌显示 + 紧密排列 (Score_Second_Child prefab: card[0]=-222, card[5]=-79.566)
+        let cardCount = GameCache.Instance.CurGame.HandCards;
+        this.layoutDetailHandCards(hand_cards, cardCount, -222, -79.566,
+            element.handCards.length <= 0 ? null : element.handCards);
         //公共牌显示
         for (let i = 0; i < 5; i++) {
             let publicCard1 = public_cards1.children[i];
             let publicCard2 = public_cards2.children[i];
+            if (!publicCard1 || !publicCard2) continue;
             if (this.PublicCards[i] == 0) {
                 //没发完的公共牌不显示
                 publicCard1.active = false;
                 publicCard2.active = false;
             } else {
                 publicCard1.active = true;
-                publicCard1.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+                let sprite1 = publicCard1.getComponent(cc.Sprite);
+                if (sprite1) sprite1.spriteFrame = AssetContext.getAsset(
                     GameUtil.GetCardNameByNum(this.PublicCards[i]),
                     AssetFold.texture_SmallCard0
                 );
                 publicCard2.active = true;
-                publicCard2.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+                let sprite2 = publicCard2.getComponent(cc.Sprite);
+                if (sprite2) sprite2.spriteFrame = AssetContext.getAsset(
                     GameUtil.GetCardNameByNum(this.SecondPublicCards[i]),
                     AssetFold.texture_SmallCard0
                 );
             }
         }
-        //高亮牌显示
-        if (element.maxCardIndex2 != null && element.maxCardIndex2.Count > 0) {
-            //手牌置灰
+        //高亮牌显示 — 合并处理，避免第二套高亮被第一套覆盖
+        const hasHighlight1 = element.maxCardIndex != null && element.maxCardIndex.length > 0;
+        const hasHighlight2 = element.maxCardIndex2 != null && element.maxCardIndex2.length > 0;
+        if (hasHighlight1 || hasHighlight2) {
+            // 先全部置灰
             hand_cards.children.forEach(item => {
                 item.color = cc.color(127, 127, 127);
             });
-            //公共牌置灰
-            public_cards2.children.forEach(item => {
-                item.color = cc.color(127, 127, 127);
+            public_cards1.children.forEach(item => {
+                let sprite = item.getComponent(cc.Sprite);
+                if (sprite) item.color = cc.color(127, 127, 127);
             });
-            for (let i = 0; i < element.maxCardIndex2.length; i++) {
-                if (element.maxCardIndex2[i] >= 5) {
-                    hand_cards.children[element.maxCardIndex2[i] - 5].color = cc.color(255, 255, 255);
-                } else {
-                    public_cards2.children[element.maxCardIndex2[i]].color = cc.color(255, 255, 255);
+            public_cards2.children.forEach(item => {
+                let sprite = item.getComponent(cc.Sprite);
+                if (sprite) item.color = cc.color(127, 127, 127);
+            });
+            // 高亮第一套赢牌
+            if (hasHighlight1) {
+                for (let i = 0; i < element.maxCardIndex.length; i++) {
+                    if (element.maxCardIndex[i] >= 5) {
+                        let child = hand_cards.children[element.maxCardIndex[i] - 5];
+                        if (child) child.color = cc.color(255, 255, 255);
+                    } else {
+                        let child = public_cards1.children[element.maxCardIndex[i]];
+                        if (child) child.color = cc.color(255, 255, 255);
+                    }
                 }
             }
-        }
-        //高亮牌显示
-        if (element.maxCardIndex != null && element.maxCardIndex.Count > 0) {
-            //手牌置灰
-            hand_cards.children.forEach(item => {
-                item.color = cc.color(127, 127, 127);
-            });
-            //公共牌置灰
-            public_cards1.children.forEach(item => {
-                item.color = cc.color(127, 127, 127);
-            });
-            for (let i = 0; i < element.maxCardIndex.length; i++) {
-                if (element.maxCardIndex[i] >= 5) {
-                    hand_cards.children[element.maxCardIndex[i] - 5].color = cc.color(255, 255, 255);
-                } else {
-                    public_cards1.children[element.maxCardIndex[i]].color = cc.color(255, 255, 255);
+            // 高亮第二套赢牌 (手牌可能被第一套也高亮，再高亮一次无害)
+            if (hasHighlight2) {
+                for (let i = 0; i < element.maxCardIndex2.length; i++) {
+                    if (element.maxCardIndex2[i] >= 5) {
+                        let child = hand_cards.children[element.maxCardIndex2[i] - 5];
+                        if (child) child.color = cc.color(255, 255, 255);
+                    } else {
+                        let child = public_cards2.children[element.maxCardIndex2[i]];
+                        if (child) child.color = cc.color(255, 255, 255);
+                    }
                 }
             }
         }
@@ -1313,7 +1803,7 @@ export default class UITexasHistory extends UIBasePlus {
 
     // 刷新顶部玩家数量和当前手数
     RefreshTopHandAndPlayerNumInfo(playerNum: string) {
-        this.setChildLabel(this.$Top, 'player_count_label', playerNum);
+        this.setChildLabel(this.$Top, 'player_count_label', `${playerNum}/${GameCache.Instance.seat_count}`);
         this.setChildLabel(this.$Top, 'room_id_label', `${GameCache.Instance.room_id}-${this.currentPage}`);
     }
 
@@ -1335,9 +1825,32 @@ export default class UITexasHistory extends UIBasePlus {
         childs.removeAllChildren();
     }
 
+    /**
+     * 清理上一手双套牌残留的 UI (公共牌、子节点、节点池污染)
+     * @param prevHaveSecondCard 上一手是否为双套牌局，用于将 $Score_Childs 中的节点还回正确的池子
+     */
+    private clearSecondBoardUI(prevHaveSecondCard: boolean) {
+        // 关键：如果上一手是双套牌，$Score_Childs 下挂的是 Score_Second_Child_Pool 的节点
+        // 必须还回 Score_Second_Child_Pool，否则会污染 Score_Child_Pool
+        if (prevHaveSecondCard && this.$Score_Childs && this.Score_Second_Child_Pool) {
+            this.clearChilds(this.$Score_Childs, this.Score_Second_Child_Pool);
+        }
+        // 清空第二套公牌显示
+        if (this.$Showdown2_PublicCards) {
+            this.$Showdown2_PublicCards.children.forEach(item => {
+                item.active = false;
+            });
+        }
+        // 回收第二套 Score 子节点
+        if (this.$Showdown2_Childs && this.Showdown2_Child_Pool) {
+            this.clearChilds(this.$Showdown2_Childs, this.Showdown2_Child_Pool);
+        }
+    }
+
     //关闭处理的内容
     onClose(param?: any): void {
         super.onClose(param);
         this.removeHandler();
+        this.clearDashboard();
     }
 }

@@ -30,6 +30,11 @@ import ToastManager from '../manager/ToastManager';
 import AgoraManager from '../net/agora/AgoraManager';
 import AgoraVideoRender from '../net/agora/AgoraVideoRender';
 import { VideoModel } from '../crazyPoker/gameplay/common/constant/VideoModel';
+import H5MsgMgr from '../H5MsgMgr';
+import ProtocolAgency from '../net/websocket/ProtocolAgency';
+import { ProtocolCode } from '../net/websocket/ProtocolCode';
+import UITexasReportComponent from './UITexasReportComponent';
+import GGEvent from '../event/GGEvent';
 const LN = '[UI][UITexas]';
 
 export class PlayerBarrageRecord {
@@ -100,6 +105,8 @@ export default class UITexas extends BaseScene {
     // 客服
     btn_im: cc.Node = null;
     table_add_chip: cc.Node = null;
+    //安全卫士
+    btn_safety_guard: cc.Node = null;
     // main_menu 按钮
     // 战绩
     btn_report: cc.Node = null;
@@ -263,6 +270,10 @@ export default class UITexas extends BaseScene {
         this.btn_report = this.getChildNodeOrComponent('btn_report');
         this.btn_poker = this.getChildNodeOrComponent('btn_poker');
         this.btn_im = this.getChildNodeOrComponent('btn_im');
+        this.btn_safety_guard = this.getChildNodeOrComponent('btn_safety_guard');
+        if (this.btn_safety_guard) {
+            this.btn_safety_guard.active = false
+        }
         this.table_add_chip = this.getChildNodeOrComponent('table_add_chip');
         // main_menu 按钮（main_menu 在 side_btns 下，load_all_object 已递归索引）
         this.btn_emoji = this.getChildNodeOrComponent('btn_emoji');
@@ -467,6 +478,7 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.btn_report, this.click_side_button);
         this.setButtonClick(this.btn_poker, this.click_side_button);
         this.setButtonClick(this.btn_im, this.click_btn_im);
+        this.setButtonClick(this.btn_safety_guard, this.click_btn_safety_guard);
         if (this.table_add_chip) {
             this.table_add_chip.on(cc.Node.EventType.TOUCH_END, this.click_table_add_chip, this);
         }
@@ -512,6 +524,108 @@ export default class UITexas extends BaseScene {
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
         this.EnterInitUI();
+        // 进入牌桌后请求一次战绩数据，填充缓存，使战绩面板打开时可以立即显示
+        this.requestRoomersForCache();
+        // ── 实时战绩缓存增量更新监听（对应 Unity TexasSituationController） ──
+        // Roomers 回包：写入基线缓存
+        this.listen(ProtocolCode.Protocol_Holdem_Roomers, this.onGlobalRoomersUpdate);
+        // 自己坐下
+        this.listen(ProtocolCode.Protocol_Holdem_Seated, this.onSeatedUpdate);
+        // 别人坐下
+        this.listen(ProtocolCode.Protocol_Holdem_SeatedOthers, this.onSeatedOthersUpdate);
+        // 补充筹码（只处理 CcNone）
+        this.listen(ProtocolCode.Protocol_Holdem_ChipsChange, this.onChipsChangeUpdate);
+        // 站起（下桌）
+        this.listen(ProtocolCode.Protocol_Holdem_Standup, this.onStandupUpdate);
+        // 开始新一手：补写 startTime
+        this.listen(ProtocolCode.Protocol_Holdem_StartInfo, this.onStartInfoUpdate);
+        // Winner：每手结算增量更新
+        this.listen(ProtocolCode.Protocol_Holdem_Winner, this.onWinnerUpdate);
+    }
+
+    private requestRoomersForCache(): void {
+        const roomId = GameCache.Instance.room_id;
+        const matchId = GameCache.Instance.match_id;
+        if (!roomId) return;
+        ProtocolAgency.Send({
+            Code: ProtocolCode.Protocol_Holdem_Roomers,
+            RoomID: roomId,
+            MatchID: matchId,
+            Body: {
+                room: { roomId, matchId },
+                history: true,
+                historyLimit: 1000,
+                historyOffset: 0
+            }
+        });
+    }
+
+    // ── 自己坐下（Protocol_Holdem_Seated） ──
+    private onSeatedUpdate(response: any): void {
+        if (!response || response.status !== 0) return; // 失败（如带入不足）不写缓存
+        const userRid = GameCache.Instance.nUserId;
+        const name = GameCache.Instance.nick || '';
+        const avatar = GameCache.Instance.headPic || '';
+        const isNew = UITexasReportComponent.applySitDown(
+            userRid, response.totalBringin || 0, response.deposit || 0, name, avatar
+        );
+        if (isNew) this.post(GGEvent.SituationRefresh);
+    }
+
+    // ── 别人坐下（Protocol_Holdem_SeatedOthers） ──
+    private onSeatedOthersUpdate(response: any): void {
+        if (!response) return;
+        const isNew = UITexasReportComponent.applySitDown(
+            response.userRid, response.totalBringin || 0, response.deposit || 0,
+            response.name || '', response.avatar || ''
+        );
+        if (isNew) this.post(GGEvent.SituationRefresh);
+    }
+
+    // ── 补充筹码（Protocol_Holdem_ChipsChange），只处理 CcNone ──
+    private onChipsChangeUpdate(response: any): void {
+        if (!response) return;
+        let hasNew = false;
+        for (const change of (response.changesList || [])) {
+            if (change.reason !== 0 /* Def.ChipChangeReason.CC_NONE */) continue;
+            const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(change.seatId);
+            if (!seat?.Player) continue;
+            const isNew = UITexasReportComponent.applyChipChange(
+                seat.Player.userID, change.chips || 0,
+                seat.Player.nick || '', seat.Player.headPic || ''
+            );
+            if (isNew) hasNew = true;
+        }
+        if (hasNew) this.post(GGEvent.SituationRefresh);
+    }
+
+    // ── 下桌（Protocol_Holdem_Standup） ──
+    private onStandupUpdate(response: any): void {
+        if (!response) return;
+        const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(response.seatId);
+        if (!seat?.Player) return;
+        const isNew = UITexasReportComponent.applyStandUp(
+            seat.Player.userID, response.bringOut || 0,
+            seat.Player.nick || '', seat.Player.headPic || ''
+        );
+        if (isNew) this.post(GGEvent.SituationRefresh);
+    }
+
+    // ── 开始新一手，补写 startTime（Protocol_Holdem_StartInfo） ──
+    private onStartInfoUpdate(_response: any): void {
+        UITexasReportComponent.applyStartInfo();
+    }
+
+    private onWinnerUpdate(response: any): void {
+        // 对应 Unity: TexasSituationController.HandResult() 更新缓存
+        UITexasReportComponent.applyWinnerResult(response);
+        // 对应 Unity: Game.EventSystem.Run(EventIdType.EVENT_GAMPLAY_SITUATION_REFRESH)
+        this.post(GGEvent.SituationRefresh, response);
+    }
+
+    private onGlobalRoomersUpdate(response: any): void {
+        if (!response || response.status !== 0) return;
+        UITexasReportComponent.updateRoomersCache(GameCache.Instance.room_id, response);
     }
 
     //适配
@@ -644,7 +758,7 @@ export default class UITexas extends BaseScene {
         //关闭菜单
         this.HideMenu(false);
         //关闭个人信息
-        UIComponent.close(UIDefine.UITexasPlayerInfo);
+        UIComponent.close(UIDefine.UIPlayerInfo);
         //关闭设置
         UIComponent.close(UIDefine.UITexasSettingComponent);
         //关闭规则
@@ -663,6 +777,7 @@ export default class UITexas extends BaseScene {
     }
 
     override Exit(param: any): void {
+        // Unity 策略：离房不主动清 roomers 缓存，进房时 requestRoomersForCache() 的回包会覆盖当前房间缓存
         super.Exit(param);
     }
 
@@ -1047,6 +1162,17 @@ export default class UITexas extends BaseScene {
 
     private click_btn_im() {
         UIComponent.open(UIDefine.UIBlank_dialog, { title: '客服界面' });
+    }
+    private click_btn_safety_guard() {
+        console.log('============');
+        console.log({ game: this.game });
+
+        H5MsgMgr.sendToH5('showPanel', 1, {
+            panelType: 'safetyGuard',
+            props: {
+                tribeId: this.game.tribeId
+            },
+        })
     }
 
     private click_table_add_chip() {
