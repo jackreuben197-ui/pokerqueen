@@ -1,6 +1,7 @@
 import TexasConfig from '../../config/TexasConfig';
 import { UIDefine } from '../../define/UIDefine';
 import DiamondModel from '../../diamond/DiamondModel';
+import AudioManager from '../../frame/manager/AudioManager';
 import { DOTween, Sequence } from '../../dotween/DOTween';
 import { ClubCache } from '../../frame/data/club/ClubCache';
 import GC from '../../frame/GameControl';
@@ -574,6 +575,8 @@ export default class TexasGame {
         }
         this.SMAgency.LoadGameStateConf();
         GC.uc.AddComponent(this.GameLogicSMComponent);
+        // 播放游戏背景音乐，音量 30%（对齐 Unity BGM_GAMEPLAY）
+        AudioManager.instance.playMusicWithVolume('sound/bgm_game', 0.3);
     }
 
     RegisterMsgHandler() {
@@ -4190,6 +4193,8 @@ export default class TexasGame {
      */
     Dispose() {
         console.log(LN, 'TexasGame >>>> Dispose');
+        // 停止游戏背景音乐
+        AudioManager.instance.stopMusic();
         this.IsDispose = true;
         this.reportKeepOpen = false;
         this.ClearTableUI();

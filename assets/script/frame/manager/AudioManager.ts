@@ -1,5 +1,4 @@
 import { AudioPath } from '../../config/PathConfig';
-import { ResManager } from '../../manager/ResManager';
 import CCTools from '../../tools/CCTools';
 import LocalStoreManager from './LocalStoreManager';
 
@@ -16,6 +15,7 @@ export default class AudioManager {
     private _soundIds: Array<number> = [];
     private _musicId: number = -1;
     private _musicClip: cc.AudioClip = null;
+    private _musicVolume: number = 1; // BGM 独立音量
     // 音量
     private _volumeKey = 'VolumeKey'; // 用于 音量设置 本地存储的key
     private _volume = 1;
@@ -201,6 +201,13 @@ export default class AudioManager {
     }
 
     playMusic(path: string) {
+        this._musicVolume = 1;
+        this.playAudio(path, true);
+    }
+
+    /** 播放背景音乐，支持指定音量 (0.0 ~ 1.0) */
+    playMusicWithVolume(path: string, volume: number = 1) {
+        this._musicVolume = volume;
         this.playAudio(path, true);
     }
 
@@ -214,18 +221,14 @@ export default class AudioManager {
     }
 
     private loadAudioRes(path: string, loop: boolean, callBack?: Function) {
-        // GC.res.loadResFromBundleName("audios", path, cc.AudioClip, (clip: cc.AudioClip) => {
-        //     this._cache.set(path, clip);
-        //     this.play(clip, loop, callBack)
-        // });
-        ResManager.instance.loadRes(
-            AudioPath.rootPath + path,
-            (clip: cc.AudioClip) => {
-                this._cache.set(path, clip);
-                this.play(clip, loop, callBack);
-            },
-            cc.AudioClip
-        );
+        cc.resources.load(path, cc.AudioClip, (err: Error, clip: cc.AudioClip) => {
+            if (err) {
+                cc.log('[AudioManager] load audio failed:', path, err);
+                return;
+            }
+            this._cache.set(path, clip);
+            this.play(clip, loop, callBack);
+        });
     }
 
     private play(clip: cc.AudioClip, loop: boolean, callBack?: Function) {
@@ -235,7 +238,7 @@ export default class AudioManager {
             }
             this._musicClip = clip;
             if (this.music) {
-                let id = cc.audioEngine.play(clip, loop, this._volume);
+                let id = cc.audioEngine.play(clip, loop, this._musicVolume);
                 this._musicId = id;
             }
             //第一次加载，先播放，但是加载慢，导致music设为false后才播放
