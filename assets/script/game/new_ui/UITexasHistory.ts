@@ -732,10 +732,6 @@ export default class UITexasHistory extends UIBasePlus {
     }
 
     protected async HandleHistoryReplay(ResponseData: typeof WebRoomCenterHistoryReplay.Data) {
-        // 同步服务端返回的 be_watched_user_hands 到本地缓存（对齐 Unity：服务端会在普通牌谱数据中带上已购买的偷看数据）
-        if (ResponseData.be_watched_user_hands && ResponseData.be_watched_user_hands.length > 0) {
-            this.mergeWatchedHands(ResponseData.be_watched_user_hands);
-        }
         this.PublicCards = [0, 0, 0, 0, 0];
         this.SecondPublicCards = [];
         // 保存上一手的双套状态，用于正确回收节点池
