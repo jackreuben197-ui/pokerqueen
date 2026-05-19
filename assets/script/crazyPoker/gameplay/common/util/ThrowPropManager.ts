@@ -143,7 +143,7 @@ export default class ThrowPropManager {
         const canvas = cc.find('Canvas');
         if (canvas) {
             const worldCenter = canvas.convertToWorldSpaceAR(cc.Vec2.ZERO);
-            return root.convertToNodeSpaceAR(worldCenter);
+            return root.convertToNodeSpaceAR(new cc.Vec3(worldCenter.x, worldCenter.y, 0));
         }
         return cc.Vec3.ZERO;
     }
@@ -522,7 +522,7 @@ export default class ThrowPropManager {
 
                 // 计算方向用于旋转和镜像
                 const moveDir = cc.v2(targetPos.x - senderPos.x, targetPos.y - senderPos.y);
-                const angle = cc.v2(cc.v2.UP).signAngle(moveDir);
+                const angle = cc.v2(0, 1).signAngle(moveDir);
                 fishNode.angle = -angle * 180 / Math.PI;
                 const factor = moveDir.x > 0 ? -1 : 1;
                 fishNode.scaleX = factor * Math.abs(fishNode.scaleX || 1);
