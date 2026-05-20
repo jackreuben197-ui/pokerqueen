@@ -20,6 +20,7 @@ export class WebCommon {
     public static BuildCacheKey(context: WebApiCacheContext): string {
         return WebApiCacheCenter.buildDefaultKey(context);
     }
+
     public static NormalizeCacheResponse<T = any>(response: T): T {
         return response;
     }
@@ -31,6 +32,7 @@ export class WebCommon {
     public static ShouldUpdateCache(previousResponse: any, nextResponse: any, previousHash: string, nextHash: string): boolean {
         return previousHash !== nextHash;
     }
+
     public static Response: {
         code?: number;
         message?: string;

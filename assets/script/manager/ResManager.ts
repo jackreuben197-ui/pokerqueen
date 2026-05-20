@@ -52,7 +52,6 @@ export class ResManager {
     // GetPrefab(bundle: string, prefab_name: string) {
     //     return this.PrefabMap[bundle][prefab_name];
     // }
-
     static async GetOrLoad<T extends cc.Asset>(bundleName: string, assetPath: string): Promise<T> {
         let bundle = bundleName == BUNDLE_RESOURCES || bundleName == null ? cc.resources : cc.assetManager.getBundle(bundleName);
         // check it is loaded
@@ -114,7 +113,6 @@ export class ResManager {
     //         }
     //     }
     // }
-
     static AssetForeach(assets: cc.Asset[], bundleName: string) {
         assets.forEach(item => {
             if (item instanceof cc.Prefab) {
@@ -135,6 +133,7 @@ export class ResManager {
             }
         });
     }
+
     // //读取整个bundle包内资源
     // static LoadABs(bundleName: string, progressHandler?: Function) {
     //     let percent = 0;

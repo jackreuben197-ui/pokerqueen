@@ -401,6 +401,7 @@ export default class UITexasJackpotRecentAwardRecord extends BaseTouchBoard {
         const fixed = value.toFixed(2);
         return fixed.replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
     }
+
     private onClickClose = (): void => {
         UIComponent.close(this.UIDefine);
     };

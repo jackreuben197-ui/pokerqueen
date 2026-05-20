@@ -29,6 +29,7 @@ export default class UIDialogSquid extends BaseTouchBoard {
         }
         return Date.now() - lastUploadTime.getTime() >= 24 * 60 * 60 * 1000;
     }
+
     private LeftButton: cc.Node = null;
     private RightButton: cc.Node = null;
     private Button_Commit: cc.Node = null;
@@ -161,6 +162,7 @@ export default class UIDialogSquid extends BaseTouchBoard {
         this.autoLoopStopped = true;
         this.StopAutoLoop();
     }
+
     private OnAutoLoopTick = (): void => {
         if (this.autoLoopStopped) return;
         this.AutoNextPage();

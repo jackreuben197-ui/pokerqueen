@@ -26,6 +26,7 @@ export class WebRecordCowboyDetailList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

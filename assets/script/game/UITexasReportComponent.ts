@@ -4,7 +4,7 @@ import { TextColor } from '../config/GameConfig';
 import { StringHelper } from '../helper/StringHelper';
 import TimeHelper from '../helper/TimeHelper';
 import WebImageHelper from '../helper/WebImageHelper';
-import { i18nLabel } from "../i18n/i18nLabel";
+import { i18nLabel } from '../i18n/i18nLabel';
 import { i18nMgr } from '../i18n/i18nMgr';
 import { UIClubModel } from '../uimodel/UIClubModel';
 import { WebOrgFriendRoomList, APITexasSituationMushRound, APITexasSituationSquidRound, WWW, WebStatsRoomInsuranceData } from '../net/https/WebRequest';
@@ -37,15 +37,15 @@ export class ReportPlayer {
     public userId;
     public nickName;
     public hand;
-    public bringIn;       // 总带入
-    public score;         // 实时盈亏 = win + storeChips
-    public storeChips;    // 藏钱（显示在带入旁括号内）
-    public poolRate;      // 入池率 * 1000（与 Unity 保持一致，显示时除以 10）
-    public isOnline;      // 是否在线
-    public deposit;       // 押金
+    public bringIn; // 总带入
+    public score; // 实时盈亏 = win + storeChips
+    public storeChips; // 藏钱（显示在带入旁括号内）
+    public poolRate; // 入池率 * 1000（与 Unity 保持一致，显示时除以 10）
+    public isOnline; // 是否在线
+    public deposit; // 押金
     public mushroomCount; // 蘑菇数
-    public mushroomAmount;// 蘑菇额
-    public squidInTotal;  // 鱿鱼入
+    public mushroomAmount; // 蘑菇额
+    public squidInTotal; // 鱿鱼入
     public squidOutTotal; // 鱿鱼出
     public squidPunishTotal; // 鱿鱼惩罚
 }
@@ -175,16 +175,11 @@ export default class UITexasReportComponent extends UIBase {
             console.log('[UITexasReport] applyWinnerResult: 房间未缓存，无法结算');
             return;
         }
-
         const playersList: any[] = cached.playersList || [];
         // Unity: roomers.TotalHand = result.HandNum
         cached.totalHand = response.handNum;
-
-        const mushroomBase = Number(
-            GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0
-        );
-
-        for (const winner of (response.resultsList || [])) {
+        const mushroomBase = Number(GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0);
+        for (const winner of response.resultsList || []) {
             let player = playersList.find(p => Number(p.seatId || 0) === Number(winner.seatId || 0));
             if (!player) {
                 const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(winner.seatId);
@@ -197,12 +192,10 @@ export default class UITexasReportComponent extends UIBase {
                 }
             }
             if (!player) continue;
-
             // Unity: player.PoolCount / HandNum / IsOnline
             player.poolCount = (player.poolCount || 0) + (winner.inPool ? 1 : 0);
             player.handNum = (player.handNum || 0) + 1;
             player.isOnline = true;
-
             // Unity CalculateWinner: 赢了扣手续费和奖池费，输了只算输额，再叠加保险
             let win: number;
             if (winner.win > winner.handBet) {
@@ -212,30 +205,22 @@ export default class UITexasReportComponent extends UIBase {
             }
             win += (winner.insuranceWin || 0) - (winner.insurance || 0);
             player.win = (player.win || 0) + win;
-
             // Unity: roomers.TotalPot += winner.Win（原始 win，非扣费后）
             cached.totalPot = (cached.totalPot || 0) + (winner.win || 0);
-
             // Unity: 蘑菇 MushroomCount += ehc.In / mushroomBase, MushroomAmount += ehc.In
-            for (const ehc of (winner.ehcsList || [])) {
+            for (const ehc of winner.ehcsList || []) {
                 if (ehc.ehcType !== Def.EHCType.EHC_MUSHROOM) continue;
                 const amount = ehc.pb_in || 0;
                 player.mushroomAmount = (player.mushroomAmount || 0) + amount;
-                player.mushroomCount = (player.mushroomCount || 0) +
-                    (mushroomBase > 0 ? Math.floor(amount / mushroomBase) : 0);
+                player.mushroomCount = (player.mushroomCount || 0) + (mushroomBase > 0 ? Math.floor(amount / mushroomBase) : 0);
             }
-
             // Unity: Jackpot 贡献 contributeTotal += jackpotFee
             if ((winner.jackpotFee || 0) > 0) {
-                UITexasReportComponent._applyJackpotContribute(
-                    player.userRid, player.name, winner.jackpotFee
-                );
+                UITexasReportComponent._applyJackpotContribute(player.userRid, player.name, winner.jackpotFee);
             }
             // Unity: Jackpot 奖励 awardTotal += jawd，按 handValueType 记牌型次数
             if ((winner.jawd || 0) > 0) {
-                UITexasReportComponent._applyJackpotAward(
-                    player.userRid, player.name, winner.jawd, winner.handValueType
-                );
+                UITexasReportComponent._applyJackpotAward(player.userRid, player.name, winner.jawd, winner.handValueType);
             }
         }
     }
@@ -250,8 +235,7 @@ export default class UITexasReportComponent extends UIBase {
     private static _applyJackpotContribute(userRid: number, name: string, fee: number): void {
         let rec = UITexasReportComponent._jackpotCache.get(userRid);
         if (!rec) {
-            rec = { userRid, name, avatar: '', sex: 0, contributeTotal: 0, awardTotal: 0,
-                    royalFlushCount: 0, straightFlushCount: 0, fourOfaKindCount: 0 };
+            rec = { userRid, name, avatar: '', sex: 0, contributeTotal: 0, awardTotal: 0, royalFlushCount: 0, straightFlushCount: 0, fourOfaKindCount: 0 };
             UITexasReportComponent._jackpotCache.set(userRid, rec);
         }
         rec.contributeTotal += fee;
@@ -260,8 +244,7 @@ export default class UITexasReportComponent extends UIBase {
     private static _applyJackpotAward(userRid: number, name: string, jawd: number, handValueType: number): void {
         let rec = UITexasReportComponent._jackpotCache.get(userRid);
         if (!rec) {
-            rec = { userRid, name, avatar: '', sex: 0, contributeTotal: 0, awardTotal: 0,
-                    royalFlushCount: 0, straightFlushCount: 0, fourOfaKindCount: 0 };
+            rec = { userRid, name, avatar: '', sex: 0, contributeTotal: 0, awardTotal: 0, royalFlushCount: 0, straightFlushCount: 0, fourOfaKindCount: 0 };
             UITexasReportComponent._jackpotCache.set(userRid, rec);
         }
         rec.awardTotal += jawd;
@@ -269,20 +252,17 @@ export default class UITexasReportComponent extends UIBase {
         else if (handValueType === CardType.StraightFlush) rec.straightFlushCount += 1;
         else if (handValueType === CardType.FourOfAKind) rec.fourOfaKindCount += 1;
     }
+
     // ─────────────────────────────────────────────
     // 静态缓存增量更新方法（对应 Unity TexasSituationController）
     // 返回 true 表示是新玩家（需要调用方 dispatch SituationRefresh）
     // ─────────────────────────────────────────────
-
     /**
      * 对应 Unity TexasSituationController.SitDown。
      * 已存在的玩家：覆盖 bringIn/deposit/isOnline，重算 totalBringin，不发刷新事件。
      * 新玩家：追加到列表，累加 totalBringin，返回 true（调用方发刷新事件）。
      */
-    public static applySitDown(
-        userRid: number, totalBringIn: number, deposit: number,
-        name: string = '', avatar: string = ''
-    ): boolean {
+    public static applySitDown(userRid: number, totalBringIn: number, deposit: number, name: string = '', avatar: string = ''): boolean {
         const roomId = GameCache.Instance.room_id;
         let cached = UITexasReportComponent._roomersCache.get(roomId);
         if (!cached) {
@@ -290,10 +270,7 @@ export default class UITexasReportComponent extends UIBase {
             UITexasReportComponent._roomersCache.set(roomId, cached);
         }
         const playersList: any[] = cached.playersList || (cached.playersList = []);
-        const mushroomBase = Number(
-            GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0
-        );
-
+        const mushroomBase = Number(GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0);
         const existing = playersList.find(p => Number(p.userRid) === Number(userRid));
         if (existing) {
             // Unity: 覆盖 bringInTotal，重算 totalBringin，不发事件
@@ -303,14 +280,20 @@ export default class UITexasReportComponent extends UIBase {
             cached.totalBringin = playersList.reduce((s, p) => s + (p.bringInTotal || 0), 0);
             return false;
         }
-
         // 新玩家
         const player: any = {
-            userRid, bringInTotal: totalBringIn,
+            userRid,
+            bringInTotal: totalBringIn,
             deposit: mushroomBase > 0 ? mushroomBase : deposit,
             isOnline: true,
-            name: name || '', avatar: avatar || '',
-            win: 0, handNum: 0, poolCount: 0, storeChips: 0, mushroomAmount: 0, mushroomCount: 0
+            name: name || '',
+            avatar: avatar || '',
+            win: 0,
+            handNum: 0,
+            poolCount: 0,
+            storeChips: 0,
+            mushroomAmount: 0,
+            mushroomCount: 0
         };
         playersList.push(player);
         cached.totalBringin = (cached.totalBringin || 0) + totalBringIn;
@@ -322,18 +305,12 @@ export default class UITexasReportComponent extends UIBase {
      * 已存在：累加 bringOutTotal，isOnline=false，不发事件。
      * 新玩家（兜底）：追加，返回 true。
      */
-    public static applyStandUp(
-        userRid: number, bringOut: number,
-        name: string = '', avatar: string = ''
-    ): boolean {
+    public static applyStandUp(userRid: number, bringOut: number, name: string = '', avatar: string = ''): boolean {
         const roomId = GameCache.Instance.room_id;
         const cached = UITexasReportComponent._roomersCache.get(roomId);
         if (!cached) return false;
         const playersList: any[] = cached.playersList || [];
-        const mushroomBase = Number(
-            GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0
-        );
-
+        const mushroomBase = Number(GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0);
         const existing = playersList.find(p => Number(p.userRid) === Number(userRid));
         if (existing) {
             existing.bringOutTotal = (existing.bringOutTotal || 0) + bringOut;
@@ -341,12 +318,17 @@ export default class UITexasReportComponent extends UIBase {
             if (mushroomBase > 0) existing.deposit = 0;
             return false;
         }
-
         // 兜底：新玩家（通常不会走到这里）
         const player: any = {
-            userRid, bringOutTotal: bringOut, isOnline: false,
-            name: name || '', avatar: avatar || '',
-            bringInTotal: 0, win: 0, handNum: 0, poolCount: 0
+            userRid,
+            bringOutTotal: bringOut,
+            isOnline: false,
+            name: name || '',
+            avatar: avatar || '',
+            bringInTotal: 0,
+            win: 0,
+            handNum: 0,
+            poolCount: 0
         };
         if (mushroomBase > 0) player.deposit = 0;
         playersList.push(player);
@@ -359,10 +341,7 @@ export default class UITexasReportComponent extends UIBase {
      * 已存在：bringInTotal += newBringIn，totalBringin += newBringIn，不发事件。
      * 新玩家（兜底）：追加，返回 true。
      */
-    public static applyChipChange(
-        userRid: number, newBringIn: number,
-        name: string = '', avatar: string = ''
-    ): boolean {
+    public static applyChipChange(userRid: number, newBringIn: number, name: string = '', avatar: string = ''): boolean {
         const roomId = GameCache.Instance.room_id;
         let cached = UITexasReportComponent._roomersCache.get(roomId);
         if (!cached) {
@@ -370,10 +349,7 @@ export default class UITexasReportComponent extends UIBase {
             UITexasReportComponent._roomersCache.set(roomId, cached);
         }
         const playersList: any[] = cached.playersList || (cached.playersList = []);
-        const mushroomBase = Number(
-            GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0
-        );
-
+        const mushroomBase = Number(GameCache.Instance.CurGame?.mushroomBase || GameCache.Instance.room_mushroom_base || 0);
         const existing = playersList.find(p => Number(p.userRid) === Number(userRid));
         if (existing) {
             existing.isOnline = true;
@@ -382,13 +358,17 @@ export default class UITexasReportComponent extends UIBase {
             cached.totalBringin = (cached.totalBringin || 0) + newBringIn;
             return false;
         }
-
         // 兜底：新玩家
         const player: any = {
-            userRid, bringInTotal: newBringIn, isOnline: true,
-            name: name || '', avatar: avatar || '',
+            userRid,
+            bringInTotal: newBringIn,
+            isOnline: true,
+            name: name || '',
+            avatar: avatar || '',
             deposit: mushroomBase > 0 ? mushroomBase : 0,
-            win: 0, handNum: 0, poolCount: 0
+            win: 0,
+            handNum: 0,
+            poolCount: 0
         };
         playersList.push(player);
         cached.totalBringin = (cached.totalBringin || 0) + newBringIn;
@@ -809,7 +789,7 @@ export default class UITexasReportComponent extends UIBase {
             tSignPlayer.storeChips = p.storeChips || 0;
             // Unity: _poolRate = PoolCount * 1000 / HandNum
             const handNum = p.handNum || 0;
-            tSignPlayer.poolRate = handNum > 0 ? Math.floor((p.poolCount || 0) * 1000 / handNum) : 0;
+            tSignPlayer.poolRate = handNum > 0 ? Math.floor(((p.poolCount || 0) * 1000) / handNum) : 0;
             tSignPlayer.isOnline = p.isOnline;
             tSignPlayer.deposit = p.deposit || 0;
             tSignPlayer.mushroomCount = p.mushroomCount || 0;
@@ -855,7 +835,6 @@ export default class UITexasReportComponent extends UIBase {
         const totalHand = Number(data.totalHand || 0);
         const insurance = Number(data.insurance || 0);
         const startTime = Number(data.startTime || 0);
-
         if (this.totalMoneyLabel) {
             this.totalMoneyLabel.string = `${i18nMgr.Get('UISituationTotalPot')} ${StringHelper.GetLongString(totalPot)}`;
         }
@@ -866,9 +845,13 @@ export default class UITexasReportComponent extends UIBase {
             this.curHandLabel.string = `${i18nMgr.Get('UISituationCurHandNum')} ${totalHand}`;
         }
         if (this.verBottomLabel) {
-            const avgStr = totalHand > 0
-                ? (() => { const avg = totalPot / totalHand / 100; return Number.isInteger(avg) ? `${avg}` : avg.toFixed(2); })()
-                : '0';
+            const avgStr =
+                totalHand > 0
+                    ? (() => {
+                          const avg = totalPot / totalHand / 100;
+                          return Number.isInteger(avg) ? `${avg}` : avg.toFixed(2);
+                      })()
+                    : '0';
             this.verBottomLabel.string = `${i18nMgr.Get('UISituationVerBottom')} ${avgStr}`;
         }
         const playDuration = GameCache.Instance._roomDurationTime;
@@ -1553,9 +1536,7 @@ export default class UITexasReportComponent extends UIBase {
         if (nameTxt) nameTxt.string = StringHelper.LengthNick(dto.name || '', 20);
         // 投保时间：create_time 为秒级时间戳
         if (numTxt) {
-            numTxt.string = dto.createTime > 0
-                ? TimeHelper.TimeToString(dto.createTime * 1000, 'MM/dd HH:mm')
-                : '--';
+            numTxt.string = dto.createTime > 0 ? TimeHelper.TimeToString(dto.createTime * 1000, 'MM/dd HH:mm') : '--';
         }
         // 投保额/Ev
         if (allTxt) allTxt.string = StringHelper.GetLongString(dto.insurBet || 0);

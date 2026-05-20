@@ -402,7 +402,6 @@ export default class UITexasHistory extends UIBasePlus {
         // 防重复点击
         let btn = this.$PeekButton.getComponent(cc.Button);
         if (btn) btn.interactable = false;
-
         WWW.Instance.CommonAPI({
             web_class: WebRoomCenterGameWatch,
             body: WebRoomCenterGameWatch.Request({
@@ -415,7 +414,6 @@ export default class UITexasHistory extends UIBasePlus {
             (res: any) => {
                 if (!cc.isValid(this.node)) return;
                 if (btn) btn.interactable = true;
-
                 if (res?.code === 0 && res?.data) {
                     // 合并偷偷看到的手牌到当前手牌缓存数据中（对齐 Unity ExecuteWatchUser）
                     this.mergeWatchedHands(res.data.be_watched_user_hands);
@@ -464,9 +462,7 @@ export default class UITexasHistory extends UIBasePlus {
         const matchId = GameCache.Instance.match_id;
         const handNum = this.currentPage;
         // 从缓存中取出当前手牌数据
-        const cached =
-            (await replayGet(roomKey(userId, roomId, handNum))) ??
-            (matchId ? await replayGet(matchKey(userId, matchId, handNum)) : null);
+        const cached = (await replayGet(roomKey(userId, roomId, handNum))) ?? (matchId ? await replayGet(matchKey(userId, matchId, handNum)) : null);
         if (cached) {
             // 将偷看数据合并到缓存数据的 be_watched_user_hands 字段
             if (!cached.be_watched_user_hands) {
@@ -570,9 +566,7 @@ export default class UITexasHistory extends UIBasePlus {
         const userId = GameCache.Instance.nUserId;
         const roomId = GameCache.Instance.room_id;
         const matchId = GameCache.Instance.match_id;
-        const cached =
-            (await replayGet(roomKey(userId, roomId, handNum))) ??
-            (matchId ? await replayGet(matchKey(userId, matchId, handNum)) : null);
+        const cached = (await replayGet(roomKey(userId, roomId, handNum))) ?? (matchId ? await replayGet(matchKey(userId, matchId, handNum)) : null);
         if (cached) {
             this.HandleHistoryReplay(cached);
             return;
@@ -606,7 +600,6 @@ export default class UITexasHistory extends UIBasePlus {
     /**
      * @methos 初始化UI
      */
-
     private InitUI() {}
 
     /** 异步请求钻石余额并显示 */
@@ -686,7 +679,6 @@ export default class UITexasHistory extends UIBasePlus {
     private renderDashboard(playerInfos: PlayerInfo[], publicCards: number[], responseData: typeof WebRoomCenterHistoryReplay.Data) {
         this.clearDashboard();
         if (!this.$Dashboard || !this.playerCardPrefab) return;
-
         for (let i = 0; i < playerInfos.length; i++) {
             let pInfo = playerInfos[i];
             let node = cc.instantiate(this.playerCardPrefab);
@@ -694,17 +686,14 @@ export default class UITexasHistory extends UIBasePlus {
             if (!comp) {
                 comp = node.addComponent(playerCardNode);
             }
-
             // 获取该玩家的最后操作
             let lastAct = this.getPlayerLastAction(pInfo.seatID, responseData);
-
             let cardData: IPlayerCardData = {
                 userName: pInfo.userName,
                 headPic: pInfo.headPic,
                 handCards: pInfo.handCards || [],
                 publicCards: publicCards,
-                publicCards2: this.HaveSecondCard && this.SecondPublicCards.length > 0
-                    ? this.SecondPublicCards : undefined,
+                publicCards2: this.HaveSecondCard && this.SecondPublicCards.length > 0 ? this.SecondPublicCards : undefined,
                 cardType: pInfo.maxCardType,
                 actName: lastAct.actName,
                 actChip: lastAct.actChip,
@@ -712,7 +701,6 @@ export default class UITexasHistory extends UIBasePlus {
                 winAnte: pInfo.winAnte,
                 isMine: pInfo.isMine
             };
-
             // 插入到 $Dashboard 中，位于隐藏的静态模板之前
             node.parent = this.$Dashboard;
             let templateNode = this.$Dashboard.getChildByName('playerNode');
@@ -720,7 +708,6 @@ export default class UITexasHistory extends UIBasePlus {
                 node.setSiblingIndex(this.$Dashboard.childrenCount - 2); // 模板在最后，新节点在模板前
             }
             node.active = true;
-
             comp.setData(cardData);
             this.dashboardNodes.push(node);
         }
@@ -730,11 +717,13 @@ export default class UITexasHistory extends UIBasePlus {
      * 获取玩家在整手牌中的最后一次操作
      * 遍历所有轮次(procedure)找到该玩家最后一次出现的操作
      */
-    private getPlayerLastAction(seatID: number, responseData: typeof WebRoomCenterHistoryReplay.Data): { actName: string, actChip: number, raiseTimes: number } {
+    private getPlayerLastAction(
+        seatID: number,
+        responseData: typeof WebRoomCenterHistoryReplay.Data
+    ): { actName: string; actChip: number; raiseTimes: number } {
         let lastAct = { actName: '', actChip: 0, raiseTimes: 0 };
         let raiseCount = 0;
         let allRounds = [];
-
         // 收集所有轮次
         if (responseData.s.procedure.preflop?.pl) {
             allRounds.push(...responseData.s.procedure.preflop.pl);
@@ -748,7 +737,6 @@ export default class UITexasHistory extends UIBasePlus {
         if (responseData.s.procedure.river?.pl) {
             allRounds.push(...responseData.s.procedure.river.pl);
         }
-
         for (let i = 0; i < allRounds.length; i++) {
             if (allRounds[i].sn === seatID) {
                 let act = allRounds[i].act;
@@ -760,7 +748,6 @@ export default class UITexasHistory extends UIBasePlus {
                 lastAct.raiseTimes = raiseCount;
             }
         }
-
         return lastAct;
     }
 
@@ -878,7 +865,7 @@ export default class UITexasHistory extends UIBasePlus {
             if (playerInfo.playerId != GameCache.Instance.nUserId) {
                 playerInfo.handCards = ResponseData.s.result[i].card;
                 // 如果结果中没有手牌或手牌为空，尝试使用偷偷看缓存
-                if ((!playerInfo.handCards || playerInfo.handCards.length === 0 || playerInfo.handCards[0] <= 0)) {
+                if (!playerInfo.handCards || playerInfo.handCards.length === 0 || playerInfo.handCards[0] <= 0) {
                     // 优先用接口返回的 be_watched_user_hands
                     if (ResponseData.be_watched_user_hands && ResponseData.be_watched_user_hands.length > 0) {
                         for (let j = 0; j < ResponseData.be_watched_user_hands.length; j++) {
@@ -967,10 +954,7 @@ export default class UITexasHistory extends UIBasePlus {
         this.$Flop_Cards.children.forEach((item, index) => {
             let sprite = item.getComponent(cc.Sprite) || item.getComponentInChildren(cc.Sprite);
             if (sprite) {
-                sprite.spriteFrame = AssetContext.getAsset(
-                    GameUtil.GetCardNameByNum(this.PublicCards[index]),
-                    AssetFold.texture_SmallCard0
-                );
+                sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
             }
             item.active = this.PublicCards[index] > 0;
         });
@@ -1017,10 +1001,7 @@ export default class UITexasHistory extends UIBasePlus {
         this.$Turn_Cards.children.forEach((item, index) => {
             let sprite = item.getComponent(cc.Sprite) || item.getComponentInChildren(cc.Sprite);
             if (sprite) {
-                sprite.spriteFrame = AssetContext.getAsset(
-                    GameUtil.GetCardNameByNum(this.PublicCards[index]),
-                    AssetFold.texture_SmallCard0
-                );
+                sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
             }
             item.active = this.PublicCards[index] > 0;
         });
@@ -1068,10 +1049,7 @@ export default class UITexasHistory extends UIBasePlus {
             let cardValue = this.PublicCards[index];
             let sprite = item.getComponent(cc.Sprite) || item.getComponentInChildren(cc.Sprite);
             if (sprite) {
-                sprite.spriteFrame = AssetContext.getAsset(
-                    GameUtil.GetCardNameByNum(cardValue),
-                    AssetFold.texture_SmallCard0
-                );
+                sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(cardValue), AssetFold.texture_SmallCard0);
             }
             item.active = cardValue > 0;
         });
@@ -1434,10 +1412,7 @@ export default class UITexasHistory extends UIBasePlus {
     private layoutDetailHandCards(handCardsNode: cc.Node, cardCount: number, leftX: number, rightX: number, cards: number[] | null) {
         const CARD_WIDTH = 84;
         const VISIBLE_GAP = 4;
-        const spacing = cardCount > 1
-            ? Math.min(CARD_WIDTH + VISIBLE_GAP, (rightX - leftX) / (cardCount - 1))
-            : 0;
-
+        const spacing = cardCount > 1 ? Math.min(CARD_WIDTH + VISIBLE_GAP, (rightX - leftX) / (cardCount - 1)) : 0;
         const children = handCardsNode.children;
         for (let i = 0; i < children.length; i++) {
             const item = children[i];
@@ -1447,11 +1422,8 @@ export default class UITexasHistory extends UIBasePlus {
                 item.zIndex = i;
                 let sprite = item.getComponent(cc.Sprite);
                 if (sprite) {
-                    let cardVal = cards ? (cards[i] || 0) : 0;
-                    sprite.spriteFrame = AssetContext.getAsset(
-                        GameUtil.GetCardNameByNum(cardVal),
-                        AssetFold.texture_SmallCard0
-                    );
+                    let cardVal = cards ? cards[i] || 0 : 0;
+                    sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(cardVal), AssetFold.texture_SmallCard0);
                 }
             } else {
                 item.active = false;
@@ -1501,18 +1473,14 @@ export default class UITexasHistory extends UIBasePlus {
         let public_cards = cc.find('cards_position/public_cards', go);
         //手牌紧密排列
         let cardCount = GameCache.Instance.CurGame.HandCards;
-        this.layoutDetailHandCards(hand_cards, cardCount, -477, -331.32,
-            element.handCards.length <= 0 ? null : element.handCards);
+        this.layoutDetailHandCards(hand_cards, cardCount, -477, -331.32, element.handCards.length <= 0 ? null : element.handCards);
         //第二套公共牌显示
         public_cards.children.forEach((item, index) => {
             let sprite = item.getComponent(cc.Sprite);
             if (!sprite) return;
             let cardVal = this.SecondPublicCards[index] || 0;
             item.active = cardVal > 0;
-            sprite.spriteFrame = AssetContext.getAsset(
-                GameUtil.GetCardNameByNum(cardVal),
-                AssetFold.texture_SmallCard0
-            );
+            sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(cardVal), AssetFold.texture_SmallCard0);
         });
         //高亮牌显示 — 使用第二套高亮索引
         if (element.maxCardIndex2 != null && element.maxCardIndex2.length > 0) {
@@ -1587,8 +1555,7 @@ export default class UITexasHistory extends UIBasePlus {
         let public_cards = cc.find('cards_position/public_cards', go);
         //手牌显示 + 紧密排列 (Score_Child prefab: card[0]=-477, card[5]=-331.32)
         let cardCount = GameCache.Instance.CurGame.HandCards;
-        this.layoutDetailHandCards(hand_cards, cardCount, -477, -331.32,
-            element.handCards.length <= 0 ? null : element.handCards);
+        this.layoutDetailHandCards(hand_cards, cardCount, -477, -331.32, element.handCards.length <= 0 ? null : element.handCards);
         if (isSecond) public_cards = public_cards.children[0];
         if (isSecond && SpcsIndex != 0) {
             //公共牌显示
@@ -1610,10 +1577,7 @@ export default class UITexasHistory extends UIBasePlus {
                 let sprite = item.getComponent(cc.Sprite);
                 if (!sprite) return;
                 item.active = this.PublicCards[index] > 0;
-                sprite.spriteFrame = AssetContext.getAsset(
-                    GameUtil.GetCardNameByNum(this.PublicCards[index]),
-                    AssetFold.texture_SmallCard0
-                );
+                sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
             });
         }
         if (isSecond && SpcsIndex != 0) {
@@ -1705,8 +1669,7 @@ export default class UITexasHistory extends UIBasePlus {
         let public_cards2 = cc.find('cards_position/public_cards/cards2', go);
         //手牌显示 + 紧密排列 (Score_Second_Child prefab: card[0]=-222, card[5]=-79.566)
         let cardCount = GameCache.Instance.CurGame.HandCards;
-        this.layoutDetailHandCards(hand_cards, cardCount, -222, -79.566,
-            element.handCards.length <= 0 ? null : element.handCards);
+        this.layoutDetailHandCards(hand_cards, cardCount, -222, -79.566, element.handCards.length <= 0 ? null : element.handCards);
         //公共牌显示
         for (let i = 0; i < 5; i++) {
             let publicCard1 = public_cards1.children[i];
@@ -1719,16 +1682,10 @@ export default class UITexasHistory extends UIBasePlus {
             } else {
                 publicCard1.active = true;
                 let sprite1 = publicCard1.getComponent(cc.Sprite);
-                if (sprite1) sprite1.spriteFrame = AssetContext.getAsset(
-                    GameUtil.GetCardNameByNum(this.PublicCards[i]),
-                    AssetFold.texture_SmallCard0
-                );
+                if (sprite1) sprite1.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0);
                 publicCard2.active = true;
                 let sprite2 = publicCard2.getComponent(cc.Sprite);
-                if (sprite2) sprite2.spriteFrame = AssetContext.getAsset(
-                    GameUtil.GetCardNameByNum(this.SecondPublicCards[i]),
-                    AssetFold.texture_SmallCard0
-                );
+                if (sprite2) sprite2.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_SmallCard0);
             }
         }
         //高亮牌显示 — 合并处理，避免第二套高亮被第一套覆盖

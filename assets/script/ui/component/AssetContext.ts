@@ -49,7 +49,6 @@ export default class AssetContext extends cc.Component {
     //     //     AssetContext.map[key] = asset;
     //     // }
     // }
-
     public static setAsset<T extends cc.Asset>(key: AssetFold | string, name: string, asset: T) {
         let folderName: string;
         if (typeof key === 'number') {

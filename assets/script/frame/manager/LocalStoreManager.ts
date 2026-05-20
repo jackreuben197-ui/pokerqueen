@@ -10,6 +10,7 @@ export default class LocalStoreManager {
         }
         return LocalStoreManager._instance;
     }
+
     private _keyPre = 'dzpk_';
 
     get keyPre() {

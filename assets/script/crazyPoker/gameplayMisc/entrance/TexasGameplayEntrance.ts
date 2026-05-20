@@ -102,7 +102,7 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
             // 检查房间是否已关闭/已结束 (status >= 3)
             if (this._roomInfo.status >= 3) {
                 console.error(`${this.constructor.name}: room is closed, status=${this._roomInfo.status}`);
-                UIComponent.Instance.Toast(i18nMgr.Get("GameRoom_ForceCloseTips"));
+                UIComponent.Instance.Toast(i18nMgr.Get('GameRoom_ForceCloseTips'));
                 return -1;
             }
             return 0;

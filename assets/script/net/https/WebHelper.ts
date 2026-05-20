@@ -73,6 +73,7 @@ export default class WebHelper {
         }
         return true;
     }
+
     //忽略打印信息的接口
     static _IgnoreConsole_APIS = [WebRequestApis.WebConfigMultiLanguageTemplate.API];
 

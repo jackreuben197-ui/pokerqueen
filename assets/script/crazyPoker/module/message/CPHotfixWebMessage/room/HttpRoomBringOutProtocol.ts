@@ -15,12 +15,14 @@ export namespace HttpRoomBringOutProtocol {
         /** GPS 经度 */
         public gps_longitude: string = '';
     }
+
     /**
      * 响应数据
      */
     export class ResponseData extends WebResponseDataBase {
         public data: Data = null;
     }
+
     /**
      * 带出信息
      */
@@ -32,6 +34,7 @@ export namespace HttpRoomBringOutProtocol {
         /** 俱乐部 ID */
         public club_id: number = 0;
     }
+
     /**
      * 钱包数据
      */
@@ -65,6 +68,7 @@ export namespace HttpRoomBringOutProtocol {
         public wallet_status: number = 0;
         public wallet_tribe_status: number = 0;
     }
+
     /**
      * 响应数据体
      */
@@ -84,6 +88,7 @@ export namespace HttpRoomBringOutProtocol {
         /** 授信额度 */
         public user_club_gold_credit: number = 0;
     }
+
     /**
      * 免费限制
      */

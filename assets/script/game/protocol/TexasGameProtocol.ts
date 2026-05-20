@@ -89,7 +89,6 @@ const LN = '[TexasGameProtocol]';
 //const CanPlayStatus = Def.CanPlayStatus;
 
 export default class TexasGameProtocol {
-
     /** 暂存发送的道具数据，等服务端返回成功后触发本地动画 */
     public pendingPropData: { type: number; user_id: number; target_user_id: number } | null = null;
 
@@ -1686,11 +1685,7 @@ export default class TexasGameProtocol {
     private ProtocolHoldemRoomUserSendDiamondHandler(rec: ServerMessageRoomUserSendDiamond.AsObject) {
         if (!rec) return;
         console.log('[Diamond] 收到赠送钻石广播:', rec);
-        this.game?.throwPropMgr?.playDiamondAnimation(
-            rec.senderId,
-            rec.recieveId,
-            rec.amount
-        );
+        this.game?.throwPropMgr?.playDiamondAnimation(rec.senderId, rec.recieveId, rec.amount);
     }
 
     protected ProtocolHoldemGetMsgHandler(rec: ServerMessageGetMsg.AsObject) {
@@ -2635,6 +2630,7 @@ export default class TexasGameProtocol {
             }
         });
     }
+
     /** 随机验证倒计时定时器 */
     private _randomVideoTimer: number = 0;
     /** 麦序操作者切换序列号，用于取消过期的 async 调用 */

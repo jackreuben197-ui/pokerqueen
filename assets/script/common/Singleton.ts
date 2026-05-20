@@ -19,7 +19,6 @@
 class Singleton {
 
     //this: new () => T
-
     static __Instance<T>(this: new () => T): T {
         return ((<any>this).instance ??= new this());
     }

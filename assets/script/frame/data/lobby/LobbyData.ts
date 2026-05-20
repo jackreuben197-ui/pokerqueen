@@ -67,7 +67,6 @@ export default class LobbyData extends BaseData {
     // respDeskNameTemp(msg: Array<TDeskNameTemp>, sendInfo) {
     //     this.nameTemp.updateData(msg);
     // }
-
     respRoomList(msg: TRoomList, sendInfo?: any, isClub: boolean = false) {
         this.roomList.updateData(msg, isClub);
     }

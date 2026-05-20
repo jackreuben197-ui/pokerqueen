@@ -48,13 +48,20 @@ function isMethod(line) {
   let eq = t.indexOf('=');
   if (eq !== -1) t = t.substring(0, eq).trimEnd();
   if (!t.includes('(')) return false;
-  // exclude statement keywords
+  // exclude lines that start with statement keywords or lowercase (not a method decl)
   let firstWord = t.match(/^\s*(\w+)/);
   if (firstWord) {
     let kw = new Set(['return','if','for','while','switch','try','catch','throw',
       'new','delete','typeof','void','await','yield','break','continue',
       'case','default','else','finally','import','let','var','const']);
     if (kw.has(firstWord[1])) return false;
+    // known modifiers → always a method declaration
+    let modifiers = new Set(['public','private','protected','static','async','override','readonly','abstract']);
+    if (modifiers.has(firstWord[1]) || firstWord[1] === 'constructor' || firstWord[1] === 'get' || firstWord[1] === 'set') return true;
+    // lowercase with dot → expression call (cc.v3(...), this.foo()), not a method declaration
+    // use only the identifier before '(' or line end, e.g. "onShow" in "onShow(...param: any)"
+    let ident = t.match(/^\s*([\w.]+)\s*\(?/);
+    if (ident && ident[1].includes('.') && ident[1][0] === ident[1][0].toLowerCase()) return false;
   }
   return true;
 }
@@ -82,6 +89,8 @@ function isClassOrMethod(line) {
       'new','delete','typeof','void','await','yield','break','continue',
       'case','default','else','finally','import','let','var','const']);
     if (kw.has(firstWord[1])) return false;
+    let modifiers = new Set(['public','private','protected','static','async','override','readonly','abstract']);
+    if (modifiers.has(firstWord[1]) || firstWord[1] === 'constructor' || firstWord[1] === 'get' || firstWord[1] === 'set') return true;
   }
   return true;
 }
@@ -134,7 +143,7 @@ async function fmt(file) {
         continue;
       }
 
-      // ----- prepare blank insertion before declaration -----
+      // ----- blank before declaration, or after `}` before member/comment -----
       if (isDeclaration(line) && out.length > 0) {
         // find the comment block start (if any) preceding this declaration
         let ci = out.length - 1;
@@ -154,6 +163,18 @@ async function fmt(file) {
         // check the line above insertPos: if it's not blank and not '{', insert blank
         if (insertPos > 0 && out[insertPos - 1] !== '' && out[insertPos - 1].trimEnd() !== '{') {
           out.splice(insertPos, 0, '');
+        }
+      } else if (!isDeclaration(line) && out.length > 0) {
+        // non-method line at class level (member var, comment):
+        // insert blank after `}` only if this line looks like a class member
+        let t = line.trimEnd().trim();
+        let isMemberLike = /^(public |private |protected |static |readonly |\/\/|\/\*|\*|@)/.test(t);
+        if (isMemberLike) {
+          let ci = out.length - 1;
+          while (ci >= 0 && isBlank(out[ci])) ci--;
+          if (ci >= 0 && out[ci].trim() === '}') {
+            out.push('');
+          }
         }
       }
     }

@@ -77,6 +77,7 @@ export class WebRoomCenterHistorySquid extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: { code?: number; message?: string; data?: typeof WebRoomCenterHistorySquid.ResponseData };
 }
 
@@ -108,6 +109,7 @@ export class WebRoomCenterHistoryMushroom extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: { code?: number; message?: string; data?: typeof WebRoomCenterHistoryMushroom.ResponseData };
 }
 
@@ -155,6 +157,7 @@ export class WebClubApplyList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -197,6 +200,7 @@ export class WebRoomCenterGroups extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -224,6 +228,7 @@ export class WebRoomCenterRoomsBlinds extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -319,6 +324,7 @@ export class WebRoomCenterRooms extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -898,6 +904,7 @@ export class WebRoomCenterAutoChageRoom extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -927,6 +934,7 @@ export class WebRoomCenterClubRoomApplyDelayAllList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -949,6 +957,7 @@ export class WebRoomCenterClubRoomApplyDelayAudit extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -986,6 +995,7 @@ export class WebRoomCenterDelayTimeBlindLevelQuery extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1011,6 +1021,7 @@ export class WebRoomCenterDelayTimeBlindLevelSave extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1030,6 +1041,7 @@ export class WebRoomCenterFriendRoomApplyDelayAudit extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1059,6 +1071,7 @@ export class WebRoomCenterFriendRoomApplyDelayList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1083,6 +1096,7 @@ export class WebRoomCenterGameWatch extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1104,6 +1118,7 @@ export class WebRoomCenterGameWatchNum extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1132,6 +1147,7 @@ export class WebRoomCenterGameWatchUnreadList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1167,6 +1183,7 @@ export class WebRoomCenterHistory0Squid extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1197,6 +1214,7 @@ export class WebRoomCenterHistoryReplayVideoId extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1223,6 +1241,7 @@ export class WebRoomCenterHistoryViewPublicCards extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1244,6 +1263,7 @@ export class WebRoomCenterHistoryViewPublicCardsFreeCount extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1286,6 +1306,7 @@ export class WebRoomCenterMttIdAwards extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1302,6 +1323,7 @@ export class WebRoomCenterMttIdClose extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1471,6 +1493,7 @@ export class WebRoomCenterMttIdDetail extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1490,6 +1513,7 @@ export class WebRoomCenterMttIdFreeRemain extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1509,6 +1533,7 @@ export class WebRoomCenterMttIdQuit extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1527,6 +1552,7 @@ export class WebRoomCenterMttIdUpdateTop extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1553,6 +1579,7 @@ export class WebRoomCenterMttAllserIes extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1586,6 +1613,7 @@ export class WebRoomCenterMttFriendList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1610,6 +1638,7 @@ export class WebRoomCenterPatrolClubRoomBlinds extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1649,6 +1678,7 @@ export class WebRoomCenterPatrolClubRooms extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1709,6 +1739,7 @@ export class WebRoomCenterPatrolClubUsers extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1732,6 +1763,7 @@ export class WebRoomCenterPatrolRoom extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1782,6 +1814,7 @@ export class WebRoomCenterRandomEnter extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1807,6 +1840,7 @@ export class WebRoomCenterRandomRoomTotal extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1829,6 +1863,7 @@ export class WebRoomCenterRoomApplyDelay extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1852,6 +1887,7 @@ export class WebRoomCenterRoomDelay extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1873,6 +1909,7 @@ export class WebRoomCenterRoomDisbAnd extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1896,6 +1933,7 @@ export class WebRoomCenterRoomIsRoomAdmin extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1917,6 +1955,7 @@ export class WebRoomCenterRoomStart extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1939,6 +1978,7 @@ export class WebRoomCenterRoomUserLeave extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1961,6 +2001,7 @@ export class WebRoomCenterRoomUserStandUp extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2008,6 +2049,7 @@ export class WebRoomCenterRoomUserGeetEstList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2045,6 +2087,7 @@ export class WebRoomCenterRoomsAndMttList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2069,6 +2112,7 @@ export class WebRoomCenterSngIdBuyin extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2087,6 +2131,7 @@ export class WebRoomCenterSngIdClose extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2128,6 +2173,7 @@ export class WebRoomCenterSngIdDetail extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2162,6 +2208,7 @@ export class WebRoomCenterSngIdMttList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2183,6 +2230,7 @@ export class WebRoomCenterSngIdQuit extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2214,6 +2262,7 @@ export class WebRoomCenterSngIdUserWallet extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2244,6 +2293,7 @@ export class WebRoomCenterSngApplyFees extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2288,6 +2338,7 @@ export class WebRoomCenterSngFriendList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2315,6 +2366,7 @@ export class WebRoomCenterSngList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2341,6 +2393,7 @@ export class WebRoomCenterTribeRoomBlinds extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2378,6 +2431,7 @@ export class WebRoomCenterTribeRooms extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2413,6 +2467,7 @@ export class WebRoomCenterUserAllMttSngIds extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2440,6 +2495,7 @@ export class WebRoomCenterUserAllRoomIds extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2456,6 +2512,7 @@ export class WebRoomCenterUserAllRooms extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2484,6 +2541,7 @@ export class WebRoomCenterUserApplyDelayList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2515,6 +2573,7 @@ export class WebRoomCenterUserContrAstRooms extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2653,6 +2712,7 @@ export class WebRoomCenterUserMttSngRoomsList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2669,6 +2729,7 @@ export class WebRoomCenterUserRoomsList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

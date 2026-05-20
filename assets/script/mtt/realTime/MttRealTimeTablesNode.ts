@@ -32,7 +32,6 @@ export default class MttRealTimeTablesNode extends UIBase {
     //         } break;
     //     }
     // }
-
     initData() {
         this.tableList.scrollingCB = this.scrollingCB;
         GC.data.mtt.realTime.rooms.reqList();

@@ -143,7 +143,6 @@ export default class MttAgainBuy extends BaseForm {
     //     this.setText(this.buy_lbl, rate);
     //     // this.setTextColor(this.curInto, this._curIntoValue >= GC.data.user.info.displayGold ? "#B82B30" : "#3BE1F5");
     // }
-
     sliderChange(value: number) {
         this.sure.active = value != 0;
         this.setText(this.buy_lbl, value);
@@ -503,5 +502,6 @@ export default class MttAgainBuy extends BaseForm {
             this.close();
         }
     }
+
     // update (dt) {}
 }

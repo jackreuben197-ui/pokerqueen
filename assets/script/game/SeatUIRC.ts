@@ -361,19 +361,20 @@ export default class SeatUIRC extends UIBase {
     }
 
     onClickEmpty() {
-        UIMineModel.mInstance.ObtainUserInfo((pDto: any) => {
-            if (pDto.user.forbid_bring_in == 1) {
-                UIComponent.open<UIDialogParam>(UIDefine.UIDialogComponent, {
-                    title: '',
-                    type: UIDialogComponent.DialogType.Commit,
-                    content: i18nMgr.Get('UIForbidBringInTips'),
-                    contentCommit: CPErrorCode.LanguageDescription(10012)
-                });
-                return;
-            } else {
-                GameCache.Instance.CurGame.Sitdown(this.seat.ClientSeatId, true);
-            }
-        });
+        // UIMineModel.mInstance.ObtainUserInfo((pDto: any) => {
+        //     if (pDto.user.forbid_bring_in == 1) {
+        //         UIComponent.open<UIDialogParam>(UIDefine.UIDialogComponent, {
+        //             title: '',
+        //             type: UIDialogComponent.DialogType.Commit,
+        //             content: i18nMgr.Get('UIForbidBringInTips'),
+        //             contentCommit: CPErrorCode.LanguageDescription(10012)
+        //         });
+        //         return;
+        //     } else {
+        //         GameCache.Instance.CurGame.Sitdown(this.seat.ClientSeatId, true);
+        //     }
+        // });
+        GameCache.Instance.CurGame.Sitdown(this.seat.ClientSeatId, true);
     }
 
     /// <summary>

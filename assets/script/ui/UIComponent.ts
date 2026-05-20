@@ -57,6 +57,7 @@ export default class UIComponent {
     static get Instance(): UIComponent {
         return ((<any>this).__instance ??= new UIComponent());
     }
+
     /**
      存储预制体节点
 
@@ -64,6 +65,7 @@ export default class UIComponent {
     SetPrefabNode(prefab_name: string, node: cc.Node): void {
         this.prefab_node_map.set(prefab_name, node);
     }
+
     /**
      获取预制体节点
 
@@ -244,6 +246,7 @@ export default class UIComponent {
     setComponentByName(name: string, component: cc.Component) {
         this[name] = component;
     }
+
     /////////////////////////////
 }
 

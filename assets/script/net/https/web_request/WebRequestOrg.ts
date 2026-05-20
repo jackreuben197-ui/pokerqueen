@@ -355,6 +355,7 @@ export class WebOrgClubId extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -374,6 +375,7 @@ export class WebOrgClubIdJoin extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -410,6 +412,7 @@ export class WebOrgClubAdminPermissionSwitch extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -434,6 +437,7 @@ export class WebOrgClubAgentCreditBalaNce extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -458,6 +462,7 @@ export class WebOrgClubAgentCreditLimit extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -480,6 +485,7 @@ export class WebOrgClubAgentInviTation extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -510,6 +516,7 @@ export class WebOrgClubAgentRatioInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -533,6 +540,7 @@ export class WebOrgClubAgentRatioUpdate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -554,6 +562,7 @@ export class WebOrgClubCloneApply extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -590,6 +599,7 @@ export class WebOrgClubClubWalletStats extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -611,6 +621,7 @@ export class WebOrgClubCreateIsFirst extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -635,6 +646,7 @@ export class WebOrgClubCreditBalaNce extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -659,6 +671,7 @@ export class WebOrgClubCreditLimit extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -710,6 +723,7 @@ export class WebOrgClubCreditLog extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -731,6 +745,7 @@ export class WebOrgClubDelayRoomAuditSwitchUpdate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -750,6 +765,7 @@ export class WebOrgClubDisbAnd extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -771,6 +787,7 @@ export class WebOrgClubInviTation extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -793,6 +810,7 @@ export class WebOrgClubJackpotRecharge extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -854,6 +872,7 @@ export class WebOrgClubJackpotTemplateCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -875,6 +894,7 @@ export class WebOrgClubJackpotTemplateDel extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -907,6 +927,7 @@ export class WebOrgClubJackpotTemplateList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -939,6 +960,7 @@ export class WebOrgClubJackpotTemplateUpdate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -961,6 +983,7 @@ export class WebOrgClubJackpotWithdraw extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -986,6 +1009,7 @@ export class WebOrgClubList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1042,6 +1066,7 @@ export class WebOrgClubMasterSlaveClubList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1064,6 +1089,7 @@ export class WebOrgClubMasterSlaveClubRatio extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1084,6 +1110,7 @@ export class WebOrgClubMasterSlaveClubRemark extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1141,6 +1168,7 @@ export class WebOrgClubMemberRakeBack extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1163,6 +1191,7 @@ export class WebOrgClubModifyClubDesc extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1193,6 +1222,7 @@ export class WebOrgClubMyCreateClubs extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1223,6 +1253,7 @@ export class WebOrgClubSearchInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1241,6 +1272,7 @@ export class WebOrgClubSetTimeZone extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1263,6 +1295,7 @@ export class WebOrgClubSetUserUcadvaNce extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1285,6 +1318,7 @@ export class WebOrgClubSubscrIptionBuy extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1350,6 +1384,7 @@ export class WebOrgClubSubscrIptionList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1366,6 +1401,7 @@ export class WebOrgClubUserPageActive extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1387,6 +1423,7 @@ export class WebOrgClubUserWalletRelationGrant extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1413,6 +1450,7 @@ export class WebOrgClubUserWalletRelationList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1440,6 +1478,7 @@ export class WebOrgJackpotTemplateInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1475,6 +1514,7 @@ export class WebOrgTribeApplyList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1497,6 +1537,7 @@ export class WebOrgTribeApplyUpgrAde extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1520,6 +1561,7 @@ export class WebOrgTribeAuditApply extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1554,6 +1596,7 @@ export class WebOrgTribeBlackUserList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1589,6 +1632,7 @@ export class WebOrgTribeCheckUpgrAde extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1641,6 +1685,7 @@ export class WebOrgTribeClubFundGoldChangeLog extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1662,6 +1707,7 @@ export class WebOrgTribeClubKickOut extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1716,6 +1762,7 @@ export class WebOrgTribeClubList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1741,6 +1788,7 @@ export class WebOrgTribeClubListAll extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1762,6 +1810,7 @@ export class WebOrgTribeClubLock extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1782,6 +1831,7 @@ export class WebOrgTribeClubRemark extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1808,6 +1858,7 @@ export class WebOrgTribeClubRemarkList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1829,6 +1880,7 @@ export class WebOrgTribeClubUnlock extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1852,6 +1904,7 @@ export class WebOrgTribeCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1873,6 +1926,7 @@ export class WebOrgTribeCreateIsFirst extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1937,6 +1991,7 @@ export class WebOrgTribeFundGoldChangeLog extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1967,6 +2022,7 @@ export class WebOrgTribeInfoByClub extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2001,6 +2057,7 @@ export class WebOrgTribeList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2025,6 +2082,7 @@ export class WebOrgTribeRoomPermissionS extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2043,6 +2101,7 @@ export class WebOrgTribeSetTimeZone extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2064,6 +2123,7 @@ export class WebOrgTribeSettIngClubProfitRatio extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2092,6 +2152,7 @@ export class WebOrgTribeWallet extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2115,6 +2176,7 @@ export class WebOrgUserAdminFavorIte extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2140,6 +2202,7 @@ export class WebOrgUserCheckOrg extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2172,6 +2235,7 @@ export class WebOrgUserClubAdminList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2190,6 +2254,7 @@ export class WebOrgUserNewLabelRead extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2213,6 +2278,7 @@ export class WebOrgUserNewLabelReadNum extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2231,6 +2297,7 @@ export class WebOrgUserSelfProfitBillNotifyConfim extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2256,6 +2323,7 @@ export class WebOrgUserSelfProfitBillUnnotIfy extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2286,6 +2354,7 @@ export class WebOrgUserSelfProfitUnpayRecords extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -2315,6 +2384,7 @@ export class WebOrgUserTribeAdminList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

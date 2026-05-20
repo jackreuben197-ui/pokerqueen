@@ -68,7 +68,6 @@ export default class SettingsForm extends BaseForm {
      * onLoad之后处理的内容
      */
     //private comFormTitle: ComFormTitle = null;
-
     protected lateLoad(): void {
         super.lateLoad();
         //this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);

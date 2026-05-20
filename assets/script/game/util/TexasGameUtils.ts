@@ -184,7 +184,6 @@ export default class TexasGameUtils {
     // public AddTimeCost(): number {
     //     return 10 * Math.pow(2, this.game.delayCount + 1) * 10;
     // }
-
     public GetOpDelayConsumeType(): Def.ConsumeTypeMap[keyof Def.ConsumeTypeMap] {
         return this.game.delayCount == 0 ? Def.ConsumeType.CT_DELAY_2 : Def.ConsumeType.CT_DELAY_3;
     }

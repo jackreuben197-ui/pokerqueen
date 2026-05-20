@@ -137,6 +137,7 @@ export default class BaseComponent extends Base {
             this._clickNodes.push(node);
         }
     }
+
     protected touchStart = (event: cc.Event.EventTouch) => {
         event.stopPropagation();
         if (this.touchEndIsNotMulti(event)) {

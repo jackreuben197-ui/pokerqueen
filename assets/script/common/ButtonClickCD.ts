@@ -19,5 +19,6 @@ export default class ButtonClickCD {
         showToast && ToastManager.Instance.createToast(i18nMgr.Get('clickNum'));
         return false;
     }
+
     // update (dt) {}
 }

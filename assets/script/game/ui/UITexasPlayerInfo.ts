@@ -121,6 +121,7 @@ export default class UITexasPlayerInfo extends UIBasePlus {
         UIComponent.close(UIDefine.UITexasPlayerInfo);
     }
 }
+
 // >>>>> http post - response : https://test2.awanptest.com/api/user/96615706/info
 // {
 //     "code": 0, "message": "", "data": {

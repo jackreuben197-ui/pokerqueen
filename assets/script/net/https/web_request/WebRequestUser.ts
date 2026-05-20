@@ -62,6 +62,7 @@ export class WebRefreshToken extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -84,6 +85,7 @@ export class WebUserCheckPhone extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -105,6 +107,7 @@ export class WebUserSendCode extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -132,6 +135,7 @@ export class WebUserModifyPassword extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -157,6 +161,7 @@ export class WebUserModifyUserInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -180,6 +185,7 @@ export class WebUserCheckNickname extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -207,6 +213,7 @@ export class WebUserRegister extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -228,6 +235,7 @@ export class WebOtherUserInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -271,6 +279,7 @@ export class WebUserInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -291,6 +300,7 @@ export class WebChannel extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -311,6 +321,7 @@ export class WebWs extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -357,6 +368,7 @@ export class WebUserRoom extends WebCommon {
                         }
                     ]
                 }
+
     */
 }
 
@@ -476,6 +488,7 @@ export class WebUserActionRemaind extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -498,6 +511,7 @@ export class WebUserAgentDiamondsGrant extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -520,6 +534,7 @@ export class WebUserAgentGoldGrant extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -542,6 +557,7 @@ export class WebUserBuysubScriptIon extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -564,6 +580,7 @@ export class WebUserClubCreaTorGrant extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -585,6 +602,7 @@ export class WebUserDelayRoomAuditSwitchUpdate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -615,6 +633,7 @@ export class WebUserDiamondRelation extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -638,6 +657,7 @@ export class WebUserDiamondSend extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -657,6 +677,7 @@ export class WebUserExtraStatusUpdate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -689,6 +710,7 @@ export class WebUserFreeZePublicList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -716,6 +738,7 @@ export class WebUserGetaVatars extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -780,6 +803,7 @@ export class WebUserGradeDetail extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -796,6 +820,7 @@ export class WebUserGs extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -829,6 +854,7 @@ export class WebUserGuestLogin2 extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -850,6 +876,7 @@ export class WebUserLoginSyncInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -897,6 +924,7 @@ export class WebUserLogin2 extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -920,6 +948,7 @@ export class WebUserModifyBringinPasswordSwitch extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -942,6 +971,7 @@ export class WebUserModifyQuickLoginSwitch extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -974,6 +1004,7 @@ export class WebUserMute extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -999,6 +1030,7 @@ export class WebUserMuteList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1028,6 +1060,7 @@ export class WebUserMyWalletS extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1053,6 +1086,7 @@ export class WebUserPublicInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1076,6 +1110,7 @@ export class WebUserQuickPasswordModify extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1101,6 +1136,7 @@ export class WebUserQuickPasswordVerify extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1130,6 +1166,7 @@ export class WebUserRemaRks extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1164,6 +1201,7 @@ export class WebUserSendInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1188,6 +1226,7 @@ export class WebUserSendVerifyCode extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1209,6 +1248,7 @@ export class WebUserSetLuckyNum extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1227,6 +1267,7 @@ export class WebUserSetVideoMask extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1248,6 +1289,7 @@ export class WebUserTraderApply extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1280,6 +1322,7 @@ export class WebUserTraderApplyList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1301,6 +1344,7 @@ export class WebUserTraderApplyRead extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1358,6 +1402,7 @@ export class WebUserUserSubscrIptionConfig extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1382,6 +1427,7 @@ export class WebUserVerifyCodeVerify extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1474,6 +1520,7 @@ export class WebUserWalletSlog extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

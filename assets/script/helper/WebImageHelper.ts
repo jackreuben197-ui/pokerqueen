@@ -84,6 +84,7 @@ export default class WebImageHelper {
         let scale = scale_w < scale_h ? scale_h : scale_w;
         iamge.node.scale = scale;
     }
+
     // //大写后缀映射小写
     private static CapitalURLMap = [
         ['.JPG', '.jpg'],

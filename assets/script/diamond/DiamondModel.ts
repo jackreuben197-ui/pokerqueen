@@ -5,6 +5,7 @@ export default class DiamondModel {
     public static get Instance(): DiamondModel {
         return ((this as any).__Instance ??= new DiamondModel());
     }
+
     /////////////////////////////////////////////////////////////////
     //钻石配置表
     diamond_map: Map<number, any> = new Map();

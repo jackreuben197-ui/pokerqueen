@@ -141,6 +141,7 @@ export default class UIMTTDetail_Player extends UIBasePlus {
             );
         }
     }
+
     ////////////////////////////////////List/////////////////////////////
     private listEx: ListEx = null;
 

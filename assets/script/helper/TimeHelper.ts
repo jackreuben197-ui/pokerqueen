@@ -201,7 +201,6 @@ export default class TimeHelper {
      * @param isMil
      * @returns
      */
-
     static getHM(t: number, flag: string = null, isMil: boolean = false) {
         let data = this.getDateStructHMS(t, isMil);
         if (flag) {
@@ -430,6 +429,7 @@ export default class TimeHelper {
                 return `${h}:${m}`;
         }
     }
+
     private static MonthLanMap: Record<number, string> = {
         1: 'StrJanuary',
         2: 'StrFebruary',

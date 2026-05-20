@@ -18,6 +18,7 @@ export class HttpLink {
         }
         return HttpLink._instance;
     }
+
     private _sendQueue: Array<TSendInfo> = [];
 
     constructor() {

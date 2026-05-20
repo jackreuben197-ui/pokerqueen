@@ -33,6 +33,7 @@ export class WebPropUserCheckPropInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -59,6 +60,7 @@ export class WebRoomCenterMttGetdisCountS extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -83,6 +85,7 @@ export class WebPropUserBuyProp extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -198,6 +201,7 @@ export class WebPropBuy extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -238,6 +242,7 @@ export class WebPropChatPropList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -257,6 +262,7 @@ export class WebPropChatPropUsed extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -308,6 +314,7 @@ export class WebPropGoldPriceList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -363,6 +370,7 @@ export class WebPropList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -386,6 +394,7 @@ export class WebPropMallGoodsBuy extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -431,6 +440,7 @@ export class WebPropMallGoodsDetail extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -472,6 +482,7 @@ export class WebPropMallGoodsList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -494,6 +505,7 @@ export class WebPropMallPrettyIdBuy extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -529,6 +541,7 @@ export class WebPropMallPrettyIdList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -553,6 +566,7 @@ export class WebPropMallPrettyIdTotal extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -577,6 +591,7 @@ export class WebPropShareContEnt extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -595,6 +610,7 @@ export class WebPropShareDone extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -620,6 +636,7 @@ export class WebPropShopPingAppleVerifyReceIpt extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -643,6 +660,7 @@ export class WebPropShopPingGoogleVerifyOrder extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -680,6 +698,7 @@ export class WebPropSignInActivityDetail extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -702,6 +721,7 @@ export class WebPropSignInActivitySignIn extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -725,6 +745,7 @@ export class WebPropTestSignInActivityReset extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -758,6 +779,7 @@ export class WebPropTribeGoldPriceList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -781,6 +803,7 @@ export class WebPropUserPropGroupList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -828,6 +851,7 @@ export class WebPropUserOfflInetIckets extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -852,6 +876,7 @@ export class WebPropUserOfflInetIcketsGain extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -874,6 +899,7 @@ export class WebPropUserOfflInetIcketsTransFer extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -901,6 +927,7 @@ export class WebPropUserPropInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -927,6 +954,7 @@ export class WebPropWheelLottEry extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -966,6 +994,7 @@ export class WebPropWheelLottEryList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -1011,6 +1040,7 @@ export class WebPropWheelUserHandNum extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

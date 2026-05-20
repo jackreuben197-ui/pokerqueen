@@ -41,6 +41,7 @@ export default abstract class AGameplayEntrance {
     public get isMain(): boolean {
         return false;
     }
+
     /**
      * 玩法类型
      */
@@ -52,6 +53,7 @@ export default abstract class AGameplayEntrance {
     public get matchId(): number {
         return this._matchId;
     }
+
     /**
      * 房间id - mtt比赛玩法过程中roomId可能会变动，允许派生类型修改
      */

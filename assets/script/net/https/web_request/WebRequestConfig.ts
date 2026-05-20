@@ -41,6 +41,7 @@ export class WebConfigGlobalConfig extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -64,6 +65,7 @@ export class WebConfigMultiLanguageTemplate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -116,6 +118,7 @@ export class WebConfigBaseConfigCombine extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -152,6 +155,7 @@ export class WebConfigBeforeLoginConfig extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -189,6 +193,7 @@ export class WebConfigDiamondOrgConfig extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -215,6 +220,7 @@ export class WebConfigGamePlayTag extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -243,6 +249,7 @@ export class WebConfigGetOnlinePayTypeUserAddress extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -267,6 +274,7 @@ export class WebConfigMaintenance extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -293,6 +301,7 @@ export class WebConfigMaintenanceTf extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -309,6 +318,7 @@ export class WebConfigNetworkCheckIp extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -331,6 +341,7 @@ export class WebConfigOnlineWithdrawDescription extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -366,6 +377,7 @@ export class WebConfigOnlineWithdrawTypeList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -392,6 +404,7 @@ export class WebConfigRegisterArea extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -438,6 +451,7 @@ export class WebConfigUserWhitelistInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -457,6 +471,7 @@ export class WebConfigWhatsApp extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

@@ -11,6 +11,7 @@ export default class GoldChangeLogItem {
     set displayTime(t) {
         this._displayTime = t;
     }
+
     private _base: TClubGoldChangeLogItem | TUserGoldChangeLogItem = null;
 
     constructor(base: TClubGoldChangeLogItem | TUserGoldChangeLogItem) {
