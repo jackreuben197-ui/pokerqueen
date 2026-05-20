@@ -30,7 +30,7 @@ export default class GameplayUtil {
         return tableType;
     }
 
-    public static IsTrader(user:HttpUserInfoProtocol.UserInfo): boolean  {
+    public static IsTrader(user: HttpUserInfoProtocol.UserInfo): boolean {
         return Date.now() < user.trader_expire_time * 1000;
     }
 }

@@ -1700,7 +1700,7 @@ export default class TexasGame {
                 UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
                     title: '',
                     content: i18nMgr.Get('UIForbidBringInTips'),
-                    ok: i18nMgr.Get('UIClub_CreateRoom7'),
+                    ok: i18nMgr.Get('UIClub_CreateRoom7')
                 });
                 return;
             }
@@ -1723,7 +1723,7 @@ export default class TexasGame {
                     _deposit: 0, // 如果在桌上不需要带入押金，这里要判断他的押金是否不足,到时候再补 deposit -user.current.deposit  @TODO
                     _diamonds: userInfo.data.user.diamonds,
                     _isTrader: GameplayUtil.IsTrader(userInfo.data.user),
-                    _type: 1,
+                    _type: 1
                 });
                 return;
             }
@@ -1743,7 +1743,7 @@ export default class TexasGame {
                     _deposit: 0, // 如果在桌上不需要带入押金，这里要判断他的押金是否不足,到时候再补 deposit -user.current.deposit  @TODO
                     _diamonds: userInfo.data.user.diamonds,
                     _isTrader: GameplayUtil.IsTrader(userInfo.data.user),
-                    _type: addChipType,
+                    _type: addChipType
                 });
             }
         } catch (e) {
@@ -1858,7 +1858,7 @@ export default class TexasGame {
                 _commit: this._commitBringInCallback(seatedData),
                 _diamonds: userInfo.data.user.diamonds,
                 _isTrader: GameplayUtil.IsTrader(userInfo.data.user),
-                _type: 0,
+                _type: 0
             };
             // 联盟币
             if (GameCache.Instance.gold_type == 1) {

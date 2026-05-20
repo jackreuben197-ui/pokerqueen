@@ -10,7 +10,6 @@ export default class RemoteSprite extends cc.Component {
         displayName: '远程图片URL',
         tooltip: '给它赋值后会自动触发下载并显示'
     })
-
     @property(cc.Material)
     public customMaterial: cc.Material = null;
 
