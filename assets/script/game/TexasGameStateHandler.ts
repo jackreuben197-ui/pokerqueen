@@ -103,9 +103,6 @@ export class TexasGameStateHandlerExit extends StateHandler {
         //     UIComponent.Instance.HideUI(UIType.UIMatch_Loading);
         // }
         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
-        console.log('========退出退出1=========');
-        console.log('========退出退出1=========');
-        console.log('========退出退出1=========');
         const exitSource = this.SourceData as TexasGameExitSourceData | null;
         const returnParam: ProcedureReturnNavigateParam | undefined = exitSource?.h5NavigatePayload
             ? { h5NavigatePayload: exitSource.h5NavigatePayload }

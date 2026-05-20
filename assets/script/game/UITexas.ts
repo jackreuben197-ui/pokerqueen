@@ -105,6 +105,12 @@ export default class UITexas extends BaseScene {
     // 客服
     btn_im: cc.Node = null;
     table_add_chip: cc.Node = null;
+    // 小屏适配：记住按钮原始 Y 坐标，避免重复累加偏移
+    private _btnMenuOrigY: number = 0;
+    private _btnImOrigY: number = 0;
+    private _tableAddChipOrigY: number = 0;
+    private _remainingSquidCountOrigY: number = 0;
+    private _btnSafetyGuardOrigY: number = 0;
     //安全卫士
     btn_safety_guard: cc.Node = null;
     // main_menu 按钮
@@ -275,6 +281,11 @@ export default class UITexas extends BaseScene {
             this.btn_safety_guard.active = false;
         }
         this.table_add_chip = this.getChildNodeOrComponent('table_add_chip');
+        // 记住按钮原始 Y 坐标，用于小屏适配偏移
+        if (this.btn_menu) this._btnMenuOrigY = this.btn_menu.y;
+        if (this.btn_im) this._btnImOrigY = this.btn_im.y;
+        if (this.btn_safety_guard) this._btnSafetyGuardOrigY = this.btn_safety_guard.y;
+        if (this.table_add_chip) this._tableAddChipOrigY = this.table_add_chip.y;
         // main_menu 按钮（main_menu 在 side_btns 下，load_all_object 已递归索引）
         this.btn_emoji = this.getChildNodeOrComponent('btn_emoji');
         this.btn_effect = this.getChildNodeOrComponent('btn_effect');
@@ -310,6 +321,7 @@ export default class UITexas extends BaseScene {
             ?.getComponent(cc.Label);
         if (this.RemainingSquidCount) {
             this.RemainingSquidCount.active = false;
+            this._remainingSquidCountOrigY = this.RemainingSquidCount.y;
         }
         this.SquidSwitch = this.main?.getChildByName('SquidSwitch');
         this.SquidSwitchClickNode = this.SquidSwitch?.getChildByName('content')?.getChildByName('GGSwitch2') || this.SquidSwitch;
@@ -637,12 +649,26 @@ export default class UITexas extends BaseScene {
             this.main.setScale(1, 1);
             this.main.height = view_height;
         }
+        // RemainingSquidCount 锚点 (0,1)，将其定位到距屏幕左侧 20px
+        this.adjustRemainingSquidX();
         // 延迟到下一帧计算座位偏移，确保 Widget 布局已完成
         this.scheduleOnce(() => {
             this.adjustSeatYOffset();
             // 偏移量计算完后，刷新已有座位的实际位置
             this.applySeatOffset();
         }, 0);
+    }
+
+    /**
+     * 将 RemainingSquidCount 的 x 定位到距屏幕左侧 20px
+     * main 缩放后，需将 Canvas 坐标反向换算回 main 局部坐标
+     */
+    private adjustRemainingSquidX() {
+        if (!this.RemainingSquidCount || !this.main) return;
+        const scale = this.main.scaleX;
+        const visibleWidth = cc.view.getVisibleSize().width;
+        // Canvas 坐标系中屏幕左边缘 + 20px，换算到 main 局部坐标
+        this.RemainingSquidCount.x = (-visibleWidth / 2 + 20 - this.main.x) / scale;
     }
 
     /**
@@ -681,12 +707,20 @@ export default class UITexas extends BaseScene {
 
     /**
      * 将已创建的座位重新定位（应用 seatYOffset）
+     * 同时将 btn_menu、btn_im、table_add_chip 上移 seatYOffset/2
      */
     private applySeatOffset() {
         if (!this.game?.listSeat) return;
         for (const seat of this.game.listSeat) {
             seat.UpdateSeatUIInfo(seat.ClientSeatId);
         }
+        // 按钮上移 seatYOffset / 2
+        const halfOffset = some_pos.seatYOffset / 2;
+        if (this.btn_menu) this.btn_menu.y = this._btnMenuOrigY + halfOffset;
+        if (this.btn_im) this.btn_im.y = this._btnImOrigY + halfOffset;
+        if (this.btn_safety_guard) this.btn_safety_guard.y = this._btnSafetyGuardOrigY + halfOffset;
+        if (this.table_add_chip) this.table_add_chip.y = this._tableAddChipOrigY + halfOffset;
+        if (this.RemainingSquidCount) this.RemainingSquidCount.y = this._remainingSquidCountOrigY + halfOffset;
     }
 
     //进入初始UI
@@ -1160,8 +1194,6 @@ export default class UITexas extends BaseScene {
     }
 
     private click_btn_safety_guard() {
-        console.log('============');
-        console.log({ game: this.game });
         H5MsgMgr.sendToH5('showPanel', 1, {
             panelType: 'safetyGuard',
             props: {

@@ -548,10 +548,6 @@ export class GameCache {
      */
     public _maxBringinTotalRate: number = 0;
     /**
-     * Jackpot ID
-     */
-    public _jackpotId: number = 0;
-    /**
      * 自动开始最小玩家数
      */
     public _autoStartMinPlayer: number = 0;
@@ -734,7 +730,7 @@ export class GameCache {
     //         GameCache.Instance.room_jackpot_config = jackpotConfigRaw || null;
     //     }
     //     GameCache.Instance.jackPot_on = Number(room_info.jackpot || 0);
-    //     GameCache.Instance.jackPot_id = Number(room_info.jackpot_id ?? room_info.jackpotId ?? 0);
+    //     GameCache.Instance.jackPot_id = Number(room_info.jackpot_id || 0);
     //     GameCache.Instance.jackPot_gold = Number(room_info.jackpot_gold ?? room_info.jackpotGold ?? 0);
     //     GameCache.Instance.jackPot_parent_gold = Number(
     //         room_info.jackpot_parent_gold

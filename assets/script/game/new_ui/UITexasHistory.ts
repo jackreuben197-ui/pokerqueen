@@ -16,6 +16,7 @@ import GameUtil from '../util/GameUtil';
 import playerCardNode, { IPlayerCardData } from '../../crazyPoker/gameplay/common/view/cardhisory/playerCardNode';
 import { ResManager } from '../../manager/ResManager';
 import DiamondModel from '../../diamond/DiamondModel';
+import { replayGet, replaySet, roomKey, matchKey } from '../../tools/ReplayCacheDB';
 
 export class HistoryInfoData {
     public bInsurance: boolean;
@@ -65,6 +66,7 @@ const { ccclass, property } = cc._decorator;
 export default class UITexasHistory extends UIBasePlus {
     currentPage = 0;
     totalPage = 0;
+    private _pendingHandNum: number = -1;
     historyInfoData: HistoryInfoData;
     AllPlayerPaiPu: cc.Node = null;
     AllPlayerPaiPuInfoObj: cc.Node = null;
@@ -413,8 +415,10 @@ export default class UITexasHistory extends UIBasePlus {
                 if (!cc.isValid(this.node)) return;
                 if (btn) btn.interactable = true;
                 if (res?.code === 0 && res?.data) {
-                    // 合并偷偷看到的手牌到缓存
+                    // 合并偷偷看到的手牌到当前手牌缓存数据中（对齐 Unity ExecuteWatchUser）
                     this.mergeWatchedHands(res.data.be_watched_user_hands);
+                    // 将偷看数据写回该手牌的缓存，确保切换后再切回来时数据不丢失
+                    this.updateReplayCacheWithWatchedHands();
                     // 用新数据重新渲染界面
                     this.HandleHistoryReplay(res.data);
                     // 隐藏偷偷看按钮（已看过）
@@ -448,6 +452,33 @@ export default class UITexasHistory extends UIBasePlus {
             if (!found) {
                 this.beWatchedUserHands.push(hands[i]);
             }
+        }
+    }
+
+    /** 将偷看数据写回当前手牌的 replaySet 缓存（对齐 Unity：更新 _recordData 后写入 GameCache） */
+    private async updateReplayCacheWithWatchedHands() {
+        const userId = GameCache.Instance.nUserId;
+        const roomId = GameCache.Instance.room_id;
+        const matchId = GameCache.Instance.match_id;
+        const handNum = this.currentPage;
+        // 从缓存中取出当前手牌数据
+        const cached = (await replayGet(roomKey(userId, roomId, handNum))) ?? (matchId ? await replayGet(matchKey(userId, matchId, handNum)) : null);
+        if (cached) {
+            // 将偷看数据合并到缓存数据的 be_watched_user_hands 字段
+            if (!cached.be_watched_user_hands) {
+                cached.be_watched_user_hands = [];
+            }
+            for (const hand of this.beWatchedUserHands) {
+                const existing = cached.be_watched_user_hands.find(h => h.user_rid === hand.user_rid);
+                if (existing) {
+                    existing.data = hand.data;
+                } else {
+                    cached.be_watched_user_hands.push({ user_rid: hand.user_rid, data: hand.data });
+                }
+            }
+            // 写回缓存
+            replaySet(roomKey(userId, roomId, handNum), cached);
+            if (matchId) replaySet(matchKey(userId, matchId, handNum), cached);
         }
     }
 
@@ -498,12 +529,20 @@ export default class UITexasHistory extends UIBasePlus {
     }
 
     Protocol_Holdem_PublicReplay_Handler(response) {
+        if (this._pendingHandNum < 0) return; // 预取响应，非本面板请求，忽略
         if (response?.data == '' || response?.data == null) {
-            //没有数据
+            this._pendingHandNum = -1;
             return;
         }
-        let data = PublicHelper.Base64ToJsonString(response.data);
-        this.HandleHistoryReplay(JSON.parse(data));
+        const handNum = this._pendingHandNum;
+        this._pendingHandNum = -1;
+        let data = JSON.parse(PublicHelper.Base64ToJsonString(response.data));
+        const userId = GameCache.Instance.nUserId;
+        const roomId = GameCache.Instance.room_id;
+        const matchId = GameCache.Instance.match_id;
+        replaySet(roomKey(userId, roomId, handNum), data);
+        if (matchId) replaySet(matchKey(userId, matchId, handNum), data);
+        this.HandleHistoryReplay(data);
     }
 
     //请求个人历史并刷新界面
@@ -523,13 +562,22 @@ export default class UITexasHistory extends UIBasePlus {
         // this.Text_num.string = `${this.currentPage}/${this.totalPage}`;
     }
 
-    SendClientMessagePublicReplay(handNum) {
+    async SendClientMessagePublicReplay(handNum) {
+        const userId = GameCache.Instance.nUserId;
+        const roomId = GameCache.Instance.room_id;
+        const matchId = GameCache.Instance.match_id;
+        const cached = (await replayGet(roomKey(userId, roomId, handNum))) ?? (matchId ? await replayGet(matchKey(userId, matchId, handNum)) : null);
+        if (cached) {
+            this.HandleHistoryReplay(cached);
+            return;
+        }
+        this._pendingHandNum = handNum;
         ProtocolAgency.Send({
             Code: ProtocolCode.Protocol_Holdem_PublicReplay,
-            RoomID: GameCache.Instance.room_id,
-            MatchID: GameCache.Instance.match_id,
+            RoomID: roomId,
+            MatchID: matchId,
             Body: {
-                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                room: { roomId: roomId, matchId: matchId },
                 handNum: handNum,
                 uniqueId: GameCache.Instance.CurGame.cacheUniqueId
             }
@@ -704,6 +752,8 @@ export default class UITexasHistory extends UIBasePlus {
     }
 
     protected async HandleHistoryReplay(ResponseData: typeof WebRoomCenterHistoryReplay.Data) {
+        // 切换手牌时清空偷看缓存，防止上一手的偷看数据污染当前手
+        this.beWatchedUserHands = [];
         this.PublicCards = [0, 0, 0, 0, 0];
         this.SecondPublicCards = [];
         // 保存上一手的双套状态，用于正确回收节点池

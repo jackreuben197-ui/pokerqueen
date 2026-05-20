@@ -241,7 +241,7 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         GameCache.Instance._minPlayerChipRate = isClear ? 0 : this._roomInfo.minPlayerChipRate;
         GameCache.Instance._maxBringinTotalRate = isClear ? 0 : this._roomInfo.maxBringinTotalRate;
         GameCache.Instance._texasData._jackpot = isClear ? 0 : this._roomInfo.jackpot;
-        GameCache.Instance._jackpotId = isClear ? 0 : this._roomInfo.jackpotId;
+        GameCache.Instance.jackPot_id = isClear ? 0 : this._roomInfo.jackpotId;
         GameCache.Instance._texasData._jackpotGold = isClear ? 0 : this._roomInfo.jackpotGold;
         GameCache.Instance._texasData._jackpotParentGold = isClear ? 0 : this._roomInfo.jackpotParentGold;
         GameCache.Instance._texasData._jackpotConfig = isClear ? null : this._roomInfo.jackpotConfig;

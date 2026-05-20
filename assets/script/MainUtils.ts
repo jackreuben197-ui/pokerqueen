@@ -272,6 +272,8 @@ export async function registerH5Listeners(): Promise<void> {
         gc.carry_small = roomData.limit_bring_in || 0;
         gc.anti_cheat_type = roomData.anti_cheat_type || 0;
         gc.enter_param = { game_enter_type: 0, isLookOn: false };
+        const jackpotId = Number(roomData.jackpot_id || 0);
+        gc.jackPot_id = jackpotId;
         // === 6. 启动进入牌桌流程 ===
         // EnterTexas → 加载资源 → Texas procedure → TexasGameUtils.EnterRoom()
         // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送

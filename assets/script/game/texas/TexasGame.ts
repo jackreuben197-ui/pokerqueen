@@ -1,6 +1,7 @@
 import TexasConfig from '../../config/TexasConfig';
 import { UIDefine } from '../../define/UIDefine';
 import DiamondModel from '../../diamond/DiamondModel';
+import AudioManager from '../../frame/manager/AudioManager';
 import { DOTween, Sequence } from '../../dotween/DOTween';
 import { ClubCache } from '../../frame/data/club/ClubCache';
 import GC from '../../frame/GameControl';
@@ -571,8 +572,14 @@ export default class TexasGame {
         this.listSeat = [];
         this.pots = [];
         this.dicSeatOnlyClient = new Map<number, Seat>();
+        // Dispose() 会将 throwPropMgr 置 null，重新进入房间时需要重建
+        if (!this.throwPropMgr) {
+            this.throwPropMgr = new ThrowPropManager(this);
+        }
         this.SMAgency.LoadGameStateConf();
         GC.uc.AddComponent(this.GameLogicSMComponent);
+        // 播放游戏背景音乐，音量 30%（对齐 Unity BGM_GAMEPLAY）
+        AudioManager.instance.playMusicWithVolume('sound/bgm_game', 0.3);
     }
 
     RegisterMsgHandler() {
@@ -856,7 +863,6 @@ export default class TexasGame {
         this.jackpot = Number(roomInfoAny?.jackpot || 0);
         GameCache.Instance.jackPot_on = this.jackpot;
         GameCache.Instance._enterRoomType = 1;
-        GameCache.Instance.jackPot_id = roomInfoAny.jackpot;
         GameCache.Instance.jackPot_gold = roomInfoAny.jackpotGold;
         GameCache.Instance.jackPot_parent_gold = roomInfoAny.jackpotParentGold;
         GameCache.Instance.jackPot_fund = GameCache.Instance.jackPot_parent_gold;
@@ -4225,6 +4231,8 @@ export default class TexasGame {
      */
     Dispose() {
         console.log(LN, 'TexasGame >>>> Dispose');
+        // 停止游戏背景音乐
+        AudioManager.instance.stopMusic();
         this.IsDispose = true;
         this.reportKeepOpen = false;
         this.ClearTableUI();

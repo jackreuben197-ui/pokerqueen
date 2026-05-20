@@ -573,10 +573,15 @@ export class WebRoomCenterIsRoomAdmin extends WebCommon {
 
 export class WebRoomCenterHistoryReplay extends WebCommon {
     static API: string = '/api/roomcenter/history/replay/{id}';
+    public static WatchedUserHand: {
+        user_rid: number; //玩家随机ID
+        data: string; //手牌数据
+    } | null = null;
     public static Data: {
         d: number[]; //自己手牌
         s: typeof WebRoomCenterHistoryReplay.S;
         u: number; //自己用户随机ID
+        be_watched_user_hands?: (typeof WebRoomCenterHistoryReplay.WatchedUserHand)[]; //偷偷看手牌数据
     } | null = null;
     //字段声明
     // static RequestParams: {
@@ -1083,6 +1088,7 @@ export class WebRoomCenterGameWatch extends WebCommon {
         be_watched_user_id?: number;
     } | null = null;
     static ResponseData: {
+        be_watched_user_hands?: (typeof WebRoomCenterHistoryReplay.WatchedUserHand)[]; //偷偷看手牌数据
         data?: unknown;
     } | null = null;
 
