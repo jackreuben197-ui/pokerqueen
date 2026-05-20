@@ -206,6 +206,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
      */
     @property(cc.Node)
     private emptySelectWallet: cc.Node = null;
+    private _cloneNode: cc.Node = null; // 这是用来显示选中状态的node
     /**
      * 选择钱包按钮
      */
@@ -1148,6 +1149,9 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         this.currentSelect = -1;
         this.walletScrollView.node.active = false;
         this.mySelectWallet = null;
+        // 如果已经有选中状态，要恢复状态
+        if (this._cloneNode) this._cloneNode.active = false;
+        this.emptySelectWallet.active = true;
         const wallets = this.addChipsData._wallets;
         if (wallets.length == 1) {
             this.mySelectWallet = wallets[0];
@@ -1232,15 +1236,20 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         button.interactable = isEnable;
         this.emptySelectWallet.active = false;
         this.buttonCommit.active = true;
-        let cloneNode = this.buttonSelectWallet.parent.getChildByName('cloneWalletItem');
-        if (!cloneNode) {
-            const targetIndex = this.buttonSelectWallet.getSiblingIndex();
-            const cnd = cc.instantiate(this.clueItemPrefab);
-            this.buttonSelectWallet.parent.insertChild(cnd, targetIndex);
-            cnd.name = 'cloneWalletItem';
-            cloneNode = cnd;
+        // 如果没有cloneNode， 则创建一个
+        if (!this._cloneNode) {
+            let cloneNode = this.buttonSelectWallet.parent.getChildByName('cloneWalletItem');
+            if (!cloneNode) {
+                const targetIndex = this.buttonSelectWallet.getSiblingIndex();
+                const cnd = cc.instantiate(this.clueItemPrefab);
+                this.buttonSelectWallet.parent.insertChild(cnd, targetIndex);
+                cnd.name = 'cloneWalletItem';
+                cloneNode = cnd;
+            }
+            this._cloneNode = cloneNode;
         }
-        this._setClubItemData(this.mySelectWallet, cloneNode, false);
+        this._cloneNode.active = true; // 显出出来
+        this._setClubItemData(this.mySelectWallet, this._cloneNode, false);
         // 选择区域禁止选择
         this.walletScrollView.node.active = false;
         // 恢复箭头
