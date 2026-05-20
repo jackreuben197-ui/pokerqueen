@@ -157,6 +157,7 @@ type UIDefineKey =
     | 'UIFunManage'
     | 'UIFunRecycleGive'
     | 'UITexasHistory'
+    | 'UIChatDlg'
     | 'UIBlank_dialog'
     | 'UIGameplayAddChipsAndDiamond'
     | 'UIEmojiDlg'
@@ -1314,6 +1315,14 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Name: 'UITexasHistory',
         Bundle: 'texas',
         Path: 'prefab/widgetLayer/UITexasHistory'
+    },
+    //聊天弹窗
+    UIChatDlg: {
+        UIType: UIType.Board,
+        Name: 'UIChatDlg',
+        Bundle: 'texas',
+        Path: 'prefab/widgetLayer/UIChatDlg',
+        DisAdaptScreen: true
     },
     UIBlank_dialog: {
         UIType: UIType.CommonUI,

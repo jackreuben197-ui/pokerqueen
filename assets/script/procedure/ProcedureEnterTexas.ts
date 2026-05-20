@@ -90,14 +90,15 @@ export default class ProcedureEnterTexas extends ProcedureBase {
             .enterForegroundAsync()
             .then(result => {
                 if (!result) {
-                    console.error('[ProcedureEnterTexas]', 'enterForegroundAsync false');
+                    console.warn('[ProcedureEnterTexas]', 'enterForegroundAsync false');
+                    this._entrance = null;
                     ProcedureManager.StartProcedure<PrefabUI>(ProcedureEnum.Return, PrefabUI.UIPreloading);
                 }
             })
             .catch(e => {
                 console.error('[ProcedureEnterTexas]', 'err', e);
+                this._entrance = null;
                 ProcedureManager.StartProcedure<PrefabUI>(ProcedureEnum.Return, PrefabUI.UIPreloading);
-                return;
             });
     }
 
