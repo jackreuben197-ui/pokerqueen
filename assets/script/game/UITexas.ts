@@ -1186,7 +1186,7 @@ export default class UITexas extends BaseScene {
     }
 
     private click_chatBtn() {
-        UIComponent.open(UIDefine.UIBlank_dialog, { title: '聊天' });
+        UIComponent.open(UIDefine.UIChatDlg);
     }
 
     private click_btn_im() {

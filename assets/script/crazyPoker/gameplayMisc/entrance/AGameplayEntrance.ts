@@ -179,6 +179,9 @@ export default abstract class AGameplayEntrance {
             // 等待通信层进入成功
             const isOk: boolean = await this.messageLayerEnterAsync(true);
             if (!isOk) {
+                // 进入失败，清理缓存防止残留脏数据
+                this.cacheGlobalDataBeforeLoad(true);
+                this.cacheGlobalDataAfterLoad(true);
                 return false;
             }
             // TODO: 触发消息层进入玩法的全局通知
