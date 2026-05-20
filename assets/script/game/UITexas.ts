@@ -110,6 +110,7 @@ export default class UITexas extends BaseScene {
     private _btnImOrigY: number = 0;
     private _tableAddChipOrigY: number = 0;
     private _remainingSquidCountOrigY: number = 0;
+    private _btnSafetyGuardOrigY: number = 0;
     //安全卫士
     btn_safety_guard: cc.Node = null;
     // main_menu 按钮
@@ -283,6 +284,7 @@ export default class UITexas extends BaseScene {
         // 记住按钮原始 Y 坐标，用于小屏适配偏移
         if (this.btn_menu) this._btnMenuOrigY = this.btn_menu.y;
         if (this.btn_im) this._btnImOrigY = this.btn_im.y;
+        if (this.btn_safety_guard) this._btnSafetyGuardOrigY = this.btn_safety_guard.y;
         if (this.table_add_chip) this._tableAddChipOrigY = this.table_add_chip.y;
         // main_menu 按钮（main_menu 在 side_btns 下，load_all_object 已递归索引）
         this.btn_emoji = this.getChildNodeOrComponent('btn_emoji');
@@ -721,6 +723,7 @@ export default class UITexas extends BaseScene {
         const halfOffset = some_pos.seatYOffset / 2;
         if (this.btn_menu) this.btn_menu.y = this._btnMenuOrigY + halfOffset;
         if (this.btn_im) this.btn_im.y = this._btnImOrigY + halfOffset;
+        if (this.btn_safety_guard) this.btn_safety_guard.y = this._btnSafetyGuardOrigY + halfOffset;
         if (this.table_add_chip) this.table_add_chip.y = this._tableAddChipOrigY + halfOffset;
         if (this.RemainingSquidCount) this.RemainingSquidCount.y = this._remainingSquidCountOrigY + halfOffset;
     }
