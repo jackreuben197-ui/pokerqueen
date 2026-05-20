@@ -160,7 +160,8 @@ type UIDefineKey =
     | 'UIBlank_dialog'
     | 'UIGameplayAddChipsAndDiamond'
     | 'UIEmojiDlg'
-    | 'UIConfirmDialog';
+    | 'UIConfirmDialog'
+    | 'UIRechargeDiamond';
 
 export const UIDefine: Record<UIDefineKey, IUIDefine> = {
     //预加载UI
@@ -1336,12 +1337,19 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Path: 'prefab/ui/UIEmojiDlg',
         DisAdaptScreen: true
     },
-    //确认对话框
+    //确认对话框(普通对话框)
     UIConfirmDialog: {
         UIType: UIType.Dialog,
         Name: 'UIConfirmDialog',
         Bundle: 'texas',
         Path: 'purple_prefab/ui/UIConfirmDialog'
+    },
+    //扫描二维码
+    UIRechargeDiamond: {
+        UIType: UIType.Dialog,
+        Name: 'UIRechargeDiamond',
+        Bundle: 'texas',
+        Path: 'purple_prefab/ui/UIRechargeDiamond'
     }
 };
 

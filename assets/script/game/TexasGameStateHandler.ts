@@ -273,7 +273,7 @@ export class TexasGameStateHandlerComplete extends StateHandler {
         if (!game) return;
         // 进入房间时游戏已结束，提示用户并自动退出
         console.warn('[TexasGameStateHandlerComplete] game is already complete, exiting...');
-        UIComponent.Instance.Toast(i18nMgr.Get("GameRoom_ForceCloseTips"));
+        UIComponent.Instance.Toast(i18nMgr.Get('GameRoom_ForceCloseTips'));
         game.SMAgency.ChangeGameState(TexasGameState.Exit, null);
     }
 

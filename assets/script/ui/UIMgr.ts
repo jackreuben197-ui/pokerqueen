@@ -102,7 +102,7 @@ export class UIFormMgr {
                 // if (ui instanceof BaseForm) {
                 //     ui.onShow(param, this.currUI?.node, obj?.SceneUI);
                 // } else {
-                    ui.onShow(param);
+                ui.onShow(param);
                 //}
             }
             this.currUI = ui;

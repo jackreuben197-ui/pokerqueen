@@ -1,17 +1,19 @@
 import { StringHelper } from '../../../../../../helper/StringHelper';
 import { i18nMgr } from '../../../../../../i18n/i18nMgr';
 import RemoteSprite from './RemoteSprite';
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 
 export interface RateDetail {
-    payID: number
-    payType: number
-    rate: number
-    discount: number
+    payID: number;
+    payType: number;
+    rate: number;
+    discount: number;
 }
 
 @ccclass
+@menu('脚本分组/crazypoke/chips/usdtdiamond/USDTPaytype')
 export default class USDTPaytype extends cc.Component {
+
     public onSelectedCallback: (data: RateDetail) => void = null;
     @property(RemoteSprite)
     private icon: RemoteSprite = null;
@@ -21,26 +23,26 @@ export default class USDTPaytype extends cc.Component {
     private recomend: cc.Node = null;
     @property(cc.Label)
     private discountLabel: cc.Label = null;
-    private _rateDetail:RateDetail = null;
+    private _rateDetail: RateDetail = null;
 
-    public initData(id:number, paytype: number, rate: number, discount: number, icon: string, name: string, isrecommend: boolean) {
+    public initData(id: number, paytype: number, rate: number, discount: number, icon: string, name: string, isrecommend: boolean) {
         this._rateDetail = {
             payType: paytype,
             payID: id,
             rate: rate,
-            discount: discount,
-        }
+            discount: discount
+        };
         if (discount > 0) {
-            this.discountLabel.string= i18nMgr.Get('UIMineUSDTSheet_CanSubtractTip') + StringHelper.GetLongString(discount * 100, 1) + '%';
+            this.discountLabel.string = i18nMgr.Get('UIMineUSDTSheet_CanSubtractTip') + StringHelper.GetLongString(discount * 100, 1) + '%';
             this.discountLabel.node.parent.active = true;
-        }else{
+        } else {
             this.discountLabel.node.parent.active = false;
         }
         this.icon.url = icon;
         this.paytypeName.string = name;
         if (isrecommend) {
             this.recomend.active = true;
-        }else{
+        } else {
             this.recomend.active = false;
         }
     }
@@ -51,5 +53,4 @@ export default class USDTPaytype extends cc.Component {
             this.onSelectedCallback(this._rateDetail);
         }
     }
-    
 }

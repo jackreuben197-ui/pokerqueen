@@ -561,7 +561,7 @@ export default class TexasGame {
         this.TexasGameProtocol = new TexasGameProtocol(this);
     }
 
-    Update(dt: number) { }
+    Update(dt: number) {}
 
     // Enter (called by procedureManager.startProcedure(Texas))
     // StateMachine.Start then to launchState(EnterRoom => send enterRoom)
@@ -1715,7 +1715,7 @@ export default class TexasGame {
                     _commit: this._commitBringInCallback(),
                     _deposit: 0, // 如果在桌上不需要带入押金，这里要判断他的押金是否不足,到时候再补 deposit -user.current.deposit  @TODO
                     _diamonds: userInfo.data.user.diamonds,
-                    _isTrader: userInfo.data.user.isTrader,
+                    _isTrader: userInfo.data.user.isTrader
                 });
                 return;
             }
@@ -1960,8 +1960,9 @@ export default class TexasGame {
     public GetRemoteSeatID(localSeatID: number): number {
         return localSeatID + 1;
     }
+
     public ShowSafetyGuardBtn(): void {
-        this.uirc.btn_safety_guard.active = this.tribeId > 0
+        this.uirc.btn_safety_guard.active = this.tribeId > 0;
     }
 
     /// <summary>
@@ -3728,7 +3729,7 @@ export default class TexasGame {
 
     /////////////////////////////////////////////////
     //点击AddOn按钮响应,子类覆盖
-    public onClickAddOn() { }
+    public onClickAddOn() {}
 
     //点击开始游戏
     public onClickStartGame(): void {
@@ -3935,18 +3936,18 @@ export default class TexasGame {
                                                 menu.$node_coin.getChildByName('label').getComponent(cc.Label).string = `${res.data.apply_bring_in}`;
                                             }
                                         },
-                                        () => { }
+                                        () => {}
                                     );
                                     /////////////////////////////////////////////////////
                                 }
                             },
-                            () => { }
+                            () => {}
                         );
                         ////////////////////////////////////////////
                     }
                 }
             },
-            () => { }
+            () => {}
         );
         menu.$node_coin.getChildByName('uc').active = GameCache.Instance.gold_type == 1;
         menu.$node_coin.getChildByName('gc').active = GameCache.Instance.gold_type == 2;
@@ -4028,7 +4029,7 @@ export default class TexasGame {
     }
 
     //托管相关
-    public SendTrustAction(enable: boolean = false) { }
+    public SendTrustAction(enable: boolean = false) {}
     ///////////////////////////////////////////////////////////////////重构部分
     //多套公共牌
     public public_cards: number[][];

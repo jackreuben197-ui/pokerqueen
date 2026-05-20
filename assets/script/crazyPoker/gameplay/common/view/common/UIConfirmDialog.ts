@@ -27,7 +27,7 @@ export type UIConfirmDialogParam = {
 };
 
 @ccclass
-@menu('脚本分组/crazypoke/gameplay/common/view/common/UIConfirmDialog')
+@menu('脚本分组/crazypoke/common/UIConfirmDialog')
 export default class UIConfirmDialog extends UIBasePlus {
     cc_RichText$title: cc.RichText = null;
     cc_RichText$content: cc.RichText = null;
@@ -41,11 +41,11 @@ export default class UIConfirmDialog extends UIBasePlus {
     @property(cc.Node)
     $back: cc.Node = null;
     @property(cc.RichText)
-    okLabel:cc.RichText = null;
+    okLabel: cc.RichText = null;
     @property(cc.RichText)
-    commitLabel:cc.RichText = null;
+    commitLabel: cc.RichText = null;
     @property(cc.RichText)
-    cancelLabel:cc.RichText = null;
+    cancelLabel: cc.RichText = null;
 
     onShow(param?: any): void {
         super.onShow(param);
@@ -65,15 +65,15 @@ export default class UIConfirmDialog extends UIBasePlus {
         this.$ok.active = !!data.ok_click;
         if (data.title?.length > 0) {
             this.cc_RichText$title.node.active = true;
-            this.cc_RichText$title.string = data.title
-        }else{
+            this.cc_RichText$title.string = data.title;
+        } else {
             this.cc_RichText$title.node.active = false;
         }
         this.cc_RichText$content.string = data.content;
         if (data.ok?.length > 0) {
             this.okLabel.string = data.ok;
         }
-         if (data.commit?.length > 0) {
+        if (data.commit?.length > 0) {
             this.commitLabel.string = data.commit;
         }
         if (data.cancel?.length > 0) {

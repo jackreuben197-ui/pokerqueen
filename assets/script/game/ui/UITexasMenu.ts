@@ -345,10 +345,10 @@ export default class UITexasMenu extends UIBasePlus {
             props: {
                 ruleType: 2,
                 gameInfo: {
-                    insurance_mode: this.game.insuranceMode || 0,
-                },
-            },
-        })
+                    insurance_mode: this.game.insuranceMode || 0
+                }
+            }
+        });
         // UIComponent.open(UIDefine.UIInsurance, { type: 1, roomData: { room_id: GameCache.Instance.room_id, match_id: GameCache.Instance.match_id } });
     }
 
@@ -368,10 +368,10 @@ export default class UITexasMenu extends UIBasePlus {
                 gameInfo: {
                     game_type: GameCache.Instance.game_type || 0,
                     poker_type: GameCache.Instance.poker_type || 0,
-                    room_critical_hit: GameCache.Instance.room_critical_hit || 0,
-                },
-            },
-        })
+                    room_critical_hit: GameCache.Instance.room_critical_hit || 0
+                }
+            }
+        });
         // UIComponent.open(UIDefine.UITexasRule, null, {
         //     parentUI: this.game.uirc.Common_Con
         // });

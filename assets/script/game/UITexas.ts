@@ -272,7 +272,7 @@ export default class UITexas extends BaseScene {
         this.btn_im = this.getChildNodeOrComponent('btn_im');
         this.btn_safety_guard = this.getChildNodeOrComponent('btn_safety_guard');
         if (this.btn_safety_guard) {
-            this.btn_safety_guard.active = false
+            this.btn_safety_guard.active = false;
         }
         this.table_add_chip = this.getChildNodeOrComponent('table_add_chip');
         // main_menu 按钮（main_menu 在 side_btns 下，load_all_object 已递归索引）
@@ -566,9 +566,7 @@ export default class UITexas extends BaseScene {
         const userRid = GameCache.Instance.nUserId;
         const name = GameCache.Instance.nick || '';
         const avatar = GameCache.Instance.headPic || '';
-        const isNew = UITexasReportComponent.applySitDown(
-            userRid, response.totalBringin || 0, response.deposit || 0, name, avatar
-        );
+        const isNew = UITexasReportComponent.applySitDown(userRid, response.totalBringin || 0, response.deposit || 0, name, avatar);
         if (isNew) this.post(GGEvent.SituationRefresh);
     }
 
@@ -576,8 +574,11 @@ export default class UITexas extends BaseScene {
     private onSeatedOthersUpdate(response: any): void {
         if (!response) return;
         const isNew = UITexasReportComponent.applySitDown(
-            response.userRid, response.totalBringin || 0, response.deposit || 0,
-            response.name || '', response.avatar || ''
+            response.userRid,
+            response.totalBringin || 0,
+            response.deposit || 0,
+            response.name || '',
+            response.avatar || ''
         );
         if (isNew) this.post(GGEvent.SituationRefresh);
     }
@@ -586,14 +587,11 @@ export default class UITexas extends BaseScene {
     private onChipsChangeUpdate(response: any): void {
         if (!response) return;
         let hasNew = false;
-        for (const change of (response.changesList || [])) {
+        for (const change of response.changesList || []) {
             if (change.reason !== 0 /* Def.ChipChangeReason.CC_NONE */) continue;
             const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(change.seatId);
             if (!seat?.Player) continue;
-            const isNew = UITexasReportComponent.applyChipChange(
-                seat.Player.userID, change.chips || 0,
-                seat.Player.nick || '', seat.Player.headPic || ''
-            );
+            const isNew = UITexasReportComponent.applyChipChange(seat.Player.userID, change.chips || 0, seat.Player.nick || '', seat.Player.headPic || '');
             if (isNew) hasNew = true;
         }
         if (hasNew) this.post(GGEvent.SituationRefresh);
@@ -604,10 +602,7 @@ export default class UITexas extends BaseScene {
         if (!response) return;
         const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(response.seatId);
         if (!seat?.Player) return;
-        const isNew = UITexasReportComponent.applyStandUp(
-            seat.Player.userID, response.bringOut || 0,
-            seat.Player.nick || '', seat.Player.headPic || ''
-        );
+        const isNew = UITexasReportComponent.applyStandUp(seat.Player.userID, response.bringOut || 0, seat.Player.nick || '', seat.Player.headPic || '');
         if (isNew) this.post(GGEvent.SituationRefresh);
     }
 
@@ -1163,16 +1158,16 @@ export default class UITexas extends BaseScene {
     private click_btn_im() {
         UIComponent.open(UIDefine.UIBlank_dialog, { title: '客服界面' });
     }
+
     private click_btn_safety_guard() {
         console.log('============');
         console.log({ game: this.game });
-
         H5MsgMgr.sendToH5('showPanel', 1, {
             panelType: 'safetyGuard',
             props: {
                 tribeId: this.game.tribeId
-            },
-        })
+            }
+        });
     }
 
     private click_table_add_chip() {

@@ -11,14 +11,15 @@ import SliderPlus from '../../../../../common/SliderPlus';
 import UIComponent from '../../../../../ui/UIComponent';
 import { UIDefine } from '../../../../../define/UIDefine';
 import UIBase from '../../../../../ui/UIBase';
-import { WebPropGoldPriceList, WebUserTraderApplyList, WWW } from '../../../../../net/https/WebRequest';
+import { WebOrderUserUsdtRecharge, WebPropGoldPriceList, WebUserTraderApply, WebUserTraderApplyList, WWW } from '../../../../../net/https/WebRequest';
 import { HttpUSDTPriceListProtocol } from '../../../../module/message/CPHotfixWebMessage/usdt/HttpUSDTPriceListProtocol';
 import USDTDiamond from './usdtdiamond/USDTDiamond';
 import USDTPaytype, { RateDetail } from './usdtdiamond/USDTPaytype';
 import { HttpUSDTRechargeProtocol } from '../../../../module/message/CPHotfixWebMessage/usdt/HttpUSDTRechargeProtocol';
-import { UIDialogMgr } from '../../../../../ui/UIMgr';
-import UIConfirmDialog, { UIConfirmDialogParam } from '../common/UIConfirmDialog';
+import { UIConfirmDialogParam } from '../common/UIConfirmDialog';
 import { HttpUSDTApplyListProtocol } from '../../../../module/message/CPHotfixWebMessage/usdt/HttpUSDTApplyListProtocol';
+import { UIRechargeDiamondParam } from './UIRechargeDiamond';
+import { HttpUSDTApplyProtocol } from '../../../../module/message/CPHotfixWebMessage/usdt/HttpUSDTApplyProtocol';
 const { ccclass, menu, property } = cc._decorator;
 
 /** 标题枚举 */
@@ -98,7 +99,7 @@ const LN = '[UIGameplayAddChipsAndDiamondComponent]';
  * 核心玩法：带入筹码界面
  */
 @ccclass
-@menu('脚本分组/crazypoke/gameplay/common/view/UIGameplayAddChipsAndDiamondComponent')
+@menu('脚本分组/crazypoke/chips/UIGameplayAddChipsAndDiamondComponent')
 export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     // 组件引用
     @property(SliderPlus)
@@ -240,20 +241,20 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     @property(cc.Node)
     private diamondBoard: cc.Node = null;
     @property(cc.Label)
-    private exchangeRateText:cc.Label = null;
+    private exchangeRateText: cc.Label = null;
     @property(cc.Prefab)
     private payttypeItem: cc.Prefab = null;
     @property(cc.Node)
     private paytypes: cc.Node = null;
     @property(cc.Label)
     private payNowText: cc.Label = null;
-    @property(cc.Button) 
+    @property(cc.Button)
     private payNowBtn: cc.Button = null;
     private _isApplyingTrader: boolean = false;
     private _toApplyTrader: boolean = false;
     private _rechargeData: HttpUSDTRechargeProtocol.RequestData = null;
     private _payType: number = 0; //1 //2
-
+    private _exchangeRate: number = 0;
     /** 横屏下的滚动 */
     public landSpaceScroll: cc.ScrollView = null;
     // ========== end 钻石相关 ==========
@@ -345,7 +346,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         }
         this.payNowBtn.node.on('click', () => {
             this.onPayNowOrApplyTraderClicked(this._toApplyTrader, this._payType, this._rechargeData);
-        })
+        });
     }
 
     onShow(obj?: any): void {
@@ -556,34 +557,81 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         }
     }
 
-    private onPayNowOrApplyTraderClicked(apply: boolean, payType: number, data: HttpUSDTRechargeProtocol.RequestData) {
+    // onPayNowOrApplyTraderClicked 点击立即支付或者申请批发商
+    private async onPayNowOrApplyTraderClicked(apply: boolean, payType: number, data: HttpUSDTRechargeProtocol.RequestData) {
         //console.log(LN, apply, payType, data);
         if (apply) {
             UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
-                content: "1、钻石批发商申请费为<color=#05E7AE>1000</color>钻石，审核被拒后退还；\n2、申请通过后，需在60天内购买批发商专属钻石，否则资格将失效；\n3、批发商资格失效或者审批被拒需重新付费<color=#05E7AE>1000</color>钻石申请；\n4、申请后，我们将通过系统消息联系您，请留意消息",
-                ok: "支付1000钻石",
+                content:
+                    '1、钻石批发商申请费为<color=#05E7AE>1000</color>钻石，审核被拒后退还；\n2、申请通过后，需在60天内购买批发商专属钻石，否则资格将失效；\n3、批发商资格失效或者审批被拒需重新付费<color=#05E7AE>1000</color>钻石申请；\n4、申请后，我们将通过系统消息联系您，请留意消息',
+                ok: '支付1000钻石',
                 ok_click: () => {
-                    console.log(LN, 'apply');
-                    this._isApplyingTrader = true;
+                    this._applyForTrader();
                 }
-            })
+            });
             return;
         }
-        UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
-            content: "测试",
-            ok: "支付...",
-            ok_click: () => {
-                console.log(LN, 'apply');
+        try {
+            const resp = await WWW.Instance.CommonAPI<HttpUSDTRechargeProtocol.ResponseData>({
+                web_class: WebOrderUserUsdtRecharge,
+                body: data
+            });
+            if (resp.code != 0) {
+                console.error(LN, 'recharge request error', resp.code);
+                return;
             }
-        })
-        
+            const rechargeDiamondParam: UIRechargeDiamondParam = {
+                exchangeRate: this._exchangeRate,
+                amount: data.pay_price,
+                qrcode: resp.data.usdt_address.qr_code,
+                address: resp.data.usdt_address.address,
+                addressType: resp.data.usdt_address.address_type,
+                onConfirm: () => {}
+            };
+            // 正常渠道支付
+            if (payType == 1) {
+                UIComponent.open<UIRechargeDiamondParam>(UIDefine.UIRechargeDiamond, rechargeDiamondParam);
+                return;
+            }
+            if (payType == 2) {
+                UIComponent.Instance.Toast(i18nMgr.Get('UIMine_Setting108'));
+                return;
+            }
+        } catch (e) {
+            console.error(LN, 'recharge request exception', e);
+            return;
+        }
     }
 
+    // _applyForTrader 申请批发商
+    private async _applyForTrader() {
+        try {
+            const resp = await WWW.Instance.CommonAPI<HttpUSDTApplyProtocol.ResponseData>({
+                web_class: WebUserTraderApply
+            });
+            if (resp.code != 0) {
+                console.error(LN, 'apply trader error', resp.code);
+                return;
+            }
+            const btn = this.payNowBtn;
+            this._isApplyingTrader = true;
+            btn.node.color = cc.Color.fromHEX(new cc.Color(), '#777777');
+            this._rechargeData = null;
+            this.payNowText.string = i18nMgr.Get('roomError171_5');
+            btn.interactable = false;
+            return;
+        } catch (e) {
+            console.error(LN, 'apply trader exception', e);
+            return;
+        }
+    }
+
+    // _callbackForChooseOne 选择购买项后的回调
     private _callbackForChooseOne(payData: HttpUSDTRechargeProtocol.RequestData, isSp: boolean, payType: number) {
         const btn = this.payNowBtn;
         // 批发商的，但是你在申请中
         if (isSp && this._isApplyingTrader) {
-            btn.node.color = cc.Color.fromHEX(new cc.Color, '#777777');
+            btn.node.color = cc.Color.fromHEX(new cc.Color(), '#777777');
             this._rechargeData = null;
             this.payNowText.string = i18nMgr.Get('roomError171_5');
             btn.interactable = false;
@@ -591,7 +639,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         }
         // 批发商选项，且你不是批发商
         btn.interactable = true;
-        btn.node.color = cc.Color.fromHEX(new cc.Color, '#FFFFFF');
+        btn.node.color = cc.Color.fromHEX(new cc.Color(), '#FFFFFF');
         if (isSp && !this.addChipsData._isTrader) {
             this._toApplyTrader = true;
             this.payNowText.string = i18nMgr.Get('OpCodeString_TRADERAPPLYFEE');
@@ -602,43 +650,45 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         this.payNowText.string = StringHelper.FormatString(i18nMgr.Get('Wallet_PayNow'), StringHelper.GetLongString(payData.pay_price, 1, 4));
     }
 
-    /**
-     * 初始化钻石相关
-     */
+    // initDiamond 初始化钻石购买界面
     private async initDiamond(): Promise<void> {
         // this.diamondRC = this.diamondArea?.getComponent(cc.Component) || null;
         this.changeTitleType(E_TitleType.Chips);
         this.diamondAmountLabel.string = i18nMgr.Get('UISend_diamondsNum') + ':';
         this.diamondAmount.string = StringHelper.GetLongStringLocale(this.addChipsData._diamonds);
         let promises = [];
-        promises.push(WWW.Instance.CommonAPI<HttpUSDTPriceListProtocol.ResponseData>({
-            web_class: WebPropGoldPriceList,
-            body: {
-                source_type: 2, // 玩家
-                gold_types: [4],
-                pay_gold_types: [],
-                trader_type: 0,
-                limit: 100,
-                offset: 0
-            }
-        }));
-        if (!this.addChipsData._isTrader) {
-            promises.push(WWW.Instance.CommonAPI<HttpUSDTApplyListProtocol.ResponseData>({
-                web_class: WebUserTraderApplyList,
+        promises.push(
+            WWW.Instance.CommonAPI<HttpUSDTPriceListProtocol.ResponseData>({
+                web_class: WebPropGoldPriceList,
                 body: {
-                    status: 1,
+                    source_type: 2, // 玩家
+                    gold_types: [4],
+                    pay_gold_types: [],
+                    trader_type: 0,
+                    limit: 100,
+                    offset: 0
                 }
-            }))
+            })
+        );
+        if (!this.addChipsData._isTrader) {
+            promises.push(
+                WWW.Instance.CommonAPI<HttpUSDTApplyListProtocol.ResponseData>({
+                    web_class: WebUserTraderApplyList,
+                    body: {
+                        status: 1
+                    }
+                })
+            );
         }
         const results = await Promise.all(promises);
         // 判断是否再申请批发商中
         if (results.length > 1) {
             const applyResp = results[1] as HttpUSDTApplyListProtocol.ResponseData;
-            if (applyResp.code != 0){
+            if (applyResp.code != 0) {
                 console.error(LN, 'get trade apply list error', applyResp.code);
                 return;
             }
-            this._isApplyingTrader = applyResp.data.list.length > 0
+            this._isApplyingTrader = applyResp.data.list.length > 0;
         }
         // 获取购买项和渠道全信息
         const resp = results[0] as HttpUSDTPriceListProtocol.ResponseData;
@@ -654,9 +704,9 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
             node.parent = this.diamondBoard;
             const nsdtDiamond = node.getComponent(USDTDiamond);
             nsdtDiamond.initData(item.id, item.gold_count, item.give_gold_count, item.trader_type == 2);
-            nsdtDiamond.onChooseOneCallback = (p,t,y) => {
-                this._callbackForChooseOne(p,t,y);
-            }
+            nsdtDiamond.onChooseOneCallback = (p, t, y) => {
+                this._callbackForChooseOne(p, t, y);
+            };
         }
         this.paytypes.removeAllChildren();
         // 初始化所有渠道，并触发第一个选中
@@ -666,12 +716,17 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
             node.parent = this.paytypes;
             const paytype = node.getComponent(USDTPaytype);
             paytype.initData(pt.id, pt.type, pt.rate, pt.discount, pt.image, pt.name, i == 0);
-            paytype.onSelectedCallback = (data:RateDetail) => {
+            paytype.onSelectedCallback = (data: RateDetail) => {
                 this.diamondBoard.children.forEach((nd: cc.Node) => {
                     nd.getComponent(USDTDiamond).updateCost(data.payID, data.payType, data.rate, data.discount);
-                })
-                this.exchangeRateText.string = StringHelper.FormatString(i18nMgr.Get('UIBuyDiamondExchangeRate'), StringHelper.GetLongString(Math.max(1, 1/ data.rate), 1, 0));
-            }
+                });
+                this._exchangeRate = Math.max(1, Math.round(1 / data.rate));
+                this.exchangeRateText.string = StringHelper.FormatString(
+                    i18nMgr.Get('UIBuyDiamondExchangeRate'),
+                    StringHelper.GetLongString(this._exchangeRate, 1, 0)
+                );
+            };
+            // 以下是处理默认选中状态时候的处理，因为限制导致默认情况无法触发callback，所以只能在这里处理一次
             let toggle = node.getComponent(cc.Toggle);
             if (toggle) {
                 if (i == 0) {
@@ -683,13 +738,17 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
                         if (toggleChoice) {
                             if (index == 0) {
                                 toggle.isChecked = true;
-                                this._callbackForChooseOne(payData,  usdtdiamond.isSp, usdtdiamond.payType)
-                            }else{
-                                toggle.isChecked =false;
+                                this._callbackForChooseOne(payData, usdtdiamond.isSp, usdtdiamond.payType);
+                            } else {
+                                toggle.isChecked = false;
                             }
                         }
-                    })
-                    this.exchangeRateText.string = StringHelper.FormatString(i18nMgr.Get('UIBuyDiamondExchangeRate'), StringHelper.GetLongString(Math.max(1, 1/ pt.rate), 1, 0));
+                    });
+                    this._exchangeRate = Math.max(1, Math.round(1 / pt.rate));
+                    this.exchangeRateText.string = StringHelper.FormatString(
+                        i18nMgr.Get('UIBuyDiamondExchangeRate'),
+                        StringHelper.GetLongString(this._exchangeRate, 1, 0)
+                    );
                     continue;
                 }
                 toggle.isChecked = false;
