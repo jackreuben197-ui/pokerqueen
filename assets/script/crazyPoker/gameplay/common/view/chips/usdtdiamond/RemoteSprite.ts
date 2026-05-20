@@ -11,6 +11,9 @@ export default class RemoteSprite extends cc.Component {
         tooltip: '给它赋值后会自动触发下载并显示'
     })
 
+    @property(cc.Material)
+    public customMaterial: cc.Material = null;
+
     get url(): string {
         return this._url;
     }
@@ -47,6 +50,7 @@ export default class RemoteSprite extends cc.Component {
         }
         let loadingUrl = this._url;
         cc.assetManager.loadRemote(this._url, { ext: '.png' }, (err, texture: cc.Texture2D) => {
+            texture.packable = false;
             // 【第一道防线】：检查当前组件实例或节点是否已经被引擎销毁
             // cc.isValid(this) 会检查当前脚本组件是否还活着
             // cc.isValid(this.node) 会检查节点是否还挂在场景里
@@ -72,6 +76,9 @@ export default class RemoteSprite extends cc.Component {
             // this.releaseOldTexture();
             let sf = new cc.SpriteFrame(texture);
             this._sprite.spriteFrame = sf;
+            if (this.customMaterial) {
+                this._sprite.setMaterial(0, this.customMaterial);
+            }
         });
     }
 

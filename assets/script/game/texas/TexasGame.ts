@@ -79,6 +79,7 @@ import AgoraManager from '../../net/agora/AgoraManager';
 import ToastManager from '../../manager/ToastManager';
 import { HttpRoomBringInByIDProtocol } from '../../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringInByIDProtocol';
 import { HttpUserInfoProtocol } from '../../crazyPoker/module/message/CPHotfixWebMessage/user/HttpUserInfoProtocol';
+import GameplayUtil from '../../crazyPoker/gameplay/common/util/GameplayUtil';
 
 //const PBTypes = Def.Types;
 class SeatMoveStruct {
@@ -1698,8 +1699,8 @@ export default class TexasGame {
             if (userInfo.data.user.forbid == 0) {
                 UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
                     title: '',
-                    content: i18nMgr.Get('UIForbidBringInTips')
-                    //contentCommit: CPErrorCode.LanguageDescription(10012)
+                    content: i18nMgr.Get('UIForbidBringInTips'),
+                    ok: i18nMgr.Get('UIClub_CreateRoom7'),
                 });
                 return;
             }
@@ -1721,13 +1722,29 @@ export default class TexasGame {
                     _commit: this._commitBringInCallback(),
                     _deposit: 0, // 如果在桌上不需要带入押金，这里要判断他的押金是否不足,到时候再补 deposit -user.current.deposit  @TODO
                     _diamonds: userInfo.data.user.diamonds,
-                    _isTrader: userInfo.data.user.isTrader
+                    _isTrader: GameplayUtil.IsTrader(userInfo.data.user),
+                    _type: 1,
                 });
                 return;
             }
             // 记分牌 @TODO
             if (GameCache.Instance.gold_type == 3) {
-                console.error(LN, 'not implement 记分牌带入');
+                const addChipType = GameCache.Instance.origin_type == 3 ? 3 : 2;
+                UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, {
+                    _bigBlind: GameCache.Instance._texasData._bigBlind,
+                    _smallBlind: GameCache.Instance._texasData._smallBlind,
+                    _currentMinRate: GameCache.Instance._texasData._curMinRate,
+                    _currentMaxRate: GameCache.Instance._texasData._curMaxRate,
+                    _tableChips: this.mainPlayer.chips,
+                    _wallets: [],
+                    _source: BringInChipsType.SUPPLEMENT,
+                    _creditNum: 0,
+                    _commit: this._commitBringInCallback(),
+                    _deposit: 0, // 如果在桌上不需要带入押金，这里要判断他的押金是否不足,到时候再补 deposit -user.current.deposit  @TODO
+                    _diamonds: userInfo.data.user.diamonds,
+                    _isTrader: GameplayUtil.IsTrader(userInfo.data.user),
+                    _type: addChipType,
+                });
             }
         } catch (e) {
             console.error(LN, 'StartAddChips', e);
@@ -1840,10 +1857,12 @@ export default class TexasGame {
                 _deposit: GameCache.Instance._texasData._deposit,
                 _commit: this._commitBringInCallback(seatedData),
                 _diamonds: userInfo.data.user.diamonds,
-                _isTrader: userInfo.data.user.isTrader
+                _isTrader: GameplayUtil.IsTrader(userInfo.data.user),
+                _type: 0,
             };
             // 联盟币
             if (GameCache.Instance.gold_type == 1) {
+                addChipData._type = 1;
                 // 有带出
                 if (response.data.last_bring_out != null) {
                     let returnAmount = response.data.last_bring_out.to_wallet + response.data.last_bring_out.fee;
@@ -1899,6 +1918,30 @@ export default class TexasGame {
             // 记分牌(朋友卓)
             if (GameCache.Instance.gold_type == 3) {
                 //@TODO 朋友卓
+                addChipData._type = GameCache.Instance.origin_type == 3 ? 3 : 2;
+                // 有带出
+                if (response.data.last_bring_out != null) {
+                    let returnAmount = response.data.last_bring_out.to_wallet + response.data.last_bring_out.fee;
+                    // 要带回桌子上金额
+                    const bringToTable = response.data.last_bring_out.to_wallet + response.data.last_bring_out.fee - GameCache.Instance._texasData._deposit;
+                    seatedData.bringIn = returnAmount;
+                    seatedData.clubId = response.data.last_bring_out.club_id;
+                    // 钱包够,没输光(反桌)
+                    if (bringToTable > 0) {
+                        ProtocolAgency.Send<ClientMessageSeated.AsObject>({
+                            Code: ProtocolCode.Protocol_Holdem_Seated,
+                            RoomID: GameCache.Instance.room_id,
+                            MatchID: GameCache.Instance.match_id,
+                            Body: seatedData
+                        });
+                        return;
+                    }
+                    // 其他都需要弹窗口输入
+                    UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
+                    return;
+                }
+                // 不提示安全提示直接带入
+                UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
             }
         } catch (e) {
             console.error(LN, 'sit down', e);

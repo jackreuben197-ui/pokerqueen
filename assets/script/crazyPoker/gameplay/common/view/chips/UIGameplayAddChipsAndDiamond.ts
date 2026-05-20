@@ -20,6 +20,7 @@ import { UIConfirmDialogParam } from '../common/UIConfirmDialog';
 import { HttpUSDTApplyListProtocol } from '../../../../module/message/CPHotfixWebMessage/usdt/HttpUSDTApplyListProtocol';
 import { UIRechargeDiamondParam } from './UIRechargeDiamond';
 import { HttpUSDTApplyProtocol } from '../../../../module/message/CPHotfixWebMessage/usdt/HttpUSDTApplyProtocol';
+import RemoteSprite from './usdtdiamond/RemoteSprite';
 const { ccclass, menu, property } = cc._decorator;
 
 /** 标题枚举 */
@@ -55,15 +56,17 @@ export interface IWallet {
     deposit_advance: number;
     /** 联盟随机 ID */
     tribe_random_id: number;
+    /** 用户状态 */
     user_status: number;
+    /** 用户类型 */
     user_type: number;
+    /** 钱包状态 */
     wallet_status: number;
+    /** 钱包联盟状态 */
     wallet_tribe_status: number;
 }
 
-/**
- * 带入筹码数据
- */
+// 带入筹码数据
 export class AddChipsData {
     /** 大盲 */
     public _bigBlind: number = 0;
@@ -77,6 +80,8 @@ export class AddChipsData {
     public _tableChips: number = 0;
     /** 藏钱记分牌 */
     public _storeChips?: number = 0;
+    /** 类型 1：货币 2：钻石 3:信用额度*/
+    public _type: number = 0;
     /** 钱包列表 */
     public _wallets: IWallet[] = null;
     /** 0带入申请 1补充筹码 2菜单自动充值 3蘑菇 */
@@ -107,44 +112,45 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     @property(cc.Node)
     private sliderArea: cc.Node = null;
     @property(cc.Node)
+    private walletArea: cc.Node = null;
+    @property(cc.Node)
     private buttonCommit: cc.Node = null;
+    @property(cc.Node)
+    private buttonCommitSrc: cc.Node = null;
+    @property(cc.Node)
+    private buttonCommit2: cc.Node = null;
+    @property(cc.Node)
+    private buttonCommit2Src: cc.Node = null;
     @property(cc.Node)
     private buttonClose: cc.Node = null;
     @property(cc.Node)
     private buttonMask: cc.Node = null;
     @property(cc.Node)
     private triangleNode: cc.Node = null;
-    /**
-     * 盲注
-     */
     @property(cc.Label)
     private textBlind: cc.Label = null;
-    /**
-     * 盲注标题
-     */
     @property(cc.Label)
     private textBlindLabel: cc.Label = null;
-    /**
-     * 带入筹码
-     */
     @property(cc.Label)
     private textCoin: cc.Label = null;
-    /**
-     * 授信额度
-     */
+    @property(cc.Node)
+    private balanceNode: cc.Node = null;
     @property(cc.Label)
     private textTotalCoin: cc.Label = null;
-    /**
-     * 授信额度
-     */
     @property(cc.Label)
     private textTotalCoinTitle: cc.Label = null;
-    /**
-     * 滑动条上的需要的筹码
-     */
+    @property(cc.Node)
+    private creditNode: cc.Node = null;
     @property(cc.Label)
-    // private textNeedCoin: cc.Label = null;
-    private textWallet: cc.Label = null;
+    private textTotalCredit: cc.Label = null;
+    @property(cc.Label)
+    private textTotalCreditTitle: cc.Label = null;
+    @property(cc.Node)
+    private diamondNode: cc.Node = null;
+    @property(cc.Label)
+    private textTotalDiamond: cc.Label = null;
+    @property(cc.Label)
+    private textTotalDiamondTitle: cc.Label = null;
     /**
      * 金币图标
      */
@@ -185,6 +191,28 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     public coinTipText: cc.Label = null;
     @property(cc.Label)
     public coinTipTextBottom: cc.Label = null;
+     /**
+     * 俱乐部预制体
+     */
+    @property(cc.Prefab)
+    private clueItemPrefab: cc.Prefab = null;
+    /**
+     * 俱乐部列表
+     */
+    @property(cc.ScrollView)
+    private walletScrollView: cc.ScrollView = null;
+    /**
+     * 未选择俱乐部列表
+     */
+    @property(cc.Node)
+    private emptySelectWallet: cc.Node = null;
+    /**
+     * 选择钱包按钮
+     */
+    @property(cc.Node)
+    private buttonSelectWallet: cc.Node = null;
+    @property(cc.Node)
+    private arrowDown: cc.Node = null;
     /**
      * 带入筹码描述按钮
      */
@@ -195,21 +223,6 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
      */
     @property(cc.Node)
     public bringTips: cc.Node = null;
-    // 状态变量
-    private addChipsData: AddChipsData = null;
-    private mySelectWallet: IWallet = null;
-    private currentSelect: number = 0;
-    private walletToggles: cc.Toggle[] = [];
-    private magnification: number = 1;
-    private isFirstClick: boolean = false;
-    /** 带入分段 */
-    public sliderSpace: number = 50;
-    /** 带入筹码显示 包含押金 */
-    private bringInAmount: number = 0;
-    /** 带入筹码 不包含押金 */
-    private anteNum: number = 0;
-    /** 记录费配置 */
-    private config: any = null;
     // ========== 钻石相关 ==========
     /** 显示钻石区域 */
     @property(cc.Node)
@@ -270,29 +283,20 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     private creditSpr: cc.SpriteFrame = null;
     private autoMax: string = null;
     private autoMin: string = null;
-    private quickLoginInfo: any = null;
-    /**
-     * 俱乐部预制体
-     */
-    @property(cc.Node)
-    private clueItemPrefab: cc.Node = null;
-    /**
-     * 俱乐部列表
-     */
-    @property(cc.ScrollView)
-    private walletScrollView: cc.ScrollView = null;
-    /**
-     * 未选择俱乐部列表
-     */
-    @property(cc.Node)
-    private emptySelectWallet: cc.Node = null;
-    /**
-     * 选择钱包按钮
-     */
-    @property(cc.Node)
-    private buttonSelectWallet: cc.Node = null;
-    @property(cc.Node)
-    private arrowDown: cc.Node = null;
+    // 状态变量
+    private addChipsData: AddChipsData = null;
+    private mySelectWallet: IWallet = null;
+    private currentSelect: number = 0;
+    private walletToggles: cc.Toggle[] = [];
+    private magnification: number = 1;
+    private isFirstClick: boolean = false;
+    /** 带入分段 */
+    public sliderSpace: number = 50;
+    /** 带入筹码显示 包含押金 */
+    private bringInAmount: number = 0;
+    /** 带入筹码 不包含押金 */
+    private anteNum: number = 0;
+   
     // 颜色常量
     private static readonly COLOR_GRAY = new cc.Color(128, 128, 128);
     private static readonly COLOR_WHITE = new cc.Color(255, 255, 255);
@@ -300,7 +304,8 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-        this.setButtonClick(this.buttonCommit, this.onClickCommit);
+        this.setButtonClick(this.buttonCommitSrc, this.onClickCommit);
+        this.setButtonClick(this.buttonCommit2Src, this.onClickCommit);
         this.setButtonClick(this.buttonClose, this.onClickClose);
         this.setButtonClick(this.buttonMask, this.onClickClose);
         let maskNode = this.getChildNodeOrComponent<cc.Node>('Mask');
@@ -327,10 +332,10 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         });
         // 滑块事件
         if (this.autoSliderMin) {
-            this.autoSliderMin.node.on('slide', this.onValueAutoMinSlider, this);
+            this.autoSliderMin.node.on('slide', this._onValueAutoMinSlider, this);
         }
         if (this.autoSliderMax) {
-            this.autoSliderMax.node.on('slide', this.onValueAutoMaxSlider, this);
+            this.autoSliderMax.node.on('slide', this._onValueAutoMaxSlider, this);
         }
         // 自动充值开关
         if (this.autoToggle) {
@@ -362,57 +367,112 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
             this.sliderSpace = 50; // TODO: CreateRoomConstant.TEXAS_MIN_BRING_RATE
             this.rate = 50;
         }
-        if (obj) {
-            this.addChipsData = obj as AddChipsData;
-            this.isFirstClick = true;
-            this.currentSelect = -1;
-            this.walletToggles = [];
-            // 根据来源设置标题
-            switch (this.addChipsData._source) {
-                case BringInChipsType.BRING_IN:
-                    if (this.textTitle) this.textTitle.string = i18nMgr.Get('UIClub_RoomSitApplyRecords_title');
-                    this.magnification = 1.0;
-                    break;
-                case BringInChipsType.SUPPLEMENT:
-                    if (this.textTitle) this.textTitle.string = i18nMgr.Get('UITexas_AddChipsMenu');
-                    this.magnification = 1.0;
-                    break;
-                case BringInChipsType.AUTO_RECHARGE:
-                    if (this.textTitle) this.textTitle.string = i18nMgr.Get('UICreate_AutoRechage');
-                    this.magnification = 1.0;
-                    break;
-                case BringInChipsType.MUSHROOM:
-                    if (this.textTitle) this.textTitle.string = i18nMgr.Get('UITexas_AddChipsMenu');
-                    this.magnification = 1.0;
-                    break;
-                case BringInChipsType.SQUID:
-                    if (this.textTitle) this.textTitle.string = i18nMgr.Get('UITexas_AddChipsMenu');
-                    this.magnification = 1.0;
-                    break;
-                case BringInChipsType.MATCH:
-                    if (this.textTitle) this.textTitle.string = i18nMgr.Get('UIClub_RoomSitApplyRecords_title');
-                    this.magnification = 1.0;
-                    break;
-                default:
-                    if (this.textTitle) this.textTitle.string = i18nMgr.Get('UIClub_RoomSitApplyRecords_title');
-                    break;
-            }
-            this.clueItemPrefab.active = false;
-            this.walletScrollView.node.active = false;
-            this.arrowDown.angle = -0;
-            this.initDiamond();
-            this.setupSlider();
-            this.sliderArea.active = false;
-            // 钱包列表
-            this.setupWalletList();
+        this.addChipsData = obj as AddChipsData;
+        this._updateDisplay();
+    }
+
+    private _updateDisplay() {
+        console.log(LN, '_updateDisplay', this.addChipsData);
+        // 默认带入页面
+        this._changeTitleType(E_TitleType.Chips);
+        // 初始化钻石购买页
+        this.initDiamond();
+        // 根据来源设置标题
+        switch (this.addChipsData._source) {
+        case BringInChipsType.BRING_IN:
+            if (this.textTitle) this.textTitle.string = i18nMgr.Get('UIClub_RoomSitApplyRecords_title');
+            this.magnification = 1.0;
+            break;
+        case BringInChipsType.SUPPLEMENT:
+            if (this.textTitle) this.textTitle.string = i18nMgr.Get('UITexas_AddChipsMenu');
+            this.magnification = 1.0;
+            break;
+        case BringInChipsType.AUTO_RECHARGE:
+            if (this.textTitle) this.textTitle.string = i18nMgr.Get('UICreate_AutoRechage');
+            this.magnification = 1.0;
+            break;
+        case BringInChipsType.MUSHROOM:
+            if (this.textTitle) this.textTitle.string = i18nMgr.Get('UITexas_AddChipsMenu');
+            this.magnification = 1.0;
+            break;
+        case BringInChipsType.SQUID:
+            if (this.textTitle) this.textTitle.string = i18nMgr.Get('UITexas_AddChipsMenu');
+            this.magnification = 1.0;
+            break;
+        case BringInChipsType.MATCH:
+            if (this.textTitle) this.textTitle.string = i18nMgr.Get('UIClub_RoomSitApplyRecords_title');
+            this.magnification = 1.0;
+            break;
+        default:
+            if (this.textTitle) this.textTitle.string = i18nMgr.Get('UIClub_RoomSitApplyRecords_title');
+            break;
         }
+        switch(this.addChipsData._type) {
+        // 货币
+        case 1:
+            this._updateDisplayForWallet();
+            break;
+        case 2:
+            this._updateDisplayForDiamond();
+            break;
+        case 3:
+            this._updateDisplayForClubCredit();
+            break;
+        }
+    }
+
+    private _updateDisplayForWallet() {
+        this.buttonCommit.active = false;
+        this.buttonCommit2.active = false;
+        // 货币显示
+        this.balanceNode.active = true;
+        this.creditNode.active = false;
+        this.diamondNode.active = false;
+        this.textTotalCoin.string = '0';
+        this.textTotalCoinTitle.string = i18nMgr.Get('UIClub_CreateRoom31');
+        // 设置滑块
+        this.setupSlider(false);
+        // 钱包列表
+        this.walletArea.active = true;
+        this._setupWalletList();
+    }
+
+    private _updateDisplayForDiamond() {
+        // 货币显示
+        this.balanceNode.active = false;
+        this.creditNode.active = false;
+        this.diamondNode.active = true;
+        this.textTotalDiamond.string = StringHelper.GetLongStringLocale(this.addChipsData._diamonds, 1, 0);
+        this.textTotalDiamondTitle.string = i18nMgr.Get('UIClub_CreateRoom31');
+        // 设置滑块
+        this.setupSlider(true);
+        //提交按钮
+        this.buttonCommit2.active = true;
+        // 不处理钱包
+        this.walletArea.active = false;
+    }
+
+    private _updateDisplayForClubCredit() {
+        // 货币显示
+        this.balanceNode.active = false;
+        this.creditNode.active = true;
+        this.diamondNode.active = false;
+        this.textTotalCredit.string = StringHelper.GetLongStringLocale(this.addChipsData._creditNum, 1, 0);
+        this.textTotalCreditTitle.string = i18nMgr.Get('UIClubCreditLimit2');
+        // 设置滑块
+        this.setupSlider(true);
+        //提交按钮
+        this.buttonCommit2.active = true;
+        // 不处理钱包
+        this.walletArea.active = false;
     }
 
     /**
      * 设置滑块
      */
-    private setupSlider(): void {
+    private setupSlider(display: boolean): void {
         console.log(LN, 'setupSlider', this.addChipsData);
+        this.sliderArea.active = display;
         if (this.addChipsData == null) return;
         // 隐藏押金区域
         // if (this.depositObj) this.depositObj.active = false;
@@ -438,7 +498,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
             this.textBlindLabel.string = i18nMgr.Get('UITexas_smallBigBlind');
             this.textBlind.string = `${StringHelper.GetLongString(this.addChipsData._smallBlind)}/${StringHelper.GetLongString(this.addChipsData._bigBlind)}`;
         }
-        this.setCoinTipText();
+        this._setCoinTipText();
         // 计算最大带入
         let currentMaxBring = 0;
         // 自由带入特殊处理
@@ -470,16 +530,6 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
             maxRate = Math.floor(currentMaxBring / 100);
             this.realMaxBring = currentMaxBring / 100;
         }
-        // // 限制最大倍率
-        // if (!(GameCache.Instance._bringInLimitType == 1 && this.addChipsData._storeChips > this.addChipsData._currentMaxRate * this.addChipsData._bigBlind)) {
-        //     if (this.addChipsData._source != BringInChipsType.SUPPLEMENT) {
-        //         if (maxRate > this.addChipsData._currentMaxRate) {
-        //             maxRate = this.addChipsData._currentMaxRate;
-        //         }
-        //     }
-        // }
-        //常显
-        // if (sliderParent) sliderParent.active = this.addChipsData._currentMaxRate != this.addChipsData._currentMinRate;
         // 根据来源设置滑块
         if (
             this.addChipsData._source == BringInChipsType.BRING_IN ||
@@ -494,11 +544,11 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
                 this.checkIsSixPlus(GameCache.Instance.game_type, GameCache.Instance.poker_type) &&
                 this.addChipsData._currentMinRate == this.addChipsData._currentMaxRate
             ) {
-                this.initAutoSliders(maxRate, this.addChipsData._currentMinRate);
+                this._initAutoSliders(maxRate, this.addChipsData._currentMinRate);
             } else if (this.checkIsBombPot()) {
-                this.initAutoSliders(maxRate, this.addChipsData._currentMinRate);
+                this._initAutoSliders(maxRate, this.addChipsData._currentMinRate);
             } else {
-                this.initAutoSliders(maxRate, this.addChipsData._currentMinRate);
+                this._initAutoSliders(maxRate, this.addChipsData._currentMinRate);
             }
             // 显示自动充值区域
             if (GameCache.Instance._originType == RoomOriginType.CLUB) {
@@ -513,8 +563,8 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
                 this.setBringInForSlider(maxRate);
             } else if (GameCache.Instance.game_type == GameType.EGG) {
                 if (this.sliderCoin) {
-                    this.setSliderRange(this.sliderCoin, 1, maxRate / 100, 1);
-                    this.onValueChangedSliderCoin(1);
+                    this._setSliderRange(this.sliderCoin, 1, maxRate / 100, 1);
+                    this._onValueChangedSliderCoin(1);
                 }
             } else {
                 if (this.sliderCoin) {
@@ -524,8 +574,8 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
                     } else {
                         maxVal = maxRate / ((this.sliderSpace * this.addChipsData._bigBlind) / 100);
                     }
-                    this.setSliderRange(this.sliderCoin, 1, maxVal, 1);
-                    this.onValueChangedSliderCoin(1);
+                    this._setSliderRange(this.sliderCoin, 1, maxVal, 1);
+                    this._onValueChangedSliderCoin(1);
                 }
             }
         } else if (this.addChipsData._source == BringInChipsType.AUTO_RECHARGE) {
@@ -543,17 +593,33 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         //     if (this.autoObj) this.autoObj.active = false;
         //     if (this.autoSliderObj) this.autoSliderObj.active = false;
         // }
-        this.updateGoldSprite();
-        // 授信模式
-        if (GameCache.Instance.gold_type == 3) {
-            if (this.selectWallet) this.selectWallet.active = false;
-            if (this.buttonSelectWallet) {
-                let btn = this.buttonSelectWallet.getComponent(cc.Button);
-                if (btn) btn.interactable = false;
-            }
-            if (this.buttonSelectWallet) this.buttonSelectWallet.active = false;
-            this.getRecordFeeData(GameCache.Instance._originType);
-            return;
+        // // 授信模式
+        // if (GameCache.Instance.gold_type == 3) {
+        //     if (this.selectWallet) this.selectWallet.active = false;
+        //     if (this.buttonSelectWallet) {
+        //         let btn = this.buttonSelectWallet.getComponent(cc.Button);
+        //         if (btn) btn.interactable = false;
+        //     }
+        //     if (this.buttonSelectWallet) this.buttonSelectWallet.active = false;
+        //     this.getRecordFeeData(GameCache.Instance._originType);
+        //     return;
+        // }
+    }
+
+    // 设置带入筹码Text
+    private _setCoinTipText(): void {
+        if (this.coinTipText) {
+            this.coinTipText.string =
+                this.addChipsData._deposit > 0 ? `${i18nMgr.Get('UITexas_AddChips')}+${i18nMgr.Get('UIFantasy_dairuyajin')}` : i18nMgr.Get('UITexas_AddChips');
+            this.coinTipTextBottom.string = i18nMgr.Get('UITexas_AddChips');
+        }
+        if (this.bringBtn) {
+            this.bringBtn.active = this.addChipsData._deposit > 0;
+            this.scheduleOnce(() => {
+                let worldPos = this.bringBtn.parent.convertToWorldSpaceAR(this.bringBtn.position);
+                let localPos = this.triangleNode.parent.convertToNodeSpaceAR(worldPos);
+                this.triangleNode.setPosition(localPos.x + 100, localPos.y - 53);
+            }, 0);
         }
     }
 
@@ -652,8 +718,6 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
 
     // initDiamond 初始化钻石购买界面
     private async initDiamond(): Promise<void> {
-        // this.diamondRC = this.diamondArea?.getComponent(cc.Component) || null;
-        this.changeTitleType(E_TitleType.Chips);
         this.diamondAmountLabel.string = i18nMgr.Get('UISend_diamondsNum') + ':';
         this.diamondAmount.string = StringHelper.GetLongStringLocale(this.addChipsData._diamonds);
         let promises = [];
@@ -760,22 +824,20 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
      * 点击带入
      */
     private onClickChips(obj: cc.Node): void {
-        this.changeTitleType(E_TitleType.Chips);
-        // DataStatisticsManager.Instance.Record(DataStatisticsConstant.GAME_BRING_CHIPS_BUTTON);
+        this._changeTitleType(E_TitleType.Chips);
     }
 
     /**
      * 点击钻石
      */
     private onClickDiamond(obj: cc.Node): void {
-        this.changeTitleType(E_TitleType.Diamond);
-        // DataStatisticsManager.Instance.Record(DataStatisticsConstant.GAME_BRING_DIAMOND_BUTTON);
+        this._changeTitleType(E_TitleType.Diamond);
     }
 
     /**
      * 切换标题
      */
-    private changeTitleType(titleType: E_TitleType): void {
+    private _changeTitleType(titleType: E_TitleType): void {
         if (this.diamondArea) this.diamondArea.active = titleType == E_TitleType.Diamond;
         if (this.diamondLine) this.diamondLine.active = titleType == E_TitleType.Diamond;
         if (this.addChipsArea) this.addChipsArea.active = titleType == E_TitleType.Chips;
@@ -805,16 +867,9 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     }
 
     /**
-     * 判断是否为常规德州玩法
-     */
-    private isRegularTexasGameplay(roomType: number): boolean {
-        return roomType >= 0 && roomType < 256;
-    }
-
-    /**
      * 设置滑块值 (兼容 Cocos Slider 和 SliderPlus)
      */
-    private setSliderRange(slider: SliderPlus | cc.Slider, min: number, max: number, value: number): void {
+    private _setSliderRange(slider: SliderPlus | cc.Slider, min: number, max: number, value: number): void {
         if (!slider) return;
         if (slider instanceof SliderPlus) {
             // SliderPlus 处理
@@ -823,7 +878,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
                 max_value: max,
                 step: 1,
                 change: (val: number) => {
-                    this.onValueChangedSliderCoin(val);
+                    this._onValueChangedSliderCoin(val);
                 },
                 own: this
             });
@@ -837,15 +892,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         }
     }
 
-    private onEndDrag(): void {
-        this.isFirstClick = false;
-    }
-
-    private onBeginDrag(): void {
-        // Unity 中为空实现
-    }
-
-    private onValueAutoMinSlider(arg0: number): void {
+    private _onValueAutoMinSlider(arg0: number): void {
         if (this.autoSliderMin.progress >= this.autoSliderMax.progress) {
             this.autoSliderMax.node.setSiblingIndex(999);
             if (this.autoSliderMinFillImg) this.autoSliderMinFillImg.node.color = UIGameplayAddChipsAndDiamondComponent.COLOR_WHITE;
@@ -862,10 +909,10 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         if (this.textNeedCoinAutoMin) {
             this.textNeedCoinAutoMin.string = StringHelper.GetLongString(Math.floor((arg0 * this.addChipsData._bigBlind * 10) / this.magnification));
         }
-        this.setAutoDetailText();
+        this._setAutoDetailText();
     }
 
-    private onValueAutoMaxSlider(arg0: number): void {
+    private _onValueAutoMaxSlider(arg0: number): void {
         if (this.autoSliderMin.progress >= this.autoSliderMax.progress) {
             this.autoSliderMax.node.setSiblingIndex(999);
             if (this.autoSliderMinFillImg) this.autoSliderMinFillImg.node.color = UIGameplayAddChipsAndDiamondComponent.COLOR_WHITE;
@@ -882,10 +929,10 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         if (this.textNeedCoinAutoMax) {
             this.textNeedCoinAutoMax.string = StringHelper.GetLongString(Math.floor((arg0 * this.addChipsData._bigBlind * 10) / this.magnification));
         }
-        this.setAutoDetailText();
+        this._setAutoDetailText();
     }
 
-    private setAutoDetailText(): void {
+    private _setAutoDetailText(): void {
         if (!this.textNeedCoinAutoMin || !this.textNeedCoinAutoMax) return;
         let minStr = this.textNeedCoinAutoMin.string;
         let maxStr = this.textNeedCoinAutoMax.string;
@@ -913,7 +960,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         }
     }
 
-    private onValueChangedSliderCoin(arg0: number): void {
+    private _onValueChangedSliderCoin(arg0: number): void {
         if (this.isFirstClick && this.autoSliderMax) {
             this.autoSliderMax.progress = arg0;
         }
@@ -924,18 +971,6 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         } else {
             anteNum = (arg0 * this.addChipsData._bigBlind * this.rate) / this.magnification;
         }
-        // 补充筹码特殊处理
-        // if (this.addChipsData._source == BringInChipsType.SUPPLEMENT) {
-        //     // 使用SliderPlus的max_value获取最大值
-        //     let sliderMax = this.sliderCoin?.data?.max_value || 1;
-        //     if (Math.abs(sliderMax - arg0) < 0.0001) {
-        //         if (this.realMaxBring * 100 > anteNum) {
-        //             anteNum = this.realMaxBring * 100;
-        //         }
-        //     } else if (this.realMaxBring > 0 && sliderMax == 0 && this.realMaxBring * 100 < anteNum) {
-        //         anteNum = this.realMaxBring * 100;
-        //     }
-        // }
         this.anteNum = Math.floor(anteNum * 100);
         //let totalDeposit = this.getSquidDeposit() + this.getMushroomDeposit() + this.getRandomMatchDeposit() + this.getFantasyDeposit();
         this.bringInAmount = anteNum + this.addChipsData._deposit;
@@ -1028,25 +1063,6 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         this.removeAddChipsUI();
     }
 
-    // private bringIn(anterNumber: number, isUseWallet: boolean, autoOnTable: number, autoToggleIson: boolean,
-    //     autoOnTableFix: number, maxValue: number, minValue: number, depositValue: number,
-    //     clubID: number = 0, clubRandomID: number = 0): void {
-    //     if (GameplayUtil.GetTableType() == TableType.CLUB_EXTERNAL) {
-    //         // GameCache.Instance._curGame.AddChips(anterNumber, autoOnTable, isUseWallet, clubID, clubRandomID, autoToggleIson, autoOnTableFix, depositValue);
-    //         GameCache.Instance.CurGame.AddChips(anterNumber, autoOnTable, isUseWallet, clubID, clubRandomID, {
-    //             own: this,
-    //             wallets: this.addChipsData._wallets,
-    //             selected_wallet: this.mySelectWallet,
-    //         },this.addChipsData._returnOrNew);
-    //         // GameCache.Instance._autoRechargeData = new AutoRechargeData();
-    //         // GameCache.Instance._autoRechargeData._isOpen = autoToggleIson;
-    //         // GameCache.Instance._autoRechargeData._min = maxValue;
-    //         // GameCache.Instance._autoRechargeData._max = minValue;
-    //     } else {
-    //         // GameCache.Instance._curGame.AddChips(anterNumber);
-    //         GameCache.Instance.CurGame.AddChips(anterNumber);
-    //     }
-    // }
     private onClickCommit(): void {
         // DataStatisticsManager.Instance.Record(DataStatisticsConstant.GAME_BRING_COMMIT_BUTTON);
         this.commitAct();
@@ -1070,6 +1086,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         // DataStatisticsManager.Instance.Record(DataStatisticsConstant.GAME_BRING_CANCEL_BUTTON);
     }
 
+    // 点击选择钱包按钮
     private onClickWalletBtn(): void {
         if (!this.buttonSelectWallet?.getComponent(cc.Button)?.interactable) {
             return;
@@ -1092,16 +1109,15 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         }
     }
 
+    // 点击提示遮罩(押金说明部分)
     private onClickTipsMask(): void {
         if (this.tips) this.tips.active = false;
         if (this.tipsMask) this.tipsMask.active = false;
         if (this.bringTips) this.bringTips.active = false;
     }
 
-    /**
-     * 初始化自动充值滑块
-     */
-    private initAutoSliders(maxRate: number, minRate: number): void {
+    // _initAutoSliders 初始化自动充值滑块
+    private _initAutoSliders(maxRate: number, minRate: number): void {
         if (!this.autoSliderMin || !this.autoSliderMax) return;
         let space = this.sliderSpace || 50;
         let off = 1;
@@ -1110,63 +1126,48 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         }
         if (this.checkIsSixPlus(GameCache.Instance.game_type, GameCache.Instance.poker_type) && minRate == this.addChipsData._currentMaxRate) {
             let maxVal = maxRate / space;
-            this.setSliderRange(this.autoSliderMin, 1, maxVal, 1);
-            this.setSliderRange(this.autoSliderMax, 1, maxVal, 1);
-            this.onValueAutoMinSlider(1);
-            this.onValueAutoMaxSlider(1);
+            this._setSliderRange(this.autoSliderMin, 1, maxVal, 1);
+            this._setSliderRange(this.autoSliderMax, 1, maxVal, 1);
+            this._onValueAutoMinSlider(1);
+            this._onValueAutoMaxSlider(1);
         } else {
             let minVal = minRate / space / off;
             let maxVal = maxRate / space / off;
-            this.setSliderRange(this.autoSliderMin, minVal, maxVal, minVal);
-            this.setSliderRange(this.autoSliderMax, minVal, maxVal, minVal);
-            this.onValueAutoMinSlider(minVal);
-            this.onValueAutoMaxSlider(minVal);
+            this._setSliderRange(this.autoSliderMin, minVal, maxVal, minVal);
+            this._setSliderRange(this.autoSliderMax, minVal, maxVal, minVal);
+            this._onValueAutoMinSlider(minVal);
+            this._onValueAutoMaxSlider(minVal);
         }
     }
 
-    /**
-     * 设置钱包列表
-     */
-    private setupWalletList(): void {
+    // 设置钱包相关
+    // 设置钱包列表
+    private _setupWalletList(): void {
         if (!this.addChipsData?._wallets) return;
         console.log(LN, 'wallet:', this.addChipsData._wallets);
+        this.walletToggles = [];
+        this.currentSelect = -1;
+        this.walletScrollView.node.active = false;
         this.mySelectWallet = null;
         const wallets = this.addChipsData._wallets;
         if (wallets.length == 1) {
             this.mySelectWallet = wallets[0];
             this.sliderArea.active = true;
             GameCache.Instance.ClubRandomID = this.mySelectWallet.club_random_id;
-            this.updateTotalCoin(false, this.mySelectWallet.club_name, this.mySelectWallet.gold, this.addChipsData._creditNum);
-            // if (this.arrowDown) this.arrowDown.active = false;
-            // if (this.depositArea) this.depositArea.active = this.mySelectWallet.deposit_advance == 1 && this.isHaveDeposit();
+            this._updateTotalCoinAndWalletChoosen(false, this.mySelectWallet.club_name, this.mySelectWallet.gold, this.addChipsData._creditNum);
         } else if (wallets.length > 1) {
-            //let curWallet = this.getClubInfo();
-            // if (curWallet == null) {
             this.emptySelectWallet.active = true;
-            this.updateTotalCoin(true, i18nMgr.Get('UIGuild_WalletNoSelect'), 0, this.addChipsData._creditNum);
-            // } else {
-            //     this.emptySelectWallet.active = false;
-            //     this.mySelectWallet = curWallet;
-            //     this.updateTotalCoin(true, this.mySelectWallet.club_name, this.mySelectWallet.gold, this.addChipsData._creditNum);
-            //     //if (this.arrowDown) this.arrowDown.setRotation(0);
-            // }
-            // if (this.arrowDown) this.arrowDown.active = true;
+            let button = this.buttonSelectWallet.getComponent(cc.Button);
+            button.interactable = true;
             this.walletScrollView.content.removeAllChildren();
             // 创建钱包列表项
             for (let i = 0; i < wallets.length; i++) {
                 let walletItem = wallets[i];
                 let temp = cc.instantiate(this.clueItemPrefab);
-                temp.setPosition(0, 0);
-                temp.setScale(1, 1, 1);
-                temp.active = true;
-                this.walletScrollView.content.addChild(temp);
-                // 强制 Layout 组件立即重新计算
-                let layout = this.walletScrollView.content.getComponent(cc.Layout);
-                if (layout) {
-                    layout.updateLayout();
-                }
-                console.log(LN, 'wallet:', i, walletItem.club_random_id);
-                this.SetClubItemData(walletItem, temp, i != wallets.length - 1);
+                // temp.setScale(1, 1, 1);
+                // temp.active = true;
+                temp.parent = this.walletScrollView.content;
+                this._setClubItemData(walletItem, temp, i != wallets.length - 1);
                 let toggle = temp.getComponent(cc.Toggle);
                 let index = i;
                 // 处理选中状态
@@ -1180,17 +1181,12 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
                 toggle.node.on('toggle', (sender: cc.Toggle) => {
                     let bgNode = cc.find('bg', temp);
                     if (bgNode) bgNode.active = sender.isChecked;
-                    if (sender.isChecked) {
-                        this.currentSelect = index;
-                        this.mySelectWallet = wallets[index];
-                        this.updateTotalCoin(true, wallets[index].club_name, wallets[index].gold, this.addChipsData._creditNum);
-                        this.walletScrollView.node.active = false;
-                        this.arrowDown.angle = -0;
-                        this.sliderArea.active = true;
-                        // if (this.arrowDown && this.arrowDown.activeInHierarchy) {
-                        //     this.arrowDown.setRotation(this.walletScrollView.node.activeInHierarchy ? 180 : 0);
-                        // }
-                    }
+                    if (!sender.isChecked) return;
+                    this.currentSelect = index;
+                    this.mySelectWallet = wallets[index];
+                    this._updateTotalCoinAndWalletChoosen(true, wallets[index].club_name, wallets[index].gold, this.addChipsData._creditNum);
+                    
+                    
                 });
                 this.walletToggles.push(toggle);
             }
@@ -1209,31 +1205,62 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         }
     }
 
-    /**
-     * 设置带入筹码Text
-     */
-    private setCoinTipText(): void {
-        if (this.coinTipText) {
-            this.coinTipText.string =
-                this.addChipsData._deposit > 0 ? `${i18nMgr.Get('UITexas_AddChips')}+${i18nMgr.Get('UIFantasy_dairuyajin')}` : i18nMgr.Get('UITexas_AddChips');
-            this.coinTipTextBottom.string = i18nMgr.Get('UITexas_AddChips');
+    // _setClubItemData 设置俱乐部数据
+    private _setClubItemData(walletItem: IWallet, temp: cc.Node, addLine?: boolean): void {
+        // 设置头像
+        let headImage = cc.find('cnamegrp/spriteClubIcon', temp).getComponent(RemoteSprite);
+        headImage.url = walletItem.club_logo;
+        // WebImageHelper.SetHeadImage(headImage, walletItem.club_logo);
+        // 设置名称
+        let nameLabel = cc.find('cnamegrp/labelClubName', temp).getComponent(cc.Label);
+        if (nameLabel) nameLabel.string = walletItem.club_name;
+        // 设置ID
+        let idLabel = cc.find('labelClubId', temp).getComponent(cc.Label);
+        if (idLabel) idLabel.string = walletItem.club_random_id.toString();
+        // 设置余额标题
+        let labelBalanceTitle = cc.find('overlay/balance/labelBalanceTitle', temp).getComponent(cc.Label);
+        if (labelBalanceTitle) {
+            labelBalanceTitle.string = i18nMgr.Get('UIClub_CreateRoom31');
         }
-        if (this.bringBtn) {
-            this.bringBtn.active = this.addChipsData._deposit > 0;
-            this.scheduleOnce(() => {
-                let worldPos = this.bringBtn.parent.convertToWorldSpaceAR(this.bringBtn.position);
-                let localPos = this.triangleNode.parent.convertToNodeSpaceAR(worldPos);
-                this.triangleNode.setPosition(localPos.x + 100, localPos.y - 53);
-            }, 0);
-        }
+        let numLabel = cc.find('overlay/balance/labelBalance', temp).getComponent(cc.Label);
+        if (numLabel) numLabel.string = StringHelper.GetLongStringLocale(walletItem.gold);
+        let line = cc.find('overlay2', temp);
+        line.active = addLine;
     }
+
+    // _updateTotalCoinAndWalletChoosen 刷新金币和钱包选择状态
+    private _updateTotalCoinAndWalletChoosen(isEnable: boolean, name: string, gold: number, credit: number = 0): void {
+        if (this.textTotalCoin) this.textTotalCoin.string = StringHelper.GetLongStringLocale(gold);
+        let button = this.buttonSelectWallet.getComponent(cc.Button);
+        button.interactable = isEnable;
+        this.emptySelectWallet.active = false;
+        this.buttonCommit.active= true;
+        let cloneNode = this.buttonSelectWallet.parent.getChildByName('cloneWalletItem');
+        if(!cloneNode){
+            const targetIndex = this.buttonSelectWallet.getSiblingIndex();
+            const cnd = cc.instantiate(this.clueItemPrefab);
+            this.buttonSelectWallet.parent.insertChild(cnd, targetIndex);
+            cnd.name = 'cloneWalletItem';
+            cloneNode = cnd;
+        }
+        this._setClubItemData(this.mySelectWallet, cloneNode, false);
+        // 选择区域禁止选择
+        this.walletScrollView.node.active = false;
+        // 恢复箭头
+        this.arrowDown.angle = -0;
+        // 显示筹码滑块
+        this.sliderArea.active = true;
+    }
+    //// 设置钱包相关（END)
+
+
 
     // /**
     //  * slider 设置, 补充筹码
     //  */
     // private setBringInForSliderBySupplement(maxRate: number, bigBlind: number): void {
     //     if (GameCache.Instance.game_type == GameType.MAHJONG || GameCache.Instance.game_type == GameType.EGG) {
-    //         if (this.sliderCoin) this.setSliderRange(this.sliderCoin, 1, maxRate / 100, 1);
+    //         if (this.sliderCoin) this._setSliderRange(this.sliderCoin, 1, maxRate / 100, 1);
     //     } else if (this.checkIsTexas()) {
     //         let off = 1;
     //         if (this.checkIsSixPlus(GameCache.Instance.game_type, GameCache.Instance.poker_type) || this.checkIsBombPot()) {
@@ -1243,13 +1270,13 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     //             maxRate = maxRate * 10;
     //             off = Math.floor(gameplayData._smallBlind / 10);
     //         }
-    //         if (this.sliderCoin) this.setSliderRange(this.sliderCoin, 1, Math.floor(maxRate / this.rate / off), 1);
+    //         if (this.sliderCoin) this._setSliderRange(this.sliderCoin, 1, Math.floor(maxRate / this.rate / off), 1);
     //     } else {
-    //         if (this.sliderCoin) this.setSliderRange(this.sliderCoin, 1, maxRate / (this.sliderSpace * bigBlind / 100), 1);
+    //         if (this.sliderCoin) this._setSliderRange(this.sliderCoin, 1, maxRate / (this.sliderSpace * bigBlind / 100), 1);
     //     }
     //     if (this.sliderCoin) {
-    //         this.setSliderRange(this.sliderCoin, 1, 1, 1);
-    //         this.onValueChangedSliderCoin(1);
+    //         this._setSliderRange(this.sliderCoin, 1, 1, 1);
+    //         this._onValueChangedSliderCoin(1);
     //     }
     // }
     /**
@@ -1264,23 +1291,23 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         if (GameCache.Instance.game_type == GameType.MAHJONG) {
             let minVal = this.addChipsData._currentMinRate / this.sliderSpace;
             let maxVal = this.addChipsData._currentMaxRate / this.sliderSpace;
-            this.setSliderRange(this.sliderCoin, minVal, maxVal, minVal);
-            this.onValueChangedSliderCoin(minVal);
+            this._setSliderRange(this.sliderCoin, minVal, maxVal, minVal);
+            this._onValueChangedSliderCoin(minVal);
         } else if (GameCache.Instance.game_type == GameType.EGG) {
             let minVal = Math.floor(this.addChipsData._currentMinRate / this.sliderSpace);
             let maxVal = Math.floor(maxRate / this.sliderSpace);
-            this.setSliderRange(this.sliderCoin, minVal, maxVal, minVal);
-            this.onValueChangedSliderCoin(minVal);
+            this._setSliderRange(this.sliderCoin, minVal, maxVal, minVal);
+            this._onValueChangedSliderCoin(minVal);
         } else if (this.checkIsTexas()) {
             let minVal = Math.floor(this.addChipsData._currentMinRate / this.rate / off);
             let maxVal = Math.floor(maxRate / this.rate / off);
-            this.setSliderRange(this.sliderCoin, minVal, maxVal, minVal);
-            this.onValueChangedSliderCoin(minVal);
+            this._setSliderRange(this.sliderCoin, minVal, maxVal, minVal);
+            this._onValueChangedSliderCoin(minVal);
         } else {
             let minVal = Math.floor(this.addChipsData._currentMinRate / this.sliderSpace / off);
             let maxVal = Math.floor(maxRate / this.sliderSpace / off);
-            this.setSliderRange(this.sliderCoin, minVal, maxVal, minVal);
-            this.onValueChangedSliderCoin(minVal);
+            this._setSliderRange(this.sliderCoin, minVal, maxVal, minVal);
+            this._onValueChangedSliderCoin(minVal);
         }
     }
 
@@ -1289,143 +1316,47 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         if (this.textBlind) this.textBlind.string = StringHelper.GetLongString(this.addChipsData._smallBlind);
     }
 
-    // private getMushroomDeposit(): number {
-    //     if (!GameCache.Instance._texasData._isMushroomEnable) return 0;
-    //     if (GameCache.Instance._texasData._isMushroomEnable &&
-    //         GameCache.Instance.game_type != GameType.FANTASY
-    //         && GameCache.Instance.CurGame.mainPlayer.mushDeposit < TexasBusiness.Instance.GetMushroomDeposit()
-    //     ) {
-    //         return TexasBusiness.Instance.GetMushroomDeposit() -
-    //             GameCache.Instance.CurGame.mainPlayer.mushDeposit;
+
+
+    // private getRecordFeeData(type: RoomOriginType): void {
+    //     console.log('getRecordFeeData', this.addChipsData._creditNum);
+    //     if (GameCache.Instance.gold_type != 1 && GameCache.Instance.gold_type != 2) {
+    //         if (GameplayUtil.GetTableType() == TableType.CLUB_INNER) {
+    //             if (this.textTotalCoin) this.textTotalCoin.string = StringHelper.GetLongStringLocale(this.addChipsData._creditNum);
+    //         } else {
+    //             // this.textTotalCoin.SetHandFormatNumber(GameCache.Instance._diamonds);
+    //         }
     //     }
-    //     return 0;
     // }
-    // private getSquidDeposit(): number {
-    //     if (!GameCache.Instance._texasData._isSquidEnable || GameCache.Instance.gold_type == 3) {
-    //         return 0;
+
+    // private updateGoldSprite(): void {
+    //     this.textTotalCoinTitle.string =
+    //         GameplayUtil.GetTableType() == TableType.CLUB_INNER ? i18nMgr.Get('UIClubCreditLimit2') : i18nMgr.Get('UIClub_CreateRoom31');
+    //     if (this.depositImg) this.depositImg.node.active = false;
+    //     switch (GameCache.Instance.gold_type) {
+    //         case 1: // 联盟币
+    //             if (this.goldImage && this.unionCoinSpr) this.goldImage.spriteFrame = this.unionCoinSpr;
+    //             if (this.depositImg && this.unionCoinSpr) {
+    //                 this.depositImg.spriteFrame = this.unionCoinSpr;
+    //                 this.depositImg.node.active = true;
+    //             }
+    //             break;
+    //         case 2: // USDT
+    //             if (this.goldImage && this.usdtSpr) this.goldImage.spriteFrame = this.usdtSpr;
+    //             if (this.depositImg && this.usdtSpr) {
+    //                 this.depositImg.spriteFrame = this.usdtSpr;
+    //                 this.depositImg.node.active = true;
+    //             }
+    //             break;
+    //         default:
+    //             if (GameplayUtil.GetTableType() == TableType.CLUB_INNER) {
+    //                 if (this.goldImage && this.creditSpr) this.goldImage.spriteFrame = this.creditSpr;
+    //             } else {
+    //                 if (this.goldImage && this.diamondSpr) this.goldImage.spriteFrame = this.diamondSpr;
+    //             }
+    //             break;
     //     }
-    //     let game = GameCache.Instance.CurGame;
-    //     return Math.max(0, game.squidDeposit || 0);
     // }
-    /**
-     * 初始化随机匹配押金UI
-     */
-    private getRandomMatchDeposit(): number {
-        // TODO: MahjongGameManager.Instance._biz.IsMahjongGame() && MatchRoomType.MATCHING
-        return 0;
-    }
-
-    private getFantasyDeposit(): number {
-        if (GameCache.Instance.game_type != GameType.FANTASY) return 0;
-        if (this.addChipsData._source != BringInChipsType.BRING_IN) return 0;
-        let game = GameCache.Instance.CurGame as any;
-        return Math.max(0, game?.fantasyDeposit || 0);
-    }
-
-    private getRecordFeeData(type: RoomOriginType): void {
-        console.log('getRecordFeeData', this.addChipsData._creditNum);
-        if (GameCache.Instance.gold_type != 1 && GameCache.Instance.gold_type != 2) {
-            if (GameplayUtil.GetTableType() == TableType.CLUB_INNER) {
-                if (this.textTotalCoin) this.textTotalCoin.string = StringHelper.GetLongStringLocale(this.addChipsData._creditNum);
-            } else {
-                // this.textTotalCoin.SetHandFormatNumber(GameCache.Instance._diamonds);
-            }
-        }
-    }
-
-    /**
-     * 是否有押金
-     */
-    // private isHaveDeposit(): boolean {
-    //     return this.getSquidDeposit() + this.getMushroomDeposit() + this.getRandomMatchDeposit() + this.getFantasyDeposit() != 0;
-    // }
-    /**
-     * 设置俱乐部数据
-     */
-    private SetClubItemData(walletItem: IWallet, temp: cc.Node, addLine?: boolean): void {
-        // 设置头像
-        let headImage = cc.find('cnamegrp/spriteClubIcon', temp).getComponent(cc.Sprite);
-        WebImageHelper.SetHeadImage(headImage, walletItem.club_logo);
-        // 设置名称
-        let nameLabel = cc.find('cnamegrp/labelClubName', temp).getComponent(cc.Label);
-        if (nameLabel) nameLabel.string = walletItem.club_name;
-        // 设置ID
-        let idLabel = cc.find('labelClubId', temp).getComponent(cc.Label);
-        if (idLabel) idLabel.string = walletItem.club_random_id.toString();
-        // 设置余额标题
-        let labelBalanceTitle = cc.find('overlay/balance/labelBalanceTitle', temp).getComponent(cc.Label);
-        if (labelBalanceTitle) {
-            labelBalanceTitle.string =
-                GameplayUtil.GetTableType() == TableType.CLUB_INNER ? i18nMgr.Get('UIClubCreditLimit2') : i18nMgr.Get('UIClub_CreateRoom31');
-        }
-        // 设置金币类型图标和数量
-        let goldTypeSprite = cc.find('overlay/balance/chipicon', temp).getComponent(cc.Sprite);
-        // if (goldTypeSprite) {
-        //     goldTypeSprite.spriteFrame = walletItem.gold_type == 1 ? this.unionCoinSpr : this.usdtSpr;
-        // }
-        let numLabel = cc.find('overlay/balance/labelBalance', temp).getComponent(cc.Label);
-        if (numLabel) numLabel.string = StringHelper.GetLongStringLocale(walletItem.gold);
-        let line = cc.find('overlay2', temp);
-        if (addLine) {
-            line.active = true;
-        } else {
-            line.active = false;
-        }
-    }
-
-    /**
-     * 刷新金币
-     */
-    private updateTotalCoin(isEnable: boolean, name: string, gold: number, credit: number = 0): void {
-        if (this.textWallet) this.textWallet.string = name;
-        console.log('updateTotalCoin', name, gold, credit);
-        if (GameplayUtil.GetTableType() == TableType.CLUB_INNER) {
-            if (this.textTotalCoin) this.textTotalCoin.string = StringHelper.GetLongStringLocale(credit);
-        } else {
-            if (this.textTotalCoin) this.textTotalCoin.string = StringHelper.GetLongStringLocale(gold);
-        }
-        if (this.buttonSelectWallet) {
-            let button = this.buttonSelectWallet.getComponent(cc.Button);
-            if (button) button.interactable = isEnable;
-        }
-        if (this.mySelectWallet != null) {
-            this.emptySelectWallet.active = false;
-            this.clueItemPrefab.active = true;
-            this.SetClubItemData(this.mySelectWallet, this.clueItemPrefab);
-        } else {
-            this.clueItemPrefab.active = false;
-            this.emptySelectWallet.active = true;
-        }
-    }
-
-    private updateGoldSprite(): void {
-        this.textTotalCoinTitle.string =
-            GameplayUtil.GetTableType() == TableType.CLUB_INNER ? i18nMgr.Get('UIClubCreditLimit2') : i18nMgr.Get('UIClub_CreateRoom31');
-        if (this.depositImg) this.depositImg.node.active = false;
-        switch (GameCache.Instance.gold_type) {
-            case 1: // 联盟币
-                if (this.goldImage && this.unionCoinSpr) this.goldImage.spriteFrame = this.unionCoinSpr;
-                if (this.depositImg && this.unionCoinSpr) {
-                    this.depositImg.spriteFrame = this.unionCoinSpr;
-                    this.depositImg.node.active = true;
-                }
-                break;
-            case 2: // USDT
-                if (this.goldImage && this.usdtSpr) this.goldImage.spriteFrame = this.usdtSpr;
-                if (this.depositImg && this.usdtSpr) {
-                    this.depositImg.spriteFrame = this.usdtSpr;
-                    this.depositImg.node.active = true;
-                }
-                break;
-            default:
-                if (GameplayUtil.GetTableType() == TableType.CLUB_INNER) {
-                    if (this.goldImage && this.creditSpr) this.goldImage.spriteFrame = this.creditSpr;
-                } else {
-                    if (this.goldImage && this.diamondSpr) this.goldImage.spriteFrame = this.diamondSpr;
-                }
-                break;
-        }
-    }
 
     close(param?: any): void {
         super.onClose(param);
@@ -1478,7 +1409,4 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         return pokerType == PokerType.SIX_PLUS && gameType == GameType.HOLDEM;
     }
 
-    // public CheckUserOrderAudit(msgData: any): void {
-    //     this.diamondObj?.CheckUserOrderAudit(msgData);
-    // }
 }
