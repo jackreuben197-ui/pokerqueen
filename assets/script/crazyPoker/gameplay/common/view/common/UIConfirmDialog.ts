@@ -27,7 +27,7 @@ export type UIConfirmDialogParam = {
 };
 
 @ccclass
-@menu('脚本分组/crazypoke/common/UIConfirmDialog')
+@menu('CrazyPoker/Common/UIConfirmDialog')
 export default class UIConfirmDialog extends UIBasePlus {
     cc_RichText$title: cc.RichText = null;
     cc_RichText$content: cc.RichText = null;

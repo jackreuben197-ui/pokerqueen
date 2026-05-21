@@ -1,10 +1,8 @@
 import ListItem from '../../../../../common/ListItem';
-
 const { ccclass } = cc._decorator;
 
 @ccclass
 export default class ChatMsgItem extends ListItem {
-
     private _userNameLabel: cc.Label = null;
     private _chatContentLabel: cc.Label = null;
 

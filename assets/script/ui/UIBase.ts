@@ -194,7 +194,7 @@ export default class UIBase extends BaseComponent {
     //         } break;
     //     }
     // }
-    lateClose(params?: any) {
+    protected lateClose(params?: any) {
         this._prefabs.forEach(prefab => {
             prefab.lateClose();
         });

@@ -12,7 +12,6 @@ import { GameCache } from '../../../../../game/GameCache';
 import GC from '../../../../../frame/GameControl';
 import TimeHelper from '../../../../../helper/TimeHelper';
 import WebImageHelper from '../../../../../helper/WebImageHelper';
-
 const { ccclass } = cc._decorator;
 
 interface ChatMsgData {
@@ -26,10 +25,8 @@ const chatHistoryCache = new Map<number, ChatMsgData[]>();
 
 @ccclass
 export default class UIChatDlg extends UIBasePlus {
-
     // 自动绑定：$panel_click（背景遮罩，点击关闭）
     $panel_click: cc.Node = null;
-
     private _closeBtn: cc.Node = null;
     private _dlgNode: cc.Node = null;
     private _chatList: List = null;
@@ -41,10 +38,8 @@ export default class UIChatDlg extends UIBasePlus {
 
     protected override lateLoad(): void {
         super.lateLoad();
-
         // 点击背景遮罩关闭
         this.setButtonClick(this.$panel_click, this.click_close);
-
         // 查找对话框面板
         this._dlgNode = cc.find('ChatDlg', this.node);
         if (this._dlgNode) {
@@ -60,7 +55,6 @@ export default class UIChatDlg extends UIBasePlus {
                 e.stopPropagation();
             });
         }
-
         // 获取聊天列表组件（ChatList 是根节点的直接子节点）
         const chatListNode = this.node.getChildByName('ChatList');
         if (chatListNode) {
@@ -70,7 +64,6 @@ export default class UIChatDlg extends UIBasePlus {
             // 与 ScrollView 的"置顶"位置不兼容，导致 render 回调不触发。
             this._chatList.virtual = false;
         }
-
         // 获取输入框
         const editBoxNode = this.node.getChildByName('chatEditBox');
         if (editBoxNode) {
@@ -80,7 +73,6 @@ export default class UIChatDlg extends UIBasePlus {
                 this._editBox.node.on('text-submit', this._onEditBoxSubmit, this);
             }
         }
-
         // 获取发送按钮（sendMsg 节点有 cc.Button 组件）
         this._sendBtn = this.node.getChildByName('sendMsg');
         if (this._sendBtn) {
@@ -156,15 +148,12 @@ export default class UIChatDlg extends UIBasePlus {
         if (!this._editBox) return;
         const text = this._editBox.string.trim();
         if (!text) return;
-
         const gc = GameCache.Instance;
         const roomId = gc.room_id;
         const matchId = gc.match_id;
         const nick = gc.nick || '';
-
         // 1. 缓存消息，等服务端确认后显示
         this._pendingChatMsg = { name: nick, content: text, headUrl: gc.headPic || '' };
-
         // 2. 构造内层消息（广播消息数据）
         const broadcastMsgData = JSON.stringify({
             name: nick,
@@ -177,13 +166,11 @@ export default class UIChatDlg extends UIBasePlus {
             sex: gc.sex,
             headUrl: gc.headPic || ''
         });
-
         // 3. 外层包装 { code: 1000, data: ... }
         const extraJson = Broadcast.Request({
             code: 1000,
             data: broadcastMsgData
         });
-
         // 4. 构造 protobuf 消息
         const msg = new ClientMessageBroadcastMsg();
         const room = new Room();
@@ -195,7 +182,6 @@ export default class UIChatDlg extends UIBasePlus {
         msg.setMessage(text);
         const extraBytes = new Uint8Array(Array.from(extraJson).map(c => c.charCodeAt(0)));
         msg.setExtra(extraBytes);
-
         // 5. 发送到服务器
         ProtocolAgency.Send<ClientMessageBroadcastMsg.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_BroadcastMsg,
@@ -203,7 +189,6 @@ export default class UIChatDlg extends UIBasePlus {
             MatchID: matchId,
             Body: msg.toObject()
         });
-
         // 6. 清空输入框
         this._editBox.string = '';
     }
@@ -228,15 +213,12 @@ export default class UIChatDlg extends UIBasePlus {
             const json = Buffer.from(rec.extra.toString(), 'base64').toString();
             const responseData = Broadcast.Response(json);
             if (responseData.code !== BroadcastCode.BroadcastMsg && responseData.code !== 10001) return;
-
             const broadcastMsg = BroadcastMsg.Response(responseData.data);
             // 只处理文字聊天消息（type == 0 且 message 非空）
             if (broadcastMsg.type !== 0 || !broadcastMsg.message) return;
-
             // 过滤掉自己发的（已通过 _onSendChatResponse 显示）
             const gc = GameCache.Instance;
             if (broadcastMsg.user_id === gc.nUserId) return;
-
             this._addChatMessage(broadcastMsg.name || '', broadcastMsg.message, broadcastMsg.headUrl || '');
         } catch (e) {
             console.warn('[UIChatDlg] parse chat message error:', e);

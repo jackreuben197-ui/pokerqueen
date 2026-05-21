@@ -11,7 +11,7 @@ export interface RateDetail {
 }
 
 @ccclass
-@menu('脚本分组/crazypoke/chips/usdtdiamond/USDTPaytype')
+@menu('CrazyPoker/AddChips/usdtdiamond/USDTPaytype')
 export default class USDTPaytype extends cc.Component {
 
     public onSelectedCallback: (data: RateDetail) => void = null;

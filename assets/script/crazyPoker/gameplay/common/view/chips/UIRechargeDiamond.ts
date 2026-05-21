@@ -18,7 +18,7 @@ export interface UIRechargeDiamondParam {
 const LN = '[UIRechargeDiamond]';
 
 @ccclass
-@menu('脚本分组/crazypoke/chips/UIRechargeDiamond')
+@menu('CrazyPoker/AddChips/UIRechargeDiamond')
 export default class UIRechargeDiamond extends UIBase {
     @property(cc.Label)
     private exchangeRateLabel: cc.Label = null;

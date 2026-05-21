@@ -5,7 +5,7 @@ const { ccclass, property, menu } = cc._decorator;
 const LN = '[USDTDiamond]';
 
 @ccclass
-@menu('脚本分组/crazypoke/chips/usdtdiamond/USDTDiamond')
+@menu('CrazyPoker/AddChips/usdtdiamond/USDTDiamond')
 export default class USDTDiamond extends cc.Component {
 
     public onChooseOneCallback: (payData: HttpUSDTRechargeProtocol.RequestData, isSp: boolean, payType: number) => void = null;
