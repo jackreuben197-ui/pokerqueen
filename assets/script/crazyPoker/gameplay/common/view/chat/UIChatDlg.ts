@@ -1,24 +1,19 @@
 import UIBasePlus from '../../../../../ui/UIBasePlus';
 import UIComponent from '../../../../../ui/UIComponent';
 import { UIDefine } from '../../../../../define/UIDefine';
-
 const { ccclass } = cc._decorator;
 
 @ccclass
 export default class UIChatDlg extends UIBasePlus {
-
     // 自动绑定：$panel_click（背景遮罩，点击关闭）
     $panel_click: cc.Node = null;
-
     private _closeBtn: cc.Node = null;
     private _dlgNode: cc.Node = null;
 
     protected override lateLoad(): void {
         super.lateLoad();
-
         // 点击背景遮罩关闭
         this.setButtonClick(this.$panel_click, this.click_close);
-
         // 手动查找对话框面板内的节点
         this._dlgNode = this.node.getChildByName('ChatDlg');
         if (this._dlgNode) {

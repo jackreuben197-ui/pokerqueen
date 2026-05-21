@@ -71,7 +71,7 @@ import TexasSMAgency from './../TexasSMAgency';
 import { OperationData } from './../ui/UIOperationComponent';
 import UITexas, { PotInfo, PublicCardInfo } from './../UITexas';
 import { UITexasModel } from './../UITexasModel';
-import { AddChipsData } from '../../crazyPoker/gameplay/common/view/chips/UIGameplayAddChipsAndDiamond';
+import { AddChipsData, RetainInfo } from '../../crazyPoker/gameplay/common/view/chips/UIGameplayAddChipsAndDiamond';
 import { BringInChipsType } from '../../crazyPoker/gameplay/common/constant/BringInChipsType';
 import { HttpRoomBringOutProtocol } from '../../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringOutProtocol';
 import { VideoModel } from '../../crazyPoker/gameplay/common/constant/VideoModel';
@@ -1709,6 +1709,11 @@ export default class TexasGame {
                 console.warn(LN, 'BringIn mainPlayer is null, abort');
                 return;
             }
+            const retainDetail: RetainInfo = {
+                RetainType: GameCache.Instance._roomRecord.retainType,
+                RetainMinRate: GameCache.Instance._roomRecord.retainMinRate,
+                RetainMaxRate: GameCache.Instance._roomRecord.retainMaxRate
+            };
             if (GameCache.Instance.gold_type == 1) {
                 UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, {
                     _bigBlind: GameCache.Instance._texasData._bigBlind,
@@ -1723,7 +1728,8 @@ export default class TexasGame {
                     _deposit: 0, // 如果在桌上不需要带入押金，这里要判断他的押金是否不足,到时候再补 deposit -user.current.deposit  @TODO
                     _diamonds: userInfo.data.user.diamonds,
                     _isTrader: GameplayUtil.IsTrader(userInfo.data.user),
-                    _type: 1
+                    _type: 1,
+                    _retainInfo: retainDetail
                 });
                 return;
             }
@@ -1743,7 +1749,8 @@ export default class TexasGame {
                     _deposit: 0, // 如果在桌上不需要带入押金，这里要判断他的押金是否不足,到时候再补 deposit -user.current.deposit  @TODO
                     _diamonds: userInfo.data.user.diamonds,
                     _isTrader: GameplayUtil.IsTrader(userInfo.data.user),
-                    _type: addChipType
+                    _type: addChipType,
+                    _retainInfo: retainDetail
                 });
             }
         } catch (e) {
@@ -1845,6 +1852,17 @@ export default class TexasGame {
                 depositAdvance: 0,
                 autoOnTableMax: 0
             };
+            const retainDetail: RetainInfo = {
+                RetainType: GameCache.Instance._roomRecord.retainType,
+                RetainMinRate: GameCache.Instance._roomRecord.retainMinRate,
+                RetainMaxRate: GameCache.Instance._roomRecord.retainMaxRate
+            };
+            // 自动藏钱要设置几个参数
+            if (retainDetail.RetainType == RoomInfo.RetainType.RT_AUTO) {
+                seatedData.autoOnTable = retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2;
+                seatedData.autoOnTableFix = retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2;
+                seatedData.autoOnTableMax = retainDetail.RetainMaxRate * GameCache.Instance._roomRecord.sb * 2;
+            }
             let addChipData: AddChipsData = {
                 _bigBlind: GameCache.Instance._texasData._bigBlind,
                 _smallBlind: GameCache.Instance._texasData._smallBlind,
@@ -1858,7 +1876,8 @@ export default class TexasGame {
                 _commit: this._commitBringInCallback(seatedData),
                 _diamonds: userInfo.data.user.diamonds,
                 _isTrader: GameplayUtil.IsTrader(userInfo.data.user),
-                _type: 0
+                _type: 0,
+                _retainInfo: retainDetail
             };
             // 联盟币
             if (GameCache.Instance.gold_type == 1) {
@@ -1867,7 +1886,7 @@ export default class TexasGame {
                 if (response.data.last_bring_out != null) {
                     let returnAmount = response.data.last_bring_out.to_wallet + response.data.last_bring_out.fee;
                     // 要带回桌子上金额
-                    const bringToTable = response.data.last_bring_out.to_wallet + response.data.last_bring_out.fee - GameCache.Instance._texasData._deposit;
+                    let bringToTable = response.data.last_bring_out.to_wallet + response.data.last_bring_out.fee - GameCache.Instance._texasData._deposit;
                     const returnFromWallet = response.data.last_bring_out.to_wallet;
                     const walletAmount = UITexasModel.mInstance.getGoldFromWallets(response.data.last_bring_out.club_id, response.data.wallet);
                     // 要反桌，但是钱包钱不够了
@@ -1881,12 +1900,28 @@ export default class TexasGame {
                     seatedData.clubId = response.data.last_bring_out.club_id;
                     // 钱包够,没输光(反桌)
                     if (bringToTable > 0) {
-                        ProtocolAgency.Send<ClientMessageSeated.AsObject>({
-                            Code: ProtocolCode.Protocol_Holdem_Seated,
-                            RoomID: GameCache.Instance.room_id,
-                            MatchID: GameCache.Instance.match_id,
-                            Body: seatedData
-                        });
+                        // 没有藏钱直接坐下
+                        if (retainDetail.RetainType == RoomInfo.RetainType.RT_DISABLE) {
+                            ProtocolAgency.Send<ClientMessageSeated.AsObject>({
+                                Code: ProtocolCode.Protocol_Holdem_Seated,
+                                RoomID: GameCache.Instance.room_id,
+                                MatchID: GameCache.Instance.match_id,
+                                Body: seatedData
+                            });
+                        }
+                        // 如果有藏钱的逻辑(还要保留最小上桌)
+                        if (retainDetail.RetainType > 0 && bringToTable >= retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2) {
+                            if (retainDetail.RetainType == RoomInfo.RetainType.RT_MANUAL) {
+                                //手动逻辑自己管理Store
+                                seatedData.store = bringToTable - retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2;
+                            }
+                            ProtocolAgency.Send<ClientMessageSeated.AsObject>({
+                                Code: ProtocolCode.Protocol_Holdem_Seated,
+                                RoomID: GameCache.Instance.room_id,
+                                MatchID: GameCache.Instance.match_id,
+                                Body: seatedData
+                            });
+                        }
                         return;
                     }
                     // 其他都需要弹窗口输入
@@ -1895,22 +1930,22 @@ export default class TexasGame {
                 }
                 //是否需要显示安全提示
                 if (!this.shouldShowBringInSecuritySetting()) {
-                    if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                        // this.ShowAutoAddChips(data.wallet);
-                    } else {
-                        UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
-                    }
+                    // if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
+                    //     // this.ShowAutoAddChips(data.wallet);
+                    // } else {
+                    UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
+                    //}
                     return;
                 }
                 // 非首次不显示
                 UIComponent.open(UIDefine.UIGameplaySecuritySetting, {
                     isFromBringIn: true,
                     bringInAct: () => {
-                        if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                            // this.ShowAutoAddChips(data.wallet);
-                        } else {
-                            UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
-                        }
+                        // if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
+                        //     // this.ShowAutoAddChips(data.wallet);
+                        // } else {
+                        UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
+                        //}
                     },
                     noAnimation: true
                 });
@@ -1949,12 +1984,22 @@ export default class TexasGame {
     }
 
     // _commitBringInCallback 带入流程，最后按钮按下去的处理(要么坐下，要么带入)
-    private _commitBringInCallback(seatedData?: ClientMessageSeated.AsObject): (amount: number, clubID: number) => void {
+    private _commitBringInCallback(seatedData?: ClientMessageSeated.AsObject): (amount: number, store: number, autoOnTable: number, clubID: number) => void {
         // 要坐下
         if (seatedData)
-            return (amount, clubID) => {
+            return (amount, store, autoOnTable, clubID) => {
                 seatedData.bringIn = amount;
                 seatedData.clubId = clubID;
+                // 如果用钱包自动充值
+                if (autoOnTable > 0) {
+                    seatedData.autoOnTableNoStore = true;
+                    seatedData.autoUseWallet = true;
+                    seatedData.autoOnTable = autoOnTable;
+                } else {
+                    // 手动藏钱
+                    seatedData.store = store;
+                    // 如果是自动藏钱，已经在初始化的时候用房间配置设定
+                }
                 ProtocolAgency.Send<ClientMessageSeated.AsObject>({
                     Code: ProtocolCode.Protocol_Holdem_Seated,
                     RoomID: GameCache.Instance.room_id,
@@ -1962,7 +2007,7 @@ export default class TexasGame {
                     Body: seatedData
                 });
             };
-        return (amount, clubID) => {
+        return (amount, store, autoOnTable, clubID) => {
             //普通加筹码
             let applyBringIn = (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) && GameCache.Instance.FriendsTableLimitBringIn;
             ProtocolAgency.Send<ClientMessageBringIn.AsObject>({
@@ -1980,6 +2025,24 @@ export default class TexasGame {
                     depositAdvance: 0
                 }
             });
+            // 用户想自动充值了使用协议设置自动化
+            if (autoOnTable > 0) {
+                ProtocolAgency.Send<ClientMessageSetAutoOnTable.AsObject>({
+                    Code: ProtocolCode.Protocol_Holdem_BringIn,
+                    RoomID: GameCache.Instance.room_id,
+                    MatchID: GameCache.Instance.match_id,
+                    Body: {
+                        room: {
+                            roomId: GameCache.Instance.room_id,
+                            matchId: GameCache.Instance.match_id
+                        },
+                        autoOnTable: autoOnTable,
+                        autoUseWallet: true,
+                        autoOnTableNoStore: true,
+                        autoOnTableFix: autoOnTable
+                    }
+                });
+            }
         };
     }
 
