@@ -9,6 +9,7 @@ export default class OpCodeHelper {
     static NeedJuhua(code: number): boolean {
         return this._IgnoreShowJuhua_Codes.indexOf(code) == -1;
     }
+
     /**
      * 忽略打印Log的WS CODE
      */

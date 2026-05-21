@@ -33,7 +33,6 @@ export default class AreaCodeForm extends BaseFormPlus {
     map: Map<string, string> = null;
 
     ///////////////////////////////////
-
     protected lateLoad() {
         super.lateLoad();
         this.createAreaList();

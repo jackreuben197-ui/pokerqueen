@@ -74,6 +74,7 @@ export default class CPMessageDispatherComponent {
     public RemoveAllListener() {
         this._handlers = {};
     }
+
     // update (dt) {}
 }
 

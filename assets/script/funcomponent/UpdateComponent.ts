@@ -11,6 +11,7 @@ export default class UpdateComponent {
     public static get Instance(): UpdateComponent {
         return ((this as any).__Instance ??= new UpdateComponent());
     }
+
     private components: IUpComponent[] = [];
 
     //增加子刷新器

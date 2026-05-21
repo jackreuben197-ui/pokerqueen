@@ -5,6 +5,7 @@
 import { TableType } from '../constant/TableType';
 import { RoomOriginType } from '../constant/RoomOriginType';
 import { GameCache } from '../../../../game/GameCache';
+import { HttpUserInfoProtocol } from '../../../module/message/CPHotfixWebMessage/user/HttpUserInfoProtocol';
 
 export default class GameplayUtil {
 
@@ -27,5 +28,9 @@ export default class GameplayUtil {
             tableType = TableType.CLUB_EXTERNAL;
         }
         return tableType;
+    }
+
+    public static IsTrader(user: HttpUserInfoProtocol.UserInfo): boolean {
+        return Date.now() < user.trader_expire_time * 1000;
     }
 }

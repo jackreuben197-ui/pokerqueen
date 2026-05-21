@@ -41,7 +41,6 @@ export class i18nLabel extends cc.Component {
     //     this.i18n_string = string;
     //     this.setEndValue()
     // }
-
     private setEndValue() {
         let label: any = this.getComponent(cc.Label);
         if (cc.isValid(label)) {

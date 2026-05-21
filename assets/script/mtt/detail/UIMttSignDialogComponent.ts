@@ -502,7 +502,6 @@ export default class UIMttSignDialogComponent extends UIBase {
     }
 
     //UIMTTApply_dialog_content  账户余额：{0} ， UIMTTSignDialogCanUseTickt 可用门票  ，  UIMTTSignDialogRemainingBuy  剩余买入
-
     update() {
         // UI uiDialog = UIComponent.Instance.Get(UIType.UIMTTSignDialog);
         // if (null == uiDialog || !uiDialog.GameObject.activeInHierarchy)

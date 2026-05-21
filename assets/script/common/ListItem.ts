@@ -74,6 +74,7 @@ export default class ListItem extends UIBase {
     get selected() {
         return this._selected;
     }
+
     //按钮组件
     private _btnCom: any;
 
@@ -81,6 +82,7 @@ export default class ListItem extends UIBase {
         if (!this._btnCom) this._btnCom = this.node.getComponent(cc.Button);
         return this._btnCom;
     }
+
     //依赖的List组件
     public list: List;
     //是否已经注册过事件

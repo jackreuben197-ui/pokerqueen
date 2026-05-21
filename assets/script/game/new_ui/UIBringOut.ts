@@ -147,7 +147,6 @@ export default class UIBringOut extends UIBasePlus {
     /**
      * 滑动条改变触发
      */
-
     onSliderChange(rate: number) {
         if (this.MaxRate == rate && this.MaxRate > 0) {
             this.cc_Label$coin.string = `${StringHelper.GetLongString((this._param.tableChips / 100) * 100 - this.CurMinOutBeans)}`;

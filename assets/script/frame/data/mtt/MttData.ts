@@ -86,6 +86,7 @@ export default class MttData extends BaseData {
         let api = GC.language.formatString(WebMtt.REAL_PRIZE, this.list.select.match_id);
         this.reqServePost(api);
     }
+
     // reqUserWallet(offset: number = 0, limit: number = 10) {
     //     let api = GC.language.formatString(WebMtt.USER_WALLET, this.list.select.match_id);
     //     this.reqServePost(api, { club_id: ClubCache.club_id, limit: limit, offset: offset });

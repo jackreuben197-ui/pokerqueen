@@ -40,7 +40,7 @@ const LN = '[TexasGameMessageHandler]';
 
 export default class TexasGameMessageHandler {
 
-    constructor(public game: TexasGame) { }
+    constructor(public game: TexasGame) {}
 
     public RegisterMessageHandler() {
         console.log(LN, 'RegisterMessageHandler');
@@ -359,8 +359,8 @@ export default class TexasGameMessageHandler {
                         const gamePlaySubType = this.game?.squidEnabled
                             ? GamePlaySubType.SQUID
                             : this.game?.mushroomEnabled
-                                ? GamePlaySubType.MUSH
-                                : GamePlaySubType.NONE;
+                              ? GamePlaySubType.MUSH
+                              : GamePlaySubType.NONE;
                         const roomId = String(GameCache.Instance.room_id || '');
                         const query: Record<string, string> = {
                             roomId,
@@ -370,7 +370,7 @@ export default class TexasGameMessageHandler {
                             gameType: String(GameCache.Instance.game_type ?? ''),
                             betType: String(GameCache.Instance.bet_type ?? ''),
                             pokerType: String(GameCache.Instance.poker_type ?? ''),
-                            gamePlaySubType: String(gamePlaySubType),
+                            gamePlaySubType: String(gamePlaySubType)
                         };
                         const h5NavigatePayload = {
                             path: '/tableGameEnd',

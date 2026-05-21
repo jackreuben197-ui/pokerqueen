@@ -1730,7 +1730,6 @@ export default class Seat {
     }
 
     //////////////////////////////////////
-
     public ResetShowCardsId(): void {
         if (this.showCardsId == null) {
             this.showCardsId = [];

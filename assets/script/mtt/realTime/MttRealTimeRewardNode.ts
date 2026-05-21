@@ -36,7 +36,6 @@ export default class MttRealTimeRewardNode extends UIBase {
     //         } break;
     //     }
     // }
-
     initData() {
         GC.data.mtt.reqRealTimeRealPrize();
     }

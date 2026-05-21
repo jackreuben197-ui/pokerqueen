@@ -68,6 +68,7 @@ export default class UISquidEnd extends UIBase {
         this.unschedule(this.OnAutoClose);
         this.scheduleOnce(this.OnAutoClose, 5);
     }
+
     private readonly OnAutoClose = () => {
         UIComponent.close(UIDefine.UISquidEnd);
     };

@@ -157,10 +157,12 @@ type UIDefineKey =
     | 'UIFunManage'
     | 'UIFunRecycleGive'
     | 'UITexasHistory'
+    | 'UIChatDlg'
     | 'UIBlank_dialog'
     | 'UIGameplayAddChipsAndDiamond'
     | 'UIEmojiDlg'
-    | 'UIConfirmDialog';
+    | 'UIConfirmDialog'
+    | 'UIRechargeDiamond';
 
 export const UIDefine: Record<UIDefineKey, IUIDefine> = {
     //预加载UI
@@ -1314,6 +1316,14 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Bundle: 'texas',
         Path: 'prefab/widgetLayer/UITexasHistory'
     },
+    //聊天弹窗
+    UIChatDlg: {
+        UIType: UIType.Board,
+        Name: 'UIChatDlg',
+        Bundle: 'texas',
+        Path: 'prefab/widgetLayer/UIChatDlg',
+        DisAdaptScreen: true
+    },
     UIBlank_dialog: {
         UIType: UIType.CommonUI,
         Name: 'UIBlank_dialog',
@@ -1336,12 +1346,19 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Path: 'prefab/ui/UIEmojiDlg',
         DisAdaptScreen: true
     },
-    //确认对话框
+    //确认对话框(普通对话框)
     UIConfirmDialog: {
         UIType: UIType.Dialog,
         Name: 'UIConfirmDialog',
         Bundle: 'texas',
         Path: 'purple_prefab/ui/UIConfirmDialog'
+    },
+    //扫描二维码
+    UIRechargeDiamond: {
+        UIType: UIType.Dialog,
+        Name: 'UIRechargeDiamond',
+        Bundle: 'texas',
+        Path: 'purple_prefab/ui/UIRechargeDiamond'
     }
 };
 

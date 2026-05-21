@@ -135,6 +135,7 @@ export default class MTTGame extends TexasGame {
     public get BlindType(): MTT_GameType {
         return this.blindType;
     }
+
     public upBlindTime: number = 0; // 当前升盲时间
     public upBlindLeftTime: number = 0; //升盲剩余时间，秒
     private upBlindLeftTimeDeltaTime: number = 0;
@@ -355,7 +356,6 @@ export default class MTTGame extends TexasGame {
 
     // public ObtainMTTCountDown(isTimeOut: boolean = false) {
     // }
-
     public countDownTo30Second() {
         if (!this.hadRequestEnterRoom) {
             this.hadRequestEnterRoom = true;

@@ -15,6 +15,7 @@ export default class DataManager {
         }
         return DataManager._instance;
     }
+
     // lobby: LobbyData = null;
     user: UserInfoData = null;
 

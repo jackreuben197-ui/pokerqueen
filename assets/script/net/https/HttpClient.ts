@@ -201,6 +201,7 @@ let HttpCodeHandler = (api: string, code: number, message: string = '') => {
         UIComponent.Instance.ToastLanguage('UISupplememtDetails_cz_fail');
         return;
     }
+
     //公会内部桌请求申请列表d
     if (WebClubApplyList.API == api || WebGuildGiveRecyCle.API == api) {
         return;

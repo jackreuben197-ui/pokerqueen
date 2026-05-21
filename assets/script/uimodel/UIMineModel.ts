@@ -15,6 +15,7 @@ export class UIMineModel {
         }
         return this._instance;
     }
+
     public UserInfoDto: typeof WebUserInfo.ResponseData = null;
     public modifyHeadTime: number = null;
 

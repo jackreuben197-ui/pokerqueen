@@ -36,6 +36,7 @@ export default class UIMTTDetail_Blind extends UIBasePlus {
             this.listEx.refresh(new Array(levelCount), 1);
         }
     }
+
     private listEx: ListEx = null;
 
     //初始化滚动列表的补充数据

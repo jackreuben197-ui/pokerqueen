@@ -34,7 +34,6 @@ export function loadWebSDK(): void {
         return;
     }
     const sdkList = [{ name: 'AgoraRTC', src: 'https://download.agora.io/sdk/release/AgoraRTC_N-4.24.3.js' }];
-
     sdkList.forEach(sdk => {
         if ((window as any)[sdk.name]) {
             console.log(`[WebSDK] ${sdk.name} 已存在，跳过加载`);
@@ -64,6 +63,7 @@ export function refreshDiss(dissNode: cc.Node): void {
     l_mask.width = cc.view.getVisibleSize().width;
     r_mask.width = cc.view.getVisibleSize().width;
 }
+
 // ==================== H5 桥接：enterTable ====================
 /** enterTable 必需字段定义 */
 const ENTER_TABLE_REQUIRED: { key: string; label: string; type: string }[] = [
@@ -137,9 +137,9 @@ export function fillGameCache(payload: any): void {
     gc.ClubID = payload.club_id ?? 0;
     gc.origin_type = payload.origin_type ?? 0;
     gc.gold_type = payload.gold_type ?? 0;
-
     console.log('[H5Bridge] GameCache 数据已写入, room_id:', gc.room_id, 'room_type:', gc.room_type);
 }
+
 // ==================== H5 桥接模式初始化 ====================
 /**
  * H5 桥接模式所需的数据层初始化。
@@ -173,7 +173,6 @@ let _soundLoaded = false;
 function loadSoundResources(): void {
     if (_soundLoaded) return;
     _soundLoaded = true;
-
     cc.resources.loadDir('sound', (err, assets) => {
         if (err) {
             console.error('[H5Bridge] 声音资源加载失败:', err);
@@ -184,6 +183,7 @@ function loadSoundResources(): void {
         console.log('[H5Bridge] 声音资源加载完成, 共', assets.length, '个资源');
     });
 }
+
 /**
  * 预加载牌桌所需的游戏资源（牌面纹理等）到 AssetContext.map。
  * 正常流程由 ProcedureEnterLobby 加载 resources/ 全目录，
@@ -194,7 +194,6 @@ let _gameResLoaded = false;
 function loadGameResources(): void {
     if (_gameResLoaded) return;
     _gameResLoaded = true;
-
     cc.resources.loadDir('main/rc', (err, assets) => {
         if (err) {
             console.error('[H5Bridge] 游戏资源加载失败:', err);

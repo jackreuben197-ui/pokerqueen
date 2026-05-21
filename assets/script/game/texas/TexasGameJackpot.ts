@@ -26,14 +26,12 @@ interface TexasGameJackpotHost {
 
 export default class TexasGameJackpot {
     private static readonly JACKPOT_AWARD_LIMIT: number = 15;
-
     private static readonly panelCache: Map<number, JackpotPanelCacheData> = new Map();
-
     private goldRollData: { value: number } | null = null;
 
     private goldRollUpdate: (() => void) | null = null;
 
-    constructor(private host: TexasGameJackpotHost) { }
+    constructor(private host: TexasGameJackpotHost) {}
 
     public UpdateRoomConfig(rec: any): void {
         const roomInfo = rec?.roomInfo || {};
@@ -74,8 +72,8 @@ export default class TexasGameJackpot {
             initial_records: panelCache?.awardLogs?.items || [],
             initial_top_record: panelCache?.awardLogs?.top_cards_type_data || null,
             initial_record_request_key: panelCache?.awardLogs?.request_key || ''
-        }
-        console.log({payload});
+        };
+        console.log({ payload });
         H5MsgMgr.sendToH5('showPanel', 1, {
             panelType: 'jackpotRecord',
             title: '',
@@ -132,7 +130,7 @@ export default class TexasGameJackpot {
             panelType: 'jackpotAward',
             title: '',
             props: {
-                award_users: rec.awardUsersList,
+                award_users: rec.awardUsersList
             }
         });
     }
@@ -183,7 +181,6 @@ export default class TexasGameJackpot {
         if (jackpotId <= 0 || roomId <= 0) {
             return;
         }
-
         const requestKey = this.getAwardRequestKey();
         try {
             const [templateRes, awardRes] = await Promise.all([
@@ -208,20 +205,19 @@ export default class TexasGameJackpot {
                     juhua: false
                 })
             ]);
-
             if (Number(GameCache.Instance.room_id || 0) !== roomId || Number(GameCache.Instance.jackPot_id || 0) !== jackpotId) {
                 return;
             }
-
             TexasGameJackpot.updatePanelCache(roomId, {
                 template: Number(templateRes?.code || 0) === 0 ? templateRes?.data?.item || null : null,
-                awardLogs: Number(awardRes?.code || 0) === 0
-                    ? {
-                        request_key: requestKey,
-                        items: Array.isArray(awardRes?.data?.items) ? awardRes.data.items : [],
-                        top_cards_type_data: awardRes?.data?.top_cards_type_data || null
-                    }
-                    : null
+                awardLogs:
+                    Number(awardRes?.code || 0) === 0
+                        ? {
+                              request_key: requestKey,
+                              items: Array.isArray(awardRes?.data?.items) ? awardRes.data.items : [],
+                              top_cards_type_data: awardRes?.data?.top_cards_type_data || null
+                          }
+                        : null
             });
         } catch (error) {
             console.warn('[TexasGameJackpot] preloadPanelData failed', error);

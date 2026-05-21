@@ -58,7 +58,6 @@ export default class MttRealTimeActionNode extends UIBase {
     //         } break;
     //     }
     // }
-
     initData() {
         GC.data.mtt.reqMttDetail();
     }

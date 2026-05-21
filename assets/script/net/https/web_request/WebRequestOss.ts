@@ -26,6 +26,7 @@ export class WebOssUploadAudio extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -42,6 +43,7 @@ export class WebOssUploadChatAudio extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -58,6 +60,7 @@ export class WebOssUploadImage extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -74,6 +77,7 @@ export class WebOssUploadLog extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

@@ -22,7 +22,6 @@ export default class LanguageFormItem extends UIBase {
     label_colors = ['#FFFFFF', '#35A3B3'];
 
     ///////////////////////////////////
-
     protected lateLoad(): void {
         super.lateLoad();
         this.toggle = this.getChildNodeOrComponent('toggle', GGToggleChild);

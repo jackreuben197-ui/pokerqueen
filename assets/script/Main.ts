@@ -155,6 +155,7 @@ export default class Main extends cc.Component {
         ProcedureManager.Init();
     }
 }
+
 // @ts-ignore
 BigInt.prototype.toJSON = function () {
     return this.toString();

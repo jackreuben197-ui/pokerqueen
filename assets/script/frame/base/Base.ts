@@ -33,7 +33,6 @@ export class Base extends cc.Component {
     // protected closeAll(without: string = '') {
     //     GC.dialog.closeAll(without);
     // }
-
     protected listen(eventType: string | number, callback: Function) {
         if (NotifyManager.instance.register(eventType, callback, this)) {
             let event: TEventType = { eventType: eventType, callback: callback, context: this };

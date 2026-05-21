@@ -50,6 +50,7 @@ export class NotifyManager {
         }
         return NotifyManager._instance;
     }
+
     /** 监听数组 */
     private _listeners: Map<string | number, Array<Observer>> = new Map();
 
@@ -92,6 +93,12 @@ export class NotifyManager {
     public post(name: string | number, ...args: any[]) {
         let observers: Array<Observer> = this._listeners.get(name);
         if (CCTools.isNull(observers)) return;
-        observers.forEach(observer => observer.notify(...args));
+        observers.forEach((observer, idx) => {
+            try {
+                observer.notify(...args);
+            } catch (e) {
+                console.error(`[NotifyManager] observer[${idx}] error for event ${name}:`, e);
+            }
+        });
     }
 }

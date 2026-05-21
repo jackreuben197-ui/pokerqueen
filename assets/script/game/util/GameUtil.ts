@@ -27,256 +27,144 @@ export class some_pos {
     public static seatYOffset: number = 0;
     //所有座位位置
     public static readonly all_seat_pos = [
-
         cc.v3(0, -2270), //  0 下中
-
         cc.v3(-480, -1580), //1 左下
-
         cc.v3(-480, -1155), //2 左中
-
         cc.v3(-480, -730), //3 左上
-
         cc.v3(-165, -440), //4 上左
-
         cc.v3(0, -440), //5 上中
-
         cc.v3(165, -440), //6 上右
-
         cc.v3(480, -730), //7 右上
-
         cc.v3(480, -1155), //8 右中
-
         cc.v3(480, -1580) //9 右下
     ];
     // 所有庄家bank位置
     public static all_bank_pos: cc.Vec3[] = [
-
         cc.v3(-300, 0), //中下为自己的位置
-
         cc.v3(0, -224), //除自己外所有方位的位置
-
         cc.v3(0, -224),
-
         cc.v3(0, -224),
-
         cc.v3(-160, -120),
-
         cc.v3(-160, -120),
-
         cc.v3(160, -120),
-
         cc.v3(0, -224),
-
         cc.v3(0, -224),
-
         cc.v3(0, -224),
-
         cc.v3(-300, 0), // 10 中下为自己的位置
-
         cc.v3(-300, 0) // 11 中下为其他玩家的位置
     ];
     //所有手上背面牌容器坐标
     public static readonly all_card_back_pos: cc.Vec3[] = [
-
         cc.v3(160, 5),
-
         cc.v3(160, 5),
-
         cc.v3(160, 5),
-
         cc.v3(160, 5),
-
         cc.v3(-160, 5),
-
         cc.v3(-160, 5),
-
         cc.v3(160, 5),
-
         cc.v3(-160, 5),
-
         cc.v3(-160, 5),
-
         cc.v3(-160, 5)
     ];
     //所有下注筹码位置
     public static readonly all_bet_pos: cc.Vec3[] = [
-
         cc.v3(135, -60), //  0 下中
-
         cc.v3(135, -60), //1 左下
-
         cc.v3(135, -60), //2 左中
-
         cc.v3(135, -60), //3 左上
-
         cc.v3(-5, -210), //4 上左
-
         cc.v3(-5, -210), //5 上中
-
         cc.v3(5, -210), //6 上右
-
         cc.v3(-135, -60), //7 右上
-
         cc.v3(-135, -60), //8 右中
-
         cc.v3(-135, -60), //9 右下
-
         cc.v3(135, 370), // 10 中下为自己时候的位置
-
         cc.v3(135, -60) //11 中下为其他玩家时候的位置
     ];
     //所有气泡位置
     public static readonly all_bubble_pos: cc.Vec3[] = [
-
         cc.v3(0, 100),
-
         cc.v3(0, 100),
-
         cc.v3(0, 100),
-
         cc.v3(0, 100),
-
         cc.v3(0, 100),
-
         cc.v3(0, 100),
-
         cc.v3(-0, 100),
-
         cc.v3(-0, 100),
-
         cc.v3(-0, 100),
-
         cc.v3(-0, 100)
     ];
     //保险时间位置
     public static readonly all_insurance_pos: cc.Vec3[] = [
-
         cc.v3(190, 28),
-
         cc.v3(190, 28),
-
         cc.v3(190, 28),
-
         cc.v3(190, 28),
-
         cc.v3(190, 28),
-
         cc.v3(190, 28),
-
         cc.v3(-190, 28),
-
         cc.v3(-190, 28),
-
         cc.v3(-190, 28),
-
         cc.v3(-190, 28)
     ];
     //蘑菇位置
     public static readonly all_mushroom_pos: cc.Vec3[] = [
-
         cc.v3(80, 55), //中下为自己的位置
-
         cc.v3(80, 55), //除自己外所有方位的位置
-
         cc.v3(80, 55),
-
         cc.v3(80, 55),
-
         cc.v3(80, 55),
-
         cc.v3(80, 55),
-
         cc.v3(-80, 55),
-
         cc.v3(-80, 55),
-
         cc.v3(-80, 55),
-
         cc.v3(-80, 55),
-
         cc.v3(80, 55), // 10 中下为自己的位置
-
         cc.v3(80, 55) // 11 中下为其他玩家的位置
     ];
     //蘑菇数字容器位置（相对于 MushroomPool）
     public static readonly all_mushroom_label_pos: cc.Vec3[] = [
-
         cc.v3(20, 55, 0), // 0
-
         cc.v3(20, 55, 0), // 1
-
         cc.v3(20, 55, 0), // 2
-
         cc.v3(20, 55, 0), // 3
-
         cc.v3(20, 55, 0), // 4
-
         cc.v3(-20, 55, 0), // 5
-
         cc.v3(-20, 55, 0), // 6
-
         cc.v3(-20, 55, 0), // 7
-
         cc.v3(-20, 55, 0), // 8
-
         cc.v3(-20, 55, 0), // 9
-
         cc.v3(20, 55, 0), // 10
-
         cc.v3(20, 55, 0) // 11
     ];
     //蘑菇价值文本位置（相对于 MushroomLabel）
     public static readonly all_mushroom_chip_pos: cc.Vec3[] = [
-
         cc.v3(-65, 50, 0), // 0
-
         cc.v3(-65, 50, 0), // 1
-
         cc.v3(-65, 50, 0), // 2
-
         cc.v3(-65, 50, 0), // 3
-
         cc.v3(-65, 50, 0), // 4
-
         cc.v3(-65, 50, 0), // 5
-
         cc.v3(75, 50, 0), // 6
-
         cc.v3(75, 50, 0), // 7
-
         cc.v3(75, 50, 0), // 8
-
         cc.v3(75, 50, 0), // 9
-
         cc.v3(-65, 50, 0), // 10
-
         cc.v3(-65, 50, 0) // 11
     ];
     //鱿鱼位置
     public static readonly all_squid_pos: cc.Vec3[] = [
-
         cc.v3(80, 50), //中下为自己的位置
-
         cc.v3(80, 50), //除自己外所有方位的位置
-
         cc.v3(80, 50),
-
         cc.v3(80, 50),
-
         cc.v3(80, 50),
-
         cc.v3(80, 50),
-
         cc.v3(-95, 50),
-
         cc.v3(-95, 50),
-
         cc.v3(-95, 50),
-
         cc.v3(-95, 50),
-
         cc.v3(80, 50), // 10 中下为自己的位置
-
         cc.v3(80, 50) // 11 中下为其他玩家的位置
     ];
 }
@@ -520,6 +408,7 @@ export default class GameUtil {
         this._SetGameMap();
         return this.GetGame(roomType);
     }
+
     //座位位置配置
     public static pos_config: { [key: number]: seat_info[] } = {
         2: [new seat_info(0), new seat_info(5)],
@@ -662,33 +551,26 @@ export default class GameUtil {
         }
         return isSixPlus;
     }
+
     /// <summary>
     /// 牌局分池位置
     /// </summary>
     public static readonly TexasPots: cc.Vec3[] = [
-
         cc.v3(0, -812),
-
         cc.v3(-283, -960),
-
         cc.v3(0, -960),
-
         cc.v3(283, -960),
-
         cc.v3(-283, -1025),
-
         cc.v3(0, -1025),
-
         cc.v3(283, -1025),
-
         cc.v3(-143, -1090),
-
         cc.v3(143, -1090)
     ];
 
     static get isInGameplay() {
         return GameCache.Instance.CurrentRoomID != 0;
     }
+
     //扑克映射表 服务端 : 客户端
     private static Poker_Map: { [key: number]: { res: number; show: string } } = {
         //桃
@@ -868,6 +750,7 @@ export default class GameUtil {
     public static GetSeeMoreCost(small: number): number {
         return 50;
     }
+
     /**
      * 座位上元素的位置 2,4,5,6 张牌
      */
@@ -966,7 +849,6 @@ export default class GameUtil {
     //         }
     //     }
     // }
-
     public static EnterMTTRoom(param: any = null) {
         let room_type: number = GameCache.Instance.room_type;
         console.log('EnterMTTRoom room_type:', room_type);
@@ -994,6 +876,7 @@ export default class GameUtil {
         }
         return tableType;
     }
+
     //桌布渐变色
     public static Table_Colors = [
         ['3B4374', '181B2A'],

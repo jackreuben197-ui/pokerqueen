@@ -140,6 +140,7 @@ export class WebCmsExtActivityClubAdd extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -170,6 +171,7 @@ export class WebCmsExtActivityClubAdminList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -201,6 +203,7 @@ export class WebCmsExtActivityClubMyList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -246,6 +249,7 @@ export class WebCmsExtClubShare0List extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -270,6 +274,7 @@ export class WebCmsExtHotUpdateTemplateList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -295,6 +300,7 @@ export class WebCmsExtImServiceLink extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -320,6 +326,7 @@ export class WebCmsExtImServiceList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -342,6 +349,7 @@ export class WebCmsExtMiniGameClubConfigCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -367,6 +375,7 @@ export class WebCmsExtMiniGameConfigCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -389,6 +398,7 @@ export class WebCmsExtMiniGameTribeConfigCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -411,6 +421,7 @@ export class WebCmsExtMttConfigCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -433,6 +444,7 @@ export class WebCmsExtMttCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -455,6 +467,7 @@ export class WebCmsExtMttTemplateCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -471,6 +484,7 @@ export class WebCmsExtMttTemplateDeleteId extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -503,6 +517,7 @@ export class WebCmsExtMttTemplateList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -525,6 +540,7 @@ export class WebCmsExtMttTemplateUpdate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -544,6 +560,7 @@ export class WebCmsExtMttTemplateWeekSwitchUpdate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -566,6 +583,7 @@ export class WebCmsExtRoomSmallBlindAnte extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -587,6 +605,7 @@ export class WebCmsExtRoomTemplate0 extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -609,6 +628,7 @@ export class WebCmsExtRoomTemplateStatus extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -634,6 +654,7 @@ export class WebCmsExtRoomTribeConfigCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -656,6 +677,7 @@ export class WebCmsExtRoomUserBatchCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -682,6 +704,7 @@ export class WebCmsExtRoomUserTemplateList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -698,6 +721,7 @@ export class WebCmsExtSngClubConfigCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -753,6 +777,7 @@ export class WebCmsExtSngConfigCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -769,6 +794,7 @@ export class WebCmsExtSngTribeConfigCreate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -796,6 +822,7 @@ export class WebCmsExtUserComplaIntReport extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -829,6 +856,7 @@ export class WebCmsExtWheelTemplateList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

@@ -24,6 +24,7 @@ export class WebImossGameClientUploadAudio extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -43,6 +44,7 @@ export class WebImossGameClientUploadImage extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

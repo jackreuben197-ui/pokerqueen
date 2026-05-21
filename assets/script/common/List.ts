@@ -67,6 +67,7 @@ export default class List extends cc.Component {
     get slideMode() {
         return this._slideMode;
     }
+
     //翻页作用距离
     @property({
         type: cc.Float,
@@ -105,6 +106,7 @@ export default class List extends cc.Component {
     get virtual() {
         return this._virtual;
     }
+
     //是否为循环列表
     @property({
         tooltip: CC_DEV && '是否为循环列表',
@@ -152,6 +154,7 @@ export default class List extends cc.Component {
     get updateRate() {
         return this._updateRate;
     }
+
     //分帧渲染（每帧渲染的Item数量（<=0时关闭分帧渲染））
     @property({
         type: cc.Integer,
@@ -258,6 +261,7 @@ export default class List extends cc.Component {
     get selectedId() {
         return this._selectedId;
     }
+
     private _forceUpdate: boolean = false;
     private _align: number;
     private _horizontalDir: number;
@@ -328,12 +332,14 @@ export default class List extends cc.Component {
     get numItems() {
         return this._actualNumItems;
     }
+
     private _inited: boolean = false;
     private _scrollView: cc.ScrollView;
 
     get scrollView() {
         return this._scrollView;
     }
+
     private _layout: cc.Layout;
     private _resizeMode: cc.Layout.ResizeMode;
     private _topGap: number;
@@ -388,7 +394,6 @@ export default class List extends cc.Component {
     }
 
     //----------------------------------------------------------------------------
-
     onLoad() {
         this._init();
     }

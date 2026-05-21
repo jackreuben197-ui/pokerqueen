@@ -41,6 +41,7 @@ export default abstract class AGameplayEntrance {
     public get isMain(): boolean {
         return false;
     }
+
     /**
      * 玩法类型
      */
@@ -52,6 +53,7 @@ export default abstract class AGameplayEntrance {
     public get matchId(): number {
         return this._matchId;
     }
+
     /**
      * 房间id - mtt比赛玩法过程中roomId可能会变动，允许派生类型修改
      */
@@ -177,6 +179,9 @@ export default abstract class AGameplayEntrance {
             // 等待通信层进入成功
             const isOk: boolean = await this.messageLayerEnterAsync(true);
             if (!isOk) {
+                // 进入失败，清理缓存防止残留脏数据
+                this.cacheGlobalDataBeforeLoad(true);
+                this.cacheGlobalDataAfterLoad(true);
                 return false;
             }
             // TODO: 触发消息层进入玩法的全局通知

@@ -2,6 +2,7 @@ import { BUNDLE_RESOURCES, PreloadParams, ResManager } from '../manager/ResManag
 import UIBase from './UIBase';
 import UIComponent, { PrefabUI } from './UIComponent';
 const { ccclass, property } = cc._decorator;
+const LN = '[UIPreloadingComponent]';
 
 @ccclass
 export default class UIPreloadingComponent extends UIBase {
@@ -49,19 +50,20 @@ export default class UIPreloadingComponent extends UIBase {
                 (finish: number, total: number, item: cc.AssetManager.RequestItem) => {
                     if (param.stopProgress) return;
                     let percent = finish / total;
+                    this.asset_count = total;
                     //纠错，保证当前进度不会小于上次进度
                     percent = Math.max(percent, this.prevPercent);
                     this.setProgress(percent);
-                    //console.log("=====>", BUNDLE_RESOURCES, item.url);
+                    //console.log(LN, "=====>", BUNDLE_RESOURCES, item.url);
                 },
                 (error: Error, assets: cc.Asset[]) => {
                     if (error) {
-                        console.warn(`资源加载失败:${bundleName}/${dir}`);
+                        console.warn(LN, `资源加载失败:${bundleName}/${dir}`);
                         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
                         param?.error?.(error);
                         return;
                     }
-                    console.log(`资源加载完成:${bundleName}/${dir}`, assets.length);
+                    console.log(LN, `资源加载完成:${bundleName}/${dir}`, assets.length);
                     ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
                     param?.complete?.();
                 }
@@ -72,7 +74,7 @@ export default class UIPreloadingComponent extends UIBase {
             if (err) {
                 cc.log('load bundle error:', bundleName);
                 if (err) {
-                    console.warn(`资源加载失败:${bundleName}/${dir}`);
+                    console.warn(LN, `资源加载失败:${bundleName}/${dir}`);
                     UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
                     param?.error?.(err);
                     return;
@@ -84,20 +86,21 @@ export default class UIPreloadingComponent extends UIBase {
                 (finish: number, total: number, item: cc.AssetManager.RequestItem) => {
                     if (param.stopProgress) return;
                     let percent = finish / total;
+                    this.asset_count = total;
                     //纠错，保证当前进度不会小于上次进度
                     percent = Math.max(percent, this.prevPercent);
                     this.setProgress(percent);
-                    // console.log("=====>", bundleName, item.url);
+                    // console.log(LN, "=====>", bundleName, item.url);
                 },
                 (error: Error, assets: cc.Asset[]) => {
                     if (error) {
-                        console.warn(`资源加载失败:${bundleName}/${dir}`);
+                        console.warn(LN, `资源加载失败:${bundleName}/${dir}`);
                         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
                         param?.error?.(error);
                         return;
                     }
                     this.setProgress(1);
-                    console.log(`资源加载完成:${bundleName}/${dir}`, assets.length);
+                    console.log(LN, `资源加载完成:${bundleName}/${dir}`, assets.length, 'items_count', this.asset_count);
                     ResManager.AssetForeach(assets, bundleName);
                     param?.complete?.();
                 }
@@ -105,7 +108,7 @@ export default class UIPreloadingComponent extends UIBase {
         });
         // let loadBundle_result = await ResManager.LoadABs(bundleName, this.setProgress.bind(this)).catch(() => { });
         // if (loadBundle_result) {
-        //     console.log(`bundle => ${bundleName} 包体资源加载完成`);
+        //     console.log(LN, `bundle => ${bundleName} 包体资源加载完成`);
         //     param?.complete();
         // } else {
         //     ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10050))

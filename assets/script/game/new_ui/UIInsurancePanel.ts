@@ -657,7 +657,6 @@ export default class UIInsurancePanel extends UIBasePlus {
     }
 
     ////////////////////////////点击响应///////////////////////////////////
-
     private click_back() {
         UIComponent.Instance.HideUI(PrefabUI.UIInsurancePanel);
     }

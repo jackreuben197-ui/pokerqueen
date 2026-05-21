@@ -41,6 +41,7 @@ export class WebMiscBannerList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -121,6 +122,7 @@ export class WebMiscAgoraToken extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -152,6 +154,7 @@ export class WebMiscArtiCleId extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -182,6 +185,7 @@ export class WebMiscArtiCleInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -230,6 +234,7 @@ export class WebMiscArtiCleList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -251,6 +256,7 @@ export class WebMiscArtiClenumSet extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -294,6 +300,7 @@ export class WebMiscArtiClePushList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -323,6 +330,7 @@ export class WebMiscBannerLobby extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -347,6 +355,7 @@ export class WebMiscCurrencyDescriptionInfo extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -371,6 +380,7 @@ export class WebMiscCurrencyExchAgeRate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -401,6 +411,7 @@ export class WebMiscCurrencyExchAgeRateList extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -421,6 +432,7 @@ export class WebMiscFaceDetect extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -440,6 +452,7 @@ export class WebMiscFaceLivenessMultiPhoto extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -462,6 +475,7 @@ export class WebMiscFaceRecog extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -488,6 +502,7 @@ export class WebMiscFaceRecogCheck extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -507,6 +522,7 @@ export class WebMiscFaceRecogConfirm extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -527,6 +543,7 @@ export class WebMiscFaceRecogRequest extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -550,6 +567,7 @@ export class WebMiscFaceRecogResult extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -584,6 +602,7 @@ export class WebMiscFaceRecogRoomLast extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -600,6 +619,7 @@ export class WebMiscFaceSave extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -622,6 +642,7 @@ export class WebMiscFaceSaveLimit extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -641,6 +662,7 @@ export class WebMiscFaceSeatCancelRecog extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -662,6 +684,7 @@ export class WebMiscFaceSeatRecog extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -728,6 +751,7 @@ export class WebMiscGameRoundListDataByRoom extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -750,6 +774,7 @@ export class WebMiscTranslate extends WebCommon {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;

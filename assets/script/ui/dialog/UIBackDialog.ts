@@ -123,7 +123,6 @@ export default class UIBackDialog extends UIBasePlus {
     }
 
     //////////////////
-
     private SendMessageOptions(prop_id: number, type: number, phoneNum = '', quantity = 1) {
         WWW.Instance.CommonAPI({
             web_class: WebPropUserPropUsed,

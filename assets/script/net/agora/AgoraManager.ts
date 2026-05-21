@@ -19,6 +19,7 @@ export default class AgoraManager {
         }
         return this._instance;
     }
+
     // ==================== 配置项 ====================
     /** 声网 App ID */
     public appId: string = 'da91afd18fa84618bee90c5468b06a5f';

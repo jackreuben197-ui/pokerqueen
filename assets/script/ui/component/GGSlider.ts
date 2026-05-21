@@ -143,7 +143,6 @@ export default class GGSlider extends cc.Component {
     //     this._index = value;
     //     this.setBarPos(this._index);
     // }
-
     private get distance() {
         if (this.direction == Direction.Bottom_To_Top) {
             return this.node.height;

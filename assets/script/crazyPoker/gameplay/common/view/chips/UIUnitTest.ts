@@ -16,7 +16,6 @@ export default class UIUnitTest extends BaseTouchBoard {
 
     // LIFE-CYCLE CALLBACKS:
     // onLoad () {}
-
     start() {}
     // update (dt) {}
 }

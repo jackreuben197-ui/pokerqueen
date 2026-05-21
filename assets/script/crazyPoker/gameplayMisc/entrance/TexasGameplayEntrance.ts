@@ -41,7 +41,7 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         // C#: int status = await RequestRoomInfoAsync();
         const roomStatus: number = await this.requestRoomInfoAsync();
         if (roomStatus != 0) {
-            console.error(`${this.constructor.name}: messageLayerEnterAsync: requestRoomInfoAsync failed: ${roomStatus}`);
+            console.warn(`${this.constructor.name}: messageLayerEnterAsync: requestRoomInfoAsync failed: ${roomStatus}`);
             return false;
         }
         // 检查是否可以进入
@@ -91,23 +91,23 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         // 等待响应 (由 ProcedureEnterTexas.onMsgHoldemRooms 调用 _roomInfoResolve)
         try {
             if (resp.status != 0) {
-                console.error(`${this.constructor.name}: requestRoomInfoAsync: ${resp.status}`);
+                console.warn(`${this.constructor.name}: requestRoomInfoAsync: ${resp.status}`);
                 return -1;
             }
             if (resp.roomsList == null || resp.roomsList.length == 0) {
-                console.error(`${this.constructor.name}: requestRoomInfoAsync: room not exist`);
+                console.warn(`${this.constructor.name}: requestRoomInfoAsync: room not exist`);
                 return -1;
             }
             this._roomInfo = resp.roomsList[0];
             // 检查房间是否已关闭/已结束 (status >= 3)
             if (this._roomInfo.status >= 3) {
-                console.error(`${this.constructor.name}: room is closed, status=${this._roomInfo.status}`);
-                UIComponent.Instance.Toast(i18nMgr.Get("GameRoom_ForceCloseTips"));
+                console.warn(`${this.constructor.name}: room is closed, status=${this._roomInfo.status}`);
+                UIComponent.Instance.Toast(i18nMgr.Get('GameRoom_ForceCloseTips'));
                 return -1;
             }
             return 0;
         } catch (error) {
-            console.error(`${this.constructor.name}: requestRoomInfoAsync: wait room info failed, ${error}`);
+            console.warn(`${this.constructor.name}: requestRoomInfoAsync: wait room info failed, ${error}`);
             return -1;
         }
     }
@@ -119,7 +119,7 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
     private async checkCanEnterAsync(isEnterForeground: boolean): Promise<boolean> {
         // 房间已关闭或已结束，不允许进入
         if (this._roomInfo && this._roomInfo.status >= 3) {
-            console.error(`${this.constructor.name}: checkCanEnterAsync: room is closed, status=${this._roomInfo.status}`);
+            console.warn(`${this.constructor.name}: checkCanEnterAsync: room is closed, status=${this._roomInfo.status}`);
             return false;
         }
         // TODO: 检查是否可以进入房间（人脸验证、金币检查等）
@@ -165,6 +165,7 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
      */
     protected override cacheGlobalDataBeforeLoad(isClear: boolean): void {
         super.cacheGlobalDataBeforeLoad(isClear);
+        if (!this._roomInfo) return;
         console.log(`${this.constructor.name}: cacheGlobalDataBeforeLoad: ${this._roomInfo.rid}, isClear=${isClear}`);
         // 特殊处理与房间存续期相关的数据缓存逻辑
         GameCache.Instance._roomDurationTime = isClear ? 0 : this._roomInfo.playDuration;

@@ -130,4 +130,5 @@ export var Bundle = {
 export interface ITweenDuration {
     duration: number;
 }
+
 ///////////////////////////////////////////////////

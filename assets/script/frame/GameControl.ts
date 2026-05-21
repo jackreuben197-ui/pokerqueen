@@ -19,13 +19,13 @@ class GameControl {
     public static get instance(): GameControl {
         return (this as any)._instance ?? new GameControl();
     }
+
     //判断游戏是否激活
     game_active: boolean = true;
 
     // get language() {
     //     return LanguageManager.instance;
     // }
-
     get notify() {
         return NotifyManager.instance;
     }
@@ -37,7 +37,6 @@ class GameControl {
     // get audio() {
     //     return AudioManager.instance;
     // }
-
     get data() {
         return DataManager.instance;
     }
@@ -45,7 +44,6 @@ class GameControl {
     // get sdk() {
     //     return SDKManager.instance;
     // }
-
     get game(): TexasGame {
         return GameCache.Instance.CurGame;
     }
@@ -74,7 +72,6 @@ class GameControl {
     // get message() {
     //     return MyMessageModel.Instance;
     // }
-
     init() {
         this.data.init();
         // this.sdk.init();
