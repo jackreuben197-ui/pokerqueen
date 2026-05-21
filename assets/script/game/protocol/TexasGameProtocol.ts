@@ -75,7 +75,7 @@ import UIAutoOperationComponent from '../ui/UIAutoOperationComponent';
 import UIOutChipsTipComponent from '../ui/UIOutChipsTipComponent';
 import GameUtil, { RoomType } from '../util/GameUtil';
 import MTTGame from '../texas/MTTGame';
-import { InsuranceData, WrapTriggedInsuranceData } from '../new_ui/UIInsurancePanel';
+import { InsuranceData, WrapTriggedInsuranceData } from '../new_ui/UIInsuranceNewPanel';
 import AgoraManager from '../../net/agora/AgoraManager';
 import AgoraVideoRender from '../../net/agora/AgoraVideoRender';
 import { VideoModel } from '../../crazyPoker/gameplay/common/constant/VideoModel';
@@ -1325,7 +1325,7 @@ export default class TexasGameProtocol {
     /// </summary>
     /// <param name="source"></param>
     public HandleGetPublicCards(source: ServerMessagePublicCards.AsObject): void {
-        UIComponent.Instance.HideUI(PrefabUI.UIInsurancePanel);
+        UIComponent.Instance.HideUI(PrefabUI.UIInsuranceNewPanel);
         UIComponent.Instance.HideUI(PrefabUI.UIAgreeSecondPcsComponent);
         this.game.autoCall = false;
         this.game.autoAllin = false;
@@ -1990,6 +1990,7 @@ export default class TexasGameProtocol {
                 mWrapTriggedInsuranceData = new WrapTriggedInsuranceData();
                 mWrapTriggedInsuranceData.outsPerUser = [];
                 mWrapTriggedInsuranceData.userNames = [];
+                mWrapTriggedInsuranceData.userIds = [];
                 mWrapTriggedInsuranceData.playerCards = [];
                 mWrapTriggedInsuranceData.outsCards = [];
                 //赋值保险池等数据，
@@ -2000,6 +2001,7 @@ export default class TexasGameProtocol {
                 mWrapTriggedInsuranceData.mostAmount = insurancePotLimit.max;
                 mWrapTriggedInsuranceData.PotUserCount = insurancePotLimit.potUserCount;
                 mWrapTriggedInsuranceData.PotLeaderCount = insurancePotLimit.potLeaderCount;
+                mWrapTriggedInsuranceData.insuranced = insurancePotLimit.insuranced;
                 mWrapTriggedInsuranceData.potAllowOutSelection = insurancePotLimit.insuranced > 0 ? 0 : 1;
                 for (let userOuts of insurancePotLimit.outsDetailList) {
                     let ins_Seat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(userOuts.seatId));
@@ -2009,6 +2011,7 @@ export default class TexasGameProtocol {
                     }
                     //需要显示玩家手牌和名字，通过座位号在牌局中缓存座位，获取已下发得手牌和名字。
                     mWrapTriggedInsuranceData.userNames.push(ins_Seat.Player.nick);
+                    mWrapTriggedInsuranceData.userIds.push(ins_Seat.Player.userID);
                     mWrapTriggedInsuranceData.playerCards.push(ins_Seat.Player.cards);
                     //各个玩家
                     mWrapTriggedInsuranceData.outsPerUser.push(userOuts.outsCardsList.length);
@@ -2022,7 +2025,8 @@ export default class TexasGameProtocol {
             data.triggedDatas = wrapTriggedInsuranceDatas;
             data.timeLeft = this.game.mainPlayer.timeLeft_insurance;
             data.delayTimes = this.game.mainPlayer.delayTimes;
-            UIComponent.Instance.ShowUI(PrefabUI.UIInsurancePanel, data);
+            data.round = this.game.cacheRound;
+            UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceNewPanel, data);
         };
         mTweenCallback();
     }
@@ -2067,6 +2071,10 @@ export default class TexasGameProtocol {
                 }
                 this.game.cacheTrunOutsCards.set(rec.seatId, mouts);
                 if (this.game.GetLocalSeatID(rec.seatId) == this.game.mainPlayer.seatID) {
+                    const potUserCount =
+                        GameCache.Instance._texasData._buyInsurancePotUserCount.get(potInsuranceBuy.potId) ??
+                        this.game.cacheBuyInsurancePotUserCount;
+                    this.game.cacheBuyInsurancePotUserCount = potUserCount;
                     this.game.cacheBuyActiveAmount = potInsuranceBuy.activeAmount;
                     if (this.game.uirc.Image_InsuranceTips.activeInHierarchy) {
                         this.game.uirc.Image_InsuranceTips.active = false;
@@ -2074,8 +2082,7 @@ export default class TexasGameProtocol {
                     this.game.uirc.ShowInsuranceTip(
                         potInsuranceBuy.activeOutsList.length,
                         potInsuranceBuy.activeAmount,
-                        GameUtil.GetOddsByPlayerNum(this.game.cacheBuyInsurancePotUserCount, potInsuranceBuy.activeOutsList.length) *
-                            potInsuranceBuy.activeAmount
+                        GameUtil.GetOddsByPlayerNum(potUserCount, potInsuranceBuy.activeOutsList.length) * potInsuranceBuy.activeAmount
                     );
                 }
             }

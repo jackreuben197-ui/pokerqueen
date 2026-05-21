@@ -476,12 +476,19 @@ export default class TexasGameMessageHandler {
         throw new Error('Method not implemented.');
     }
 
+    // 保险赔付消息
     Protocol_Holdem_BuyInsurance_Handler(Protocol_Holdem_BuyInsurance: ProtocolCode, Protocol_Holdem_BuyInsurance_Handler: any, arg2: this) {
         console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_BuyInsurance_Handler`);
     }
 
+    // 保险触发   1115
     Protocol_Holdem_InsuranceTrigged_Handler(response: any): void {
         console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_InsuranceTrigged_Handler`);
+    }
+
+    //购买保险
+    Protocol_Holdem_BuyInsuranceActive_Handler(response: any): void {
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_BuyInsuranceActive_Handler`);
     }
 
     /// <summary>
@@ -586,9 +593,6 @@ export default class TexasGameMessageHandler {
         console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_AgreePost_Handler`);
     }
 
-    Protocol_Holdem_BuyInsuranceActive_Handler(response: any): void {
-        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_BuyInsuranceActive_Handler`);
-    }
 
     /// <summary>
     /// 要求亮明未使用的公共牌 消息回调
