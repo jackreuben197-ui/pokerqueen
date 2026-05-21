@@ -3,6 +3,7 @@ import UIComponent from '../../../../../ui/UIComponent';
 import { UIDefine } from '../../../../../define/UIDefine';
 import List from '../../../../../common/List';
 import ChatMsgItem from './ChatMsgItem';
+import ChatManager, { ChatMsgData } from './ChatManager';
 import { ProtocolCode } from '../../../../../net/websocket/ProtocolCode';
 import ProtocolAgency from '../../../../../net/websocket/ProtocolAgency';
 import { Broadcast, BroadcastCode, BroadcastMsg } from '../../../../../net/websocket/ProtocolHoldemMessages';
@@ -17,17 +18,6 @@ const { ccclass, property } = cc._decorator;
 
 /** 聊天模式：chatOnly = 只发聊天（默认），danmuAndChat = 同时发弹幕+聊天 */
 type ChatMode = 'chatOnly' | 'danmuAndChat';
-
-interface ChatMsgData {
-    name: string;
-    content: string;
-    headUrl: string;
-    sex: number;
-    time: string;
-}
-
-/** 按房间 ID 缓存聊天记录，生命周期与应用一致 */
-const chatHistoryCache = new Map<number, ChatMsgData[]>();
 
 @ccclass
 export default class UIChatDlg extends UIBasePlus {
@@ -128,10 +118,14 @@ export default class UIChatDlg extends UIBasePlus {
 
     onShow(param?: any): void {
         super.onShow(param);
-        // 从缓存恢复当前房间的聊天记录
         const roomId = GameCache.Instance.room_id;
-        const cached = chatHistoryCache.get(roomId);
-        this._messages = cached ? cached.slice() : [];
+        const mgr = ChatManager.Instance;
+
+        // 注册实时消息回调（先注册，再读缓存，避免丢失中间到达的消息）
+        mgr.onNewMessage = this._onNewMessage.bind(this);
+
+        // 从 ChatManager 恢复当前房间的全部聊天记录
+        this._messages = mgr.getMessages(roomId).slice();
         this._pendingChatMsg = null;
         if (this._chatList) {
             this._chatList.numItems = this._messages.length;
@@ -143,16 +137,26 @@ export default class UIChatDlg extends UIBasePlus {
         if (this._dlgTitleLabel) {
             this._dlgTitleLabel.string = GameCache.Instance.roomName || '';
         }
-        // 注册监听：1019 响应（自己发送成功确认）+ 1121 广播（他人消息）
+        // 只监听 1019（自己发送成功确认），1121 由 ChatManager 统一处理
         GC.notify.register(ProtocolCode.Protocol_Holdem_BroadcastMsg, this._onSendChatResponse, this);
-        GC.notify.register(ProtocolCode.Protocol_Holdem_GetMsg, this._onReceiveChatMsg, this);
     }
 
     protected override lateClose(param?: any): void {
         super.lateClose(param);
-        // 注销监听
+        // 注销 1019 监听
         GC.notify.remove(ProtocolCode.Protocol_Holdem_BroadcastMsg, this._onSendChatResponse, this);
-        GC.notify.remove(ProtocolCode.Protocol_Holdem_GetMsg, this._onReceiveChatMsg, this);
+        // 断开 ChatManager 实时回调
+        ChatManager.Instance.onNewMessage = null;
+    }
+
+    /**
+     * ChatManager 实时推送新消息回调（UI 打开期间）
+     */
+    private _onNewMessage(msg: ChatMsgData): void {
+        this._messages.push(msg);
+        if (this._chatList) {
+            this._chatList.numItems = this._messages.length;
+        }
     }
 
     /**
@@ -268,9 +272,9 @@ export default class UIChatDlg extends UIBasePlus {
         room.setMatchId(matchId);
         msg.setRoom(room);
         msg.setConsume(Def.ConsumeType.CT_NONE);
-        msg.setMsgType(Def.BroadcastMsgType.BC_MSG_NONE);
+        msg.setMsgType(Def.BroadcastMsgType.BC_MSG_AVATAR);
         msg.setMessage(text);
-        const extraBytes = new Uint8Array(Array.from(extraJson).map(c => c.charCodeAt(0)));
+        const extraBytes = new TextEncoder().encode(extraJson);
         msg.setExtra(extraBytes);
 
         // 5. 发送到服务器
@@ -303,52 +307,13 @@ export default class UIChatDlg extends UIBasePlus {
     }
 
     /**
-     * GetMsg（1121）广播：接收房间其他成员的聊天消息
-     */
-    private _onReceiveChatMsg(rec: { message: string; extra: Uint8Array | string }): void {
-        if (!rec) return;
-        try {
-            const json = Buffer.from(rec.extra.toString(), 'base64').toString();
-            const responseData = Broadcast.Response(json);
-            if (responseData.code !== BroadcastCode.BroadcastMsg && responseData.code !== 10001) return;
-
-            const broadcastMsg = BroadcastMsg.Response(responseData.data);
-            // 只处理文字聊天消息（type == 0 且 message 非空）
-            if (broadcastMsg.type !== 0 || !broadcastMsg.message) return;
-
-            const gc = GameCache.Instance;
-
-            // 检查是否为弹幕消息（isDanmu 字段）
-            const isDanmu = (broadcastMsg as any).isDanmu === true;
-            if (isDanmu) {
-                const name = broadcastMsg.name || '';
-                UIComponent.Instance.Toast(`[弹幕] ${name}: ${broadcastMsg.message}`);
-                return;
-            }
-
-            // 过滤掉自己发的（已通过 _onSendChatResponse 显示）
-            if (broadcastMsg.user_id === gc.nUserId) return;
-
-            this._addChatMessage(broadcastMsg.name || '', broadcastMsg.message, broadcastMsg.headUrl || '', broadcastMsg.sex || 0, this._formatTime());
-        } catch (e) {
-            console.warn('[UIChatDlg] parse chat message error:', e);
-        }
-    }
-
-    /**
      * 添加一条聊天消息并刷新列表
      */
     private _addChatMessage(name: string, content: string, headUrl: string = '', sex: number = 0, time: string = ''): void {
         const msg: ChatMsgData = { name, content, headUrl, sex, time };
         this._messages.push(msg);
-        // 同步写入缓存
-        const roomId = GameCache.Instance.room_id;
-        let cached = chatHistoryCache.get(roomId);
-        if (!cached) {
-            cached = [];
-            chatHistoryCache.set(roomId, cached);
-        }
-        cached.push(msg);
+        // 同步写入 ChatManager 缓存
+        ChatManager.Instance.addMessage(GameCache.Instance.room_id, msg);
         if (this._chatList) {
             this._chatList.numItems = this._messages.length;
         }
@@ -389,7 +354,7 @@ export default class UIChatDlg extends UIBasePlus {
         msg.setConsume(Def.ConsumeType.CT_NONE);
         msg.setMsgType(Def.BroadcastMsgType.BC_MSG_BULLET);
         msg.setMessage(text);
-        const extraBytes = new Uint8Array(Array.from(extraJson).map(c => c.charCodeAt(0)));
+        const extraBytes = new TextEncoder().encode(extraJson);
         msg.setExtra(extraBytes);
 
         ProtocolAgency.Send<ClientMessageBroadcastMsg.AsObject>({

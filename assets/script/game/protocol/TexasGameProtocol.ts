@@ -8,6 +8,7 @@ import { ProtocolCode } from '../../net/websocket/ProtocolCode';
 import { Broadcast, BroadcastCode, BroadcastMsg } from '../../net/websocket/ProtocolHoldemMessages';
 import { Def, Operator, PlayerCards, PlayerChipChange, Result } from '../../protobuf/holdem/define_pb';
 import { ServerMessageActionAll } from '../../protobuf/holdem/recv_th_action_all_pb';
+import ChatManager from '../../crazyPoker/gameplay/common/view/chat/ChatManager';
 import { ServerMessageAddTimeOthers } from '../../protobuf/holdem/recv_th_add_time_others_pb';
 import { ServerMessageAgreeSecondPcs } from '../../protobuf/holdem/recv_th_agree_second_pcs_pb';
 import { ServerMessageAgreeSecondPcsTrigged } from '../../protobuf/holdem/recv_th_agree_second_pcs_trigged_pb';
@@ -1692,17 +1693,29 @@ export default class TexasGameProtocol {
         if (rec == null) {
             return;
         }
-        console.log('ProtocolHoldemGetMsgHandler :: ', rec);
-        let json = Buffer.from(rec.extra.toString(), 'base64').toString();
-        let responseData = Broadcast.Response(json);
+        let json: string;
+        try {
+            const _bin = atob(rec.extra.toString());
+            const _u8 = new Uint8Array(_bin.length);
+            for (let i = 0; i < _bin.length; i++) _u8[i] = _bin.charCodeAt(i);
+            json = new TextDecoder('utf-8').decode(_u8);
+        } catch (e) {
+            console.warn('[GetMsg] extra decode error:', e);
+            return;
+        }
+        let responseData: { code: number; data: string };
+        try {
+            responseData = Broadcast.Response(json);
+        } catch (e) {
+            console.warn('[GetMsg] JSON parse error, raw json:', json?.substring(0, 200));
+            return;
+        }
         let code: number = responseData.code;
         let data: string = responseData.data;
-        console.log('[Emoji] GetMsg code=', code, 'data=', data);
         switch (code) {
             case BroadcastCode.BroadcastMsg:
             case 10001:
                 var broadcastMsg = BroadcastMsg.Response(data);
-                console.log('[Emoji] 收到广播:', 'type=', broadcastMsg.type, 'user_id=', broadcastMsg.user_id, 'name=', broadcastMsg.name);
                 {
                     const EMOJI_TYPE_BASE = Def.ConsumeType.CT_EMOJI_1 * 100;
                     const emojiOffset = broadcastMsg.type - EMOJI_TYPE_BASE;
@@ -1718,11 +1731,13 @@ export default class TexasGameProtocol {
                 {
                     const PROP_TYPE_BASE = Def.ConsumeType.CT_EMOJI_2 * 100; // 600
                     const propOffset = broadcastMsg.type - PROP_TYPE_BASE;
-                    console.log('[ThrowProp] 检测道具 type=', broadcastMsg.type, 'base=', PROP_TYPE_BASE, 'offset=', propOffset);
                     if (propOffset >= 0 && propOffset < 12) {
-                        console.log('[ThrowProp] 进入道具分支, throwPropMgr=', !!this.game?.throwPropMgr);
                         this.game?.throwPropMgr?.handlePropMessage(broadcastMsg);
                     }
+                }
+                // 聊天/弹幕消息转发给 ChatManager (type=0 为聊天文本)
+                {
+                    ChatManager.Instance.handleBroadcastMsg(broadcastMsg);
                 }
                 break;
             case BroadcastCode.BroadcastVoiceprint:
