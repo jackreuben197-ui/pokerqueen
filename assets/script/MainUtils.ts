@@ -22,6 +22,7 @@ import ProtocolAgency from './net/websocket/ProtocolAgency';
 import { ProtocolCode } from './net/websocket/ProtocolCode';
 import { i18nMgr } from './i18n/i18nMgr';
 import { GameEnterType } from './game/util/GameUtil';
+import DiamondModel from './diamond/DiamondModel';
 
 // ==================== SDK 动态加载 ====================
 /**
@@ -345,6 +346,25 @@ export async function registerH5Listeners(): Promise<void> {
             return;
         }
         GameCache.Instance._globalConfig = config;
+    });
+
+    // 仅预填 Cocos 侧实际用到的 config_type：2(加时) 8(延迟看牌) 30(历史偷看)。
+    // payload.raw 已是 H5 转换好的 map：{ [configType]: { [typeExt]: item } }。
+    // DiamondModel.setFromH5Sync 会跳过已有缓存，后续按需拉取时命中缓存不再发请求。
+    const DIAMOND_PRELOAD_TYPES = [2, 8, 30];
+    H5MsgMgr.Instance.on('syncDiamondConfig', payload => {
+        const map = payload?.raw;
+        if (!map || typeof map !== 'object') {
+            console.warn('[H5Bridge] syncDiamondConfig 数据异常：缺少 payload.raw');
+            return;
+        }
+        for (const configType of DIAMOND_PRELOAD_TYPES) {
+            const typeMap = (map as any)[configType];
+            if (typeMap && typeof typeMap === 'object') {
+                DiamondModel.Instance.setFromH5Sync(configType, typeMap);
+            }
+        }
+        console.log('[H5Bridge] syncDiamondConfig 预填完成');
     });
 
     // H5MsgMgr.Instance.on('syncRoomsList', (payload) => {
