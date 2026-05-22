@@ -1077,7 +1077,7 @@ export default class TexasGameProtocol {
             Seat.PlayWinArmature();
             Seat.UpdateRecyclingWinChip();
             let PlayRecyclingWinChipAnimation_Tween = Seat.PlayRecyclingWinChipAnimation(
-                this.game.uirc.main.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position)
+                this.game.GetRecyclingChipPosV3()
             );
             if (PlayRecyclingWinChipAnimation_Tween) {
                 tween.then(
@@ -1254,7 +1254,7 @@ export default class TexasGameProtocol {
                 mSeat.UpdateHunterAward();
             }
             let PlayRecyclingWinChipAnimation_Tween: { tween?: cc.Tween; complete?: Function; IsPlaying?: boolean; Kill?: Function } =
-                mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.main.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
+                mSeat.PlayRecyclingWinChipAnimation(this.game.GetRecyclingChipPosV3());
             if (PlayRecyclingWinChipAnimation_Tween) {
                 tween.then(
                     cc.callFunc(() => {

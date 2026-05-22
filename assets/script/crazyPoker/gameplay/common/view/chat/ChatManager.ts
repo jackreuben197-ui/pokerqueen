@@ -1,5 +1,6 @@
 import { BroadcastMsg } from '../../../../../net/websocket/ProtocolHoldemMessages';
 import { GameCache } from '../../../../../game/GameCache';
+import SceneManager from '../../../../../manager/SceneManager';
 import UIComponent from '../../../../../ui/UIComponent';
 
 export interface ChatMsgData {
@@ -13,7 +14,7 @@ export interface ChatMsgData {
 type NewMessageCallback = (msg: ChatMsgData) => void;
 
 /**
- * 聊天消息管理器：缓存房间内聊天消息。
+ * 聊天消息管理器：缓存房间内聊天消息，管理 chatBtn 上方的 alert 提醒。
  * 聊天/弹幕消息由 TexasGameProtocol.ProtocolHoldemGetMsgHandler 转发到 handleBroadcastMsg。
  */
 export default class ChatManager {
@@ -24,11 +25,25 @@ export default class ChatManager {
     /** 聊天界面打开时注册，用于实时推送新消息到 UI */
     onNewMessage: NewMessageCallback = null;
 
+    /** chatBtn 上的 alert 节点引用（懒加载查找） */
+    private _alertNode: cc.Node = null;
+
     static get Instance(): ChatManager {
         if (!ChatManager._instance) {
             ChatManager._instance = new ChatManager();
         }
         return ChatManager._instance;
+    }
+
+    /** 获取 alert 节点（chatBtn 在 side_btns/main_menu 下） */
+    private get _chatAlertNode(): cc.Node {
+        if (this._alertNode && this._alertNode.isValid) return this._alertNode;
+        const sceneNode = SceneManager.Instance.currUI;
+        if (!sceneNode) return null;
+        const chatBtn = cc.find('side_btns/main_menu/chatBtn', sceneNode);
+        if (!chatBtn) return null;
+        this._alertNode = chatBtn.getChildByName('alert');
+        return this._alertNode;
     }
 
     getMessages(roomId: number): ChatMsgData[] {
@@ -42,6 +57,20 @@ export default class ChatManager {
             this._cache.set(roomId, list);
         }
         list.push(msg);
+    }
+
+    /** 显示 chatBtn 上的 alert 红点 */
+    showAlert(): void {
+        if (this._chatAlertNode) {
+            this._chatAlertNode.active = true;
+        }
+    }
+
+    /** 隐藏 chatBtn 上的 alert 红点 */
+    hideAlert(): void {
+        if (this._chatAlertNode) {
+            this._chatAlertNode.active = false;
+        }
     }
 
     /**
@@ -86,6 +115,11 @@ export default class ChatManager {
         // 实时通知 UI
         if (this.onNewMessage) {
             this.onNewMessage(msg);
+        }
+
+        // 聊天窗口未打开时，显示 alert 提醒
+        if (!this.onNewMessage) {
+            this.showAlert();
         }
     }
 

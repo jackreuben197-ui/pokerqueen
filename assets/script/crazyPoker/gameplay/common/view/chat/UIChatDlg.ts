@@ -124,6 +124,9 @@ export default class UIChatDlg extends UIBasePlus {
         // 注册实时消息回调（先注册，再读缓存，避免丢失中间到达的消息）
         mgr.onNewMessage = this._onNewMessage.bind(this);
 
+        // 打开聊天窗口，隐藏 alert 红点
+        mgr.hideAlert();
+
         // 从 ChatManager 恢复当前房间的全部聊天记录
         this._messages = mgr.getMessages(roomId).slice();
         this._pendingChatMsg = null;
