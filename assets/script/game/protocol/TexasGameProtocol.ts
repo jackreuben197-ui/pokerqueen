@@ -40,6 +40,8 @@ import { ServerMessageSeated } from '../../protobuf/holdem/req_th_seated_pb';
 import { ServerMessageSetAutoOnTable } from '../../protobuf/holdem/req_th_set_auto_on_table_pb';
 import { ServerMessageShowdown } from '../../protobuf/holdem/req_th_showdown_pb';
 import { ServerMessageShowPublicCards } from '../../protobuf/holdem/req_th_show_public_cards_pb';
+import { ServerMessageViewPlayerCards } from '../../protobuf/holdem/req_th_view_player_cards_pb';
+import { ServerMessageViewPlayerCardsNum } from '../../protobuf/holdem/req_th_view_player_cards_num_pb';
 import { ServerMessageSquidInActive } from '../../protobuf/holdem/req_th_squid_in_active_pb';
 import { ServerMessageStoreChips } from '../../protobuf/holdem/req_th_store_chips_pb';
 import { ServerMessageUtilAntiCheatRoomVideo } from '../../protobuf/holdem/recv_util_anti_cheat_room_video_pb';
@@ -108,6 +110,8 @@ export default class TexasGameProtocol {
         GC.notify.register(ProtocolCode.Protocol_Holdem_AddTimeOthers, this.HANDLER_REQ_ADD_TIME_OTHERS, this); // 其他人操作加时
         GC.notify.register(ProtocolCode.Protocol_Holdem_ShowPublicCards, this.HANDLER_REQ_SEE_MORE_PUBLIC_ACTION, this); // 查看未发公共牌
         GC.notify.register(ProtocolCode.Protocol_Holdem_ShowPublicCardsOthers, this.HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER, this); // 查看未发公共牌
+        GC.notify.register(ProtocolCode.Protocol_Holdem_ViewPlayerCards, this.HANDLER_REQ_VIEW_PLAYER_CARDS, this); // 付费看手牌
+        GC.notify.register(ProtocolCode.Protocol_Holdem_ViewPlayerCardsNum, this.HANDLER_REQ_VIEW_PLAYER_CARDS_NUM, this); // 看手牌次数
         GC.notify.register(ProtocolCode.Protocol_Holdem_SidePots, this.HANDLER_REQ_SHOW_SIDE_POTS, this); // 显示分池筹码
         GC.notify.register(ProtocolCode.Protocol_Holdem_InsuranceTrigged, this.HANDLER_REQ_INSURANCE_TRIGGED, this); // 保险触发
         GC.notify.register(ProtocolCode.Protocol_Holdem_BuyInsurance, this.HANDLER_REQ_CLAIM_INSURANCE, this); // 保险赔付消息
@@ -147,6 +151,8 @@ export default class TexasGameProtocol {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_AddTimeOthers, this.HANDLER_REQ_ADD_TIME_OTHERS, this); // 其他人操作加时
         GC.notify.remove(ProtocolCode.Protocol_Holdem_ShowPublicCards, this.HANDLER_REQ_SEE_MORE_PUBLIC_ACTION, this); // 查看未发公共牌
         GC.notify.remove(ProtocolCode.Protocol_Holdem_ShowPublicCardsOthers, this.HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER, this); // 查看未发公共牌
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_ViewPlayerCards, this.HANDLER_REQ_VIEW_PLAYER_CARDS, this); // 付费看手牌
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_ViewPlayerCardsNum, this.HANDLER_REQ_VIEW_PLAYER_CARDS_NUM, this); // 看手牌次数
         GC.notify.remove(ProtocolCode.Protocol_Holdem_SidePots, this.HANDLER_REQ_SHOW_SIDE_POTS, this); // 显示分池筹码
         GC.notify.remove(ProtocolCode.Protocol_Holdem_InsuranceTrigged, this.HANDLER_REQ_INSURANCE_TRIGGED, this); // 保险触发
         GC.notify.remove(ProtocolCode.Protocol_Holdem_BuyInsurance, this.HANDLER_REQ_CLAIM_INSURANCE, this); // 保险赔付消息
@@ -761,6 +767,32 @@ export default class TexasGameProtocol {
                 //查看河牌圈的牌;
                 this.game.ShowSeeMorePublicTips(`${mSeat.Player.nick}${CPErrorCode.LanguageDescription(20027)}`);
             }
+        }
+    }
+
+    /// <summary>
+    /// 付费看手牌响应 (1026)
+    /// </summary>
+    protected HANDLER_REQ_VIEW_PLAYER_CARDS(rec: ServerMessageViewPlayerCards.AsObject) {
+        if (rec == null) return;
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
+            this.game.InteractableLookHandCard(true);
+            return;
+        }
+        this.game.ShowSeeMorePublicTips(CPErrorCode.LanguageDescription(20028)); // 查看手牌成功
+        this.game.InteractableLookHandCard(true);
+        // 成功后刷新次数
+        this.game.SendViewPlayerCardsNum();
+    }
+
+    /// <summary>
+    /// 看手牌次数响应 (1029)
+    /// </summary>
+    protected HANDLER_REQ_VIEW_PLAYER_CARDS_NUM(rec: ServerMessageViewPlayerCardsNum.AsObject) {
+        if (rec == null) return;
+        if (rec.status == 0) {
+            this.game.lookCardsPayTimes = rec.payTimes || 0;
         }
     }
 
@@ -1505,6 +1537,8 @@ export default class TexasGameProtocol {
                 this.game.callTimeStay = !!(rec.resultsList[i] as any).callTimeStay;
                 if (!rec.resultsList[i].standUp) {
                     this.game.ShowSeeMorePublic();
+                    this.game.ShowLookHandCard();
+                    this.game.SendViewPlayerCardsNum();
                 }
             }
         }
