@@ -2553,6 +2553,7 @@ export default class TexasGame {
     /// <returns></returns>
     public GetRecyclingChipPosV3(): cc.Vec3 {
         //return rc.transform.TransformPoint(this.gameUI.textAlreadAnte.transform.localPosition);
+        if (!this.uirc.Text_AlreadAnte) return cc.Vec3.ZERO;
         return this.uirc.main.convertToWorldSpaceAR(this.uirc.Text_AlreadAnte.node.position);
     }
 
@@ -4155,17 +4156,19 @@ export default class TexasGame {
 
     //获取公共牌数量 第n套 1-n
     public GetPublicCardsCount(n: number) {
-        let cards = this.public_cards[n - 1];
+        let cards = this.public_cards && this.public_cards[n - 1];
+        if (!cards) return 0;
         let count = cards.indexOf(-1);
         return count == -1 ? GameUtil.PublicCardMaxCount : count;
     }
 
     //获取第n套公共牌 第n套 1-n
     public GetPublicCards(n: number): number[] {
-        return this.public_cards[n - 1];
+        return (this.public_cards && this.public_cards[n - 1]) || [];
     }
 
     public SetPublicCards(n: number, index: number, card: number) {
+        if (!this.public_cards || !this.public_cards[n - 1]) return;
         this.public_cards[n - 1][index] = card;
     }
 
@@ -4368,6 +4371,7 @@ export default class TexasGame {
 
     // 刷新底池
     public UpdateAlreadAnte(): void {
+        if (!this.uirc.Text_AlreadAnte) return;
         this.uirc.Text_AlreadAnte.node.active = this.gamestatus >= 1 && this.gamestatus < 7;
         this.uirc.Text_AlreadAnte.string = `${CPErrorCode.LanguageDescription(20005)} : ${GameUtil.TransBetValue(this.alreadAnte)}`;
     }
