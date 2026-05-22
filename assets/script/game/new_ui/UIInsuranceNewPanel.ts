@@ -173,6 +173,7 @@ class InsuranceCardItem {
 export default class UIInsuranceNewPanel extends UIBasePlus {
     // UI 节点引用。这里全部显式查找，避免依赖旧版 `$` 自动绑定规则。
     private backClick: cc.Node = null;
+    private dialogNode: cc.Node = null;
     private scrollViewRoot: cc.Node = null;
     private scrollView: cc.ScrollView = null;
     private scrollViewport: cc.Node = null;
@@ -345,6 +346,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     private bindNodes(): void {
         this.backClick = this.node.getChildByName('$back_click') || this.node.getChildByName('back_click');
         const dialog = this.node.getChildByName('Image_Dialog');
+        this.dialogNode = dialog;
         this.scrollViewRoot = cc.find('Image_Dialog/ScrollViewRoot', this.node);
         this.scrollView = this.scrollViewRoot?.getComponent(cc.ScrollView) || null;
         this.scrollViewport = cc.find('Viewport', this.scrollViewRoot);
@@ -1489,6 +1491,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     }
 
 
+
     /** 内容超过 620 时滚动；不足 620 时滚动区跟内容一起收缩，避免底部大块空白。 */
     private refreshScrollAreaHeight(): void {
         if (!this.scrollViewRoot || !this.scrollViewport || !this.insuranceCardsRoot) {
@@ -1507,8 +1510,9 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         const contentHeight = Math.max(0, this.getVisibleContentHeight());
         this.insuranceCardsRoot.height = Math.max(1, contentHeight);
         const targetHeight = Math.min(this.maxScrollViewHeight, Math.max(0, contentHeight));
-        this.scrollViewport.height = targetHeight;
-        this.scrollViewRoot.height = targetHeight;
+        this.scrollViewport.setContentSize(this.scrollViewport.width, targetHeight);
+        this.scrollViewRoot.setContentSize(this.scrollViewRoot.width, targetHeight);
+        this.dialogNode?.getComponent(cc.Layout)?.updateLayout();
 
         // 高度变化后把内容吸到顶部，避免内容少时仍然停留在旧滚动位置产生空白。
         this.scrollView?.scrollToTop(0);
@@ -1516,11 +1520,12 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
 
     private resetScrollAreaHeight(): void {
         if (this.scrollViewport) {
-            this.scrollViewport.height = this.maxScrollViewHeight;
+            this.scrollViewport.setContentSize(this.scrollViewport.width, this.maxScrollViewHeight);
         }
         if (this.scrollViewRoot) {
-            this.scrollViewRoot.height = this.maxScrollViewHeight;
+            this.scrollViewRoot.setContentSize(this.scrollViewRoot.width, this.maxScrollViewHeight);
         }
+        this.dialogNode?.getComponent(cc.Layout)?.updateLayout();
     }
 
     /** 手动兜一份可见子节点高度，避免个别 Layout 还没来得及刷新时出现高度读小。 */

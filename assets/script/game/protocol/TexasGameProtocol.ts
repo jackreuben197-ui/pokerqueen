@@ -1958,7 +1958,35 @@ export default class TexasGameProtocol {
         }
         GameCache.Instance.CurGame.cacheRound = rec.round;
         if (rec.operatorList == null || rec.operatorList.length == 0) {
-            UIComponent.Instance.Toast(i18nMgr.Get('Purchase_insurance'));
+            if (rec.invalidPotsList && rec.invalidPotsList.length > 0) {
+                for (const invalidPot of rec.invalidPotsList) {
+                    switch (invalidPot.reason) {
+                        case Def.IIReason.IIR_ZERO_OUTS:
+                        case Def.IIReason.IIR_NO_ODDS_FOUND: {
+                            const outsNum = (GameUtil.OutsList.get(invalidPot.potUserCount) ?? []).length;
+                            UIComponent.Instance.Toast(
+                                i18nMgr.Get('adaptation20005') + (invalidPot.potId + 1) + ':' +
+                                StringHelper.Format(i18nMgr.Get('UIInsuranceReasonTips1'), [outsNum])
+                            );
+                            break;
+                        }
+                        case Def.IIReason.IIR_NO_ODDS_TABLE_FOUND:
+                            UIComponent.Instance.Toast(
+                                i18nMgr.Get('adaptation20005') + (invalidPot.potId + 1) + ':' +
+                                i18nMgr.Get('UIInsuranceReasonTips2')
+                            );
+                            break;
+                        case Def.IIReason.IIR_EV_LIMIT:
+                            UIComponent.Instance.Toast(i18nMgr.Get('UIEVInsuranceTips5'));
+                            break;
+                        default:
+                            UIComponent.Instance.Toast(i18nMgr.Get('Purchase_insurance'));
+                            break;
+                    }
+                }
+            } else {
+                UIComponent.Instance.Toast(i18nMgr.Get('Purchase_insurance'));
+            }
             return;
         }
         this.HandlerInsueranceData(rec.operatorList);
@@ -2012,6 +2040,7 @@ export default class TexasGameProtocol {
                 mWrapTriggerInsuranceData.odds = insurancePotLimit.odds;
                 mWrapTriggerInsuranceData.potUserCount = insurancePotLimit.potUserCount;
                 mWrapTriggerInsuranceData.potLeaderCount = insurancePotLimit.potLeaderCount;
+                GameCache.Instance._texasData._buyInsurancePotUserCount.set(insurancePotLimit.potId, insurancePotLimit.potUserCount);
                 mWrapTriggerInsuranceData.insuranced = insurancePotLimit.insuranced;
                 mWrapTriggerInsuranceData.potAllowOutSelection = insurancePotLimit.insuranced > 0 ? 0 : 1;
                 for (let userOuts of insurancePotLimit.outsDetailList) {
@@ -2082,19 +2111,22 @@ export default class TexasGameProtocol {
                 }
                 this.game.cacheTrunOutsCards.set(rec.seatId, mouts);
                 if (this.game.GetLocalSeatID(rec.seatId) == this.game.mainPlayer.seatID) {
-                    const potUserCount =
-                        GameCache.Instance._texasData._buyInsurancePotUserCount.get(potInsuranceBuy.potId) ??
-                        this.game.cacheBuyInsurancePotUserCount;
-                    this.game.cacheBuyInsurancePotUserCount = potUserCount;
-                    this.game.cacheBuyActiveAmount = potInsuranceBuy.activeAmount;
-                    if (this.game.uirc.Image_InsuranceTips.activeInHierarchy) {
-                        this.game.uirc.Image_InsuranceTips.active = false;
+                    const insuranceMode = GameCache.Instance._texasData._insuranceMode;
+                    if (insuranceMode === Def.IsuranceMode.IM_NORMAL || insuranceMode === Def.IsuranceMode.IM_NEW_NORMAL) {
+                        const potUserCount =
+                            GameCache.Instance._texasData._buyInsurancePotUserCount.get(potInsuranceBuy.potId) ??
+                            this.game.cacheBuyInsurancePotUserCount;
+                        this.game.cacheBuyInsurancePotUserCount = potUserCount;
+                        this.game.cacheBuyActiveAmount = potInsuranceBuy.activeAmount;
+                        if (this.game.uirc.Image_InsuranceTips.activeInHierarchy) {
+                            this.game.uirc.Image_InsuranceTips.active = false;
+                        }
+                        this.game.uirc.ShowInsuranceTip(
+                            potInsuranceBuy.activeOutsList.length,
+                            potInsuranceBuy.activeAmount,
+                            GameUtil.GetOddsByPlayerNum(potUserCount, potInsuranceBuy.activeOutsList.length) * potInsuranceBuy.activeAmount
+                        );
                     }
-                    this.game.uirc.ShowInsuranceTip(
-                        potInsuranceBuy.activeOutsList.length,
-                        potInsuranceBuy.activeAmount,
-                        GameUtil.GetOddsByPlayerNum(potUserCount, potInsuranceBuy.activeOutsList.length) * potInsuranceBuy.activeAmount
-                    );
                 }
             }
             if (potInsuranceBuy.passiveAmount > 0 && this.game.GetLocalSeatID(rec.seatId) == this.game.mainPlayer.seatID) {
