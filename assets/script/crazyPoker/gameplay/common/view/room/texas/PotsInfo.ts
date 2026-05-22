@@ -37,7 +37,7 @@ export default class PotsInfo extends cc.Component {
         for (let i = 0; i < 8; i++) {
             let pot = cc.instantiate(this.sidePot);
             pot.active = false;
-            pot.parent = this.sidePot;
+            pot.parent = this.sidePot.parent;
             this._allPotsNodes.push(pot);
         }
     }   
@@ -69,12 +69,16 @@ export default class PotsInfo extends cc.Component {
 
     private onUpdatePotList(pots: SidePot.AsObject[]) {
         if (!pots) return;
-        for (let i = 0; i < pots.length; i++) {
-            const pot = pots[i]
+        const l = pots.length;
+        for (let i = 0; i < 9; i++) {
             const sidePot = this._allPotsNodes[i];
+            if (i >= l) {
+                sidePot.active = false;
+                continue;
+            }
+            const pot = pots[i];
             sidePot.active = true;
             const lbl = this._allPotsNodes[i].getComponentInChildren(cc.Label);
-
             lbl.string = StringHelper.GetLongString(pot.amount, 100, 1);
             //判断进行位移
             if (i > 0 && i >= this._last_pots_count) {
@@ -84,6 +88,7 @@ export default class PotsInfo extends cc.Component {
                 sidePot.setPosition(PotsInfo._sidePotsPosition[i]);
             }
         }
+        this._last_pots_count = pots.length;
     }
 
     private static readonly _sidePotsPosition: cc.Vec3[] = [
