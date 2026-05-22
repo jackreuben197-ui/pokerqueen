@@ -1535,6 +1535,7 @@ export default class TexasGameProtocol {
             if (mSeat.IsMySeat) {
                 this.game.callTimeCount = Number((rec.resultsList[i] as any).callTimeCount || 0);
                 this.game.callTimeStay = !!(rec.resultsList[i] as any).callTimeStay;
+                console.log('[ShowButtons] IsMySeat, standUp=' + rec.resultsList[i].standUp + ', isParticipating=' + this.game.mainPlayer.isParticipateInTheGame);
                 if (!rec.resultsList[i].standUp) {
                     this.game.ShowSeeMorePublic();
                     this.game.ShowLookHandCard();

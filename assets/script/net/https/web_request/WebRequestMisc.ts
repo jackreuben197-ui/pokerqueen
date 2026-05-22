@@ -50,54 +50,89 @@ export class WebMiscBannerList extends WebCommon {
 }
 
 export class WebMiscGameRecordRound extends WebCommon {
-    //接口地址
     static API: string = '/api/misc/game/record_round';
-    //字段声明
-    // static RequestParams: {
-    //     id: number, // 牌普id
-    //     room_id: number, // 普通牌局，
-    //     match_id: number, // mtt赛事id
-    //     room_unique_id: string, // room唯一标识
-    //     name: string, //
-    //     hand_num: number, // 手数
-    //     change: number, // 金币变动值
-    //     type: number, // 类型
-    //     open: number, // 是否公开
-    // } = null;
+    static RequestParams: {
+        id?: number;
+        room_id?: number;
+        match_id?: number;
+        room_unique_id?: string;
+        name?: string;
+        hand_num?: number;
+        change?: number;
+        type?: number;
+        open?: number;
+    } | null = null;
+    static ResponseData: {} | null = null;
+    static Request(param: typeof WebMiscGameRecordRound.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: {
+        code?: number;
+        message?: string;
+        data?: typeof WebMiscGameRecordRound.ResponseData;
+    };
 }
 
 export class WebMiscGameRoundList extends WebCommon {
-    //接口地址
     static API: string = '/api/misc/game/round/list';
-    //字段声明
-    // static RequestParams: {
-    //     limit: number,
-    //     offset: number,
-    // } = null;
+    static RequestParams: {
+        limit?: number;
+        offset?: number;
+    } | null = null;
+    static ResponseData: {} | null = null;
+    static Request(param: typeof WebMiscGameRoundList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: {
+        code?: number;
+        message?: string;
+        data?: typeof WebMiscGameRoundList.ResponseData;
+    };
 }
 
 export class WebMiscGameRoundStatus extends WebCommon {
-    //接口地址
     static API: string = '/api/misc/game/get_round_status';
-    //字段声明
-    // static RequestParams: {
-    //     room_id: number, //普通牌局，
-    //     room_unique_id: string, // room唯一标识
-    //     hand_num: number, //手数
-    // } = null;
-    // static ResponseData: {
-    // } = null;
+    static RequestParams: {
+        room_id?: number;
+        room_unique_id?: string;
+        hand_num?: number;
+    } | null = null;
+    static Data: {
+        records?: { remove?: number }[];
+    } | null = null;
+    static ResponseData: {
+        data?: typeof WebMiscGameRoundStatus.Data;
+    } | null = null;
+    static Request(param: typeof WebMiscGameRoundStatus.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: {
+        code?: number;
+        message?: string;
+        data?: typeof WebMiscGameRoundStatus.ResponseData;
+    };
 }
 
 export class WebMiscGameRemoveRound extends WebCommon {
-    //接口地址
     static API: string = '/api/misc/game/remove_round';
-    //字段声明
-    // static RequestParams: {
-    //     room_id: number, // 普通牌局，
-    //     room_unique_id: string, // room唯一标识
-    //     hand_num: number, // 手数
-    // } = null;
+    static RequestParams: {
+        room_id?: number;
+        room_unique_id?: string;
+        hand_num?: number;
+    } | null = null;
+    static ResponseData: {} | null = null;
+    static Request(param: typeof WebMiscGameRemoveRound.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: {
+        code?: number;
+        message?: string;
+        data?: typeof WebMiscGameRemoveRound.ResponseData;
+    };
 }
 
 export class WebMiscReportFeedbackQuestIon extends WebCommon {
