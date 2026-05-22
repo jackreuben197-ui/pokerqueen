@@ -1,0 +1,101 @@
+import { StringHelper } from "../../../../../../helper/StringHelper";
+import { i18nMgr } from "../../../../../../i18n/i18nMgr";
+import { SidePot } from "../../../../../../protobuf/holdem/define_pb";
+import TexasGameRoomData from "../../../../texas/data/TexasGameRoomData";
+import TexasGameRoomDataBasic from "../../../../texas/data/TexasGameRoomDataBasic";
+import TexasGameRoomDataPotInfo from "../../../../texas/data/TexasGameRoomDataPotInfo";
+import roomDataManager from "../../../core/RoomDataManager";
+
+const { ccclass, property, menu } = cc._decorator;
+
+@ccclass
+@menu('CrazyPoker/Room/Texas/PotsInfo')
+export default class PotsInfo extends cc.Component {
+    @property(cc.Label)
+    private allPotsLabel: cc.Label = null;
+    @property(cc.Node)
+    private mainPot: cc.Node = null;
+    @property(cc.Node)
+    private sidePot: cc.Node = null;
+    private _allPotsNodes: cc.Node[] = [];
+    private _potInfo: TexasGameRoomDataPotInfo;
+    private _last_pots_count: number = 0;
+
+    public initData(roomID: number, matchID: number) {
+        const roomData = roomDataManager.getRoomData<TexasGameRoomData>(roomID, matchID);
+        //this._roomBaseInfo = roomData.basicInfo;
+        this._potInfo = roomData.potInfo;
+        if (this.node.activeInHierarchy) {
+            this._bindEventsAndRefresh();
+        }
+    }
+
+    public onLoad() {
+        this.allPotsLabel.node.active = false;
+        this.mainPot.active = false;
+        this._allPotsNodes.push(this.mainPot);
+        for (let i = 0; i < 8; i++) {
+            let pot = cc.instantiate(this.sidePot);
+            pot.active = false;
+            pot.parent = this.sidePot;
+            this._allPotsNodes.push(pot);
+        }
+    }   
+
+    public onEnable(): void {
+        if (!this._potInfo) return;
+        this._bindEventsAndRefresh();
+    }
+
+    public onDisable(): void {
+        if (this._potInfo)  {
+            this._potInfo.targetOff(this);
+            this._potInfo = null;
+        }
+    }
+
+    private _bindEventsAndRefresh() {
+        this._potInfo.on(TexasGameRoomDataPotInfo.POTLIST_CHANGE, this.onUpdatePotList, this);
+        this._potInfo.on(TexasGameRoomDataPotInfo.ALLPOTS_CHANGE, this.onUpdateAllPots, this);
+        // 初始化(全池)
+        this.onUpdatePotList(this._potInfo.potList);
+        this.onUpdateAllPots(this._potInfo.allPot);   
+    }
+
+    private onUpdateAllPots(allpots: number) {
+        this.allPotsLabel.node.active = true;
+        this.allPotsLabel.string = `${i18nMgr.Get('adaptation20005')} : ${StringHelper.GetLongString(allpots, 100, 1)}`;
+    }
+
+    private onUpdatePotList(pots: SidePot.AsObject[]) {
+        if (!pots) return;
+        for (let i = 0; i < pots.length; i++) {
+            const pot = pots[i]
+            const sidePot = this._allPotsNodes[i];
+            sidePot.active = true;
+            const lbl = this._allPotsNodes[i].getComponentInChildren(cc.Label);
+
+            lbl.string = StringHelper.GetLongString(pot.amount, 100, 1);
+            //判断进行位移
+            if (i > 0 && i >= this._last_pots_count) {
+                sidePot.setPosition(PotsInfo._sidePotsPosition[0]);
+                cc.tween(sidePot).to(0.3, { position: PotsInfo._sidePotsPosition[i] }).start();
+            } else {
+                sidePot.setPosition(PotsInfo._sidePotsPosition[i]);
+            }
+        }
+    }
+
+    private static readonly _sidePotsPosition: cc.Vec3[] = [
+        cc.v3(0, -812),
+        cc.v3(-283, -960),
+        cc.v3(0, -960),
+        cc.v3(283, -960),
+        cc.v3(-283, -1025),
+        cc.v3(0, -1025),
+        cc.v3(283, -1025),
+        cc.v3(-143, -1090),
+        cc.v3(143, -1090)
+    ];
+
+}

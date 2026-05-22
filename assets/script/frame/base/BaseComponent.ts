@@ -208,7 +208,7 @@ export default class BaseComponent extends Base {
         this.lateClose(param);
     }
 
-    lateClose(param?: any) {}
+    protected lateClose(param?: any) {}
 
     /**
      * 停止所有 动作，包括 tween ,update，等

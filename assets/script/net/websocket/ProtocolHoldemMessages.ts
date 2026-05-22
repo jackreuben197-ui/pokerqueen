@@ -172,6 +172,7 @@ export class BroadcastMsg {
         message: string; //文本消息
     } = null;
     public static ResponseData: {
+        [x: string]: any;
         name: string; //名字
         type: number; //类型
         user_id: number; //当前玩家id

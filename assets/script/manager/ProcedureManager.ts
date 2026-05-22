@@ -11,6 +11,7 @@
  */
 import { ProcedureEnum } from '../define/EIDefine';
 import ProcedureBase from '../procedure/ProcedureBase';
+import ProcedureEnterRoom from '../procedure/ProcedureEnterRoom';
 import ProcedureEnterTexas from '../procedure/ProcedureEnterTexas';
 import ProcedureIdle from '../procedure/ProcedureIdle';
 import ProcedureInit from '../procedure/ProcedureInit';
@@ -29,6 +30,7 @@ export default class ProcedureManager {
         this.procedureDic[ProcedureEnum.Init] = new ProcedureInit(ProcedureEnum.Init);
         this.procedureDic[ProcedureEnum.EnterTexas] = new ProcedureEnterTexas(ProcedureEnum.EnterTexas);
         this.procedureDic[ProcedureEnum.Texas] = new ProcedureTexas(ProcedureEnum.Texas);
+        this.procedureDic[ProcedureEnum.EnterRoom] = new ProcedureEnterRoom(ProcedureEnum.EnterRoom);
         ProcedureManager.StartProcedure(ProcedureEnum.Init);
     }
 

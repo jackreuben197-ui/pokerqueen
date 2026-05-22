@@ -34,20 +34,20 @@ import { GameCache } from './GameCache';
 const { ccclass, property } = cc._decorator;
 
 export class ReportPlayer {
-    public userId;
-    public nickName;
-    public hand;
-    public bringIn; // 总带入
-    public score; // 实时盈亏 = win + storeChips
-    public storeChips; // 藏钱（显示在带入旁括号内）
-    public poolRate; // 入池率 * 1000（与 Unity 保持一致，显示时除以 10）
-    public isOnline; // 是否在线
-    public deposit; // 押金
-    public mushroomCount; // 蘑菇数
-    public mushroomAmount; // 蘑菇额
-    public squidInTotal; // 鱿鱼入
-    public squidOutTotal; // 鱿鱼出
-    public squidPunishTotal; // 鱿鱼惩罚
+    public userId: number;
+    public nickName: string;
+    public hand: number;
+    public bringIn: number; // 总带入
+    public score: number; // 实时盈亏 = win + storeChips
+    public storeChips: number; // 藏钱（显示在带入旁括号内）
+    public poolRate: number; // 入池率 * 1000（与 Unity 保持一致，显示时除以 10）
+    public isOnline: boolean; // 是否在线
+    public deposit: number; // 押金
+    public mushroomCount: number; // 蘑菇数
+    public mushroomAmount: number; // 蘑菇额
+    public squidInTotal: number; // 鱿鱼入
+    public squidOutTotal: number; // 鱿鱼出
+    public squidPunishTotal: number; // 鱿鱼惩罚
 }
 
 interface SquidOrMushRecord {
@@ -87,10 +87,10 @@ export default class UITexasReportComponent extends UIBase {
     imageMaskClose: cc.Node = null;
     content: cc.Node = null;
     mRoomLeaveTime: any = null;
-    IntervalId = null;
+    IntervalId: number = null;
     isLoad = true;
-    tInfo_0 = [];
-    tInfo_1 = [];
+    tInfo_0: any[] = [];
+    tInfo_1: any[] = [];
     @property(cc.Prefab)
     peopleItem: cc.Prefab = null;
     @property(cc.Prefab)
@@ -686,7 +686,7 @@ export default class UITexasReportComponent extends UIBase {
             });
             if (!result) return;
             let data: any = WebOrgFriendRoomList.Response.data;
-            data.records.forEach(item => {
+            data.records.forEach((item: { rid: number; start_time: string; play_duration: number; }) => {
                 if (item.rid == GameCache.Instance.room_id) {
                     if (item.start_time == null) {
                         return;
@@ -895,7 +895,7 @@ export default class UITexasReportComponent extends UIBase {
         }, 1);
     }
 
-    setInfos(objTemp, pDto, onLine) {
+    setInfos(objTemp: cc.Node, pDto: ReportPlayer, onLine: boolean) {
         const info1 = objTemp.getChildByName('item_info1');
         const info3 = objTemp.getChildByName('item_info3');
         const subType = this.reportSubType;

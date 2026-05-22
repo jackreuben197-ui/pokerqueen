@@ -277,7 +277,7 @@ export async function registerH5Listeners(): Promise<void> {
         // === 6. 启动进入牌桌流程 ===
         // EnterTexas → 加载资源 → Texas procedure → TexasGameUtils.EnterRoom()
         // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
-        await ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
+        await ProcedureManager.StartProcedure(ProcedureEnum.EnterRoom, gc.enter_param);
         console.log('[H5Bridge] enterTable 已启动进桌流程, room_id:', roomData.rid, 'room:', roomData.name);
     });
 

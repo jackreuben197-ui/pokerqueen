@@ -162,7 +162,8 @@ type UIDefineKey =
     | 'UIGameplayAddChipsAndDiamond'
     | 'UIEmojiDlg'
     | 'UIConfirmDialog'
-    | 'UIRechargeDiamond';
+    | 'UIRechargeDiamond'
+    | 'UIRoomTexas';
 
 export const UIDefine: Record<UIDefineKey, IUIDefine> = {
     //预加载UI
@@ -1359,7 +1360,14 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Name: 'UIRechargeDiamond',
         Bundle: 'texas',
         Path: 'purple_prefab/ui/UIRechargeDiamond'
-    }
+    },
+    //基础牌桌
+    UIRoomTexas: {
+        UIType: UIType.Scene,
+        Name: 'UIRoomTexas',
+        Bundle: 'texas',
+        Path: 'purple_prefab/scene/UIRoomTexas'
+    },
 };
 
 //批量设置

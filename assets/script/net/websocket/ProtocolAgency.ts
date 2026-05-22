@@ -1,4 +1,6 @@
+import { match } from 'assert';
 import { LogStyle } from '../../config/GameConfig';
+import MessageHandler from '../../crazyPoker/gameplay/messages/MessageHandler';
 import GC from '../../frame/GameControl';
 import { GameCache } from '../../game/GameCache';
 import H5MsgMgr from '../../H5MsgMgr';
@@ -299,6 +301,7 @@ export default class ProtocolAgency extends cc.Component {
             }
         }
         GC.notify.post(code, body, roomid, matchid);
+        MessageHandler.handle(code, body, roomid, matchid)
         body = null;
         body_ua = null;
     }

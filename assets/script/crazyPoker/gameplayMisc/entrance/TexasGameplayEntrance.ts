@@ -4,10 +4,12 @@ import { ProtocolCode } from '../../../net/websocket/ProtocolCode';
 import { ClientMessageRooms, ServerMessageRooms } from '../../../protobuf/holdem/req_rpc_rooms_pb';
 import { AntiCheatType } from '../../gameplay/common/constant/AntiCheatType';
 import AGameplayEntrance, { LoadIndicator } from './AGameplayEntrance';
-import ProcedureManager from '../../../manager/ProcedureManager';
-import { ProcedureEnum } from '../../../define/EIDefine';
+import * as protobuf_holdem_define_pb from '../../../protobuf/holdem/define_pb';
 import UIComponent from '../../../ui/UIComponent';
 import { i18nMgr } from '../../../i18n/i18nMgr';
+import { ClientMessageEnterRoom } from '../../../protobuf/holdem/req_th_enter_room_pb';
+import TexasGameRoomData from '../../gameplay/texas/data/TexasGameRoomData';
+import roomDataManager from '../../gameplay/common/core/RoomDataManager';
 
 /**
  * @description 德州玩法入口
@@ -367,8 +369,30 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
      * @param isUseCache 是否使用缓存
      */
     public override async requestEnterAsync(isUseCache: boolean): Promise<number> {
+        const roomData = new TexasGameRoomData(this._roomId, this.matchId);
+        roomData.basicInfo.roomName = this._roomInfo.name;
+        roomData.basicInfo.roomType = this._roomInfo.roomType;
+        roomData.basicInfo.delaySeeCard = this._roomInfo.delayViewCardOn > 0;
+        roomData.basicInfo.invitationCode = this._roomInfo.invitationCode;
+        roomData.basicInfo.sbante = { sb: this._roomInfo.sb, ante: this._roomInfo.ante};
+        roomData.basicInfo.handNum = this._roomInfo.handNum;
+        roomDataManager.setRoomData(this._roomId, this.matchId, roomData);
+
+        const body: ClientMessageEnterRoom.AsObject = {
+            room: { roomId: this._roomId, matchId: this.matchId },
+            gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
+            mttPartialBringIn: 0,
+            observer: false,
+            wantSeat: protobuf_holdem_define_pb.Def.WantSeatType.WST_BOTH
+        };
+        ProtocolAgency.Send<ClientMessageEnterRoom.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_EnterRoom,
+            RoomID: this._roomId,
+            MatchID: this.matchId,
+            Body: body
+        });
         // 请求进入德州房间
-        ProcedureManager.StartProcedure(ProcedureEnum.Texas, GameCache.Instance.enter_param);
+        //ProcedureManager.StartProcedure(ProcedureEnum.Texas, GameCache.Instance.enter_param);
         return 0;
     }
 }

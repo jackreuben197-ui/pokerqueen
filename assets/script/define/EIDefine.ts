@@ -25,15 +25,7 @@ export enum ProcedureEnum {
     //初始化
     Init = 1,
     //预加载login
-    PrelLoadLogin = 2,
-    //配置
-    Config = 3,
-    //登录
-    Login = 4,
-    //进入大厅请求
-    EnterLobby = 5,
-    //大厅
-    Lobby = 6,
+    EnterRoom = 2,
     //进入牌桌
     EnterTexas = 7,
     //牌桌
