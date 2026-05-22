@@ -25,6 +25,8 @@ export class InsuranceData {
     public timeLeft: number = 0;
     public delayTimes: number = 0;
     public round: number = Def.Round.UNDEFINED;
+    /** 观众调试时，借用第一个参与保险的玩家来展示“自己”这一行。 */
+    public debugObserverUseFirstPlayerAsMine: boolean = false;
 }
 
 /**
@@ -173,6 +175,8 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     private backClick: cc.Node = null;
     private scrollViewRoot: cc.Node = null;
     private scrollView: cc.ScrollView = null;
+    private scrollViewport: cc.Node = null;
+    private insuranceCardsRoot: cc.Node = null;
     private publicCardNodes: cc.Sprite[] = [];
     private playerMineNode: cc.Node = null;
     private playersContent: cc.Node = null;
@@ -233,6 +237,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     private readonly multiPoolToggleList: cc.Node[] = [];
     private readonly buttonsList: cc.Node[] = [];
     private readonly cachedPotInsuranceBuyList: PotInsuranceBuy.AsObject[] = [];
+    private readonly maxScrollViewHeight: number = 620;
 
     private data: InsuranceData = null;
     private currentTriggerData: WrapTriggerInsuranceData = null;
@@ -342,6 +347,8 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         const dialog = this.node.getChildByName('Image_Dialog');
         this.scrollViewRoot = cc.find('Image_Dialog/ScrollViewRoot', this.node);
         this.scrollView = this.scrollViewRoot?.getComponent(cc.ScrollView) || null;
+        this.scrollViewport = cc.find('Viewport', this.scrollViewRoot);
+        this.insuranceCardsRoot = cc.find('Viewport/InsuranceCards', this.scrollViewRoot);
 
         this.textPot = cc.find('Header/Text_Pot_title/Text_Pot', dialog)?.getComponent(cc.Label) || null;
         this.multiPoolToggles = cc.find('Header/MultiPoolToggles', dialog);
@@ -369,7 +376,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.insuranceCardsSplitContent = this.insuranceCardsSplit?.getChildByName('insuranceCardSplit') || null;
         this.insuranceCardOverTemplate =
             this.insuranceCardsOverContent?.getChildByName('Image_InsuranceCard') || null;
-        this.insuranceCardSplitTemplate = this.insuranceCardsSplitContent?.getChildByName('Image_InsuranceCard') || null;
+        this.insuranceCardSplitTemplate =this.insuranceCardsSplitContent?.getChildByName('Image_InsuranceCard') || null;
         this.textOddsOver = cc.find('Label/Text_Odds_Over', this.insuranceCardsOver)?.getComponent(cc.Label) || null;
         this.textOddsSplit = cc.find('Label/Text_Odds_Split', this.insuranceCardsSplit)?.getComponent(cc.Label) || null;
 
@@ -413,6 +420,8 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
 
         this.numToggle = cc.find('ScrollViewRoot/Viewport/InsuranceCards/SortToggle/NumToggle', dialog)?.getComponent(cc.Toggle) || null;
         this.graToggle = cc.find('ScrollViewRoot/Viewport/InsuranceCards/SortToggle/GraToggle', dialog)?.getComponent(cc.Toggle) || null;
+
+        this.applyScrollLayoutMode();
     }
 
     /** 模板节点只保留一份隐藏态，运行时统一 clone。 */
@@ -438,6 +447,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             this.insuranceCardSplitTemplate.active = false;
         }
         this.hideAllHighlights();
+        this.resetScrollAreaHeight();
     }
 
     /** 保险界面只额外关心“加时返回”这一条协议。 */
@@ -670,6 +680,9 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.updateMoneyText();
         this.setLeastType();
         this.refreshCancelButtonShow();
+        this.refreshScrollAreaHeight();
+        // clone / active 切换后的布局有时要等一帧才能拿到最终高度，再补一次确保滚动区稳定。
+        this.scheduleOnce(() => this.refreshScrollAreaHeight(), 0);
     }
 
     private showCountDown(): void {
@@ -738,11 +751,22 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             list.push(data);
         }
 
+        const useObserverDebugMine =
+            !!this.data?.debugObserverUseFirstPlayerAsMine && GameCache.Instance.CurGame.IsLookOn && list.length > 0;
         const mine = new WrapPlayerData();
+        if (useObserverDebugMine) {
+            // 观众本身没有可投保的“自己”，调试时直接借用第一个参与者避免首行空牌。
+            mine.name = list[0].name;
+            mine.userId = list[0].userId;
+            mine.outsPerUser = -1;
+            mine.playerCards = [...list[0].playerCards];
+            list.shift();
+        } else {
             mine.name = GameCache.Instance.CurGame.mainPlayer.nick;
             mine.userId = GameCache.Instance.CurGame.mainPlayer.userID;
             mine.outsPerUser = -1;
             mine.playerCards = (GameCache.Instance.CurGame.mainPlayer.cards || []).slice(0, GameCache.Instance.CurGame.HandCards);
+        }
         list.unshift(mine);
 
         if (this.playerMineNode) {
@@ -1422,6 +1446,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         if (this.playerMineNode) {
             this.playerMineNode.active = false;
         }
+        this.resetScrollAreaHeight();
     }
 
     private clearMultiInsurancePoolData(): void {
@@ -1440,6 +1465,91 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             const node = nodes.pop();
             node?.destroy();
         }
+    }
+
+    /**
+     * 让滚动链路真正具备“内容自适应高度”的能力。
+     * 你当前 prefab 的几个 Layout 都是 NONE，不会跟着内容变高，所以这里在运行时统一切成 CONTAINER。
+     */
+    private applyScrollLayoutMode(): void {
+        [
+            this.insuranceCardsRoot,
+            this.insuranceCardsOver,
+            this.insuranceCardsSplit,
+            this.insuranceCardsOverContent,
+            this.insuranceCardsSplitContent,
+            this.playersNext
+        ].forEach(node => {
+            const layout = node?.getComponent(cc.Layout);
+            if (!layout) {
+                return;
+            }
+            layout.resizeMode = cc.Layout.ResizeMode.CONTAINER;
+        });
+    }
+
+
+    /** 内容超过 620 时滚动；不足 620 时滚动区跟内容一起收缩，避免底部大块空白。 */
+    private refreshScrollAreaHeight(): void {
+        if (!this.scrollViewRoot || !this.scrollViewport || !this.insuranceCardsRoot) {
+            return;
+        }
+
+        this.refreshLayoutNode(this.insuranceCardsOverContent);
+        this.refreshLayoutNode(this.insuranceCardsSplitContent);
+        this.refreshLayoutNode(this.playersNext);
+        this.refreshLayoutNode(this.insuranceCardsOver);
+        this.refreshLayoutNode(this.insuranceCardsSplit);
+        this.refreshLayoutNode(this.insuranceCardsRoot);
+
+        // 这里不能再拿 InsuranceCards 旧的静态高度做上限，
+        // 否则就算当前只显示两块内容，也会被 prefab 初始高度“撑住”，底部继续留白。
+        const contentHeight = Math.max(0, this.getVisibleContentHeight());
+        this.insuranceCardsRoot.height = Math.max(1, contentHeight);
+        const targetHeight = Math.min(this.maxScrollViewHeight, Math.max(0, contentHeight));
+        this.scrollViewport.height = targetHeight;
+        this.scrollViewRoot.height = targetHeight;
+
+        // 高度变化后把内容吸到顶部，避免内容少时仍然停留在旧滚动位置产生空白。
+        this.scrollView?.scrollToTop(0);
+    }
+
+    private resetScrollAreaHeight(): void {
+        if (this.scrollViewport) {
+            this.scrollViewport.height = this.maxScrollViewHeight;
+        }
+        if (this.scrollViewRoot) {
+            this.scrollViewRoot.height = this.maxScrollViewHeight;
+        }
+    }
+
+    /** 手动兜一份可见子节点高度，避免个别 Layout 还没来得及刷新时出现高度读小。 */
+    private getVisibleContentHeight(): number {
+        if (!this.insuranceCardsRoot) {
+            return 0;
+        }
+        const layout = this.insuranceCardsRoot.getComponent(cc.Layout);
+        const activeChildren = this.insuranceCardsRoot.children.filter(child => child.active);
+        if (!activeChildren.length) {
+            return 0;
+        }
+
+        let totalHeight = 0;
+        activeChildren.forEach((child, index) => {
+            totalHeight += child.height;
+            if (index < activeChildren.length - 1) {
+                totalHeight += layout?.spacingY || 0;
+            }
+        });
+        return totalHeight;
+    }
+
+    private refreshLayoutNode(node: cc.Node): void {
+        const layout = node?.getComponent(cc.Layout);
+        if (!layout) {
+            return;
+        }
+        layout.updateLayout();
     }
 
     /** 赔率先走本地表计算，取不到时退回服务端原始 odds，避免出现 undefined / NaN。 */

@@ -170,19 +170,26 @@ export function fillGameCache(payload: any): void {
  * H5 桥接模式跳过了大厅，需要单独补加载。
  */
 let _soundLoaded = false;
+let _soundLoadingPromise: Promise<void> | null = null;
 
-function loadSoundResources(): void {
-    if (_soundLoaded) return;
-    _soundLoaded = true;
-    cc.resources.loadDir('sound', (err, assets) => {
-        if (err) {
-            console.error('[H5Bridge] 声音资源加载失败:', err);
-            _soundLoaded = false;
-            return;
-        }
-        ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
-        console.log('[H5Bridge] 声音资源加载完成, 共', assets.length, '个资源');
+function loadSoundResources(): Promise<void> {
+    if (_soundLoaded) return Promise.resolve();
+    if (_soundLoadingPromise) return _soundLoadingPromise;
+    _soundLoadingPromise = new Promise(resolve => {
+        cc.resources.loadDir('sound', (err, assets) => {
+            if (err) {
+                console.error('[H5Bridge] 声音资源加载失败:', err);
+                _soundLoadingPromise = null;
+                resolve();
+                return;
+            }
+            _soundLoaded = true;
+            ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
+            console.log('[H5Bridge] 声音资源加载完成, 共', assets.length, '个资源');
+            resolve();
+        });
     });
+    return _soundLoadingPromise;
 }
 
 /**
@@ -191,19 +198,32 @@ function loadSoundResources(): void {
  * H5 桥接模式跳过了大厅，需要单独补加载。
  */
 let _gameResLoaded = false;
+let _gameResLoadingPromise: Promise<void> | null = null;
 
-function loadGameResources(): void {
-    if (_gameResLoaded) return;
-    _gameResLoaded = true;
-    cc.resources.loadDir('main/rc', (err, assets) => {
-        if (err) {
-            console.error('[H5Bridge] 游戏资源加载失败:', err);
-            _gameResLoaded = false;
-            return;
-        }
-        ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
-        console.log('[H5Bridge] 游戏资源加载完成, 共', assets.length, '个资源');
+function loadGameResources(): Promise<void> {
+    if (_gameResLoaded) return Promise.resolve();
+    if (_gameResLoadingPromise) return _gameResLoadingPromise;
+    _gameResLoadingPromise = new Promise(resolve => {
+        cc.resources.loadDir('main/rc', (err, assets) => {
+            if (err) {
+                console.error('[H5Bridge] 游戏资源加载失败:', err);
+                _gameResLoadingPromise = null;
+                resolve();
+                return;
+            }
+            _gameResLoaded = true;
+            ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
+            console.log('[H5Bridge] 游戏资源加载完成, 共', assets.length, '个资源');
+            resolve();
+        });
     });
+    return _gameResLoadingPromise;
+}
+
+async function ensureBridgeResourcesReady(): Promise<void> {
+    // 保险弹窗、公牌、手牌都依赖 main/rc 里的牌面资源。
+    // 首页会顺手把这些资源预热，但从列表刷新直接进桌时不会经过首页，所以要在这里补一层兜底。
+    await Promise.all([loadSoundResources(), loadGameResources()]);
 }
 
 // ==================== H5 消息监听注册 ====================
@@ -275,7 +295,9 @@ export async function registerH5Listeners(): Promise<void> {
         gc.enter_param = { game_enter_type: 0, isLookOn: false };
         const jackpotId = Number(roomData.jackpot_id || 0);
         gc.jackPot_id = jackpotId;
-        // === 6. 启动进入牌桌流程 ===
+        // === 6. H5 桥接模式下补齐牌桌基础资源，再启动进入牌桌流程 ===
+        await ensureBridgeResourcesReady();
+        // === 7. 启动进入牌桌流程 ===
         // EnterTexas → 加载资源 → Texas procedure → TexasGameUtils.EnterRoom()
         // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
         await ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
@@ -437,7 +459,9 @@ export async function registerH5Listeners(): Promise<void> {
             GameCache.Instance.room_id = 0;
             GameCache.Instance.room_type = matchInfo.type;
             GameCache.Instance.enter_param = enterPram;
-            // === 6. 启动进入牌桌流程 ===
+            // === 6. H5 桥接模式下补齐牌桌基础资源，再启动进入牌桌流程 ===
+            await ensureBridgeResourcesReady();
+            // === 7. 启动进入牌桌流程 ===
             // EnterTexas → 加载资源 → Texas procedure → TexasGameUtils.EnterRoom()
             // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
             // 要等待流程结束
