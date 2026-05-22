@@ -2,6 +2,7 @@ import SimpleNodePool from '../common/MyNodePool';
 import { UIDefine } from '../define/UIDefine';
 import { Sequence } from '../dotween/DOTween';
 import GC from '../frame/GameControl';
+import PublicHelper from '../helper/PublicHelper';
 import { StringHelper } from '../helper/StringHelper';
 import TimeHelper from '../helper/TimeHelper';
 import { i18nMgr } from '../i18n/i18nMgr';
@@ -30,6 +31,8 @@ import ToastManager from '../manager/ToastManager';
 import AgoraManager from '../net/agora/AgoraManager';
 import AgoraVideoRender from '../net/agora/AgoraVideoRender';
 import { VideoModel } from '../crazyPoker/gameplay/common/constant/VideoModel';
+import GameplayUtil from '../crazyPoker/gameplay/common/util/GameplayUtil';
+import { TableType } from '../crazyPoker/gameplay/common/constant/TableType';
 import H5MsgMgr from '../H5MsgMgr';
 import ProtocolAgency from '../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../net/websocket/ProtocolCode';
@@ -203,7 +206,9 @@ export default class UITexas extends BaseScene {
     //带入申请按钮
     //Button_BringIn: cc.Node = null;
     //朋友桌邀请码
+    Invitation: cc.Node = null;
     Text_InvateCode: cc.Label = null;
+    Copy_InvateCode: cc.Node = null;
     //1.MTT比赛倒计时
     UIMTTTime_Con: cc.Node = null;
     UIMTTTime_Com: UIMTTTimeComponent = null;
@@ -409,7 +414,9 @@ export default class UITexas extends BaseScene {
         this.BathText = this.Image_WaitForStartBathTips?.getChildByName('Text_Tips')?.getComponent(cc.Label);
         //this.Button_BringIn = this.getChildNodeOrComponent("Button_BringIn");
         //朋友桌邀请码
+        this.Invitation = this.getChildNodeOrComponent('Invitation');
         this.Text_InvateCode = this.getChildNodeOrComponent('Text_InvateCode', cc.Label);
+        this.Copy_InvateCode = this.getChildNodeOrComponent('Copy_InvateCode');
         //////////////////公共牌数据（第一套和第二套 ui,id,每套牌5张）
         this.listCards = [];
         this.listSecondCards = [];
@@ -519,6 +526,7 @@ export default class UITexas extends BaseScene {
         //this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
         this.setButtonClick(this.Button_CancelTrust, this.onClickCancelTrust);
         this.setButtonClick(this.textRoomInfo?.node, this.onClickTextRoomInfo);
+        this.setButtonClick(this.Copy_InvateCode, this.onClickCopyInvateCode);
     }
 
     // Enter Called by SceneManager.switchScene & enter
@@ -600,9 +608,9 @@ export default class UITexas extends BaseScene {
                 [
                     { card: 11, isEqual: false },
                     { card: 12, isEqual: false },
-                    { card: 13, isEqual: true },
+                    // { card: 13, isEqual: true },
                     { card: 56, isEqual: false },
-                    { card: 26, isEqual: true },
+                    // { card: 26, isEqual: true },
                     { card: 41, isEqual: false }
                 ]
             ];
@@ -617,7 +625,7 @@ export default class UITexas extends BaseScene {
         insuranceData.debugObserverUseFirstPlayerAsMine = this.game.IsLookOn;
         insuranceData.triggedDatas = [
             createTriggerData(1, 1920, 640, 240, 1, 3, 1),
-            createTriggerData(2, 1460, 730, 182, 1, 2, 1)
+            // createTriggerData(2, 1460, 730, 182, 1, 2, 1)
         ];
 
         UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceNewPanel, insuranceData);
@@ -793,7 +801,7 @@ export default class UITexas extends BaseScene {
 
     //进入初始UI
     EnterInitUI() {
-        //this.ShowInvateCode();
+        this.ShowInvateCode();
         //this.setActive(this.Button_BringIn, false);
         this.setActive(this.Button_AddOn, false);
         this.setActive(this.SquidSwitch, false);
@@ -915,6 +923,20 @@ export default class UITexas extends BaseScene {
             roomPermissions: null,
             noAnimation: true
         });
+    }
+
+    public ShowInvateCode(): void {
+        const isFriendTable = GameplayUtil.GetTableType() === TableType.FRIEND;
+        if (this.Invitation) this.Invitation.active = isFriendTable;
+        if (isFriendTable && this.Text_InvateCode) {
+            this.Text_InvateCode.string = GameCache.Instance._friendsTableCode;
+        }
+    }
+
+    private onClickCopyInvateCode() {
+        const code = GameCache.Instance._friendsTableCode;
+        if (!code) return;
+        PublicHelper.copyToClipBoard(code);
     }
 
     public ShowMenu(): void {

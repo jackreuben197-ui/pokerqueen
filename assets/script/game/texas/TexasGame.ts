@@ -80,6 +80,7 @@ import ToastManager from '../../manager/ToastManager';
 import { HttpRoomBringInByIDProtocol } from '../../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringInByIDProtocol';
 import { HttpUserInfoProtocol } from '../../crazyPoker/module/message/CPHotfixWebMessage/user/HttpUserInfoProtocol';
 import GameplayUtil from '../../crazyPoker/gameplay/common/util/GameplayUtil';
+import { TableType } from '../../crazyPoker/gameplay/common/constant/TableType';
 
 //const PBTypes = Def.Types;
 class SeatMoveStruct {
@@ -1244,8 +1245,10 @@ export default class TexasGame {
      */
     public UpdateRoomDes() {
         let info: string = ``;
-        if (GameUtil.GetFriendsOrClubTable() == 1) {
-            info += `${GameCache.Instance.FriendsTableCode}\n`;
+        if (GameplayUtil.GetTableType() === TableType.FRIEND) {
+            if (this.uirc.Text_InvateCode) {
+                this.uirc.Text_InvateCode.string = GameCache.Instance._friendsTableCode;
+            }
         }
         info += `${GameCache.Instance.roomName}`;
         info += `\n${this.GetRoomTypeDes()}`;
