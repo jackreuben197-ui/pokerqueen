@@ -106,7 +106,6 @@ export default class BaseComponent extends Base {
             (event: cc.Event.EventTouch) => {
                 scaleAni && node.stopAllActions();
                 scaleAni && cc.tween(node).to(0.1, { scale: scale }).start();
-                // AudioManager.instance.playSound(AudioPath.btnClick);
                 callBack.call(self, data);
             },
             this
