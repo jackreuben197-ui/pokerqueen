@@ -76,7 +76,7 @@ import UIAutoOperationComponent from '../ui/UIAutoOperationComponent';
 import UIOutChipsTipComponent from '../ui/UIOutChipsTipComponent';
 import GameUtil, { RoomType } from '../util/GameUtil';
 import MTTGame from '../texas/MTTGame';
-import { InsuranceData, WrapTriggedInsuranceData } from '../new_ui/UIInsuranceNewPanel';
+import { InsuranceData, WrapTriggerInsuranceData } from '../new_ui/UIInsuranceNewPanel';
 import AgoraManager from '../../net/agora/AgoraManager';
 import AgoraVideoRender from '../../net/agora/AgoraVideoRender';
 import { VideoModel } from '../../crazyPoker/gameplay/common/constant/VideoModel';
@@ -1992,27 +1992,28 @@ export default class TexasGameProtocol {
             if (!CanInsurance || mOperator == null)
                 // 如果可购买保险用户中没有自己，不用往下执行
                 return;
-            //List < UIInsuranceComponent.WrapTriggedInsuranceData > wrapTriggedInsuranceDatas = new List<UIInsuranceComponent.WrapTriggedInsuranceData>();
-            let wrapTriggedInsuranceDatas: WrapTriggedInsuranceData[] = [];
-            //UIInsuranceComponent.WrapTriggedInsuranceData mWrapTriggedInsuranceData = null;
-            let mWrapTriggedInsuranceData: WrapTriggedInsuranceData = null;
+            //List < UIInsuranceComponent.WrapTriggerInsuranceData > wrapTriggedInsuranceDatas = new List<UIInsuranceComponent.WrapTriggerInsuranceData>();
+            let wrapTriggedInsuranceDatas: WrapTriggerInsuranceData[] = [];
+            //UIInsuranceComponent.WrapTriggerInsuranceData mWrapTriggerInsuranceData = null;
+            let mWrapTriggerInsuranceData: WrapTriggerInsuranceData = null;
             mOperator.insuranceLimitList.forEach(insurancePotLimit => {
-                mWrapTriggedInsuranceData = new WrapTriggedInsuranceData();
-                mWrapTriggedInsuranceData.outsPerUser = [];
-                mWrapTriggedInsuranceData.userNames = [];
-                mWrapTriggedInsuranceData.userIds = [];
-                mWrapTriggedInsuranceData.playerCards = [];
-                mWrapTriggedInsuranceData.outsCards = [];
+                mWrapTriggerInsuranceData = new WrapTriggerInsuranceData();
+                mWrapTriggerInsuranceData.outsPerUser = [];
+                mWrapTriggerInsuranceData.userNames = [];
+                mWrapTriggerInsuranceData.userIds = [];
+                mWrapTriggerInsuranceData.playerCards = [];
+                mWrapTriggerInsuranceData.outsCards = [];
                 //赋值保险池等数据，
-                mWrapTriggedInsuranceData.subPot = insurancePotLimit.potId;
-                mWrapTriggedInsuranceData.pot = insurancePotLimit.potAmount;
-                mWrapTriggedInsuranceData.potTotalCost = insurancePotLimit.bet;
-                mWrapTriggedInsuranceData.leastAmount = insurancePotLimit.min;
-                mWrapTriggedInsuranceData.mostAmount = insurancePotLimit.max;
-                mWrapTriggedInsuranceData.PotUserCount = insurancePotLimit.potUserCount;
-                mWrapTriggedInsuranceData.PotLeaderCount = insurancePotLimit.potLeaderCount;
-                mWrapTriggedInsuranceData.insuranced = insurancePotLimit.insuranced;
-                mWrapTriggedInsuranceData.potAllowOutSelection = insurancePotLimit.insuranced > 0 ? 0 : 1;
+                mWrapTriggerInsuranceData.subPot = insurancePotLimit.potId;
+                mWrapTriggerInsuranceData.pot = insurancePotLimit.potAmount;
+                mWrapTriggerInsuranceData.potTotalCost = insurancePotLimit.bet;
+                mWrapTriggerInsuranceData.leastAmount = insurancePotLimit.min;
+                mWrapTriggerInsuranceData.mostAmount = insurancePotLimit.max;
+                mWrapTriggerInsuranceData.odds = insurancePotLimit.odds;
+                mWrapTriggerInsuranceData.potUserCount = insurancePotLimit.potUserCount;
+                mWrapTriggerInsuranceData.potLeaderCount = insurancePotLimit.potLeaderCount;
+                mWrapTriggerInsuranceData.insuranced = insurancePotLimit.insuranced;
+                mWrapTriggerInsuranceData.potAllowOutSelection = insurancePotLimit.insuranced > 0 ? 0 : 1;
                 for (let userOuts of insurancePotLimit.outsDetailList) {
                     let ins_Seat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(userOuts.seatId));
                     if (ins_Seat == null) {
@@ -2020,15 +2021,15 @@ export default class TexasGameProtocol {
                         continue;
                     }
                     //需要显示玩家手牌和名字，通过座位号在牌局中缓存座位，获取已下发得手牌和名字。
-                    mWrapTriggedInsuranceData.userNames.push(ins_Seat.Player.nick);
-                    mWrapTriggedInsuranceData.userIds.push(ins_Seat.Player.userID);
-                    mWrapTriggedInsuranceData.playerCards.push(ins_Seat.Player.cards);
+                    mWrapTriggerInsuranceData.userNames.push(ins_Seat.Player.nick);
+                    mWrapTriggerInsuranceData.userIds.push(ins_Seat.Player.userID);
+                    mWrapTriggerInsuranceData.playerCards.push(ins_Seat.Player.cards);
                     //各个玩家
-                    mWrapTriggedInsuranceData.outsPerUser.push(userOuts.outsCardsList.length);
+                    mWrapTriggerInsuranceData.outsPerUser.push(userOuts.outsCardsList.length);
                     //添加所有玩家outs ，在保险界面处理是否平分outs
-                    mWrapTriggedInsuranceData.outsCards.push(userOuts.outsCardsList);
+                    mWrapTriggerInsuranceData.outsCards.push(userOuts.outsCardsList);
                 }
-                wrapTriggedInsuranceDatas.push(mWrapTriggedInsuranceData);
+                wrapTriggedInsuranceDatas.push(mWrapTriggerInsuranceData);
             });
             let data: InsuranceData = new InsuranceData();
             data.publicCards = this.game.GetPublicCards(1);

@@ -21,7 +21,7 @@ const { ccclass } = cc._decorator;
  */
 export class InsuranceData {
     public publicCards: number[] = [];
-    public triggedDatas: WrapTriggedInsuranceData[] = [];
+    public triggedDatas: WrapTriggerInsuranceData[] = [];
     public timeLeft: number = 0;
     public delayTimes: number = 0;
     public round: number = Def.Round.UNDEFINED;
@@ -31,7 +31,7 @@ export class InsuranceData {
  * 单个保险池的数据。
  * 一手牌里可能会有多个池子，所以弹窗内部要支持切池。
  */
-export class WrapTriggedInsuranceData {
+export class WrapTriggerInsuranceData {
     public outsCards: OutsCard.AsObject[][] = [];
     public subPot: number = 0;
     public leastAmount: number = 0;
@@ -43,9 +43,11 @@ export class WrapTriggedInsuranceData {
     public userIds: number[] = [];
     public outsPerUser: number[] = [];
     public playerCards: number[][] = [];
-    public PotUserCount: number = 0;
-    public PotLeaderCount: number = 0;
+    public potUserCount: number = 0;
+    public potLeaderCount: number = 0;
     public insuranced: number = 0;
+    /** 服务端下发的基础赔率，GameUtil 算不出来时用它兜底。 */
+    public odds: number = 0;
 }
 
 enum TexasInsurancePoolType {
@@ -139,6 +141,7 @@ class InsuranceCardItem {
 
     public constructor(public readonly node: cc.Node) {
         this.imageInsuranceCard =
+            node.getComponent(cc.Sprite) ||
             node.getChildByName('Image_InsuranceCard')?.getComponent(cc.Sprite) ||
             node.getChildByName('icon')?.getComponent(cc.Sprite) ||
             null;
@@ -179,6 +182,8 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     private multiPoolToggleTemplate: cc.Node = null;
     private insuranceCardsOver: cc.Node = null;
     private insuranceCardsSplit: cc.Node = null;
+    private insuranceCardsOverContent: cc.Node = null;
+    private insuranceCardsSplitContent: cc.Node = null;
     private insuranceCardOverTemplate: cc.Node = null;
     private insuranceCardSplitTemplate: cc.Node = null;
     private textPot: cc.Label = null;
@@ -230,7 +235,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     private readonly cachedPotInsuranceBuyList: PotInsuranceBuy.AsObject[] = [];
 
     private data: InsuranceData = null;
-    private currentTriggerData: WrapTriggedInsuranceData = null;
+    private currentTriggerData: WrapTriggerInsuranceData = null;
     private chooseBtn: cc.Node = null;
     private chooseToggleObj: cc.Node = null;
     private currentSelectPoolType: TexasInsurancePoolType = TexasInsurancePoolType.THIRD;
@@ -241,11 +246,10 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     private onclickDelayButtonTimes: number = 0;
     private delayButtonInteractable: boolean = true;
     private isCountdown: boolean = false;
-    private recordDeltaTime: number = 0;
-    private readonly sendInterval: number = 1;
+    private countDownEndTimestamp: number = 0;
     private delayTimes: number = 30;
     private selectOuts: number = 0;
-    private value: number = 0;
+    private overOutsPayValue: number = 0;
 
     /** 初始化阶段：绑定节点、隐藏模板、注册协议监听。 */
     protected lateLoad(): void {
@@ -306,23 +310,19 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.loadDiamondConfig();
     }
 
-    /** 倒计时每秒驱动一次，到 0 后按 Unity 行为直接提交当前缓存。 */
+    /** 倒计时每帧平滑刷新，到 0 后按 Unity 行为直接提交当前缓存。 */
     protected update(dt: number): void {
         if (!this.isCountdown) {
             return;
         }
         const now = Date.now() / 1000;
-        if (now - this.recordDeltaTime < this.sendInterval) {
-            return;
-        }
-        this.recordDeltaTime = now;
-        this.countDownTime -= 1;
-        if (this.countDownTime < 0) {
-            this.countDownTime = 0;
+        this.countDownTime = Math.max(0, this.countDownEndTimestamp - now);
+        this.refreshCountDownProgress();
+        if (this.countDownTime <= 0) {
+            this.isCountdown = false;
             this.commitPotInsuranceBuy(true);
             return;
         }
-        this.refreshCountDownProgress();
     }
 
     lateClose(param?: any): void {
@@ -360,8 +360,16 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
 
         this.insuranceCardsOver = cc.find('ScrollViewRoot/Viewport/InsuranceCards/InsuranceCardsOver', dialog);
         this.insuranceCardsSplit = cc.find('ScrollViewRoot/Viewport/InsuranceCards/InsuranceCardsSplit', dialog);
-        this.insuranceCardOverTemplate = this.insuranceCardsOver?.getChildByName('insuranceCardOver') || null;
-        this.insuranceCardSplitTemplate = this.insuranceCardsSplit?.getChildByName('insuranceCardSplit') || null;
+        // 以当前 prefab 结构为准：
+        // InsuranceCardsOver       -> 垂直分组容器
+        //   Label                  -> 标题 / 赔率
+        //   insuranceCardOver      -> grid 牌容器
+        //     Image_InsuranceCard  -> 单张牌模板
+        this.insuranceCardsOverContent = this.insuranceCardsOver?.getChildByName('insuranceCardOver') || null;
+        this.insuranceCardsSplitContent = this.insuranceCardsSplit?.getChildByName('insuranceCardSplit') || null;
+        this.insuranceCardOverTemplate =
+            this.insuranceCardsOverContent?.getChildByName('Image_InsuranceCard') || null;
+        this.insuranceCardSplitTemplate = this.insuranceCardsSplitContent?.getChildByName('Image_InsuranceCard') || null;
         this.textOddsOver = cc.find('Label/Text_Odds_Over', this.insuranceCardsOver)?.getComponent(cc.Label) || null;
         this.textOddsSplit = cc.find('Label/Text_Odds_Split', this.insuranceCardsSplit)?.getComponent(cc.Label) || null;
 
@@ -451,7 +459,10 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             return;
         }
         this.addTimeCount = rec.times;
-        this.countDownTime += rec.duration;
+        const now = Date.now() / 1000;
+        const remainTime = Math.max(0, this.countDownEndTimestamp - now);
+        this.countDownTime = remainTime + rec.duration;
+        this.countDownEndTimestamp = now + this.countDownTime;
         this.maxCountDownTime = Math.max(this.maxCountDownTime, this.countDownTime);
         this.isCountdown = true;
         this.refreshCountDownProgress();
@@ -508,6 +519,11 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         }
 
         this.textDelayBean.string = `${2 * Math.pow(2, this.addTimeCount)}`;
+        if (this.onclickDelayButtonTimes === 1) {
+            this.delayTimes = 20;
+        } else if (this.onclickDelayButtonTimes === 0) {
+            this.delayTimes = 30;
+        }
     }
 
     private getTypeText(times: number): number {
@@ -553,8 +569,9 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             if (toggle) {
                 toggle.isChecked = index === 0;
                 toggle.node.on('toggle', () => {
-                    this.setMultiPoolToggleVisual(toggleNode, toggle.isChecked);
                     if (toggle.isChecked) {
+                        this.clearMultiPoolToggleVisual();
+                        this.setMultiPoolToggleVisual(toggleNode, true);
                         this.chooseToggleObj = toggleNode;
                         this.clearMultiInsurancePoolData();
                         this.refreshInsuranceData(triggerData);
@@ -587,10 +604,22 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         }
     }
 
+    /** 多池切换当前只保留背景勾选态，不再改文字颜色。 */
     private setMultiPoolToggleVisual(node: cc.Node, isOn: boolean): void {
-        const label = node?.getChildByName('Label')?.getComponent(cc.Label);
-        if (label) {
-            label.node.color = isOn ? cc.color(70, 4, 226, 255) : cc.Color.WHITE;
+        if (!node) {
+            return;
+        }
+        const toggle = node.getComponent(cc.Toggle);
+        if (toggle) {
+            toggle.isChecked = isOn;
+        }
+        const checkmark = node.getChildByName('checkmark') || node.getChildByName('Checkmark');
+        if (checkmark) {
+            checkmark.active = isOn;
+        }
+        const background = node.getChildByName('Background');
+        if (background) {
+            background.opacity = isOn ? 255 : 180;
         }
     }
 
@@ -602,7 +631,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
      * 切换到某个保险池后，重新刷整块内容。
      * 这是整个弹窗最核心的刷新入口。
      */
-    private refreshInsuranceData(triggerInsuranceData: WrapTriggedInsuranceData): void {
+    private refreshInsuranceData(triggerInsuranceData: WrapTriggerInsuranceData): void {
         if (!triggerInsuranceData) {
             return;
         }
@@ -626,7 +655,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.insuranceCards();
 
         if (this.textOdds) {
-            this.textOdds.string = `1:${this.selectedOverOdd()}`;
+            this.textOdds.string = this.formatOdds(this.selectedOverOdd());
         }
         if (this.textPot) {
             this.textPot.string = StringHelper.GetLongString(triggerInsuranceData.pot);
@@ -644,11 +673,12 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     }
 
     private showCountDown(): void {
-        this.recordDeltaTime = Date.now() / 1000;
+        const now = Date.now() / 1000;
         this.isCountdown = true;
         this.addTimeCount = this.data.delayTimes;
         this.countDownTime = Math.max(0, this.data.timeLeft);
         this.maxCountDownTime = Math.max(1, this.countDownTime);
+        this.countDownEndTimestamp = now + this.countDownTime;
         this.delayTimes = 30;
         const buyText = this.buttonBuy ? cc.find('Text', this.buttonBuy)?.getComponent(cc.Label) : null;
         if (buyText) {
@@ -709,10 +739,10 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         }
 
         const mine = new WrapPlayerData();
-        mine.name = GameCache.Instance.CurGame.mainPlayer.nick;
-        mine.userId = GameCache.Instance.CurGame.mainPlayer.userID;
-        mine.outsPerUser = -1;
-        mine.playerCards = (GameCache.Instance.CurGame.mainPlayer.cards || []).slice(0, GameCache.Instance.CurGame.HandCards);
+            mine.name = GameCache.Instance.CurGame.mainPlayer.nick;
+            mine.userId = GameCache.Instance.CurGame.mainPlayer.userID;
+            mine.outsPerUser = -1;
+            mine.playerCards = (GameCache.Instance.CurGame.mainPlayer.cards || []).slice(0, GameCache.Instance.CurGame.HandCards);
         list.unshift(mine);
 
         if (this.playerMineNode) {
@@ -751,12 +781,12 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
 
         this.insuranceCardsOver && (this.insuranceCardsOver.active = this.userOutsCardsData.overOuts.length > 0);
         if (this.textOddsOver) {
-            this.textOddsOver.string = `1:${this.selectedOverOdd()}`;
+            this.textOddsOver.string = this.formatOdds(this.selectedOverOdd());
         }
         this.userOutsCardsData.overOuts.forEach((cardId, index) => {
             const clone = cc.instantiate(this.insuranceCardOverTemplate);
             clone.name = `over_${index}`;
-            clone.parent = this.insuranceCardsOver;
+            clone.parent = this.insuranceCardsOverContent || this.insuranceCardsOver;
             clone.active = true;
             const item = new InsuranceCardItem(clone);
             item.isOver = true;
@@ -771,12 +801,12 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             this.insuranceCardsSplit.active = hasEqualOuts;
         }
         if (this.textOddsSplit) {
-            this.textOddsSplit.string = `1:${this.selectedEqualOdd()}`;
+            this.textOddsSplit.string = this.formatOdds(this.selectedEqualOdd());
         }
         this.userOutsCardsData.equalOuts.forEach((cardId, index) => {
             const clone = cc.instantiate(this.insuranceCardSplitTemplate);
             clone.name = `split_${index}`;
-            clone.parent = this.insuranceCardsSplit;
+            clone.parent = this.insuranceCardsSplitContent || this.insuranceCardsSplit;
             clone.active = true;
             const item = new InsuranceCardItem(clone);
             item.isOver = false;
@@ -831,10 +861,10 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             }
         }
         if (this.textOdds) {
-            this.textOdds.string = `1:${this.selectedOverOdd()}`;
+            this.textOdds.string = this.formatOdds(this.selectedOverOdd());
         }
         if (this.textPayValue) {
-            this.textPayValue.string = this.checkCompensationAmount(this.currentSelectPoolType).toFixed(2).replace(/\.00$/, '');
+            this.textPayValue.string = this.formatDisplay(this.checkCompensationAmount(this.currentSelectPoolType));
         }
         if (this.textTips) {
             this.textTips.string = this.currentTriggerData?.potAllowOutSelection === 1 ? '' : CPErrorCode.LanguageDescription(20035);
@@ -862,7 +892,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             }
             GameCache.Instance._texasData._buyInsurancePotUserCount.set(
                 this.currentTriggerData.subPot,
-                this.currentTriggerData.PotUserCount
+                this.currentTriggerData.potUserCount
             );
         }
     }
@@ -1050,7 +1080,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             this.highlightBtn(this.imageEighthChecked);
         }
 
-        this.value = this.checkOverOutsPayAmount(this.currentSelectPoolType);
+        this.overOutsPayValue = this.checkOverOutsPayAmount(this.currentSelectPoolType);
         this.chooseBtn = node;
         this.onValueChangedInsuranceValue();
     }
@@ -1079,7 +1109,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         if (!this.currentTriggerData || this.currentTriggerData.insuranced <= 0) {
             return;
         }
-        const forceOverValueText = this.formatDisplay(this.checkRiverForcePayAmount());
+        const forceOverValueText = this.formatDisplay(this.checkRiverForcePayAmount() / 100);
         if (this.textCancel) {
             this.textCancel.string = `${i18nMgr.Get('UIInsurance_GiveUp')}\n${i18nMgr.Get('UITexasIns_InsAmount')}(${forceOverValueText})`;
         }
@@ -1095,10 +1125,10 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             this.turnCacheCurrentPotInsuranceBuy();
         }
         if (this.currentTriggerData) {
-            GameCache.Instance.CurGame.cacheBuyInsurancePotUserCount = this.currentTriggerData.PotUserCount;
+            GameCache.Instance.CurGame.cacheBuyInsurancePotUserCount = this.currentTriggerData.potUserCount;
             GameCache.Instance._texasData._buyInsurancePotUserCount.set(
                 this.currentTriggerData.subPot,
-                this.currentTriggerData.PotUserCount
+                this.currentTriggerData.potUserCount
             );
         }
         this.checkMultiPoolToggle();
@@ -1145,10 +1175,10 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             passiveOutsList: [],
             insurEv: 0
         };
-        GameCache.Instance.CurGame.cacheBuyInsurancePotUserCount = this.currentTriggerData.PotUserCount;
+        GameCache.Instance.CurGame.cacheBuyInsurancePotUserCount = this.currentTriggerData.potUserCount;
         GameCache.Instance._texasData._buyInsurancePotUserCount.set(
             this.currentTriggerData.subPot,
-            this.currentTriggerData.PotUserCount
+            this.currentTriggerData.potUserCount
         );
         this.cachedPotInsuranceBuyList.push(potInsuranceBuy);
     }
@@ -1160,11 +1190,11 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(10299));
             return false;
         }
-        if (this.value <= 0) {
+        if (this.overOutsPayValue <= 0) {
             UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(10324));
             return false;
         }
-        const activeAmount = Math.max(this.value, this.currentTriggerData.leastAmount);
+        const activeAmount = Math.max(this.overOutsPayValue, this.currentTriggerData.leastAmount);
         const potInsuranceBuy: PotInsuranceBuy.AsObject = {
             activeAmount,
             activeOutsList: insuredCards,
@@ -1174,10 +1204,10 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             passiveOutsList: [],
             insurEv: 0
         };
-        GameCache.Instance.CurGame.cacheBuyInsurancePotUserCount = this.currentTriggerData.PotUserCount;
+        GameCache.Instance.CurGame.cacheBuyInsurancePotUserCount = this.currentTriggerData.potUserCount;
         GameCache.Instance._texasData._buyInsurancePotUserCount.set(
             this.currentTriggerData.subPot,
-            this.currentTriggerData.PotUserCount
+            this.currentTriggerData.potUserCount
         );
         this.cachedPotInsuranceBuyList.push(potInsuranceBuy);
         return true;
@@ -1202,6 +1232,8 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             return;
         }
         this.chooseToggleObj = nextToggleNode;
+        this.clearMultiPoolToggleVisual();
+        this.setMultiPoolToggleVisual(nextToggleNode, true);
         const toggle = nextToggleNode.getComponent(cc.Toggle);
         if (toggle) {
             toggle.isChecked = true;
@@ -1235,7 +1267,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             return 0;
         }
         let value = 0;
-        const potLeaderCount = Math.max(1, this.currentTriggerData.PotLeaderCount);
+        const potLeaderCount = Math.max(1, this.currentTriggerData.potLeaderCount);
         switch (poolType) {
             case TexasInsurancePoolType.MIN_MONEY:
                 value = (this.currentTriggerData.potTotalCost + this.currentTriggerData.insuranced) / 100;
@@ -1272,7 +1304,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         const equalOdd = this.selectedEqualOdd();
         const forceOverValue = lastInsurance / overOdd;
         const forceEqualValue = equalOdd > 0 ? forceOverValue / equalOdd : 0;
-        return (forceOverValue + forceEqualValue) / 100;
+        return forceOverValue + forceEqualValue;
     }
 
     /** 平分 outs 的投保额 = floor(反超投保额 / 平分赔率)。 */
@@ -1310,7 +1342,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         if (poolType === TexasInsurancePoolType.MIN_MONEY) {
             maxPay = Math.floor((this.currentTriggerData.potTotalCost + this.currentTriggerData.insuranced) / overOdd);
         } else {
-            maxPay = Math.floor(this.currentTriggerData.pot / Math.max(1, this.currentTriggerData.PotLeaderCount) / overOdd);
+            maxPay = Math.floor(this.currentTriggerData.pot / Math.max(1, this.currentTriggerData.potLeaderCount) / overOdd);
         }
         let overValue = 0;
         switch (poolType) {
@@ -1347,17 +1379,11 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     }
 
     private selectedOverOdd(): number {
-        if (!this.currentTriggerData || !this.userOutsCardsData.overOuts.length) {
-            return 0;
-        }
-        return GameUtil.GetOddsByPlayerNum(this.currentTriggerData.PotUserCount, this.userOutsCardsData.overOuts.length);
+        return this.resolveOdds(this.userOutsCardsData.overOuts.length);
     }
 
     private selectedEqualOdd(): number {
-        if (!this.currentTriggerData || !this.userOutsCardsData.equalOuts.length) {
-            return 0;
-        }
-        return GameUtil.GetOddsByPlayerNum(this.currentTriggerData.PotUserCount, this.userOutsCardsData.equalOuts.length);
+        return this.resolveOdds(this.userOutsCardsData.equalOuts.length);
     }
 
     private hideAllHighlights(): void {
@@ -1384,6 +1410,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.isCountdown = false;
         this.countDownTime = 0;
         this.maxCountDownTime = 0;
+        this.countDownEndTimestamp = 0;
         this.onclickDelayButtonTimes = 0;
         this.cachedPotInsuranceBuyList.length = 0;
         this.clearMultiInsurancePoolData();
@@ -1415,7 +1442,26 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         }
     }
 
+    /** 赔率先走本地表计算，取不到时退回服务端原始 odds，避免出现 undefined / NaN。 */
+    private resolveOdds(selectOuts: number): number {
+        if (!this.currentTriggerData || selectOuts <= 0) {
+            return 0;
+        }
+        const gameOdds = GameUtil.GetOddsByPlayerNum(this.currentTriggerData.potUserCount, selectOuts);
+        if (Number.isFinite(gameOdds) && gameOdds > 0) {
+            return gameOdds;
+        }
+        return Number.isFinite(this.currentTriggerData.odds) ? this.currentTriggerData.odds : 0;
+    }
+
+    private formatOdds(odd: number): string {
+        return `1:${Number.isFinite(odd) && odd > 0 ? odd : 0}`;
+    }
+
     private formatDisplay(value: number): string {
+        if (!Number.isFinite(value)) {
+            return '0';
+        }
         return value.toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
     }
 }

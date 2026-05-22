@@ -227,7 +227,7 @@ export default class UITexas extends BaseScene {
     UIBringOut: UIBringOut = null;
     //6.保险面板
     UIInsurance_Con: cc.Node = null;
-    UIInsurancePanel: UIInsuranceNewPanel = null;
+    UIInsuranceNewPanel: UIInsuranceNewPanel = null;
     //7.二套牌投票面板
     UIAgreeSecondPcs_Con: cc.Node = null;
     UIAgreeSecondPcs_Com: UIAgreeSecondPcsComponent = null;
@@ -450,7 +450,7 @@ export default class UITexas extends BaseScene {
         this.UIBringOut = this.AddComponents(PrefabUI.UIBringOut, this.UIChips_Con);
         //6.保险面板
         this.UIInsurance_Con = this.getChildNodeOrComponent('UIInsurance_Con');
-        this.UIInsurancePanel = this.AddComponents(PrefabUI.UIInsuranceNewPanel, this.UIInsurance_Con);
+        this.UIInsuranceNewPanel = this.AddComponents(PrefabUI.UIInsuranceNewPanel, this.UIInsurance_Con);
         //7.二套牌投票面板
         this.UIAgreeSecondPcs_Con = this.getChildNodeOrComponent('UIAgreeSecondPcs_Con');
         this.UIAgreeSecondPcs_Com = this.AddComponents(PrefabUI.UIAgreeSecondPcsComponent, this.UIAgreeSecondPcs_Con);
