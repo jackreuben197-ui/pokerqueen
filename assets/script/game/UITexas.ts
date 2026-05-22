@@ -185,6 +185,7 @@ export default class UITexas extends BaseScene {
     public transAllPot: cc.Node = null;
     Button_Delay: cc.Node = null;
     Button_SeeMorePublic: cc.Node = null;
+    Button_LookHandCard: cc.Node = null;
     Image_SeeMorePublicTips: cc.Node = null;
     textSeeMorePublicTips: cc.Label = null;
     textSeeMorePublic: cc.Label = null;
@@ -392,6 +393,7 @@ export default class UITexas extends BaseScene {
         this.transAllPot = this.getChildNodeOrComponent('AllPot');
         this.Button_Delay = this.getChildNodeOrComponent('Button_Delay');
         this.Button_SeeMorePublic = this.getChildNodeOrComponent('Button_SeeMorePublic');
+        this.Button_LookHandCard = this.getChildNodeOrComponent('Button_LookHandCard');
         this.Image_SeeMorePublicTips = this.getChildNodeOrComponent('Image_SeeMorePublicTips');
         this.textSeeMorePublicTips = this.getChildNodeOrComponent('Text_SeeMorePublicTips', cc.Label);
         this.textSeeMorePublic = this.getChildNodeOrComponent('Text_SeeMorePublic', cc.Label);
@@ -509,6 +511,7 @@ export default class UITexas extends BaseScene {
         ///////////////////////////
         this.setButtonClick(this.Button_Delay, this.onClickDelay);
         this.setButtonClick(this.Button_SeeMorePublic, this.onClickSeeMorePublic);
+        this.setButtonClick(this.Button_LookHandCard, this.onClickLookHandCard);
         this.setButtonClick(this.buttonWaitBlind, this.onClickWaitBlind);
         this.setButtonClick(this.StartGameButton, this.onClickStartGame);
         this.setButtonClick(this._buttonShare, this.OnButtonShareClick);
@@ -957,6 +960,10 @@ export default class UITexas extends BaseScene {
 
     private onClickSeeMorePublic() {
         this.game.onClickSeeMorePublic();
+    }
+
+    private onClickLookHandCard() {
+        this.game.onClickLookHandCard();
     }
 
     private onClickWaitBlind() {

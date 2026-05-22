@@ -36,6 +36,8 @@ import { ClientMessageKeepSeatActive } from '../../protobuf/holdem/req_th_keep_s
 import { ClientMessageSeated } from '../../protobuf/holdem/req_th_seated_pb';
 import { ClientMessageSetAutoOnTable } from '../../protobuf/holdem/req_th_set_auto_on_table_pb';
 import { ClientMessageShowPublicCards } from '../../protobuf/holdem/req_th_show_public_cards_pb';
+import { ClientMessageViewPlayerCards } from '../../protobuf/holdem/req_th_view_player_cards_pb';
+import { ClientMessageViewPlayerCardsNum } from '../../protobuf/holdem/req_th_view_player_cards_num_pb';
 import { ClientMessageSquidInActive } from '../../protobuf/holdem/req_th_squid_in_active_pb';
 import { ClientMessageStandupActive } from '../../protobuf/holdem/req_th_stand_up_active_pb';
 import { ClientMessageStoreChips } from '../../protobuf/holdem/req_th_store_chips_pb';
@@ -454,6 +456,10 @@ export default class TexasGame {
     /// 查看公共牌花费
     /// </summary>
     public checkPublicCardsCost: number = 50;
+    /// <summary>
+    /// 付费看手牌次数（阶梯收费用）
+    /// </summary>
+    public lookCardsPayTimes: number = 0;
     /// <summary>
     /// 是否是取消留座离桌（用来判断是否显示提示）
     /// </summary>
@@ -3630,6 +3636,95 @@ export default class TexasGame {
         this.uirc.setButtonInteractable(this.uirc.Button_SeeMorePublic, boo);
     }
 
+    /// <summary>
+    /// 偷偷看：显示看手牌按钮（结算阶段，玩家未站起时显示）
+    /// </summary>
+    public ShowLookHandCard(): void {
+        if (!this.mainPlayer.isParticipateInTheGame) return;
+        if (GameCache.Instance.room_type >= RoomType.MTTTexasHoldemStandardNoLimit) return; // MTT不显示
+        this.SetLookHandCardPrice();
+        this.uirc.Button_LookHandCard.active = true;
+        this.InteractableLookHandCard(true);
+    }
+
+    /// <summary>
+    /// 偷偷看：隐藏看手牌按钮
+    /// </summary>
+    public HideLookHandCard(): void {
+        this.uirc.Button_LookHandCard.active = false;
+    }
+
+    /// <summary>
+    /// 偷偷看：设置按钮可交互
+    /// </summary>
+    public InteractableLookHandCard(boo: boolean) {
+        this.uirc.setButtonInteractable(this.uirc.Button_LookHandCard, boo);
+    }
+
+    /// <summary>
+    /// 偷偷看：计算并显示价格（阶梯收费：基础价 × multiple^times，有上限）
+    /// </summary>
+    private SetLookHandCardPrice(): void {
+        const sitDown = this.mainPlayer.isParticipateInTheGame;
+        const ext = sitDown ? 12 : 11;
+        const times = Math.min(this.lookCardsPayTimes, 4);
+        let diamondConfig = DiamondModel.Instance.GetDiamondConfig(this.GetDiamondTypeText(17, ext + 10 * times), 17);
+        if (!diamondConfig) {
+            console.log(LN, '未拿到偷偷看配置');
+            return;
+        }
+        const setting = this.GetSetting(diamondConfig);
+        if (!setting) {
+            console.log(LN, '未拿到偷偷看配置setting');
+            return;
+        }
+        // 显示价格到按钮子节点 numDiamond
+        const numNode = this.uirc.Button_LookHandCard.getChildByName('numDiamond');
+        if (numNode) {
+            const label = numNode.getComponent(cc.Label);
+            if (label) label.string = `${setting.price}`;
+        }
+    }
+
+    /// <summary>
+    /// 偷偷看：点击发送 1026 协议
+    /// </summary>
+    public onClickLookHandCard(): void {
+        if (this.CanClick() == false) return;
+        this.lastClickTime = GlobalSession.NowTimeMS;
+        this.InteractableLookHandCard(false);
+        ProtocolAgency.Send<ClientMessageViewPlayerCards.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_ViewPlayerCards,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: {
+                    roomId: GameCache.Instance.room_id,
+                    matchId: GameCache.Instance.match_id
+                },
+                targetSeatId: 0,
+                targetUserRid: 0
+            }
+        });
+    }
+
+    /// <summary>
+    /// 偷偷看：发送 1029 查询当前看牌次数
+    /// </summary>
+    public SendViewPlayerCardsNum(): void {
+        ProtocolAgency.Send<ClientMessageViewPlayerCardsNum.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_ViewPlayerCardsNum,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: {
+                    roomId: GameCache.Instance.room_id,
+                    matchId: GameCache.Instance.match_id
+                }
+            }
+        });
+    }
+
     public HideSeeMorePublicTips(): void {
         this.uirc.Image_SeeMorePublicTips.active = false;
     }
@@ -4287,6 +4382,7 @@ export default class TexasGame {
         this.ResetSecondPublicCardsImage();
         this.HideSeeMorePublic();
         this.HideSeeMorePublicTips();
+        this.HideLookHandCard();
         this.HideOperationPanel();
         this.HideAutoOperationPanel();
         this.uirc.CleanUI();
