@@ -1,6 +1,4 @@
 import { ServerMessageMttAwardNotify } from '../../../../protobuf/holdem/recv_g_mtt_award_notify_pb';
 
 // MttAwardNotify 147
-export default function MttAwardNotify(data: ServerMessageMttAwardNotify.AsObject, roomID: number, matchID: number) {
-
-}
+export default function MttAwardNotify(data: ServerMessageMttAwardNotify.AsObject, roomID: number, matchID: number) {}

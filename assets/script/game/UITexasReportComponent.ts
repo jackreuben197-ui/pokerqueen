@@ -686,7 +686,7 @@ export default class UITexasReportComponent extends UIBase {
             });
             if (!result) return;
             let data: any = WebOrgFriendRoomList.Response.data;
-            data.records.forEach((item: { rid: number; start_time: string; play_duration: number; }) => {
+            data.records.forEach((item: { rid: number; start_time: string; play_duration: number }) => {
                 if (item.rid == GameCache.Instance.room_id) {
                     if (item.start_time == null) {
                         return;

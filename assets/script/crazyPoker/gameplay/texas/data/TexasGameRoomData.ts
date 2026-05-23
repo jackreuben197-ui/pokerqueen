@@ -1,10 +1,9 @@
-
-import RoomData from "../../common/core/RoomData";
-import TexasGameRoomDataBasic from "./TexasGameRoomDataBasic";
-import TexasGameRoomDataPotInfo from "./TexasGameRoomDataPotInfo";
-import TexasGameRoomDataPublicCards from "./TexasGameRoomDataPublicCards";
-import TexasGameRoomDataRoundState from "./TexasGameRoomDataRoundState";
-import TexasGameRoomDataSeatesStateManager from "./TexasGameRoomDataSeatesStateManager";
+import RoomData from '../../common/core/RoomData';
+import TexasGameRoomDataBasic from './TexasGameRoomDataBasic';
+import TexasGameRoomDataPotInfo from './TexasGameRoomDataPotInfo';
+import TexasGameRoomDataPublicCards from './TexasGameRoomDataPublicCards';
+import TexasGameRoomDataRoundState from './TexasGameRoomDataRoundState';
+import TexasGameRoomDataSeatsStateManager from './TexasGameRoomDataSeatsStateManager';
 
 export default class TexasGameRoomData extends RoomData {
 
@@ -17,6 +16,5 @@ export default class TexasGameRoomData extends RoomData {
     // 回合信息
     public readonly roundState = new TexasGameRoomDataRoundState();
     // 座位信息
-    public readonly seatsStateManager = new TexasGameRoomDataSeatesStateManager();
-
+    public readonly seatsStateManager = new TexasGameRoomDataSeatsStateManager();
 }

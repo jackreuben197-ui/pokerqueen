@@ -1,9 +1,8 @@
-import { StringHelper } from "../../../../../../helper/StringHelper";
-import { i18nMgr } from "../../../../../../i18n/i18nMgr";
-import TexasGameRoomData from "../../../../texas/data/TexasGameRoomData";
-import TexasGameRoomDataBasic from "../../../../texas/data/TexasGameRoomDataBasic";
-import roomDataManager from "../../../core/RoomDataManager";
-
+import { StringHelper } from '../../../../../../helper/StringHelper';
+import { i18nMgr } from '../../../../../../i18n/i18nMgr';
+import TexasGameRoomData from '../../../../texas/data/TexasGameRoomData';
+import TexasGameRoomDataBasic from '../../../../texas/data/TexasGameRoomDataBasic';
+import roomDataManager from '../../../core/RoomDataManager';
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
@@ -11,7 +10,6 @@ const { ccclass, property, menu } = cc._decorator;
 export default class RoomInfo extends cc.Component {
     @property(cc.Label)
     private roomInfoLabel: cc.Label = null;
-    
     private _roomID: number;
     private _matchID: number;
     private _roomBaseInfo: TexasGameRoomDataBasic;
@@ -28,7 +26,7 @@ export default class RoomInfo extends cc.Component {
 
     public onLoad() {
         // 如果绑定点击写这里
-    }   
+    }
 
     public onEnable(): void {
         if (!this._roomBaseInfo) return;
@@ -36,7 +34,7 @@ export default class RoomInfo extends cc.Component {
     }
 
     public onDisable(): void {
-        if (this._roomBaseInfo)  {
+        if (this._roomBaseInfo) {
             this._roomBaseInfo.targetOff(this);
             this._roomBaseInfo = null;
         }
@@ -46,7 +44,7 @@ export default class RoomInfo extends cc.Component {
         this._roomBaseInfo.on(TexasGameRoomDataBasic.TABLE_BET_INFO_CHANGE, this.onUpdateText, this);
         this._roomBaseInfo.on(TexasGameRoomDataBasic.TABLE_HANDINFO_CHANGE, this.onUpdateText, this);
         // 初始化
-        this.onUpdateText();   
+        this.onUpdateText();
     }
 
     private onUpdateText() {
@@ -95,11 +93,10 @@ export default class RoomInfo extends cc.Component {
         this.roomInfoLabel.string = info;
     }
 
-    private  _getRoomType(): string {
+    private _getRoomType(): string {
         let gameTypeStr: string = i18nMgr.Get('GameType_' + this._roomBaseInfo.gameType);
         let pokerTypeStr: string = i18nMgr.Get('PokerType_' + this._roomBaseInfo.pokerType);
         let betTypeStr: string = i18nMgr.Get('BetType_' + this._roomBaseInfo.betType);
         return gameTypeStr + '-' + pokerTypeStr + '-' + betTypeStr;
     }
-
 }

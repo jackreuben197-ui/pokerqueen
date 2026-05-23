@@ -1,6 +1,4 @@
 import { ServerMessageSystemMessage } from '../../../../protobuf/holdem/recv_g_system_message_pb';
 
 // SystemMessage 108
-export default function SystemMessage(data: ServerMessageSystemMessage.AsObject, roomID: number, matchID: number) {
-
-}
+export default function SystemMessage(data: ServerMessageSystemMessage.AsObject, roomID: number, matchID: number) {}

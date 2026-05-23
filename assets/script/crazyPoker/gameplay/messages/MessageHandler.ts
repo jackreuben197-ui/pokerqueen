@@ -6,6 +6,7 @@ import MahjongMessageHandler from './mahjong/MahjongMessageHandler';
 import GuandanMessageHandler from './guandan/GuandanMessageHandler';
 
 export default class MessageHandler {
+
     public static handle(code: number, data: any, roomID: number, matchID: number) {
         if (code >= 4001 && code < 5000) return GuandanMessageHandler.handle(code, data, roomID, matchID);
         if (code >= 3001 && code < 4000) return MahjongMessageHandler.handle(code, data, roomID, matchID);

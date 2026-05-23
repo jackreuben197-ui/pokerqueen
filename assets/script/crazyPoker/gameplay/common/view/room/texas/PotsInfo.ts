@@ -1,11 +1,10 @@
-import { StringHelper } from "../../../../../../helper/StringHelper";
-import { i18nMgr } from "../../../../../../i18n/i18nMgr";
-import { SidePot } from "../../../../../../protobuf/holdem/define_pb";
-import TexasGameRoomData from "../../../../texas/data/TexasGameRoomData";
-import TexasGameRoomDataBasic from "../../../../texas/data/TexasGameRoomDataBasic";
-import TexasGameRoomDataPotInfo from "../../../../texas/data/TexasGameRoomDataPotInfo";
-import roomDataManager from "../../../core/RoomDataManager";
-
+import { StringHelper } from '../../../../../../helper/StringHelper';
+import { i18nMgr } from '../../../../../../i18n/i18nMgr';
+import { SidePot } from '../../../../../../protobuf/holdem/define_pb';
+import TexasGameRoomData from '../../../../texas/data/TexasGameRoomData';
+import TexasGameRoomDataBasic from '../../../../texas/data/TexasGameRoomDataBasic';
+import TexasGameRoomDataPotInfo from '../../../../texas/data/TexasGameRoomDataPotInfo';
+import roomDataManager from '../../../core/RoomDataManager';
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
@@ -40,7 +39,7 @@ export default class PotsInfo extends cc.Component {
             pot.parent = this.sidePot.parent;
             this._allPotsNodes.push(pot);
         }
-    }   
+    }
 
     public onEnable(): void {
         if (!this._potInfo) return;
@@ -48,7 +47,7 @@ export default class PotsInfo extends cc.Component {
     }
 
     public onDisable(): void {
-        if (this._potInfo)  {
+        if (this._potInfo) {
             this._potInfo.targetOff(this);
             this._potInfo = null;
         }
@@ -59,7 +58,7 @@ export default class PotsInfo extends cc.Component {
         this._potInfo.on(TexasGameRoomDataPotInfo.ALLPOTS_CHANGE, this.onUpdateAllPots, this);
         // 初始化(全池)
         this.onUpdatePotList(this._potInfo.potList);
-        this.onUpdateAllPots(this._potInfo.allPot);   
+        this.onUpdateAllPots(this._potInfo.allPot);
     }
 
     private onUpdateAllPots(allpots: number) {
@@ -102,5 +101,4 @@ export default class PotsInfo extends cc.Component {
         cc.v3(-143, -1090),
         cc.v3(143, -1090)
     ];
-
 }

@@ -34,26 +34,19 @@ export default class GameplayUtil {
         return Date.now() < user.trader_expire_time * 1000;
     }
 
-    
     public static RoomTypeExtract(roomType: number) {
         // 1. 是否是 MTT 赛制 (右移 9 位)
-        const isMTT = (roomType >> 9) === 1;
-
+        const isMTT = roomType >> 9 === 1;
         // 2. 取低 9 位的数据
-        let left = roomType & 0x1FF;
-
+        let left = roomType & 0x1ff;
         // 3. 剥离游戏大类 GameType (右移 6 位)
         const gameType = left >> 6;
-
         // 4. 取剩下的低 6 位
-        left = left & 0x3F;
-
+        left = left & 0x3f;
         // 5. 剥离 扑克类型 PokerType (右移 3 位)
         const pokerType = left >> 3;
-
         // 6. 剩下的最后 3 位就是下注限制类型 LimitBetType
         const betType = left & 0x07;
-
         return {
             gameType,
             pokerType,

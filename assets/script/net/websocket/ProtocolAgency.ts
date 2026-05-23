@@ -301,7 +301,7 @@ export default class ProtocolAgency extends cc.Component {
             }
         }
         GC.notify.post(code, body, roomid, matchid);
-        MessageHandler.handle(code, body, roomid, matchid)
+        MessageHandler.handle(code, body, roomid, matchid);
         body = null;
         body_ua = null;
     }

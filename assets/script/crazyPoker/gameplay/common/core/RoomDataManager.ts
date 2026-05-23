@@ -1,10 +1,10 @@
-import RoomData  from "./RoomData";
+import RoomData from './RoomData';
 
 class RoomDataManager {
     private _roomCache: Map<string, RoomData> = new Map();
 
     constructor() {
-        cc.log("[RoomDataManager] 数据总管单例初始化");
+        cc.log('[RoomDataManager] 数据总管单例初始化');
     }
 
     // 获取或创建对应房间的数据实例
@@ -29,6 +29,7 @@ class RoomDataManager {
     }
 }
 
-// 🌟 核心：直接 new 出实例，并作为默认导出
+//核心：直接 new 出实例，并作为默认导出
 const roomDataManager = new RoomDataManager();
+
 export default roomDataManager;

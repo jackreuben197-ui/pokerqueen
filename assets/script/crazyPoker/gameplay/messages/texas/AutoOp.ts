@@ -1,6 +1,4 @@
 import { ServerMessageAutoOp } from '../../../../protobuf/holdem/recv_th_auto_op_pb';
 
 // AutoOp 1109
-export default function AutoOp(data: ServerMessageAutoOp.AsObject, roomID: number, matchID: number) {
-
-}
+export default function AutoOp(data: ServerMessageAutoOp.AsObject, roomID: number, matchID: number) {}

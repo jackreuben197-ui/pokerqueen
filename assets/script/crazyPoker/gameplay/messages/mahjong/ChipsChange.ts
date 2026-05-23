@@ -1,6 +1,4 @@
 import { ServerMessageMjChipsChange } from '../../../../protobuf/holdem/recv_mj_chips_change_pb';
 
 // ChipsChange 3055
-export default function ChipsChange(data: ServerMessageMjChipsChange.AsObject, roomID: number, matchID: number) {
-
-}
+export default function ChipsChange(data: ServerMessageMjChipsChange.AsObject, roomID: number, matchID: number) {}

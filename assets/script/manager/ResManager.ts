@@ -116,7 +116,9 @@ export class ResManager {
     static AssetForeach(assets: cc.Asset[], bundleName: string) {
         assets.forEach(item => {
             if (item instanceof cc.Prefab) {
+                 console.log(bundleName, item.name);
                 AssetContext.setAsset(bundleName, item.name, item);
+                
                 let ac = item.data?.getComponent(AssetContext);
                 if (ac) {
                     item.data.children.forEach(item => {

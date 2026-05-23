@@ -374,10 +374,10 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         roomData.basicInfo.roomType = this._roomInfo.roomType;
         roomData.basicInfo.delaySeeCard = this._roomInfo.delayViewCardOn > 0;
         roomData.basicInfo.invitationCode = this._roomInfo.invitationCode;
-        roomData.basicInfo.sbante = { sb: this._roomInfo.sb, ante: this._roomInfo.ante};
+        roomData.basicInfo.sbante = { sb: this._roomInfo.sb, ante: this._roomInfo.ante };
         roomData.basicInfo.handNum = this._roomInfo.handNum;
+        roomData.seatsStateManager.seatsCount = this._roomInfo.seatCount;
         roomDataManager.setRoomData(this._roomId, this.matchId, roomData);
-
         const body: ClientMessageEnterRoom.AsObject = {
             room: { roomId: this._roomId, matchId: this.matchId },
             gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },

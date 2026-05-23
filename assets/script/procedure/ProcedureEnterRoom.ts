@@ -50,5 +50,4 @@ export default class ProcedureEnterRoom extends ProcedureBase {
                 ProcedureManager.StartProcedure<PrefabUI>(ProcedureEnum.Return, PrefabUI.UIPreloading);
             });
     }
-
 }

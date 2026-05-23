@@ -1,6 +1,4 @@
 import { ServerMessageUserUsdtOrderNotify } from '../../../../protobuf/holdem/recv_g_user_usdt_order_notify_pb';
 
 // UserUsdtOrderNotify 145
-export default function UserUsdtOrderNotify(data: ServerMessageUserUsdtOrderNotify.AsObject, roomID: number, matchID: number) {
-
-}
+export default function UserUsdtOrderNotify(data: ServerMessageUserUsdtOrderNotify.AsObject, roomID: number, matchID: number) {}

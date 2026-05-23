@@ -1367,7 +1367,7 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Name: 'UIRoomTexas',
         Bundle: 'texas',
         Path: 'purple_prefab/scene/UIRoomTexas'
-    },
+    }
 };
 
 //批量设置
