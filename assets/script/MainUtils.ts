@@ -295,12 +295,11 @@ export async function registerH5Listeners(): Promise<void> {
         gc.enter_param = { game_enter_type: 0, isLookOn: false };
         const jackpotId = Number(roomData.jackpot_id || 0);
         gc.jackPot_id = jackpotId;
-        // === 6. H5 桥接模式下补齐牌桌基础资源，再启动进入牌桌流程 ===
-        await ensureBridgeResourcesReady();
-        // === 7. 启动进入牌桌流程 ===
-        // EnterTexas → 加载资源 → Texas procedure → TexasGameUtils.EnterRoom()
-        // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
-        await ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
+        // === 6. 启动进入牌桌流程，同时后台加载资源 ===
+        // 先启动进桌流程（含网络请求），再等资源加载完成，两者并行
+        // 这样用户点击后立即进入加载界面，而不是等资源加载完才进
+        const enterProcedure = ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
+        await Promise.all([ensureBridgeResourcesReady(), enterProcedure]);
         console.log('[H5Bridge] enterTable 已启动进桌流程, room_id:', roomData.rid, 'room:', roomData.name);
     });
 
@@ -459,13 +458,9 @@ export async function registerH5Listeners(): Promise<void> {
             GameCache.Instance.room_id = 0;
             GameCache.Instance.room_type = matchInfo.type;
             GameCache.Instance.enter_param = enterPram;
-            // === 6. H5 桥接模式下补齐牌桌基础资源，再启动进入牌桌流程 ===
-            await ensureBridgeResourcesReady();
-            // === 7. 启动进入牌桌流程 ===
-            // EnterTexas → 加载资源 → Texas procedure → TexasGameUtils.EnterRoom()
-            // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
-            // 要等待流程结束
-            await ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enterPram);
+            // === 6. 启动进入牌桌流程，同时后台加载资源 ===
+            const enterMttProcedure = ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enterPram);
+            await Promise.all([ensureBridgeResourcesReady(), enterMttProcedure]);
             console.log('[H5Bridge] enterMtt 缓存完成, matchId', GameCache.Instance.match_id, ',开始进入mtt');
         });
     }

@@ -846,6 +846,8 @@ export default class TexasGameProtocol {
         if (rec.status != 0) {
             this.game.ClickAddTime = false;
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status)); //CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_ADD_TIME, rec.Status)
+            // 加时失败，倒计时已归零，需要手动关闭操作面板
+            this.game.HideOperationPanel();
             return;
         }
         this.game.delayCount = rec.times;
@@ -853,7 +855,7 @@ export default class TexasGameProtocol {
         if (null == mSeat) return;
         mSeat.AddOperationTime(rec.duration);
         this.game.UpdateDelayBtn();
-        this.game.ClickAddTime = false;
+        // ClickAddTime 在 UIOperationComponent.HANDLER_REQ_ADD_TIME 中恢复倒计时后清除
         UIComponent.Instance.ToastLanguage('UITexas_AddTimeSuccess');
     }
 
@@ -1518,7 +1520,7 @@ export default class TexasGameProtocol {
         this.game.cacheRound = rec.round;
         GameCache.Instance.GameStatus = this.game.gamestatus;
         UIComponent.Instance.HideUI(PrefabUI.UIAutoOperationComponent);
-        UIComponent.Instance.HideUI(PrefabUI.UIOperationComponent);
+        this.game.HideOperationPanel();
         const squidOldCountMap = new Map<number, number>();
         const squidNoMarkCountBefore = this.game.CountSquidNoMarkPlayers();
         if (this.game.squidEnabled) {

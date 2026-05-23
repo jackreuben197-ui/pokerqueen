@@ -2542,6 +2542,7 @@ export default class TexasGame {
     /// 隐藏操作面板
     /// </summary>
     public HideOperationPanel(): void {
+        if (this.ClickAddTime) return;
         this.uirc.Button_Delay.active = false;
         UIComponent.Instance.HideUI(PrefabUI.UIOperationComponent);
     }
@@ -4610,7 +4611,7 @@ export default class TexasGame {
                     if (diamondConfig.status == 2 || setting.discount_price == 0) {
                         // 关闭收费 或 折扣价为0 → 免费
                         priceText = '免费';
-                        diamondCost.active = false;
+                        diamondCost.active = true;
                     } else if (setting.discount_price < setting.price) {
                         // 有折扣 → 显示折扣价
                         priceText = `${setting.discount_price}`;
@@ -4626,7 +4627,7 @@ export default class TexasGame {
             let vipSub = GC.data.user.info.subscription;
             if (vipSub && vipSub.free_add_time_num > 0 && vipSub.free_added_time_num < vipSub.free_add_time_num) {
                 priceText = '免费';
-                diamondCost.active = false;
+                diamondCost.active = true;
             }
             textDiamondCost.getComponent(cc.Label).string = priceText;
             this.uirc.Button_Delay.getComponent(cc.Button).interactable = true;
