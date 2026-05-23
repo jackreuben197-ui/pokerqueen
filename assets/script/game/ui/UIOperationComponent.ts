@@ -529,7 +529,9 @@ export default class UIOperationComponent extends UIBase {
                     UIComponent.close(UIDefine.UIDialogComponent);
                 this.isShowingDialog = false;
                 //如需客户端倒计时结束发送让牌，在这里做
-                GameCache.Instance.CurGame.HideOperationPanel();
+                if (!GameCache.Instance.CurGame.ClickAddTime) {
+                    GameCache.Instance.CurGame.HideOperationPanel();
+                }
             }
         }
         if (this._isFoldCountDown) {
@@ -546,7 +548,9 @@ export default class UIOperationComponent extends UIBase {
                     UIComponent.close(UIDefine.UIDialogComponent);
                 this.isShowingDialog = false;
                 //如需客户端倒计时结束发送弃牌，在这里做
-                GameCache.Instance.CurGame.HideOperationPanel();
+                if (!GameCache.Instance.CurGame.ClickAddTime) {
+                    GameCache.Instance.CurGame.HideOperationPanel();
+                }
             }
         }
         if (this.optCurTime < 6.1 && this.optCurTime > 6 && !this.hadAlertSound) {
@@ -573,6 +577,19 @@ export default class UIOperationComponent extends UIBase {
         if (rec.status == 0) {
             this.optCurTime += rec.duration;
             this.optTotalTime = this.optCurTime;
+            // 倒计时归零时状态已被停掉，加时成功后需恢复
+            if (!this._isCheckCountDown && !this._isFoldCountDown) {
+                this.isCountDown = true;
+                if (this.Check_CountDown) {
+                    this._isCheckCountDown = true;
+                    this.Check_CountDown.active = true;
+                    this.imageCheckCountDown.fillRange = 1;
+                } else if (this.Fold_CountDown) {
+                    this._isFoldCountDown = true;
+                    this.Fold_CountDown.active = true;
+                    this.imageFoldCountDown.fillRange = 1;
+                }
+            }
         }
     }
 

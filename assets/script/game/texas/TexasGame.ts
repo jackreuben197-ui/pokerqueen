@@ -4034,6 +4034,7 @@ export default class TexasGame {
             UIComponent.Instance.Toast(i18nMgr.Get('ServerErrorCode_31045'));
             return;
         }
+        this.ClickAddTime = true;
         ProtocolAgency.Send<ClientMessageAddTime.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_AddTime,
             RoomID: GameCache.Instance.room_id,
@@ -4575,44 +4576,27 @@ export default class TexasGame {
     //刷新加时按钮样式
     public UpdateDelayBtn(): void {
         this.HideBtnDelay(true);
-        let dis_diamond = cc.find('layout/dis_diamond', this.uirc.Button_Delay);
-        let nor_diamond = cc.find('layout/nor_diamond', this.uirc.Button_Delay);
-        let free_diamond = cc.find('layout/free_diamond', this.uirc.Button_Delay);
-        nor_diamond.active = false;
-        dis_diamond.active = false;
-        free_diamond.active = false;
+        let diamondCost = this.uirc.Button_Delay.getChildByName('diamondCost');
+        let textDiamondCost = this.uirc.Button_Delay.getChildByName('Text_diamondCost');
+        diamondCost.active = false;
+        textDiamondCost.getComponent(cc.Label).string = '';
         //使用次数
         if (this.delayCount >= 2) {
             this.uirc.Button_Delay.getComponent(cc.Button).interactable = false;
-            this.uirc.Button_Delay.getChildByName('Text_Time').getComponent(cc.Label).string = '0';
+            this.uirc.Button_Delay.getChildByName('Text_Time').getComponent(cc.Label).string = '+0s';
             this.uirc.Button_Delay.opacity = 178;
-            this.uirc.setChildLabel(nor_diamond, 'label', '0');
-            nor_diamond.active = true;
+            diamondCost.active = true;
+            textDiamondCost.getComponent(cc.Label).string = '0';
         } else {
+            let priceText = '';
             let diamondConfig = DiamondModel.Instance.GetDiamondConfig(this.GetTypeText(this.delayCount + 1), 2);
             if (diamondConfig?.config_type == 2) {
-                let smallBlind = 0;
-                if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) //string.Format("{0:N1}", str)
-                {
-                    smallBlind = GameCache.Instance.CurGame.smallBlind;
+                let setting = null;
+                if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
+                    let smallBlind = GameCache.Instance.CurGame.smallBlind;
                     for (let i = 0; i < diamondConfig.setting.length; i++) {
                         if (diamondConfig.setting[i].sb * 100 == smallBlind * 100) {
-                            if (diamondConfig.setting[i].discount_price == 0) {
-                                //DisDiamond.transform.Find("num").GetComponent<Text>().text = diamondConfig.setting[i].price.ToString();
-                                this.uirc.setChildLabel(dis_diamond, 'label', `${diamondConfig.setting[i].price}`);
-                                dis_diamond.active = true;
-                                free_diamond.active = true;
-                            } else {
-                                if (diamondConfig.setting[i].discount_price < diamondConfig.setting[i].price) {
-                                    this.uirc.setChildLabel(dis_diamond, 'label', `${diamondConfig.setting[i].price}`);
-                                    this.uirc.setChildLabel(nor_diamond, 'label', `${diamondConfig.setting[i].discount_price}`);
-                                    nor_diamond.active = true;
-                                    dis_diamond.active = true;
-                                } else {
-                                    this.uirc.setChildLabel(nor_diamond, 'label', `${diamondConfig.setting[i].price}`);
-                                    nor_diamond.active = true;
-                                }
-                            }
+                            setting = diamondConfig.setting[i];
                             break;
                         }
                     }
@@ -4620,29 +4604,33 @@ export default class TexasGame {
                     GameCache.Instance.room_type >= RoomType.MTTTexasHoldemStandardNoLimit &&
                     GameCache.Instance.room_type <= RoomType.MTTOmaha6SixPlusFixedAof
                 ) {
-                    if (diamondConfig.setting[0].discount_price == 0) {
-                        this.uirc.setChildLabel(dis_diamond, 'label', `${diamondConfig.setting[0].price}`);
-                        nor_diamond.active = false;
-                        dis_diamond.active = true;
-                        free_diamond.active = true;
+                    setting = diamondConfig.setting[0];
+                }
+                if (setting) {
+                    if (diamondConfig.status == 2 || setting.discount_price == 0) {
+                        // 关闭收费 或 折扣价为0 → 免费
+                        priceText = '免费';
+                        diamondCost.active = false;
+                    } else if (setting.discount_price < setting.price) {
+                        // 有折扣 → 显示折扣价
+                        priceText = `${setting.discount_price}`;
+                        diamondCost.active = true;
                     } else {
-                        if (diamondConfig.setting[0].discount_price < diamondConfig.setting[0].price) {
-                            this.uirc.setChildLabel(dis_diamond, 'label', `${diamondConfig.setting[0].price}`);
-                            this.uirc.setChildLabel(nor_diamond, 'label', `${diamondConfig.setting[0].discount_price}`);
-                            nor_diamond.active = true;
-                            dis_diamond.active = true;
-                            free_diamond.active = false;
-                        } else {
-                            this.uirc.setChildLabel(nor_diamond, 'label', `${diamondConfig.setting[0].price}`);
-                            nor_diamond.active = true;
-                            dis_diamond.active = false;
-                            free_diamond.active = false;
-                        }
+                        // 无折扣 → 显示原价
+                        priceText = `${setting.price}`;
+                        diamondCost.active = true;
                     }
                 }
             }
+            // VIP免费次数优先
+            let vipSub = GC.data.user.info.subscription;
+            if (vipSub && vipSub.free_add_time_num > 0 && vipSub.free_added_time_num < vipSub.free_add_time_num) {
+                priceText = '免费';
+                diamondCost.active = false;
+            }
+            textDiamondCost.getComponent(cc.Label).string = priceText;
             this.uirc.Button_Delay.getComponent(cc.Button).interactable = true;
-            this.uirc.Button_Delay.getChildByName('Text_Time').getComponent(cc.Label).string = this.delayCount > 0 ? '20' : '30';
+            this.uirc.Button_Delay.getChildByName('Text_Time').getComponent(cc.Label).string = this.delayCount > 0 ? '+20s' : '+30s';
             this.uirc.Button_Delay.opacity = 255;
         }
     }
