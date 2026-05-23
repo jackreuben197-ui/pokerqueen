@@ -1110,9 +1110,7 @@ export default class TexasGameProtocol {
             Seat.StopWinArmature();
             Seat.PlayWinArmature();
             Seat.UpdateRecyclingWinChip();
-            let PlayRecyclingWinChipAnimation_Tween = Seat.PlayRecyclingWinChipAnimation(
-                this.game.GetRecyclingChipPosV3()
-            );
+            let PlayRecyclingWinChipAnimation_Tween = Seat.PlayRecyclingWinChipAnimation(this.game.GetRecyclingChipPosV3());
             if (PlayRecyclingWinChipAnimation_Tween) {
                 tween.then(
                     cc.callFunc(() => {
@@ -1537,7 +1535,9 @@ export default class TexasGameProtocol {
             if (mSeat.IsMySeat) {
                 this.game.callTimeCount = Number((rec.resultsList[i] as any).callTimeCount || 0);
                 this.game.callTimeStay = !!(rec.resultsList[i] as any).callTimeStay;
-                console.log('[ShowButtons] IsMySeat, standUp=' + rec.resultsList[i].standUp + ', isParticipating=' + this.game.mainPlayer.isParticipateInTheGame);
+                console.log(
+                    '[ShowButtons] IsMySeat, standUp=' + rec.resultsList[i].standUp + ', isParticipating=' + this.game.mainPlayer.isParticipateInTheGame
+                );
                 if (!rec.resultsList[i].standUp) {
                     this.game.ShowSeeMorePublic();
                     this.game.ShowLookHandCard();
@@ -2002,16 +2002,15 @@ export default class TexasGameProtocol {
                         case Def.IIReason.IIR_NO_ODDS_FOUND: {
                             const outsNum = (GameUtil.OutsList.get(invalidPot.potUserCount) ?? []).length;
                             UIComponent.Instance.Toast(
-                                i18nMgr.Get('adaptation20005') + (invalidPot.potId + 1) + ':' +
-                                StringHelper.Format(i18nMgr.Get('UIInsuranceReasonTips1'), [outsNum])
+                                i18nMgr.Get('adaptation20005') +
+                                    (invalidPot.potId + 1) +
+                                    ':' +
+                                    StringHelper.Format(i18nMgr.Get('UIInsuranceReasonTips1'), [outsNum])
                             );
                             break;
                         }
                         case Def.IIReason.IIR_NO_ODDS_TABLE_FOUND:
-                            UIComponent.Instance.Toast(
-                                i18nMgr.Get('adaptation20005') + (invalidPot.potId + 1) + ':' +
-                                i18nMgr.Get('UIInsuranceReasonTips2')
-                            );
+                            UIComponent.Instance.Toast(i18nMgr.Get('adaptation20005') + (invalidPot.potId + 1) + ':' + i18nMgr.Get('UIInsuranceReasonTips2'));
                             break;
                         case Def.IIReason.IIR_EV_LIMIT:
                             UIComponent.Instance.Toast(i18nMgr.Get('UIEVInsuranceTips5'));
@@ -2151,8 +2150,7 @@ export default class TexasGameProtocol {
                     const insuranceMode = GameCache.Instance._texasData._insuranceMode;
                     if (insuranceMode === Def.IsuranceMode.IM_NORMAL || insuranceMode === Def.IsuranceMode.IM_NEW_NORMAL) {
                         const potUserCount =
-                            GameCache.Instance._texasData._buyInsurancePotUserCount.get(potInsuranceBuy.potId) ??
-                            this.game.cacheBuyInsurancePotUserCount;
+                            GameCache.Instance._texasData._buyInsurancePotUserCount.get(potInsuranceBuy.potId) ?? this.game.cacheBuyInsurancePotUserCount;
                         this.game.cacheBuyInsurancePotUserCount = potUserCount;
                         this.game.cacheBuyActiveAmount = potInsuranceBuy.activeAmount;
                         if (this.game.uirc.Image_InsuranceTips.activeInHierarchy) {

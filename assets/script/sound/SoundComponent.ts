@@ -9,7 +9,6 @@ export default class SoundComponent {
         return ((this as any).instance ??= new SoundComponent());
     }
     soundOn: boolean = false;
-
     // BGM 相关
     private _musicId: number = -1;
     private _musicClip: cc.AudioClip = null;

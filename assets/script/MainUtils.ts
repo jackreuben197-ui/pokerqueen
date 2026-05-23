@@ -169,63 +169,58 @@ export function fillGameCache(payload: any): void {
  * 正常流程由 ProcedureEnterLobby 加载 resources/ 全目录（含 sound/），
  * H5 桥接模式跳过了大厅，需要单独补加载。
  */
-let _soundLoaded = false;
-let _soundLoadingPromise: Promise<void> | null = null;
-
-function loadSoundResources(): Promise<void> {
-    if (_soundLoaded) return Promise.resolve();
-    if (_soundLoadingPromise) return _soundLoadingPromise;
-    _soundLoadingPromise = new Promise(resolve => {
-        cc.resources.loadDir('sound', (err, assets) => {
-            if (err) {
-                console.error('[H5Bridge] 声音资源加载失败:', err);
-                _soundLoadingPromise = null;
-                resolve();
-                return;
-            }
-            _soundLoaded = true;
-            ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
-            console.log('[H5Bridge] 声音资源加载完成, 共', assets.length, '个资源');
-            resolve();
-        });
-    });
-    return _soundLoadingPromise;
-}
-
-/**
- * 预加载牌桌所需的游戏资源（牌面纹理等）到 AssetContext.map。
- * 正常流程由 ProcedureEnterLobby 加载 resources/ 全目录，
- * H5 桥接模式跳过了大厅，需要单独补加载。
- */
-let _gameResLoaded = false;
-let _gameResLoadingPromise: Promise<void> | null = null;
-
-function loadGameResources(): Promise<void> {
-    if (_gameResLoaded) return Promise.resolve();
-    if (_gameResLoadingPromise) return _gameResLoadingPromise;
-    _gameResLoadingPromise = new Promise(resolve => {
-        cc.resources.loadDir('main/rc', (err, assets) => {
-            if (err) {
-                console.error('[H5Bridge] 游戏资源加载失败:', err);
-                _gameResLoadingPromise = null;
-                resolve();
-                return;
-            }
-            _gameResLoaded = true;
-            ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
-            console.log('[H5Bridge] 游戏资源加载完成, 共', assets.length, '个资源');
-            resolve();
-        });
-    });
-    return _gameResLoadingPromise;
-}
-
-async function ensureBridgeResourcesReady(): Promise<void> {
-    // 保险弹窗、公牌、手牌都依赖 main/rc 里的牌面资源。
-    // 首页会顺手把这些资源预热，但从列表刷新直接进桌时不会经过首页，所以要在这里补一层兜底。
-    await Promise.all([loadSoundResources(), loadGameResources()]);
-}
-
+// let _soundLoaded = false;
+// let _soundLoadingPromise: Promise<void> | null = null;
+// function loadSoundResources(): Promise<void> {
+//     if (_soundLoaded) return Promise.resolve();
+//     if (_soundLoadingPromise) return _soundLoadingPromise;
+//     _soundLoadingPromise = new Promise(resolve => {
+//         cc.resources.loadDir('sound', (err, assets) => {
+//             if (err) {
+//                 console.error('[H5Bridge] 声音资源加载失败:', err);
+//                 _soundLoadingPromise = null;
+//                 resolve();
+//                 return;
+//             }
+//             _soundLoaded = true;
+//             ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
+//             console.log('[H5Bridge] 声音资源加载完成, 共', assets.length, '个资源');
+//             resolve();
+//         });
+//     });
+//     return _soundLoadingPromise;
+// }
+// /**
+//  * 预加载牌桌所需的游戏资源（牌面纹理等）到 AssetContext.map。
+//  * 正常流程由 ProcedureEnterLobby 加载 resources/ 全目录，
+//  * H5 桥接模式跳过了大厅，需要单独补加载。
+//  */
+// let _gameResLoaded = false;
+// let _gameResLoadingPromise: Promise<void> | null = null;
+// function loadGameResources(): Promise<void> {
+//     if (_gameResLoaded) return Promise.resolve();
+//     if (_gameResLoadingPromise) return _gameResLoadingPromise;
+//     _gameResLoadingPromise = new Promise(resolve => {
+//         cc.resources.loadDir('main/rc', (err, assets) => {
+//             if (err) {
+//                 console.error('[H5Bridge] 游戏资源加载失败:', err);
+//                 _gameResLoadingPromise = null;
+//                 resolve();
+//                 return;
+//             }
+//             _gameResLoaded = true;
+//             ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
+//             console.log('[H5Bridge] 游戏资源加载完成, 共', assets.length, '个资源');
+//             resolve();
+//         });
+//     });
+//     return _gameResLoadingPromise;
+// }
+// async function ensureBridgeResourcesReady(): Promise<void> {
+//     // 保险弹窗、公牌、手牌都依赖 main/rc 里的牌面资源。
+//     // 首页会顺手把这些资源预热，但从列表刷新直接进桌时不会经过首页，所以要在这里补一层兜底。
+//     await Promise.all([loadSoundResources(), loadGameResources()]);
+// }
 // ==================== H5 消息监听注册 ====================
 /** 注册 H5 桥接消息（enterTable / exitTable / syncUser） */
 export async function registerH5Listeners(): Promise<void> {
@@ -298,8 +293,7 @@ export async function registerH5Listeners(): Promise<void> {
         // === 6. 启动进入牌桌流程，同时后台加载资源 ===
         // 先启动进桌流程（含网络请求），再等资源加载完成，两者并行
         // 这样用户点击后立即进入加载界面，而不是等资源加载完才进
-        const enterProcedure = ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
-        await Promise.all([ensureBridgeResourcesReady(), enterProcedure]);
+        ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
         console.log('[H5Bridge] enterTable 已启动进桌流程, room_id:', roomData.rid, 'room:', roomData.name);
     });
 
@@ -331,8 +325,8 @@ export async function registerH5Listeners(): Promise<void> {
         (GC.data.user.info as any)._msg = userInfo;
         console.log('[H5Bridge] syncUser 缓存完成, user_id:', userInfo.un_id, 'nickname:', userInfo.nickname);
         // 预加载声音和游戏资源（提前加载，避免 enterTable 时再加载影响进桌速度）
-        loadSoundResources();
-        loadGameResources();
+        // loadSoundResources();
+        // loadGameResources();
     });
 
     H5MsgMgr.Instance.on('syncLanguage', payload => {
@@ -368,11 +362,11 @@ export async function registerH5Listeners(): Promise<void> {
         }
         GameCache.Instance._globalConfig = config;
     });
-
     // 仅预填 Cocos 侧实际用到的 config_type：2(加时) 8(延迟看牌) 30(历史偷看)。
     // payload.raw 已是 H5 转换好的 map：{ [configType]: { [typeExt]: item } }。
     // DiamondModel.setFromH5Sync 会跳过已有缓存，后续按需拉取时命中缓存不再发请求。
     const DIAMOND_PRELOAD_TYPES = [2, 8, 30];
+
     H5MsgMgr.Instance.on('syncDiamondConfig', payload => {
         const map = payload?.raw;
         if (!map || typeof map !== 'object') {
@@ -459,8 +453,7 @@ export async function registerH5Listeners(): Promise<void> {
             GameCache.Instance.room_type = matchInfo.type;
             GameCache.Instance.enter_param = enterPram;
             // === 6. 启动进入牌桌流程，同时后台加载资源 ===
-            const enterMttProcedure = ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enterPram);
-            await Promise.all([ensureBridgeResourcesReady(), enterMttProcedure]);
+            ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enterPram);
             console.log('[H5Bridge] enterMtt 缓存完成, matchId', GameCache.Instance.match_id, ',开始进入mtt');
         });
     }

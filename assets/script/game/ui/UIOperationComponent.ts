@@ -526,8 +526,7 @@ export default class UIOperationComponent extends UIBase {
                 this.isCountDown = false;
                 this.Check_CountDown.active = false;
                 this._isCheckCountDown = false;
-                if (this.isShowingDialog)
-                    UIComponent.close(UIDefine.UIDialogComponent);
+                if (this.isShowingDialog) UIComponent.close(UIDefine.UIDialogComponent);
                 this.isShowingDialog = false;
                 //如需客户端倒计时结束发送让牌，在这里做
                 if (!GameCache.Instance.CurGame.ClickAddTime) {
@@ -545,8 +544,7 @@ export default class UIOperationComponent extends UIBase {
                 this.isCountDown = false;
                 this.Fold_CountDown.active = false;
                 this._isFoldCountDown = false;
-                if (this.isShowingDialog)
-                    UIComponent.close(UIDefine.UIDialogComponent);
+                if (this.isShowingDialog) UIComponent.close(UIDefine.UIDialogComponent);
                 this.isShowingDialog = false;
                 //如需客户端倒计时结束发送弃牌，在这里做
                 if (!GameCache.Instance.CurGame.ClickAddTime) {

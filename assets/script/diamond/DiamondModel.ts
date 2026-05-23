@@ -1,5 +1,4 @@
 import { WWW, WebGetDiamondConfig } from '../net/https/WebRequest';
-
 // 存储格式：config_type → { type_ext → item }，与 H5 侧 DiamondConfigMap 规范对齐。
 type DiamondTypeMap = Record<number, any>;
 

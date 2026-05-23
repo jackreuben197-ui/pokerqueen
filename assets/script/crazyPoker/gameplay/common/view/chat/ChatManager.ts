@@ -10,7 +10,6 @@ export interface ChatMsgData {
     sex: number;
     time: string;
 }
-
 type NewMessageCallback = (msg: ChatMsgData) => void;
 
 /**
@@ -18,13 +17,10 @@ type NewMessageCallback = (msg: ChatMsgData) => void;
  * 聊天/弹幕消息由 TexasGameProtocol.ProtocolHoldemGetMsgHandler 转发到 handleBroadcastMsg。
  */
 export default class ChatManager {
-
     private static _instance: ChatManager = null;
     private _cache = new Map<number, ChatMsgData[]>();
-
     /** 聊天界面打开时注册，用于实时推送新消息到 UI */
     onNewMessage: NewMessageCallback = null;
-
     /** chatBtn 上的 alert 节点引用（懒加载查找） */
     private _alertNode: cc.Node = null;
 
@@ -89,19 +85,15 @@ export default class ChatManager {
     }): void {
         // 只处理文本聊天 (type=0) 和弹幕
         if (broadcastMsg.type !== 0 || !broadcastMsg.message) return;
-
         const gc = GameCache.Instance;
-
         // 弹幕消息 → Toast 提示
         const isDanmu = broadcastMsg.isDanmu === true;
         if (isDanmu) {
             UIComponent.Instance.Toast(`[弹幕] ${broadcastMsg.name || ''}: ${broadcastMsg.message}`);
             return;
         }
-
         // 过滤自己发的（走 1019 路径由 UIChatDlg 处理）
         if (broadcastMsg.user_id === gc.nUserId) return;
-
         const msg: ChatMsgData = {
             name: broadcastMsg.name || '',
             content: broadcastMsg.message,
@@ -109,14 +101,11 @@ export default class ChatManager {
             sex: broadcastMsg.sex || 0,
             time: this._formatTime()
         };
-
         this.addMessage(gc.room_id, msg);
-
         // 实时通知 UI
         if (this.onNewMessage) {
             this.onNewMessage(msg);
         }
-
         // 聊天窗口未打开时，显示 alert 提醒
         if (!this.onNewMessage) {
             this.showAlert();

@@ -12,7 +12,6 @@ import UIComponent, { PrefabUI } from '../../ui/UIComponent';
 import DiamondModel from '../../diamond/DiamondModel';
 import { GameCache } from '../GameCache';
 import GameUtil, { RoomType } from '../util/GameUtil';
-
 const { ccclass } = cc._decorator;
 
 /**
@@ -125,8 +124,7 @@ class PlayerItem {
             this.textNickname.string = nickName;
         }
         if (this.textOuts) {
-            this.textOuts.string =
-                outs >= 0 ? `${outs}${i18nMgr.Get('UIInsurance_ge')}outs` : i18nMgr.Get('UIInsurance_InsureIn');
+            this.textOuts.string = outs >= 0 ? `${outs}${i18nMgr.Get('UIInsurance_ge')}outs` : i18nMgr.Get('UIInsurance_InsureIn');
         }
     }
 }
@@ -228,7 +226,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     private textThirdMoney: cc.Label = null;
     private textFifthMoney: cc.Label = null;
     private textEighthMoney: cc.Label = null;
-
     private readonly userOutsCardsData = new UserOutsCardsData();
     private readonly outsOverObjsList: InsuranceCardItem[] = [];
     private readonly outsSplitObjsList: InsuranceCardItem[] = [];
@@ -239,7 +236,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     private readonly buttonsList: cc.Node[] = [];
     private readonly cachedPotInsuranceBuyList: PotInsuranceBuy.AsObject[] = [];
     private readonly maxScrollViewHeight: number = 620;
-
     private data: InsuranceData = null;
     private currentTriggerData: WrapTriggerInsuranceData = null;
     private chooseBtn: cc.Node = null;
@@ -280,22 +276,29 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.setButtonClick(this.buttonThird, () => this.onClickPoolButtons(this.buttonThird));
         this.setButtonClick(this.buttonFifth, () => this.onClickPoolButtons(this.buttonFifth));
         this.setButtonClick(this.buttonEighth, () => this.onClickPoolButtons(this.buttonEighth));
-
         if (this.numToggle) {
-            this.numToggle.node.on('toggle', () => {
-                if (this.numToggle.isChecked) {
-                    this.orderList(this.outsOverObjsList, 0);
-                    this.orderList(this.outsSplitObjsList, 0);
-                }
-            }, this);
+            this.numToggle.node.on(
+                'toggle',
+                () => {
+                    if (this.numToggle.isChecked) {
+                        this.orderList(this.outsOverObjsList, 0);
+                        this.orderList(this.outsSplitObjsList, 0);
+                    }
+                },
+                this
+            );
         }
         if (this.graToggle) {
-            this.graToggle.node.on('toggle', () => {
-                if (this.graToggle.isChecked) {
-                    this.orderList(this.outsOverObjsList, 1);
-                    this.orderList(this.outsSplitObjsList, 1);
-                }
-            }, this);
+            this.graToggle.node.on(
+                'toggle',
+                () => {
+                    if (this.graToggle.isChecked) {
+                        this.orderList(this.outsOverObjsList, 1);
+                        this.orderList(this.outsSplitObjsList, 1);
+                    }
+                },
+                this
+            );
         }
     }
 
@@ -351,22 +354,18 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.scrollView = this.scrollViewRoot?.getComponent(cc.ScrollView) || null;
         this.scrollViewport = cc.find('Viewport', this.scrollViewRoot);
         this.insuranceCardsRoot = cc.find('Viewport/InsuranceCards', this.scrollViewRoot);
-
         this.textPot = cc.find('Header/Text_Pot_title/Text_Pot', dialog)?.getComponent(cc.Label) || null;
         this.multiPoolToggles = cc.find('Header/MultiPoolToggles', dialog);
         this.multiPoolToggleTemplate = this.multiPoolToggles?.getChildByName('MultiPoolToggle') || null;
-
         this.playerMineNode = cc.find('Header/Player_Mine', dialog);
         this.playersContent = cc.find('Header/Players/view/Players_Content', dialog);
         this.playersNext = cc.find('ScrollViewRoot/Viewport/InsuranceCards/Players_Next', dialog);
         this.playerTemplate = this.playersContent?.children.find(child => child.name === 'Player') || null;
-
         const publicCards = cc.find('Header/PublicCardContent/PublicCards', dialog);
         for (let index = 0; index < 5; index++) {
             const sprite = publicCards?.getChildByName(`Image_PublicCard${index}`)?.getComponent(cc.Sprite) || null;
             this.publicCardNodes.push(sprite);
         }
-
         this.insuranceCardsOver = cc.find('ScrollViewRoot/Viewport/InsuranceCards/InsuranceCardsOver', dialog);
         this.insuranceCardsSplit = cc.find('ScrollViewRoot/Viewport/InsuranceCards/InsuranceCardsSplit', dialog);
         // 以当前 prefab 结构为准：
@@ -376,12 +375,10 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         //     Image_InsuranceCard  -> 单张牌模板
         this.insuranceCardsOverContent = this.insuranceCardsOver?.getChildByName('insuranceCardOver') || null;
         this.insuranceCardsSplitContent = this.insuranceCardsSplit?.getChildByName('insuranceCardSplit') || null;
-        this.insuranceCardOverTemplate =
-            this.insuranceCardsOverContent?.getChildByName('Image_InsuranceCard') || null;
-        this.insuranceCardSplitTemplate =this.insuranceCardsSplitContent?.getChildByName('Image_InsuranceCard') || null;
+        this.insuranceCardOverTemplate = this.insuranceCardsOverContent?.getChildByName('Image_InsuranceCard') || null;
+        this.insuranceCardSplitTemplate = this.insuranceCardsSplitContent?.getChildByName('Image_InsuranceCard') || null;
         this.textOddsOver = cc.find('Label/Text_Odds_Over', this.insuranceCardsOver)?.getComponent(cc.Label) || null;
         this.textOddsSplit = cc.find('Label/Text_Odds_Split', this.insuranceCardsSplit)?.getComponent(cc.Label) || null;
-
         this.textMainPut = cc.find('ContentPar/Text_MainPut', dialog)?.getComponent(cc.Label) || null;
         this.textInsuranceValue = cc.find('ContentPar/Text_InsuranceValue', dialog)?.getComponent(cc.Label) || null;
         this.textPayValue = cc.find('ContentPar/Text_PayValue', dialog)?.getComponent(cc.Label) || null;
@@ -389,7 +386,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.textOdds = cc.find('ContentPar/Text_Odds', dialog)?.getComponent(cc.Label) || null;
         this.textTips = cc.find('ContentPar/Text_tips', dialog)?.getComponent(cc.Label) || null;
         this.textTurnTips = cc.find('Text_turn_tips', dialog)?.getComponent(cc.Label) || null;
-
         this.buttonMin = cc.find('ContentPar/OptionButtons/Button_Min', dialog);
         this.buttonAll = cc.find('ContentPar/OptionButtons/Button_All', dialog);
         this.buttonHalf = cc.find('ContentPar/OptionButtons/Button_Half', dialog);
@@ -397,21 +393,18 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.buttonFifth = cc.find('ContentPar/OptionButtons/Button_Fifth', dialog);
         this.buttonEighth = cc.find('ContentPar/OptionButtons/Button_Eighth', dialog);
         this.buttonsList.push(this.buttonEighth, this.buttonFifth, this.buttonThird, this.buttonHalf, this.buttonAll);
-
         this.imageMinChecked = cc.find('Image_Min_checked', this.buttonMin);
         this.imageAllChecked = cc.find('Image_All_checked', this.buttonAll);
         this.imageHalfChecked = cc.find('Image_Half_checked', this.buttonHalf);
         this.imageThirdChecked = cc.find('Image_Third_checked', this.buttonThird);
         this.imageFifthChecked = cc.find('Image_Fifth_checked', this.buttonFifth);
         this.imageEighthChecked = cc.find('Image_Eighth_checked', this.buttonEighth);
-
         this.textMinMoney = cc.find('Text_Min_money', this.buttonMin)?.getComponent(cc.Label) || null;
         this.textAllMoney = cc.find('Text_All_money', this.buttonAll)?.getComponent(cc.Label) || null;
         this.textHalfMoney = cc.find('Text_Half_money', this.buttonHalf)?.getComponent(cc.Label) || null;
         this.textThirdMoney = cc.find('Text_Third_money', this.buttonThird)?.getComponent(cc.Label) || null;
         this.textFifthMoney = cc.find('Text_Fifth_money', this.buttonFifth)?.getComponent(cc.Label) || null;
         this.textEighthMoney = cc.find('Text_Eighth_money', this.buttonEighth)?.getComponent(cc.Label) || null;
-
         this.buttonDelay = cc.find('SubstratumBut/Button_Delay', dialog);
         this.buttonCancel = cc.find('SubstratumBut/Button_Cancel', dialog);
         this.buttonBuy = cc.find('SubstratumBut/Button_Buy', dialog);
@@ -419,10 +412,8 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.countDownImage = cc.find('CountDownImage', this.buttonDelay)?.getComponent(cc.Sprite) || null;
         this.textCancel = cc.find('Text', this.buttonCancel)?.getComponent(cc.Label) || null;
         this.classicTurnText = cc.find('classicTurnText', this.buttonCancel)?.getComponent(cc.Label) || null;
-
         this.numToggle = cc.find('ScrollViewRoot/Viewport/InsuranceCards/SortToggle/NumToggle', dialog)?.getComponent(cc.Toggle) || null;
         this.graToggle = cc.find('ScrollViewRoot/Viewport/InsuranceCards/SortToggle/GraToggle', dialog)?.getComponent(cc.Toggle) || null;
-
         this.applyScrollLayoutMode();
     }
 
@@ -506,17 +497,14 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             this.buttonDelay.opacity = 178;
             return;
         }
-
         this.delayButtonInteractable = true;
         this.setButtonInteractable(this.buttonDelay, true);
         this.buttonDelay.opacity = 255;
-
         const diamondConfig = DiamondModel.Instance.GetDiamondConfig(this.getTypeText(this.onclickDelayButtonTimes + 1), 2);
         if (!diamondConfig?.setting?.length) {
             this.textDelayBean.string = `${2 * Math.pow(2, this.addTimeCount)}`;
             return;
         }
-
         if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
             const smallBlind = GameCache.Instance.CurGame.smallBlind;
             const setting = diamondConfig.setting.find(item => item.sb * 100 === smallBlind * 100);
@@ -529,7 +517,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             this.textDelayBean.string = `${setting.discount_price > 0 ? setting.discount_price : setting.price}`;
             return;
         }
-
         this.textDelayBean.string = `${2 * Math.pow(2, this.addTimeCount)}`;
         if (this.onclickDelayButtonTimes === 1) {
             this.delayTimes = 20;
@@ -567,7 +554,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             this.refreshInsuranceData(this.data.triggedDatas[0]);
             return;
         }
-
         this.data.triggedDatas.forEach((triggerData, index) => {
             const toggleNode = cc.instantiate(this.multiPoolToggleTemplate);
             toggleNode.name = `Toggle${index}`;
@@ -580,15 +566,19 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             const toggle = toggleNode.getComponent(cc.Toggle);
             if (toggle) {
                 toggle.isChecked = index === 0;
-                toggle.node.on('toggle', () => {
-                    if (toggle.isChecked) {
-                        this.clearMultiPoolToggleVisual();
-                        this.setMultiPoolToggleVisual(toggleNode, true);
-                        this.chooseToggleObj = toggleNode;
-                        this.clearMultiInsurancePoolData();
-                        this.refreshInsuranceData(triggerData);
-                    }
-                }, this);
+                toggle.node.on(
+                    'toggle',
+                    () => {
+                        if (toggle.isChecked) {
+                            this.clearMultiPoolToggleVisual();
+                            this.setMultiPoolToggleVisual(toggleNode, true);
+                            this.chooseToggleObj = toggleNode;
+                            this.clearMultiInsurancePoolData();
+                            this.refreshInsuranceData(triggerData);
+                        }
+                    },
+                    this
+                );
             } else {
                 this.setButtonClick(toggleNode, () => {
                     this.chooseToggleObj = toggleNode;
@@ -600,7 +590,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             }
             this.multiPoolToggleList.push(toggleNode);
         });
-
         this.clearMultiPoolToggleVisual();
         const first = this.multiPoolToggleList[0];
         const firstToggle = first?.getComponent(cc.Toggle);
@@ -650,7 +639,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.currentTriggerData = triggerInsuranceData;
         this.userOutsCardsData.overOuts.length = 0;
         this.userOutsCardsData.equalOuts.length = 0;
-
         triggerInsuranceData.outsCards.forEach(userOuts => {
             userOuts.forEach(outsCard => {
                 if (outsCard.isEqual) {
@@ -662,10 +650,8 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
                 }
             });
         });
-
         this.updatePlayers();
         this.insuranceCards();
-
         if (this.textOdds) {
             this.textOdds.string = this.formatOdds(this.selectedOverOdd());
         }
@@ -675,7 +661,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         if (this.textMainPut) {
             this.textMainPut.string = StringHelper.GetLongString(triggerInsuranceData.potTotalCost + triggerInsuranceData.insuranced);
         }
-
         this.currentSelectPoolType = TexasInsurancePoolType.THIRD;
         this.chooseBtn = this.buttonThird;
         this.updateClassicTurn();
@@ -721,9 +706,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
                 continue;
             }
             const cardId = this.data.publicCards[index];
-            sprite.spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(
-                GameUtil.GetCardNameByNum(cardId ?? -1)
-            );
+            sprite.spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId ?? -1));
         }
     }
 
@@ -739,22 +722,16 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         if (!this.currentTriggerData) {
             return;
         }
-
         const list: WrapPlayerData[] = [];
         for (let index = 0; index < this.currentTriggerData.userNames.length; index++) {
             const data = new WrapPlayerData();
             data.name = this.currentTriggerData.userNames[index];
             data.userId = this.currentTriggerData.userIds[index] || 0;
             data.outsPerUser = this.currentTriggerData.outsPerUser[index];
-            data.playerCards = (this.currentTriggerData.playerCards[index] || []).slice(
-                0,
-                GameCache.Instance.CurGame.HandCards
-            );
+            data.playerCards = (this.currentTriggerData.playerCards[index] || []).slice(0, GameCache.Instance.CurGame.HandCards);
             list.push(data);
         }
-
-        const useObserverDebugMine =
-            !!this.data?.debugObserverUseFirstPlayerAsMine && GameCache.Instance.CurGame.IsLookOn && list.length > 0;
+        const useObserverDebugMine = !!this.data?.debugObserverUseFirstPlayerAsMine && GameCache.Instance.CurGame.IsLookOn && list.length > 0;
         const mine = new WrapPlayerData();
         if (useObserverDebugMine) {
             // 观众本身没有可投保的“自己”，调试时直接借用第一个参与者避免首行空牌。
@@ -770,12 +747,10 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             mine.playerCards = (GameCache.Instance.CurGame.mainPlayer.cards || []).slice(0, GameCache.Instance.CurGame.HandCards);
         }
         list.unshift(mine);
-
         if (this.playerMineNode) {
             this.playerMineNode.active = true;
             new PlayerItem(this.playerMineNode).updateItem(mine.playerCards, mine.name, mine.outsPerUser);
         }
-
         for (let index = 1; index < list.length; index++) {
             if (!this.playerTemplate) {
                 break;
@@ -804,7 +779,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         if (!this.insuranceCardOverTemplate || !this.insuranceCardSplitTemplate) {
             return;
         }
-
         this.insuranceCardsOver && (this.insuranceCardsOver.active = this.userOutsCardsData.overOuts.length > 0);
         if (this.textOddsOver) {
             this.textOddsOver.string = this.formatOdds(this.selectedOverOdd());
@@ -821,7 +795,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             this.listInsuranceCardItems.push(item);
             this.outsObjList.push(clone);
         });
-
         const hasEqualOuts = this.userOutsCardsData.equalOuts.length > 0;
         if (this.insuranceCardsSplit) {
             this.insuranceCardsSplit.active = hasEqualOuts;
@@ -841,7 +814,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             this.listInsuranceCardItems.push(item);
             this.outsObjList.push(clone);
         });
-
         if (this.numToggle?.isChecked) {
             this.orderList(this.outsOverObjsList, 0);
             this.orderList(this.outsSplitObjsList, 0);
@@ -849,7 +821,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             this.orderList(this.outsOverObjsList, 1);
             this.orderList(this.outsSplitObjsList, 1);
         }
-
         this.selectOuts = this.userOutsCardsData.overOuts.length + this.userOutsCardsData.equalOuts.length;
         this.updateOuts();
     }
@@ -866,7 +837,9 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             return left.cardId - right.cardId;
         });
         const parent = list[0].node.parent;
-        const reservedBefore = parent.children.filter(child => child !== this.insuranceCardOverTemplate && child !== this.insuranceCardSplitTemplate && !this.outsObjList.includes(child));
+        const reservedBefore = parent.children.filter(
+            child => child !== this.insuranceCardOverTemplate && child !== this.insuranceCardSplitTemplate && !this.outsObjList.includes(child)
+        );
         const startIndex = reservedBefore.length;
         list.forEach((item, index) => item.node.setSiblingIndex(startIndex + index));
         if (this.insuranceCardOverTemplate?.parent === parent) {
@@ -905,7 +878,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         if (this.textTurnTips) {
             this.textTurnTips.node.active = false;
         }
-
         if (this.data?.round === Def.Round.FLOP && GameCache.Instance._texasData._insuranceForceBuyRatio > 0) {
             const equalValue = this.checkForceBuy().toFixed(2).replace(/\.00$/, '');
             if (this.classicTurnText) {
@@ -916,10 +888,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
                 this.textTurnTips.node.active = true;
                 this.textTurnTips.string = `${i18nMgr.Get('UITexasIns_InsAmount')}(${equalValue})`;
             }
-            GameCache.Instance._texasData._buyInsurancePotUserCount.set(
-                this.currentTriggerData.subPot,
-                this.currentTriggerData.potUserCount
-            );
+            GameCache.Instance._texasData._buyInsurancePotUserCount.set(this.currentTriggerData.subPot, this.currentTriggerData.potUserCount);
         }
     }
 
@@ -928,9 +897,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         if (this.data?.round === Def.Round.FLOP && GameCache.Instance._texasData._insuranceForceBuyRatio > 0) {
             if (this.userOutsCardsData.equalOuts.length > 0) {
                 const equalOdd = this.selectedEqualOdd();
-                value =
-                    this.currentTriggerData.leastAmount / 100 +
-                    this.currentTriggerData.leastAmount / 100 / (equalOdd || 1);
+                value = this.currentTriggerData.leastAmount / 100 + this.currentTriggerData.leastAmount / 100 / (equalOdd || 1);
             } else {
                 value = this.currentTriggerData.leastAmount / 100;
             }
@@ -965,7 +932,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     private setLeastType(): void {
         this.buttonsList.forEach(button => this.refreshPoolBtnState(button, true));
         this.refreshPoolBtnState(this.buttonMin, true);
-
         const forceType = this.getForceBuyPoolType();
         switch (forceType) {
             case TexasInsurancePoolType.FIFTH:
@@ -1068,7 +1034,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
                 this.refreshPoolBtnState(button, false);
             }
         });
-
         const preferred = [this.buttonAll, this.buttonHalf, this.buttonThird, this.buttonFifth, this.buttonEighth, this.buttonMin];
         const target = preferred.find(button => this.getButtonInteractable(button));
         if (target) {
@@ -1105,7 +1070,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             this.currentSelectPoolType = TexasInsurancePoolType.EIGHTH;
             this.highlightBtn(this.imageEighthChecked);
         }
-
         this.overOutsPayValue = this.checkOverOutsPayAmount(this.currentSelectPoolType);
         this.chooseBtn = node;
         this.onValueChangedInsuranceValue();
@@ -1126,8 +1090,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     /** 放弃按钮下方会根据“强制保险 / 河牌背保”切换文案。 */
     private refreshCancelButtonShow(): void {
         if (this.textTurnTips) {
-            this.textTurnTips.node.active =
-                GameCache.Instance._texasData._insuranceForceBuyRatio > 0 && this.data?.round === Def.Round.FLOP;
+            this.textTurnTips.node.active = GameCache.Instance._texasData._insuranceForceBuyRatio > 0 && this.data?.round === Def.Round.FLOP;
         }
         if (this.textCancel) {
             this.textCancel.string = i18nMgr.Get('UIInsurance_GiveUp');
@@ -1152,10 +1115,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         }
         if (this.currentTriggerData) {
             GameCache.Instance.CurGame.cacheBuyInsurancePotUserCount = this.currentTriggerData.potUserCount;
-            GameCache.Instance._texasData._buyInsurancePotUserCount.set(
-                this.currentTriggerData.subPot,
-                this.currentTriggerData.potUserCount
-            );
+            GameCache.Instance._texasData._buyInsurancePotUserCount.set(this.currentTriggerData.subPot, this.currentTriggerData.potUserCount);
         }
         this.checkMultiPoolToggle();
     }
@@ -1202,10 +1162,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             insurEv: 0
         };
         GameCache.Instance.CurGame.cacheBuyInsurancePotUserCount = this.currentTriggerData.potUserCount;
-        GameCache.Instance._texasData._buyInsurancePotUserCount.set(
-            this.currentTriggerData.subPot,
-            this.currentTriggerData.potUserCount
-        );
+        GameCache.Instance._texasData._buyInsurancePotUserCount.set(this.currentTriggerData.subPot, this.currentTriggerData.potUserCount);
         this.cachedPotInsuranceBuyList.push(potInsuranceBuy);
     }
 
@@ -1231,10 +1188,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
             insurEv: 0
         };
         GameCache.Instance.CurGame.cacheBuyInsurancePotUserCount = this.currentTriggerData.potUserCount;
-        GameCache.Instance._texasData._buyInsurancePotUserCount.set(
-            this.currentTriggerData.subPot,
-            this.currentTriggerData.potUserCount
-        );
+        GameCache.Instance._texasData._buyInsurancePotUserCount.set(this.currentTriggerData.subPot, this.currentTriggerData.potUserCount);
         this.cachedPotInsuranceBuyList.push(potInsuranceBuy);
         return true;
     }
@@ -1264,7 +1218,7 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         if (toggle) {
             toggle.isChecked = true;
         } else {
-            const dataIndex = +(nextToggleNode.name.replace('Toggle', '')) || 0;
+            const dataIndex = +nextToggleNode.name.replace('Toggle', '') || 0;
             this.refreshInsuranceData(this.data.triggedDatas[dataIndex]);
         }
     }
@@ -1413,14 +1367,9 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
     }
 
     private hideAllHighlights(): void {
-        [
-            this.imageMinChecked,
-            this.imageAllChecked,
-            this.imageHalfChecked,
-            this.imageThirdChecked,
-            this.imageFifthChecked,
-            this.imageEighthChecked
-        ].forEach(node => node && (node.active = false));
+        [this.imageMinChecked, this.imageAllChecked, this.imageHalfChecked, this.imageThirdChecked, this.imageFifthChecked, this.imageEighthChecked].forEach(
+            node => node && (node.active = false)
+        );
     }
 
     private highlightBtn(highlight: cc.Node): void {
@@ -1490,21 +1439,17 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         });
     }
 
-
-
     /** 内容超过 620 时滚动；不足 620 时滚动区跟内容一起收缩，避免底部大块空白。 */
     private refreshScrollAreaHeight(): void {
         if (!this.scrollViewRoot || !this.scrollViewport || !this.insuranceCardsRoot) {
             return;
         }
-
         this.refreshLayoutNode(this.insuranceCardsOverContent);
         this.refreshLayoutNode(this.insuranceCardsSplitContent);
         this.refreshLayoutNode(this.playersNext);
         this.refreshLayoutNode(this.insuranceCardsOver);
         this.refreshLayoutNode(this.insuranceCardsSplit);
         this.refreshLayoutNode(this.insuranceCardsRoot);
-
         // 这里不能再拿 InsuranceCards 旧的静态高度做上限，
         // 否则就算当前只显示两块内容，也会被 prefab 初始高度“撑住”，底部继续留白。
         const contentHeight = Math.max(0, this.getVisibleContentHeight());
@@ -1513,7 +1458,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.scrollViewport.setContentSize(this.scrollViewport.width, targetHeight);
         this.scrollViewRoot.setContentSize(this.scrollViewRoot.width, targetHeight);
         this.dialogNode?.getComponent(cc.Layout)?.updateLayout();
-
         // 高度变化后把内容吸到顶部，避免内容少时仍然停留在旧滚动位置产生空白。
         this.scrollView?.scrollToTop(0);
     }
@@ -1538,7 +1482,6 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         if (!activeChildren.length) {
             return 0;
         }
-
         let totalHeight = 0;
         activeChildren.forEach((child, index) => {
             totalHeight += child.height;
@@ -1577,6 +1520,9 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         if (!Number.isFinite(value)) {
             return '0';
         }
-        return value.toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
+        return value
+            .toFixed(2)
+            .replace(/\.00$/, '')
+            .replace(/(\.\d)0$/, '$1');
     }
 }

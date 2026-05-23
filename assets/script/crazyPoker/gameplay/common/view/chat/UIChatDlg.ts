@@ -13,24 +13,18 @@ import { GameCache } from '../../../../../game/GameCache';
 import GC from '../../../../../frame/GameControl';
 import TimeHelper from '../../../../../helper/TimeHelper';
 import WebImageHelper from '../../../../../helper/WebImageHelper';
-
 const { ccclass, property } = cc._decorator;
-
 /** 聊天模式：chatOnly = 只发聊天（默认），danmuAndChat = 同时发弹幕+聊天 */
 type ChatMode = 'chatOnly' | 'danmuAndChat';
 
 @ccclass
 export default class UIChatDlg extends UIBasePlus {
-
     // 自动绑定：$panel_click（背景遮罩，点击关闭）
     $panel_click: cc.Node = null;
-
     @property(cc.SpriteFrame)
     checkedFrame: cc.SpriteFrame = null;
-
     @property(cc.SpriteFrame)
     uncheckedFrame: cc.SpriteFrame = null;
-
     private _closeBtn: cc.Node = null;
     private _dlgNode: cc.Node = null;
     private _dlgTitleLabel: cc.Label = null;
@@ -40,7 +34,6 @@ export default class UIChatDlg extends UIBasePlus {
     private _sendBtn: cc.Node = null;
     /** 发送前缓存的聊天消息，等服务端确认成功后显示 */
     private _pendingChatMsg: ChatMsgData | null = null;
-
     /** 聊天模式节点引用 */
     private _danmakuNode: cc.Node = null;
     private _chatOnlyNode: cc.Node = null;
@@ -50,10 +43,8 @@ export default class UIChatDlg extends UIBasePlus {
 
     protected override lateLoad(): void {
         super.lateLoad();
-
         // 点击背景遮罩关闭
         this.setButtonClick(this.$panel_click, this.click_close);
-
         // 查找对话框面板
         this._dlgNode = cc.find('ChatDlg', this.node);
         if (this._dlgNode) {
@@ -74,7 +65,6 @@ export default class UIChatDlg extends UIBasePlus {
                 e.stopPropagation();
             });
         }
-
         // 获取聊天列表组件（ChatList 是根节点的直接子节点）
         const chatListNode = this.node.getChildByName('ChatList');
         if (chatListNode) {
@@ -84,7 +74,6 @@ export default class UIChatDlg extends UIBasePlus {
             // 与 ScrollView 的"置顶"位置不兼容，导致 render 回调不触发。
             this._chatList.virtual = false;
         }
-
         // 获取输入框
         const editBoxNode = this.node.getChildByName('chatEditBox');
         if (editBoxNode) {
@@ -94,13 +83,11 @@ export default class UIChatDlg extends UIBasePlus {
                 this._editBox.node.on('text-submit', this._onEditBoxSubmit, this);
             }
         }
-
         // 获取发送按钮（sendMsg 节点有 cc.Button 组件）
         this._sendBtn = this.node.getChildByName('sendMsg');
         if (this._sendBtn) {
             this.setButtonClick(this._sendBtn, this.click_sendMsg);
         }
-
         // 聊天模式切换（chatOnly / danmuAndChat）
         this._danmakuNode = this.node.getChildByName('DanmakuNode');
         if (this._danmakuNode) {
@@ -120,13 +107,10 @@ export default class UIChatDlg extends UIBasePlus {
         super.onShow(param);
         const roomId = GameCache.Instance.room_id;
         const mgr = ChatManager.Instance;
-
         // 注册实时消息回调（先注册，再读缓存，避免丢失中间到达的消息）
         mgr.onNewMessage = this._onNewMessage.bind(this);
-
         // 打开聊天窗口，隐藏 alert 红点
         mgr.hideAlert();
-
         // 从 ChatManager 恢复当前房间的全部聊天记录
         this._messages = mgr.getMessages(roomId).slice();
         this._pendingChatMsg = null;
@@ -169,7 +153,7 @@ export default class UIChatDlg extends UIBasePlus {
         const msg = this._messages[index];
         if (!msg) return;
         // 新增的消息（最后一条）做淡入，已有的直接显示
-        const isNewMsg = (index === this._messages.length - 1);
+        const isNewMsg = index === this._messages.length - 1;
         // 结构:
         //   ChatMsgItem > chatMsgNode > chatBg > chatContent (Label)
         //   ChatMsgItem > userInfoNode > Round (Sprite)
@@ -177,10 +161,8 @@ export default class UIChatDlg extends UIBasePlus {
         const chatMsgNode = item.getChildByName('chatMsgNode');
         const userInfoNode = item.getChildByName('userInfoNode');
         if (!chatMsgNode || !userInfoNode) return;
-
         const chatBg = chatMsgNode.getChildByName('chatBg');
         const nameMaleTime = userInfoNode.getChildByName('name_male_time');
-
         // 设置聊天内容
         if (chatBg) {
             const chatContentNode = chatBg.getChildByName('chatContent');
@@ -189,7 +171,6 @@ export default class UIChatDlg extends UIBasePlus {
                 if (label) label.string = msg.content;
             }
         }
-
         // 设置用户名、性别、时间
         if (nameMaleTime) {
             const userNameNode = nameMaleTime.getChildByName('userName');
@@ -199,15 +180,14 @@ export default class UIChatDlg extends UIBasePlus {
             }
             const maleNode = nameMaleTime.getChildByName('male');
             const femaleNode = nameMaleTime.getChildByName('female');
-            if (maleNode) maleNode.active = (msg.sex === 1);
-            if (femaleNode) femaleNode.active = (msg.sex === 2);
+            if (maleNode) maleNode.active = msg.sex === 1;
+            if (femaleNode) femaleNode.active = msg.sex === 2;
             const timeNode = nameMaleTime.getChildByName('time');
             if (timeNode) {
                 const label = timeNode.getComponent(cc.Label);
                 if (label) label.string = msg.time;
             }
         }
-
         // 加载头像到 Round 节点
         if (msg.headUrl) {
             const roundNode = userInfoNode.getChildByName('Round');
@@ -240,15 +220,12 @@ export default class UIChatDlg extends UIBasePlus {
         if (!this._editBox) return;
         const text = this._editBox.string.trim();
         if (!text) return;
-
         const gc = GameCache.Instance;
         const roomId = gc.room_id;
         const matchId = gc.match_id;
         const nick = gc.nick || '';
-
         // 1. 缓存消息，等服务端确认后显示
         this._pendingChatMsg = { name: nick, content: text, headUrl: gc.headPic || '', sex: gc.sex, time: this._formatTime() };
-
         // 2. 构造内层消息（广播消息数据）
         const broadcastMsgData = JSON.stringify({
             name: nick,
@@ -261,13 +238,11 @@ export default class UIChatDlg extends UIBasePlus {
             sex: gc.sex,
             headUrl: gc.headPic || ''
         });
-
         // 3. 外层包装 { code: 1000, data: ... }
         const extraJson = Broadcast.Request({
             code: 1000,
             data: broadcastMsgData
         });
-
         // 4. 构造 protobuf 消息
         const msg = new ClientMessageBroadcastMsg();
         const room = new Room();
@@ -279,7 +254,6 @@ export default class UIChatDlg extends UIBasePlus {
         msg.setMessage(text);
         const extraBytes = new TextEncoder().encode(extraJson);
         msg.setExtra(extraBytes);
-
         // 5. 发送到服务器
         ProtocolAgency.Send<ClientMessageBroadcastMsg.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_BroadcastMsg,
@@ -287,13 +261,11 @@ export default class UIChatDlg extends UIBasePlus {
             MatchID: matchId,
             Body: msg.toObject()
         });
-
         // 6. 如果选中了 danmuAndChat，额外发一条弹幕协议
         if (this._chatMode === 'danmuAndChat') {
             this._sendDanmaku(text, roomId, matchId, gc);
             UIComponent.Instance.Toast(`[弹幕] ${nick}: ${text}`);
         }
-
         // 7. 清空输入框
         this._editBox.string = '';
     }
@@ -305,7 +277,13 @@ export default class UIChatDlg extends UIBasePlus {
         if (!rec || rec.status !== 0) return;
         if (!this._pendingChatMsg) return;
         // 服务端确认成功，显示缓存的消息
-        this._addChatMessage(this._pendingChatMsg.name, this._pendingChatMsg.content, this._pendingChatMsg.headUrl, this._pendingChatMsg.sex, this._pendingChatMsg.time);
+        this._addChatMessage(
+            this._pendingChatMsg.name,
+            this._pendingChatMsg.content,
+            this._pendingChatMsg.headUrl,
+            this._pendingChatMsg.sex,
+            this._pendingChatMsg.time
+        );
         this._pendingChatMsg = null;
     }
 
@@ -328,7 +306,6 @@ export default class UIChatDlg extends UIBasePlus {
      */
     private _sendDanmaku(text: string, roomId: number, matchId: number, gc: GameCache): void {
         const nick = gc.nick || '';
-
         // 构造内层弹幕数据（isDanmu=true, danmuType=1 普通弹幕）
         const danmuData = JSON.stringify({
             name: nick,
@@ -343,12 +320,10 @@ export default class UIChatDlg extends UIBasePlus {
             isDanmu: true,
             danmuType: 1
         });
-
         const extraJson = Broadcast.Request({
             code: 1000,
             data: danmuData
         });
-
         const msg = new ClientMessageBroadcastMsg();
         const room = new Room();
         room.setRoomId(roomId);
@@ -359,7 +334,6 @@ export default class UIChatDlg extends UIBasePlus {
         msg.setMessage(text);
         const extraBytes = new TextEncoder().encode(extraJson);
         msg.setExtra(extraBytes);
-
         ProtocolAgency.Send<ClientMessageBroadcastMsg.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_BroadcastMsg,
             RoomID: roomId,
@@ -387,7 +361,7 @@ export default class UIChatDlg extends UIBasePlus {
         if (!this.checkedFrame || !this.uncheckedFrame) return;
         const pairs: [cc.Node, boolean][] = [
             [this._chatOnlyNode, this._chatMode === 'chatOnly'],
-            [this._danmuAndChatNode, this._chatMode === 'danmuAndChat'],
+            [this._danmuAndChatNode, this._chatMode === 'danmuAndChat']
         ];
         for (const [node, selected] of pairs) {
             if (!node) continue;

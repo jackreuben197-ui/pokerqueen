@@ -6,7 +6,7 @@ export const BUNDLE_TEXAS: string = 'texas';
 
 export type PreloadDefinition = { bundle: string; dir: string };
 
-export type PreloadParams = { preloadDefinition: PreloadDefinition; complete?: () => void; stopProgress?: boolean; error?: (err: Error) => void };
+export type PreloadParams = { preloadDefinition: PreloadDefinition[]; complete?: () => void; stopProgress?: boolean; error?: (err: Error) => void };
 
 // export const Pre_Config_Define: Pre_Define = {
 //     bundle: BUNDLE_RESOURCES,
@@ -20,10 +20,16 @@ export type PreloadParams = { preloadDefinition: PreloadDefinition; complete?: (
 //     bundle: BUNDLE_RESOURCES,
 //     dir: "main"
 // }
-// export const Pre_Login_Main_Define: Pre_Define = {
-//     bundle: BUNDLE_RESOURCES,
-//     dir: "/"
-// }
+export const PreloadDefinitionGame: PreloadDefinition = {
+    bundle: BUNDLE_RESOURCES,
+    dir: 'main/rc'
+};
+
+export const PreloadDefinitionSound: PreloadDefinition = {
+    bundle: BUNDLE_RESOURCES,
+    dir: 'sound'
+};
+
 export const PreloadDefinitionTexas: PreloadDefinition = {
     bundle: BUNDLE_TEXAS,
     dir: '/'

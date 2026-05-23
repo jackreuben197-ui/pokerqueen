@@ -5,7 +5,15 @@ import GC from '../../frame/GameControl';
 import { CPErrorCode } from '../../i18n/CPErrorCode';
 import PublicHelper from '../../helper/PublicHelper';
 import { StringHelper } from '../../helper/StringHelper';
-import { WebRoomCenterHistoryReplay, WebRoomCenterHistoryViewPublicCards, WebRoomCenterHistoryViewPublicCardsFreeCount, WebRoomCenterGameWatch, WebRoomCenterGameWatchNum, WebUserDiamondsWallet, WWW } from '../../net/https/WebRequest';
+import {
+    WebRoomCenterHistoryReplay,
+    WebRoomCenterHistoryViewPublicCards,
+    WebRoomCenterHistoryViewPublicCardsFreeCount,
+    WebRoomCenterGameWatch,
+    WebRoomCenterGameWatchNum,
+    WebUserDiamondsWallet,
+    WWW
+} from '../../net/https/WebRequest';
 import ProtocolAgency from '../../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../../net/websocket/ProtocolCode';
 import UIBasePlus from '../../ui/UIBasePlus';
@@ -464,23 +472,26 @@ export default class UITexasHistory extends UIBasePlus {
         let round = this.getViewPubRound();
         let roomId = this._lastResponseData?.s?.rid || this.historyInfoData.room_id;
         let handNum = this._lastResponseData?.s?.hand || this.currentPage;
-        console.log('[UITexasHistory] click_viewPubButton request params:', JSON.stringify({
-            room_id: roomId,
-            hand_num: handNum,
-            round: round,
-            // 诊断字段
-            _lastResponseData_rid: this._lastResponseData?.s?.rid,
-            _lastResponseData_hand: this._lastResponseData?.s?.hand,
-            _lastResponseData_mid: this._lastResponseData?.s?.mid,
-            _lastResponseData_unique: this._lastResponseData?.s?.unique,
-            historyInfoData_room_id: this.historyInfoData?.room_id,
-            currentPage: this.currentPage,
-            totalPage: this.totalPage,
-            PublicCards: this.PublicCards,
-            cacheRoomId: GameCache.Instance.room_id,
-            cacheMatchId: GameCache.Instance.match_id,
-            cacheUniqueId: GameCache.Instance.CurGame?.cacheUniqueId
-        }));
+        console.log(
+            '[UITexasHistory] click_viewPubButton request params:',
+            JSON.stringify({
+                room_id: roomId,
+                hand_num: handNum,
+                round: round,
+                // 诊断字段
+                _lastResponseData_rid: this._lastResponseData?.s?.rid,
+                _lastResponseData_hand: this._lastResponseData?.s?.hand,
+                _lastResponseData_mid: this._lastResponseData?.s?.mid,
+                _lastResponseData_unique: this._lastResponseData?.s?.unique,
+                historyInfoData_room_id: this.historyInfoData?.room_id,
+                currentPage: this.currentPage,
+                totalPage: this.totalPage,
+                PublicCards: this.PublicCards,
+                cacheRoomId: GameCache.Instance.room_id,
+                cacheMatchId: GameCache.Instance.match_id,
+                cacheUniqueId: GameCache.Instance.CurGame?.cacheUniqueId
+            })
+        );
         WWW.Instance.CommonAPI({
             web_class: WebRoomCenterHistoryViewPublicCards,
             body: WebRoomCenterHistoryViewPublicCards.Request({
@@ -520,21 +531,23 @@ export default class UITexasHistory extends UIBasePlus {
     }
 
     // region 收藏功能 (对齐 Unity OnClickCollect / RequestReplayCollectedStatus)
-
     /** 收藏按钮点击 */
     click_favoBtn() {
         if (!this.$favoBtn) return;
         if (!this._hasMe) return;
-        console.log('[UITexasHistory] click_favoBtn _isCollected=' + this._isCollected, JSON.stringify({
-            hasLastData: !!this._lastResponseData,
-            rid: this._lastResponseData?.s?.rid,
-            unique: this._lastResponseData?.s?.unique,
-            hand: this._lastResponseData?.s?.hand,
-            mid: this._lastResponseData?.s?.mid,
-            name: this._lastResponseData?.s?.name,
-            // 完整 s 字段的 key 列表
-            sKeys: this._lastResponseData?.s ? Object.keys(this._lastResponseData.s) : null
-        }));
+        console.log(
+            '[UITexasHistory] click_favoBtn _isCollected=' + this._isCollected,
+            JSON.stringify({
+                hasLastData: !!this._lastResponseData,
+                rid: this._lastResponseData?.s?.rid,
+                unique: this._lastResponseData?.s?.unique,
+                hand: this._lastResponseData?.s?.hand,
+                mid: this._lastResponseData?.s?.mid,
+                name: this._lastResponseData?.s?.name,
+                // 完整 s 字段的 key 列表
+                sKeys: this._lastResponseData?.s ? Object.keys(this._lastResponseData.s) : null
+            })
+        );
         if (this._isCollected) {
             this.reqRemoveCollect();
         } else {
@@ -577,7 +590,6 @@ export default class UITexasHistory extends UIBasePlus {
         let name = GameCache.Instance.roomName || '';
         let btn = this.$favoBtn?.getComponent(cc.Button);
         if (btn) btn.interactable = false;
-
         let params = {
             id: 0,
             room_id: roomId,
@@ -593,22 +605,25 @@ export default class UITexasHistory extends UIBasePlus {
         WWW.Instance.CommonAPI({
             web_class: WebMiscGameRecordRound,
             body: WebMiscGameRecordRound.Request(params)
-        }).then((res: any) => {
-            if (!cc.isValid(this.node)) return;
-            if (btn) btn.interactable = true;
-            console.log('[UITexasHistory] reqAddCollect response:', JSON.stringify(res));
-            if (res?.code === 0) {
-                this.refreshCollectShow(true);
-                UIComponent.Instance.Toast('收藏成功');
-            } else {
-                UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(res?.code));
+        }).then(
+            (res: any) => {
+                if (!cc.isValid(this.node)) return;
+                if (btn) btn.interactable = true;
+                console.log('[UITexasHistory] reqAddCollect response:', JSON.stringify(res));
+                if (res?.code === 0) {
+                    this.refreshCollectShow(true);
+                    UIComponent.Instance.Toast('收藏成功');
+                } else {
+                    UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(res?.code));
+                }
+            },
+            (err: any) => {
+                if (!cc.isValid(this.node)) return;
+                if (btn) btn.interactable = true;
+                console.log('[UITexasHistory] reqAddCollect FAIL:', JSON.stringify(err));
+                UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(err?.code));
             }
-        }, (err: any) => {
-            if (!cc.isValid(this.node)) return;
-            if (btn) btn.interactable = true;
-            console.log('[UITexasHistory] reqAddCollect FAIL:', JSON.stringify(err));
-            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(err?.code));
-        });
+        );
     }
 
     /** 请求取消收藏 (对齐 Unity RequestDeleteCollectedReplay) */
@@ -649,12 +664,11 @@ export default class UITexasHistory extends UIBasePlus {
         let star = this.$favoBtn.getChildByName('Background')?.getChildByName('$star');
         console.log('[UITexasHistory] refreshCollectShow isCollected=' + isCollected + ', _hasMe=' + this._hasMe + ', star=' + (star ? 'found' : 'NOT FOUND'));
         if (star) {
-            star.color = (canCollect && isCollected) ? cc.color(255, 200, 50) : cc.color(255, 255, 255);
+            star.color = canCollect && isCollected ? cc.color(255, 200, 50) : cc.color(255, 255, 255);
         }
     }
 
     // endregion 收藏功能
-
     /** 推断当前需要查看的公共牌轮次 (HTTP API: 1=flop, 2=turn, 3=river) */
     private getViewPubRound(): number {
         // PublicCards[0]==0 → 连flop都没有 → round=1
@@ -668,7 +682,10 @@ export default class UITexasHistory extends UIBasePlus {
     /** 将服务端返回的公共牌数据合并到 PublicCards 数组 (对齐 Unity ExecutePublicCards) */
     private mergeViewedPublicCards(pubCardsStr: string, pubCards2Str: string, round: number) {
         if (!pubCardsStr) return;
-        let cards = pubCardsStr.split(',').map(s => parseInt(s)).filter(n => !isNaN(n));
+        let cards = pubCardsStr
+            .split(',')
+            .map(s => parseInt(s))
+            .filter(n => !isNaN(n));
         if (round === 1) {
             // flop: 替换位置 0-2
             for (let i = 0; i < cards.length && i < 3; i++) {
@@ -683,7 +700,10 @@ export default class UITexasHistory extends UIBasePlus {
         }
         // 第二套公共牌 (Bomb Pot)
         if (pubCards2Str && this.HaveSecondCard) {
-            let cards2 = pubCards2Str.split(',').map(s => parseInt(s)).filter(n => !isNaN(n));
+            let cards2 = pubCards2Str
+                .split(',')
+                .map(s => parseInt(s))
+                .filter(n => !isNaN(n));
             if (round === 1) {
                 for (let i = 0; i < cards2.length && i < 3; i++) {
                     this.SecondPublicCards[i] = cards2[i];
@@ -702,21 +722,30 @@ export default class UITexasHistory extends UIBasePlus {
         if (this.$Score_PublicCards) {
             this.$Score_PublicCards.children.forEach((item, index) => {
                 item.active = this.PublicCards[index] > 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+                    GameUtil.GetCardNameByNum(this.PublicCards[index]),
+                    AssetFold.texture_SmallCard0
+                );
             });
         }
         // Showdown 公共牌
         if (this.$Showdown_PublicCards) {
             this.$Showdown_PublicCards.children.forEach((item, index) => {
                 item.active = this.PublicCards[index] > 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+                    GameUtil.GetCardNameByNum(this.PublicCards[index]),
+                    AssetFold.texture_SmallCard0
+                );
             });
         }
         // 第二套公共牌
         if (this.HaveSecondCard && this.$Showdown2_PublicCards) {
             this.$Showdown2_PublicCards.children.forEach((item, index) => {
                 item.active = this.SecondPublicCards[index] > 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[index]), AssetFold.texture_SmallCard0);
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+                    GameUtil.GetCardNameByNum(this.SecondPublicCards[index]),
+                    AssetFold.texture_SmallCard0
+                );
             });
         }
         // Flop/Turn/River 区的卡牌
@@ -797,7 +826,8 @@ export default class UITexasHistory extends UIBasePlus {
                         } else {
                             item.active = true;
                             let sprite = item.getComponent(cc.Sprite);
-                            if (sprite) sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0);
+                            if (sprite)
+                                sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0);
                         }
                     }
                 }
@@ -809,7 +839,8 @@ export default class UITexasHistory extends UIBasePlus {
                         } else {
                             item.active = true;
                             let sprite = item.getComponent(cc.Sprite);
-                            if (sprite) sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_SmallCard0);
+                            if (sprite)
+                                sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_SmallCard0);
                         }
                     }
                 }
@@ -876,7 +907,7 @@ export default class UITexasHistory extends UIBasePlus {
 
     /** 请求发发看免费次数 */
     private _reqViewPubFreeCount(): Promise<number> {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             WWW.Instance.CommonAPI({
                 web_class: WebRoomCenterHistoryViewPublicCardsFreeCount
             }).then(
@@ -1112,7 +1143,7 @@ export default class UITexasHistory extends UIBasePlus {
 
     /** 请求偷看次数（HTTP 接口，对齐 WebSocket 1029） */
     private _reqWatchNum(): Promise<number> {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             let roomId = this.historyInfoData?.room_id || GameCache.Instance.room_id;
             WWW.Instance.CommonAPI({
                 web_class: WebRoomCenterGameWatchNum,

@@ -571,18 +571,14 @@ export default class UITexas extends BaseScene {
         if (!this.game || !this.UIInsuranceNewPanel) {
             return;
         }
-
         // 正式逻辑里这里会被两层拦截：
         // 1. 必须 operatorList 里包含自己，观众不会进入保险弹窗。
         // 2. 观众没有“自己的手牌”，首行玩家会是空数据。
         // 这里是纯调试入口，直接绕过第一层，并在 InsuranceData 上打标记绕过第二层。
         const seat1 = this.game.GetSeatByServerSeatID(1);
-        const participantCards = seat1?.Player?.cards?.length
-            ? seat1.Player.cards.slice(0, this.game.HandCards)
-            : this.game.GetEmptyHandCards();
+        const participantCards = seat1?.Player?.cards?.length ? seat1.Player.cards.slice(0, this.game.HandCards) : this.game.GetEmptyHandCards();
         const participantName = seat1?.Player?.nick || 'Seat1';
         const participantUserId = seat1?.Player?.userID || 0;
-
         const createTriggerData = (
             potId: number,
             potAmount: number,
@@ -619,7 +615,6 @@ export default class UITexas extends BaseScene {
             ];
             return trigger;
         };
-
         const insuranceData = new InsuranceData();
         insuranceData.publicCards = this.game.GetPublicCards(1);
         insuranceData.timeLeft = 15;
@@ -627,10 +622,9 @@ export default class UITexas extends BaseScene {
         insuranceData.round = Def.Round.TURN;
         insuranceData.debugObserverUseFirstPlayerAsMine = this.game.IsLookOn;
         insuranceData.triggedDatas = [
-            createTriggerData(1, 1920, 640, 240, 1, 3, 1),
+            createTriggerData(1, 1920, 640, 240, 1, 3, 1)
             // createTriggerData(2, 1460, 730, 182, 1, 2, 1)
         ];
-
         UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceNewPanel, insuranceData);
     }
 

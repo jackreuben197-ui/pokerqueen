@@ -593,7 +593,6 @@ export default class TexasGameMessageHandler {
         console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_AgreePost_Handler`);
     }
 
-
     /// <summary>
     /// 要求亮明未使用的公共牌 消息回调
     /// </summary>

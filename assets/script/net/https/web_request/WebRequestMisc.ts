@@ -63,10 +63,12 @@ export class WebMiscGameRecordRound extends WebCommon {
         open?: number;
     } | null = null;
     static ResponseData: {} | null = null;
+
     static Request(param: typeof WebMiscGameRecordRound.RequestParams) {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -81,10 +83,12 @@ export class WebMiscGameRoundList extends WebCommon {
         offset?: number;
     } | null = null;
     static ResponseData: {} | null = null;
+
     static Request(param: typeof WebMiscGameRoundList.RequestParams) {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -105,10 +109,12 @@ export class WebMiscGameRoundStatus extends WebCommon {
     static ResponseData: {
         data?: typeof WebMiscGameRoundStatus.Data;
     } | null = null;
+
     static Request(param: typeof WebMiscGameRoundStatus.RequestParams) {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
@@ -124,10 +130,12 @@ export class WebMiscGameRemoveRound extends WebCommon {
         hand_num?: number;
     } | null = null;
     static ResponseData: {} | null = null;
+
     static Request(param: typeof WebMiscGameRemoveRound.RequestParams) {
         this.RequestParams = param;
         return param;
     }
+
     static Response: {
         code?: number;
         message?: string;
