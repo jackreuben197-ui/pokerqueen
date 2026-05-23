@@ -153,6 +153,10 @@ export default class UserInfoModel extends UIBase {
         GC.notify.post(EventName.myGoldChange);
     }
 
+    get subscription() {
+        return this._msg.user_current_subscription;
+    }
+
     //{"flow_id":1835678,"wallet":{"gold":100,"gold_lock":200,"forbidden":false}}
     goldTiquApplySuc(msg: any) {
         this.gold = msg.wallet.gold;

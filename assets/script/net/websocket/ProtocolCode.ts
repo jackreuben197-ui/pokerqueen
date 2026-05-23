@@ -52,6 +52,8 @@ export enum ProtocolCode {
     Protocol_Holdem_Observers = Code.MSG_D_OBSERVERS, //Code: 1023 旁观者信息(包含历史)
     Protocol_Holdem_SquidInActive = Code.MSG_D_SQUID_IN_ACTIVE, // Code: 1024 主动加入/退出鱿鱼轮
     Protocol_Holdem_PlayerJackpotSummary = Code.MSG_D_PLAYER_JACKPOT_SUMMARY, // Code: 1027 Jackpot玩家汇总
+    Protocol_Holdem_ViewPlayerCards = Code.MSG_D_VIEW_PLAYER_CARDS, // Code: 1026 付费看其他玩家手牌
+    Protocol_Holdem_ViewPlayerCardsNum = Code.MSG_D_VIEW_PLAYER_CARDS_NUM, // Code: 1029 查看手牌次数
     Protocol_Holdem_ShowPublicCardsOthers = Code.MSG_S_SHOW_PUBLIC_CARDS_OTHERS, // Code: 1100 其他人收到有人看公共牌
     Protocol_Holdem_Showcards = Code.MSG_S_SHOWCARDS, // Code: 1101 亮牌
     Protocol_Holdem_SeatedOthers = Code.MSG_S_SEATED_OTHERS, // Code: 1102 房间内人收到有人坐下的信息（不包括坐下的本人）

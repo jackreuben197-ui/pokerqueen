@@ -17,17 +17,16 @@ export default class ProcedureEnterTexas extends ProcedureBase {
      * 德州玩法入口实例
      */
     private _entrance: AGameplayEntrance = null;
+    /** 是否正在进入房间（用于判断 wsError 是否发生在进房过程中） */
+    private _isEntering: boolean = false;
 
     override lateEnter<T>(param?: T) {
         super.lateEnter(param);
         if (!param) console.log('[ProcedureEnterTexas]', 'miss param');
         H5MsgMgr.sendToH5('h5Hide', 1);
-        //显示房间进入loading
-        // UIComponent.Instance.ShowUI<PreloadParams>(PrefabUI.UIPreloading, {
-        //     preloadDefinition: PreloadDefinitionTexas,
-        //     complete: this.onComplete.bind(this),
-        //     error: this.errorHandler.bind(this)
-        // });
+        // 监听 wsError：进房过程中 WS 断开则直接退回 H5
+        this._isEntering = true;
+        H5MsgMgr.Instance.on('wsError', this._onWsError, this);
         // 创建德州玩法入口
         const entrance = AGameplayEntranceProvider.createEntrance(GameCache.Instance.room_type, GameCache.Instance.match_id, GameCache.Instance.room_id);
         this._entrance = entrance;
@@ -80,7 +79,21 @@ export default class ProcedureEnterTexas extends ProcedureBase {
     // }
 
     Leave() {
+        this._isEntering = false;
+        H5MsgMgr.Instance.off('wsError');
         super.Leave();
+    }
+
+    /**
+     * WS 断开回调：进房过程中如果 WS 断开，直接退回 H5
+     */
+    private _onWsError(payload: any): void {
+        if (!this._isEntering) return;
+        console.warn('[ProcedureEnterTexas]', 'wsError during entering, return to H5', payload);
+        this._isEntering = false;
+        this._entrance = null;
+        H5MsgMgr.Instance.off('wsError');
+        ProcedureManager.StartProcedure(ProcedureEnum.Return);
     }
 
     onComplete() {
@@ -89,6 +102,8 @@ export default class ProcedureEnterTexas extends ProcedureBase {
         this._entrance
             .enterForegroundAsync()
             .then(result => {
+                this._isEntering = false;
+                H5MsgMgr.Instance.off('wsError');
                 if (!result) {
                     console.warn('[ProcedureEnterTexas]', 'enterForegroundAsync false');
                     this._entrance = null;
@@ -96,6 +111,8 @@ export default class ProcedureEnterTexas extends ProcedureBase {
                 }
             })
             .catch(e => {
+                this._isEntering = false;
+                H5MsgMgr.Instance.off('wsError');
                 console.error('[ProcedureEnterTexas]', 'err', e);
                 this._entrance = null;
                 ProcedureManager.StartProcedure<PrefabUI>(ProcedureEnum.Return, PrefabUI.UIPreloading);

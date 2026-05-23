@@ -2,6 +2,7 @@ import SimpleNodePool from '../common/MyNodePool';
 import { UIDefine } from '../define/UIDefine';
 import { Sequence } from '../dotween/DOTween';
 import GC from '../frame/GameControl';
+import PublicHelper from '../helper/PublicHelper';
 import { StringHelper } from '../helper/StringHelper';
 import TimeHelper from '../helper/TimeHelper';
 import { i18nMgr } from '../i18n/i18nMgr';
@@ -16,7 +17,7 @@ import { GameCache } from './GameCache';
 import UIAutoBringIn from './new_ui/UIAutoBringIn';
 import UIBringIn from './new_ui/UIBringIn';
 import UIBringOut from './new_ui/UIBringOut';
-import UIInsurancePanel from './new_ui/UIInsurancePanel';
+import UIInsuranceNewPanel, { InsuranceData, WrapTriggerInsuranceData } from './new_ui/UIInsuranceNewPanel';
 import TexasGame from './texas/TexasGame';
 import UIAgreeSecondPcsComponent from './ui/UIAgreeSecondPcsComponent';
 import UIAutoOperationComponent from './ui/UIAutoOperationComponent';
@@ -30,9 +31,12 @@ import ToastManager from '../manager/ToastManager';
 import AgoraManager from '../net/agora/AgoraManager';
 import AgoraVideoRender from '../net/agora/AgoraVideoRender';
 import { VideoModel } from '../crazyPoker/gameplay/common/constant/VideoModel';
+import GameplayUtil from '../crazyPoker/gameplay/common/util/GameplayUtil';
+import { TableType } from '../crazyPoker/gameplay/common/constant/TableType';
 import H5MsgMgr from '../H5MsgMgr';
 import ProtocolAgency from '../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../net/websocket/ProtocolCode';
+import { Def } from '../protobuf/holdem/define_pb';
 import UITexasReportComponent from './UITexasReportComponent';
 import GGEvent from '../event/GGEvent';
 const LN = '[UI][UITexas]';
@@ -184,6 +188,7 @@ export default class UITexas extends BaseScene {
     public transAllPot: cc.Node = null;
     Button_Delay: cc.Node = null;
     Button_SeeMorePublic: cc.Node = null;
+    Button_LookHandCard: cc.Node = null;
     Image_SeeMorePublicTips: cc.Node = null;
     textSeeMorePublicTips: cc.Label = null;
     textSeeMorePublic: cc.Label = null;
@@ -202,7 +207,9 @@ export default class UITexas extends BaseScene {
     //带入申请按钮
     //Button_BringIn: cc.Node = null;
     //朋友桌邀请码
+    Invitation: cc.Node = null;
     Text_InvateCode: cc.Label = null;
+    Copy_InvateCode: cc.Node = null;
     //1.MTT比赛倒计时
     UIMTTTime_Con: cc.Node = null;
     UIMTTTime_Com: UIMTTTimeComponent = null;
@@ -227,7 +234,7 @@ export default class UITexas extends BaseScene {
     UIBringOut: UIBringOut = null;
     //6.保险面板
     UIInsurance_Con: cc.Node = null;
-    UIInsurancePanel: UIInsurancePanel = null;
+    UIInsuranceNewPanel: UIInsuranceNewPanel = null;
     //7.二套牌投票面板
     UIAgreeSecondPcs_Con: cc.Node = null;
     UIAgreeSecondPcs_Com: UIAgreeSecondPcsComponent = null;
@@ -391,6 +398,7 @@ export default class UITexas extends BaseScene {
         this.transAllPot = this.getChildNodeOrComponent('AllPot');
         this.Button_Delay = this.getChildNodeOrComponent('Button_Delay');
         this.Button_SeeMorePublic = this.getChildNodeOrComponent('Button_SeeMorePublic');
+        this.Button_LookHandCard = this.getChildNodeOrComponent('Button_LookHandCard');
         this.Image_SeeMorePublicTips = this.getChildNodeOrComponent('Image_SeeMorePublicTips');
         this.textSeeMorePublicTips = this.getChildNodeOrComponent('Text_SeeMorePublicTips', cc.Label);
         this.textSeeMorePublic = this.getChildNodeOrComponent('Text_SeeMorePublic', cc.Label);
@@ -408,7 +416,9 @@ export default class UITexas extends BaseScene {
         this.BathText = this.Image_WaitForStartBathTips?.getChildByName('Text_Tips')?.getComponent(cc.Label);
         //this.Button_BringIn = this.getChildNodeOrComponent("Button_BringIn");
         //朋友桌邀请码
+        this.Invitation = this.getChildNodeOrComponent('Invitation');
         this.Text_InvateCode = this.getChildNodeOrComponent('Text_InvateCode', cc.Label);
+        this.Copy_InvateCode = this.getChildNodeOrComponent('Copy_InvateCode');
         //////////////////公共牌数据（第一套和第二套 ui,id,每套牌5张）
         this.listCards = [];
         this.listSecondCards = [];
@@ -450,7 +460,7 @@ export default class UITexas extends BaseScene {
         this.UIBringOut = this.AddComponents(PrefabUI.UIBringOut, this.UIChips_Con);
         //6.保险面板
         this.UIInsurance_Con = this.getChildNodeOrComponent('UIInsurance_Con');
-        this.UIInsurancePanel = this.AddComponents(PrefabUI.UIInsurancePanel, this.UIInsurance_Con);
+        this.UIInsuranceNewPanel = this.AddComponents(PrefabUI.UIInsuranceNewPanel, this.UIInsurance_Con);
         //7.二套牌投票面板
         this.UIAgreeSecondPcs_Con = this.getChildNodeOrComponent('UIAgreeSecondPcs_Con');
         this.UIAgreeSecondPcs_Com = this.AddComponents(PrefabUI.UIAgreeSecondPcsComponent, this.UIAgreeSecondPcs_Con);
@@ -508,6 +518,7 @@ export default class UITexas extends BaseScene {
         ///////////////////////////
         this.setButtonClick(this.Button_Delay, this.onClickDelay);
         this.setButtonClick(this.Button_SeeMorePublic, this.onClickSeeMorePublic);
+        this.setButtonClick(this.Button_LookHandCard, this.onClickLookHandCard);
         this.setButtonClick(this.buttonWaitBlind, this.onClickWaitBlind);
         this.setButtonClick(this.StartGameButton, this.onClickStartGame);
         this.setButtonClick(this._buttonShare, this.OnButtonShareClick);
@@ -518,6 +529,7 @@ export default class UITexas extends BaseScene {
         //this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
         this.setButtonClick(this.Button_CancelTrust, this.onClickCancelTrust);
         this.setButtonClick(this.textRoomInfo?.node, this.onClickTextRoomInfo);
+        this.setButtonClick(this.Copy_InvateCode, this.onClickCopyInvateCode);
     }
 
     // Enter Called by SceneManager.switchScene & enter
@@ -553,6 +565,67 @@ export default class UITexas extends BaseScene {
         this.listen(ProtocolCode.Protocol_Holdem_StartInfo, this.onStartInfoUpdate);
         // Winner：每手结算增量更新
         this.listen(ProtocolCode.Protocol_Holdem_Winner, this.onWinnerUpdate);
+    }
+
+    private showDebugInsurancePopup(): void {
+        if (!this.game || !this.UIInsuranceNewPanel) {
+            return;
+        }
+        // 正式逻辑里这里会被两层拦截：
+        // 1. 必须 operatorList 里包含自己，观众不会进入保险弹窗。
+        // 2. 观众没有“自己的手牌”，首行玩家会是空数据。
+        // 这里是纯调试入口，直接绕过第一层，并在 InsuranceData 上打标记绕过第二层。
+        const seat1 = this.game.GetSeatByServerSeatID(1);
+        const participantCards = seat1?.Player?.cards?.length ? seat1.Player.cards.slice(0, this.game.HandCards) : this.game.GetEmptyHandCards();
+        const participantName = seat1?.Player?.nick || 'Seat1';
+        const participantUserId = seat1?.Player?.userID || 0;
+        const createTriggerData = (
+            potId: number,
+            potAmount: number,
+            bet: number,
+            max: number,
+            min: number,
+            potUserCount: number,
+            potLeaderCount: number
+        ): WrapTriggerInsuranceData => {
+            const trigger = new WrapTriggerInsuranceData();
+            trigger.subPot = potId;
+            trigger.pot = potAmount;
+            trigger.potTotalCost = bet;
+            trigger.mostAmount = max;
+            trigger.leastAmount = min;
+            trigger.insuranced = 0;
+            trigger.odds = 8;
+            trigger.potAllowOutSelection = 1;
+            trigger.potUserCount = potUserCount;
+            trigger.potLeaderCount = potLeaderCount;
+            trigger.userNames = [participantName];
+            trigger.userIds = [participantUserId];
+            trigger.outsPerUser = [4];
+            trigger.playerCards = [[...participantCards]];
+            trigger.outsCards = [
+                [
+                    { card: 11, isEqual: false },
+                    { card: 12, isEqual: false },
+                    // { card: 13, isEqual: true },
+                    { card: 56, isEqual: false },
+                    // { card: 26, isEqual: true },
+                    { card: 41, isEqual: false }
+                ]
+            ];
+            return trigger;
+        };
+        const insuranceData = new InsuranceData();
+        insuranceData.publicCards = this.game.GetPublicCards(1);
+        insuranceData.timeLeft = 15;
+        insuranceData.delayTimes = 0;
+        insuranceData.round = Def.Round.TURN;
+        insuranceData.debugObserverUseFirstPlayerAsMine = this.game.IsLookOn;
+        insuranceData.triggedDatas = [
+            createTriggerData(1, 1920, 640, 240, 1, 3, 1)
+            // createTriggerData(2, 1460, 730, 182, 1, 2, 1)
+        ];
+        UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceNewPanel, insuranceData);
     }
 
     private requestRoomersForCache(): void {
@@ -725,7 +798,7 @@ export default class UITexas extends BaseScene {
 
     //进入初始UI
     EnterInitUI() {
-        //this.ShowInvateCode();
+        this.ShowInvateCode();
         //this.setActive(this.Button_BringIn, false);
         this.setActive(this.Button_AddOn, false);
         this.setActive(this.SquidSwitch, false);
@@ -760,7 +833,7 @@ export default class UITexas extends BaseScene {
             PrefabUI.UIBringIn,
             PrefabUI.UIBringOut,
             PrefabUI.UIAutoBringIn,
-            PrefabUI.UIInsurancePanel
+            PrefabUI.UIInsuranceNewPanel
         ].forEach(item => {
             UIComponent.Instance.HideUI(item);
         });
@@ -849,6 +922,20 @@ export default class UITexas extends BaseScene {
         });
     }
 
+    public ShowInvateCode(): void {
+        const isFriendTable = GameplayUtil.GetTableType() === TableType.FRIEND;
+        if (this.Invitation) this.Invitation.active = isFriendTable;
+        if (isFriendTable && this.Text_InvateCode) {
+            this.Text_InvateCode.string = GameCache.Instance._friendsTableCode;
+        }
+    }
+
+    private onClickCopyInvateCode() {
+        const code = GameCache.Instance._friendsTableCode;
+        if (!code) return;
+        PublicHelper.copyToClipBoard(code);
+    }
+
     public ShowMenu(): void {
         //this.UITexasMenu_Com?.onShow();
         this.UITexasMenu?.onShow();
@@ -889,6 +976,10 @@ export default class UITexas extends BaseScene {
 
     private onClickSeeMorePublic() {
         this.game.onClickSeeMorePublic();
+    }
+
+    private onClickLookHandCard() {
+        this.game.onClickLookHandCard();
     }
 
     private onClickWaitBlind() {
@@ -1190,7 +1281,10 @@ export default class UITexas extends BaseScene {
     }
 
     private click_btn_im() {
-        UIComponent.open(UIDefine.UIBlank_dialog, { title: '客服界面' });
+        H5MsgMgr.sendToH5('showPanel', 1, {
+            panelType: 'supportChat',
+            props: {}
+        });
     }
 
     private click_btn_safety_guard() {

@@ -41,78 +41,83 @@ export default class UIPreloadingComponent extends UIBase {
     onShow(param?: PreloadParams) {
         super.onShow(param);
         this.setProgress(0);
-        let bundleName = param.preloadDefinition.bundle;
-        let dir = param.preloadDefinition.dir;
-        this.asset_count = 0;
-        if (bundleName == BUNDLE_RESOURCES) {
-            cc.resources.loadDir(
-                dir,
-                (finish: number, total: number, item: cc.AssetManager.RequestItem) => {
-                    if (param.stopProgress) return;
-                    let percent = finish / total;
-                    this.asset_count = total;
-                    //纠错，保证当前进度不会小于上次进度
-                    percent = Math.max(percent, this.prevPercent);
-                    this.setProgress(percent);
-                    //console.log(LN, "=====>", BUNDLE_RESOURCES, item.url);
-                },
-                (error: Error, assets: cc.Asset[]) => {
-                    if (error) {
-                        console.warn(LN, `资源加载失败:${bundleName}/${dir}`);
-                        UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
-                        param?.error?.(error);
-                        return;
+        const parts = param.preloadDefinition.length;
+        let part = Math.round(10000 / parts / 10000);
+        param.preloadDefinition.reduce(
+            (chain, definition, index) => {
+                return chain.then(() => {
+                    this.loadResources(definition.bundle, definition.dir, param.stopProgress, index * part);
+                });
+            },
+            Promise.resolve().then(() => {
+                param.complete?.();
+            })
+        );
+    }
+
+    private loadResources(bundleName: string, dir: string, stopProgress: boolean, pastProgress: number): Promise<void> {
+        return new Promise((resovle, reject) => {
+            if (bundleName == BUNDLE_RESOURCES) {
+                cc.resources.loadDir(
+                    dir,
+                    (finish: number, total: number, item: cc.AssetManager.RequestItem) => {
+                        if (stopProgress) return;
+                        let percent = finish / total + pastProgress;
+                        this.asset_count = total;
+                        //纠错，保证当前进度不会小于上次进度
+                        percent = Math.max(percent, this.prevPercent);
+                        this.setProgress(percent);
+                        //console.log(LN, "=====>", BUNDLE_RESOURCES, item.url);
+                    },
+                    (error: Error, assets: cc.Asset[]) => {
+                        if (error) {
+                            console.warn(LN, `资源加载失败:${bundleName}/${dir}`);
+                            UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
+                            reject(error);
+                            return;
+                        }
+                        console.log(LN, `资源加载完成:${bundleName}/${dir}`, assets.length);
+                        ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
+                        resovle();
                     }
-                    console.log(LN, `资源加载完成:${bundleName}/${dir}`, assets.length);
-                    ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
-                    param?.complete?.();
-                }
-            );
-            return;
-        }
-        cc.assetManager.loadBundle(bundleName, (err: Error, bundle: cc.AssetManager.Bundle) => {
-            if (err) {
-                cc.log('load bundle error:', bundleName);
-                if (err) {
-                    console.warn(LN, `资源加载失败:${bundleName}/${dir}`);
-                    UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
-                    param?.error?.(err);
-                    return;
-                }
+                );
                 return;
             }
-            bundle.loadDir(
-                dir,
-                (finish: number, total: number, item: cc.AssetManager.RequestItem) => {
-                    if (param.stopProgress) return;
-                    let percent = finish / total;
-                    this.asset_count = total;
-                    //纠错，保证当前进度不会小于上次进度
-                    percent = Math.max(percent, this.prevPercent);
-                    this.setProgress(percent);
-                    // console.log(LN, "=====>", bundleName, item.url);
-                },
-                (error: Error, assets: cc.Asset[]) => {
-                    if (error) {
+            cc.assetManager.loadBundle(bundleName, (err: Error, bundle: cc.AssetManager.Bundle) => {
+                if (err) {
+                    cc.log('load bundle error:', bundleName);
+                    if (err) {
                         console.warn(LN, `资源加载失败:${bundleName}/${dir}`);
                         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
-                        param?.error?.(error);
+                        reject(err);
                         return;
                     }
-                    this.setProgress(1);
-                    console.log(LN, `资源加载完成:${bundleName}/${dir}`, assets.length, 'items_count', this.asset_count);
-                    ResManager.AssetForeach(assets, bundleName);
-                    param?.complete?.();
+                    return;
                 }
-            );
+                bundle.loadDir(
+                    dir,
+                    (finish: number, total: number, item: cc.AssetManager.RequestItem) => {
+                        if (stopProgress) return;
+                        let percent = finish / total + pastProgress;
+                        //纠错，保证当前进度不会小于上次进度
+                        percent = Math.max(percent, this.prevPercent);
+                        this.setProgress(percent);
+                        // console.log(LN, "=====>", bundleName, item.url);
+                    },
+                    (error: Error, assets: cc.Asset[]) => {
+                        if (error) {
+                            console.warn(LN, `资源加载失败:${bundleName}/${dir}`);
+                            UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
+                            reject(error);
+                            return;
+                        }
+                        this.setProgress(1);
+                        console.log(LN, `资源加载完成:${bundleName}/${dir}`, assets.length);
+                        ResManager.AssetForeach(assets, bundleName);
+                        resovle();
+                    }
+                );
+            });
         });
-        // let loadBundle_result = await ResManager.LoadABs(bundleName, this.setProgress.bind(this)).catch(() => { });
-        // if (loadBundle_result) {
-        //     console.log(LN, `bundle => ${bundleName} 包体资源加载完成`);
-        //     param?.complete();
-        // } else {
-        //     ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10050))
-        //     param?.error();
-        // }
     }
 }

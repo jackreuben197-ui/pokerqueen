@@ -54,9 +54,10 @@ export default class ProtocolAgency extends cc.Component {
                 MatchID: matchID,
                 Body: param
             });
+            const rpcId = param.rpcId;
             setTimeout(() => {
-                if (this._pendingRequests.has(code)) {
-                    this._pendingRequests.delete(code);
+                if (this._pendingRequests.has(rpcId)) {
+                    this._pendingRequests.delete(rpcId);
                     reject(new Error(`请求超时: ${code}`));
                 }
             }, 3000); // 3秒超时

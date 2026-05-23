@@ -203,6 +203,7 @@ export default class UIOperationComponent extends UIBase {
         //     ]
         // }
         super.onShow(obj);
+        this.regiterDispatchEvent();
         this.hideAllOperationButton();
         this.SetCalibrationWeight();
         GameCache.Instance.IsAllowOpenDanmu = false;
@@ -516,44 +517,45 @@ export default class UIOperationComponent extends UIBase {
             return;
         }
         if (this._isCheckCountDown) {
-            this.imageCheckCountDown.fillRange = (this.optCurTime -= dt) / this.optTotalTime;
+            this.optCurTime -= dt;
+            this.imageCheckCountDown.fillRange = this.optCurTime / this.optTotalTime;
             if (this.imageCheckCountDown.fillRange <= 0.02) {
                 GameCache.Instance.CurGame.HideBtnDelay(false);
             }
             if (this.imageCheckCountDown.fillRange <= 0) {
                 this.isCountDown = false;
-                //this.imageCheckCountDown.node.active = false;
                 this.Check_CountDown.active = false;
-                if (this.isShowingDialog)
-                    //UIComponent.Instance.HideUI(UIType.UIDialog);
-                    UIComponent.close(UIDefine.UIDialogComponent);
+                this._isCheckCountDown = false;
+                if (this.isShowingDialog) UIComponent.close(UIDefine.UIDialogComponent);
                 this.isShowingDialog = false;
                 //如需客户端倒计时结束发送让牌，在这里做
-                GameCache.Instance.CurGame.HideOperationPanel();
+                if (!GameCache.Instance.CurGame.ClickAddTime) {
+                    GameCache.Instance.CurGame.HideOperationPanel();
+                }
             }
         }
         if (this._isFoldCountDown) {
-            this.imageFoldCountDown.fillRange = (this.optCurTime -= dt) / this.optTotalTime;
+            this.optCurTime -= dt;
+            this.imageFoldCountDown.fillRange = this.optCurTime / this.optTotalTime;
             if (this.imageFoldCountDown.fillRange <= 0.02) {
                 GameCache.Instance.CurGame.HideBtnDelay(false);
             }
             if (this.imageFoldCountDown.fillRange <= 0) {
                 this.isCountDown = false;
-                //this.imageFoldCountDown.node.active = false;
                 this.Fold_CountDown.active = false;
-                if (this.isShowingDialog)
-                    //UIComponent.Instance.HideUI(UIType.UIDialog);
-                    UIComponent.close(UIDefine.UIDialogComponent);
+                this._isFoldCountDown = false;
+                if (this.isShowingDialog) UIComponent.close(UIDefine.UIDialogComponent);
                 this.isShowingDialog = false;
                 //如需客户端倒计时结束发送弃牌，在这里做
-                GameCache.Instance.CurGame.HideOperationPanel();
+                if (!GameCache.Instance.CurGame.ClickAddTime) {
+                    GameCache.Instance.CurGame.HideOperationPanel();
+                }
             }
         }
         if (this.optCurTime < 6.1 && this.optCurTime > 6 && !this.hadAlertSound) {
             //剩余5秒音效
             GC.sound.Play('sfx_action_alert');
             this.hadAlertSound = true;
-            //this.DelayPlayBarrage();
         }
     }
 
@@ -567,12 +569,29 @@ export default class UIOperationComponent extends UIBase {
             return;
         }
         if (rec.status != 0) {
-            //UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_ADD_TIME, rec.Status)
+            GameCache.Instance.CurGame.ClickAddTime = false;
             return;
         }
         if (rec.status == 0) {
             this.optCurTime += rec.duration;
             this.optTotalTime = this.optCurTime;
+            // 加时成功后，如果倒计时已停（归零等待加时响应），重新激活
+            if (!this._isCheckCountDown && !this._isFoldCountDown) {
+                // 根据 Check/Fold 按钮判断恢复哪个倒计时
+                if (this.buttonCheck && this.buttonCheck.activeInHierarchy) {
+                    this._isCheckCountDown = true;
+                    this.Check_CountDown.active = true;
+                } else {
+                    this._isFoldCountDown = true;
+                    this.Fold_CountDown.active = true;
+                }
+                this.isCountDown = true;
+                this.hadAlertSound = false;
+                this.imageCheckCountDown.fillRange = 1;
+                this.imageFoldCountDown.fillRange = 1;
+            }
+            // 倒计时恢复后才能安全解除加时保护
+            GameCache.Instance.CurGame.ClickAddTime = false;
         }
     }
 

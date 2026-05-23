@@ -28,6 +28,8 @@ import { ServerMessageAddTimeOthers } from '../../protobuf/holdem/recv_th_add_ti
 import { ServerMessageKeepSeat } from '../../protobuf/holdem/recv_th_keep_seat_pb';
 import { ClientMessageShowPublicCards, ServerMessageShowPublicCards } from '../../protobuf/holdem/req_th_show_public_cards_pb';
 import { ServerMessageShowPublicCardsOthers } from '../../protobuf/holdem/recv_th_show_public_cards_others_pb';
+import { ClientMessageViewPlayerCards, ServerMessageViewPlayerCards } from '../../protobuf/holdem/req_th_view_player_cards_pb';
+import { ClientMessageViewPlayerCardsNum, ServerMessageViewPlayerCardsNum } from '../../protobuf/holdem/req_th_view_player_cards_num_pb';
 import { ClientMessageSetAutoOnTable, ServerMessageSetAutoOnTable } from '../../protobuf/holdem/req_th_set_auto_on_table_pb';
 import { ClientMessageStoreChips, ServerMessageStoreChips } from '../../protobuf/holdem/req_th_store_chips_pb';
 import { ServerMessageChipsChange } from '../../protobuf/holdem/recv_th_chips_change_pb';
@@ -309,6 +311,14 @@ export const ProtocolMap = {
     },
     [ProtocolCode.Protocol_Holdem_ShowPublicCardsOthers]: {
         Server: ServerMessageShowPublicCardsOthers
+    },
+    [ProtocolCode.Protocol_Holdem_ViewPlayerCards]: {
+        Client: ClientMessageViewPlayerCards,
+        Server: ServerMessageViewPlayerCards
+    },
+    [ProtocolCode.Protocol_Holdem_ViewPlayerCardsNum]: {
+        Client: ClientMessageViewPlayerCardsNum,
+        Server: ServerMessageViewPlayerCardsNum
     },
     [ProtocolCode.Protocol_Holdem_SetAutoOnTable]: {
         Client: ClientMessageSetAutoOnTable,

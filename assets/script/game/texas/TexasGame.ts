@@ -1,7 +1,7 @@
 import TexasConfig from '../../config/TexasConfig';
 import { UIDefine } from '../../define/UIDefine';
 import DiamondModel from '../../diamond/DiamondModel';
-import AudioManager from '../../frame/manager/AudioManager';
+import SoundComponent from '../../sound/SoundComponent';
 import { DOTween, Sequence } from '../../dotween/DOTween';
 import { ClubCache } from '../../frame/data/club/ClubCache';
 import GC from '../../frame/GameControl';
@@ -36,6 +36,8 @@ import { ClientMessageKeepSeatActive } from '../../protobuf/holdem/req_th_keep_s
 import { ClientMessageSeated } from '../../protobuf/holdem/req_th_seated_pb';
 import { ClientMessageSetAutoOnTable } from '../../protobuf/holdem/req_th_set_auto_on_table_pb';
 import { ClientMessageShowPublicCards } from '../../protobuf/holdem/req_th_show_public_cards_pb';
+import { ClientMessageViewPlayerCards } from '../../protobuf/holdem/req_th_view_player_cards_pb';
+import { ClientMessageViewPlayerCardsNum } from '../../protobuf/holdem/req_th_view_player_cards_num_pb';
 import { ClientMessageSquidInActive } from '../../protobuf/holdem/req_th_squid_in_active_pb';
 import { ClientMessageStandupActive } from '../../protobuf/holdem/req_th_stand_up_active_pb';
 import { ClientMessageStoreChips } from '../../protobuf/holdem/req_th_store_chips_pb';
@@ -80,6 +82,7 @@ import ToastManager from '../../manager/ToastManager';
 import { HttpRoomBringInByIDProtocol } from '../../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringInByIDProtocol';
 import { HttpUserInfoProtocol } from '../../crazyPoker/module/message/CPHotfixWebMessage/user/HttpUserInfoProtocol';
 import GameplayUtil from '../../crazyPoker/gameplay/common/util/GameplayUtil';
+import { TableType } from '../../crazyPoker/gameplay/common/constant/TableType';
 
 //const PBTypes = Def.Types;
 class SeatMoveStruct {
@@ -455,6 +458,10 @@ export default class TexasGame {
     /// </summary>
     public checkPublicCardsCost: number = 50;
     /// <summary>
+    /// 付费看手牌次数（阶梯收费用）
+    /// </summary>
+    public lookCardsPayTimes: number = 0;
+    /// <summary>
     /// 是否是取消留座离桌（用来判断是否显示提示）
     /// </summary>
     public cacheCancelKeepSeat: boolean = false;
@@ -580,7 +587,7 @@ export default class TexasGame {
         this.SMAgency.LoadGameStateConf();
         GC.uc.AddComponent(this.GameLogicSMComponent);
         // 播放游戏背景音乐，音量 30%（对齐 Unity BGM_GAMEPLAY）
-        AudioManager.instance.playMusicWithVolume('sound/bgm_game', 0.3);
+        SoundComponent.Instance.playMusicWithVolume('sound/bgm_game', 0.3);
     }
 
     RegisterMsgHandler() {
@@ -1244,8 +1251,10 @@ export default class TexasGame {
      */
     public UpdateRoomDes() {
         let info: string = ``;
-        if (GameUtil.GetFriendsOrClubTable() == 1) {
-            info += `${GameCache.Instance.FriendsTableCode}\n`;
+        if (GameplayUtil.GetTableType() === TableType.FRIEND) {
+            if (this.uirc.Text_InvateCode) {
+                this.uirc.Text_InvateCode.string = GameCache.Instance._friendsTableCode;
+            }
         }
         info += `${GameCache.Instance.roomName}`;
         info += `\n${this.GetRoomTypeDes()}`;
@@ -2533,6 +2542,7 @@ export default class TexasGame {
     /// 隐藏操作面板
     /// </summary>
     public HideOperationPanel(): void {
+        if (this.ClickAddTime) return;
         this.uirc.Button_Delay.active = false;
         UIComponent.Instance.HideUI(PrefabUI.UIOperationComponent);
     }
@@ -2553,6 +2563,7 @@ export default class TexasGame {
     /// <returns></returns>
     public GetRecyclingChipPosV3(): cc.Vec3 {
         //return rc.transform.TransformPoint(this.gameUI.textAlreadAnte.transform.localPosition);
+        if (!this.uirc.Text_AlreadAnte) return cc.Vec3.ZERO;
         return this.uirc.main.convertToWorldSpaceAR(this.uirc.Text_AlreadAnte.node.position);
     }
 
@@ -3629,6 +3640,95 @@ export default class TexasGame {
         this.uirc.setButtonInteractable(this.uirc.Button_SeeMorePublic, boo);
     }
 
+    /// <summary>
+    /// 偷偷看：显示看手牌按钮（结算阶段，玩家未站起时显示）
+    /// </summary>
+    public ShowLookHandCard(): void {
+        if (!this.mainPlayer.isParticipateInTheGame) return;
+        if (GameCache.Instance.room_type >= RoomType.MTTTexasHoldemStandardNoLimit) return; // MTT不显示
+        this.SetLookHandCardPrice();
+        this.uirc.Button_LookHandCard.active = true;
+        this.InteractableLookHandCard(true);
+    }
+
+    /// <summary>
+    /// 偷偷看：隐藏看手牌按钮
+    /// </summary>
+    public HideLookHandCard(): void {
+        this.uirc.Button_LookHandCard.active = false;
+    }
+
+    /// <summary>
+    /// 偷偷看：设置按钮可交互
+    /// </summary>
+    public InteractableLookHandCard(boo: boolean) {
+        this.uirc.setButtonInteractable(this.uirc.Button_LookHandCard, boo);
+    }
+
+    /// <summary>
+    /// 偷偷看：计算并显示价格（阶梯收费：基础价 × multiple^times，有上限）
+    /// </summary>
+    private SetLookHandCardPrice(): void {
+        const sitDown = this.mainPlayer.isParticipateInTheGame;
+        const ext = sitDown ? 12 : 11;
+        const times = Math.min(this.lookCardsPayTimes, 4);
+        let diamondConfig = DiamondModel.Instance.GetDiamondConfig(this.GetDiamondTypeText(17, ext + 10 * times), 17);
+        if (!diamondConfig) {
+            console.log(LN, '未拿到偷偷看配置');
+            return;
+        }
+        const setting = this.GetSetting(diamondConfig);
+        if (!setting) {
+            console.log(LN, '未拿到偷偷看配置setting');
+            return;
+        }
+        // 显示价格到按钮子节点 numDiamond
+        const numNode = this.uirc.Button_LookHandCard.getChildByName('numDiamond');
+        if (numNode) {
+            const label = numNode.getComponent(cc.Label);
+            if (label) label.string = `${setting.price}`;
+        }
+    }
+
+    /// <summary>
+    /// 偷偷看：点击发送 1026 协议
+    /// </summary>
+    public onClickLookHandCard(): void {
+        if (this.CanClick() == false) return;
+        this.lastClickTime = GlobalSession.NowTimeMS;
+        this.InteractableLookHandCard(false);
+        ProtocolAgency.Send<ClientMessageViewPlayerCards.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_ViewPlayerCards,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: {
+                    roomId: GameCache.Instance.room_id,
+                    matchId: GameCache.Instance.match_id
+                },
+                targetSeatId: 0,
+                targetUserRid: 0
+            }
+        });
+    }
+
+    /// <summary>
+    /// 偷偷看：发送 1029 查询当前看牌次数
+    /// </summary>
+    public SendViewPlayerCardsNum(): void {
+        ProtocolAgency.Send<ClientMessageViewPlayerCardsNum.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_ViewPlayerCardsNum,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: {
+                    roomId: GameCache.Instance.room_id,
+                    matchId: GameCache.Instance.match_id
+                }
+            }
+        });
+    }
+
     public HideSeeMorePublicTips(): void {
         this.uirc.Image_SeeMorePublicTips.active = false;
     }
@@ -3935,6 +4035,7 @@ export default class TexasGame {
             UIComponent.Instance.Toast(i18nMgr.Get('ServerErrorCode_31045'));
             return;
         }
+        this.ClickAddTime = true;
         ProtocolAgency.Send<ClientMessageAddTime.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_AddTime,
             RoomID: GameCache.Instance.room_id,
@@ -4155,6 +4256,7 @@ export default class TexasGame {
 
     //获取公共牌数量 第n套 1-n
     public GetPublicCardsCount(n: number) {
+        this._ensurePublicCards();
         let cards = this.public_cards[n - 1];
         let count = cards.indexOf(-1);
         return count == -1 ? GameUtil.PublicCardMaxCount : count;
@@ -4162,11 +4264,20 @@ export default class TexasGame {
 
     //获取第n套公共牌 第n套 1-n
     public GetPublicCards(n: number): number[] {
+        this._ensurePublicCards();
         return this.public_cards[n - 1];
     }
 
     public SetPublicCards(n: number, index: number, card: number) {
+        this._ensurePublicCards();
         this.public_cards[n - 1][index] = card;
+    }
+
+    /** 确保 public_cards 已初始化 */
+    private _ensurePublicCards() {
+        if (!this.public_cards) {
+            this.ResetPublicCards();
+        }
     }
 
     //升级公共牌id 第n套 1-n
@@ -4284,6 +4395,7 @@ export default class TexasGame {
         this.ResetSecondPublicCardsImage();
         this.HideSeeMorePublic();
         this.HideSeeMorePublicTips();
+        this.HideLookHandCard();
         this.HideOperationPanel();
         this.HideAutoOperationPanel();
         this.uirc.CleanUI();
@@ -4338,7 +4450,7 @@ export default class TexasGame {
     Dispose() {
         console.log(LN, 'TexasGame >>>> Dispose');
         // 停止游戏背景音乐
-        AudioManager.instance.stopMusic();
+        SoundComponent.Instance.stopMusic();
         this.IsDispose = true;
         this.reportKeepOpen = false;
         this.ClearTableUI();
@@ -4368,6 +4480,7 @@ export default class TexasGame {
 
     // 刷新底池
     public UpdateAlreadAnte(): void {
+        if (!this.uirc.Text_AlreadAnte) return;
         this.uirc.Text_AlreadAnte.node.active = this.gamestatus >= 1 && this.gamestatus < 7;
         this.uirc.Text_AlreadAnte.string = `${CPErrorCode.LanguageDescription(20005)} : ${GameUtil.TransBetValue(this.alreadAnte)}`;
     }
@@ -4464,44 +4577,27 @@ export default class TexasGame {
     //刷新加时按钮样式
     public UpdateDelayBtn(): void {
         this.HideBtnDelay(true);
-        let dis_diamond = cc.find('layout/dis_diamond', this.uirc.Button_Delay);
-        let nor_diamond = cc.find('layout/nor_diamond', this.uirc.Button_Delay);
-        let free_diamond = cc.find('layout/free_diamond', this.uirc.Button_Delay);
-        nor_diamond.active = false;
-        dis_diamond.active = false;
-        free_diamond.active = false;
+        let diamondCost = this.uirc.Button_Delay.getChildByName('diamondCost');
+        let textDiamondCost = this.uirc.Button_Delay.getChildByName('Text_diamondCost');
+        diamondCost.active = false;
+        textDiamondCost.getComponent(cc.Label).string = '';
         //使用次数
         if (this.delayCount >= 2) {
             this.uirc.Button_Delay.getComponent(cc.Button).interactable = false;
-            this.uirc.Button_Delay.getChildByName('Text_Time').getComponent(cc.Label).string = '0';
+            this.uirc.Button_Delay.getChildByName('Text_Time').getComponent(cc.Label).string = '+0s';
             this.uirc.Button_Delay.opacity = 178;
-            this.uirc.setChildLabel(nor_diamond, 'label', '0');
-            nor_diamond.active = true;
+            diamondCost.active = true;
+            textDiamondCost.getComponent(cc.Label).string = '0';
         } else {
+            let priceText = '';
             let diamondConfig = DiamondModel.Instance.GetDiamondConfig(this.GetTypeText(this.delayCount + 1), 2);
             if (diamondConfig?.config_type == 2) {
-                let smallBlind = 0;
-                if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) //string.Format("{0:N1}", str)
-                {
-                    smallBlind = GameCache.Instance.CurGame.smallBlind;
+                let setting = null;
+                if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
+                    let smallBlind = GameCache.Instance.CurGame.smallBlind;
                     for (let i = 0; i < diamondConfig.setting.length; i++) {
                         if (diamondConfig.setting[i].sb * 100 == smallBlind * 100) {
-                            if (diamondConfig.setting[i].discount_price == 0) {
-                                //DisDiamond.transform.Find("num").GetComponent<Text>().text = diamondConfig.setting[i].price.ToString();
-                                this.uirc.setChildLabel(dis_diamond, 'label', `${diamondConfig.setting[i].price}`);
-                                dis_diamond.active = true;
-                                free_diamond.active = true;
-                            } else {
-                                if (diamondConfig.setting[i].discount_price < diamondConfig.setting[i].price) {
-                                    this.uirc.setChildLabel(dis_diamond, 'label', `${diamondConfig.setting[i].price}`);
-                                    this.uirc.setChildLabel(nor_diamond, 'label', `${diamondConfig.setting[i].discount_price}`);
-                                    nor_diamond.active = true;
-                                    dis_diamond.active = true;
-                                } else {
-                                    this.uirc.setChildLabel(nor_diamond, 'label', `${diamondConfig.setting[i].price}`);
-                                    nor_diamond.active = true;
-                                }
-                            }
+                            setting = diamondConfig.setting[i];
                             break;
                         }
                     }
@@ -4509,29 +4605,25 @@ export default class TexasGame {
                     GameCache.Instance.room_type >= RoomType.MTTTexasHoldemStandardNoLimit &&
                     GameCache.Instance.room_type <= RoomType.MTTOmaha6SixPlusFixedAof
                 ) {
-                    if (diamondConfig.setting[0].discount_price == 0) {
-                        this.uirc.setChildLabel(dis_diamond, 'label', `${diamondConfig.setting[0].price}`);
-                        nor_diamond.active = false;
-                        dis_diamond.active = true;
-                        free_diamond.active = true;
+                    setting = diamondConfig.setting[0];
+                }
+                if (setting) {
+                    if (diamondConfig.status == 2) {
+                        // status=2 关闭收费 → 免费
+                        priceText = '免费';
+                    } else if (setting.discount_price > 0 && setting.discount_price < setting.price) {
+                        // 有折扣 → 显示折扣价
+                        priceText = `${setting.discount_price}`;
                     } else {
-                        if (diamondConfig.setting[0].discount_price < diamondConfig.setting[0].price) {
-                            this.uirc.setChildLabel(dis_diamond, 'label', `${diamondConfig.setting[0].price}`);
-                            this.uirc.setChildLabel(nor_diamond, 'label', `${diamondConfig.setting[0].discount_price}`);
-                            nor_diamond.active = true;
-                            dis_diamond.active = true;
-                            free_diamond.active = false;
-                        } else {
-                            this.uirc.setChildLabel(nor_diamond, 'label', `${diamondConfig.setting[0].price}`);
-                            nor_diamond.active = true;
-                            dis_diamond.active = false;
-                            free_diamond.active = false;
-                        }
+                        // 无折扣或discount_price=0 → 显示原价
+                        priceText = `${setting.price}`;
                     }
                 }
             }
+            diamondCost.active = true;
+            textDiamondCost.getComponent(cc.Label).string = priceText;
             this.uirc.Button_Delay.getComponent(cc.Button).interactable = true;
-            this.uirc.Button_Delay.getChildByName('Text_Time').getComponent(cc.Label).string = this.delayCount > 0 ? '20' : '30';
+            this.uirc.Button_Delay.getChildByName('Text_Time').getComponent(cc.Label).string = this.delayCount > 0 ? '+20s' : '+30s';
             this.uirc.Button_Delay.opacity = 255;
         }
     }

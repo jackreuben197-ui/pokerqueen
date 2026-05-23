@@ -2,9 +2,18 @@ import SimpleNodePool from '../../common/MyNodePool';
 import SliderPlus from '../../common/SliderPlus';
 import { TextColor } from '../../config/GameConfig';
 import GC from '../../frame/GameControl';
+import { CPErrorCode } from '../../i18n/CPErrorCode';
 import PublicHelper from '../../helper/PublicHelper';
 import { StringHelper } from '../../helper/StringHelper';
-import { WebRoomCenterHistoryReplay, WebRoomCenterGameWatch, WebUserDiamondsWallet, WWW } from '../../net/https/WebRequest';
+import {
+    WebRoomCenterHistoryReplay,
+    WebRoomCenterHistoryViewPublicCards,
+    WebRoomCenterHistoryViewPublicCardsFreeCount,
+    WebRoomCenterGameWatch,
+    WebRoomCenterGameWatchNum,
+    WebUserDiamondsWallet,
+    WWW
+} from '../../net/https/WebRequest';
 import ProtocolAgency from '../../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../../net/websocket/ProtocolCode';
 import UIBasePlus from '../../ui/UIBasePlus';
@@ -17,6 +26,7 @@ import playerCardNode, { IPlayerCardData } from '../../crazyPoker/gameplay/commo
 import { ResManager } from '../../manager/ResManager';
 import DiamondModel from '../../diamond/DiamondModel';
 import { replayGet, replaySet, roomKey, matchKey } from '../../tools/ReplayCacheDB';
+import { WebMiscGameRecordRound, WebMiscGameRoundStatus, WebMiscGameRemoveRound } from '../../net/https/web_request/WebRequestMisc';
 
 export class HistoryInfoData {
     public bInsurance: boolean;
@@ -201,6 +211,8 @@ export default class UITexasHistory extends UIBasePlus {
     $DiamondNum: cc.Node = null;
     $PeekButton: cc.Node = null;
     $PeekCost: cc.Node = null;
+    $ViewPubButton: cc.Node = null;
+    $ViewPubCost: cc.Node = null;
     $left_btn: cc.Node = null;
     $right_btn: cc.Node = null;
     $progressBlue: cc.Node = null;
@@ -209,6 +221,17 @@ export default class UITexasHistory extends UIBasePlus {
     private playerCardPrefab: cc.Prefab = null;
     // 偷偷看：缓存已偷看到的手牌数据
     private beWatchedUserHands: { user_rid: number; data: string }[] = [];
+    // 偷偷看：服务端返回的累计偷看次数（阶梯收费用）
+    private _peekCount: number = 0;
+    // 发发看：免费次数
+    private _viewPubFreeCount: number = 0;
+    // 缓存最后一份回放数据，用于发发看后重新渲染 Dashboard
+    private _lastResponseData: any = null;
+    // 自己是否参与了当前这手牌 (对齐 Unity _hasMe)
+    private _hasMe: boolean = false;
+    // 当前手牌是否已收藏
+    private _isCollected: boolean = false;
+    $favoBtn: cc.Node = null;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -246,6 +269,8 @@ export default class UITexasHistory extends UIBasePlus {
         this.setButtonClick(this.$right_btn, this.click_right);
         this.setButtonClick(this.$DetailsBtn, this.click_detailsBtn);
         this.setButtonClick(this.$PeekButton, this.click_peekButton);
+        this.setButtonClick(this.$ViewPubButton, this.click_viewPubButton);
+        this.setButtonClick(this.$favoBtn, this.click_favoBtn);
         let exitBtn = this.$Top.getChildByName('exit_button');
         if (exitBtn) exitBtn.on(cc.Node.EventType.TOUCH_END, this.click_bg, this);
     }
@@ -427,6 +452,8 @@ export default class UITexasHistory extends UIBasePlus {
                         if (peekBtn) peekBtn.interactable = false;
                         this.$PeekButton.opacity = 128;
                     }
+                    // 偷看成功，刷新价格（次数会从服务端重新获取）
+                    this.reqPeekPrice();
                     // 刷新钻石余额
                     this.reqDiamondBalance();
                 }
@@ -435,6 +462,464 @@ export default class UITexasHistory extends UIBasePlus {
                 if (btn) btn.interactable = true;
             }
         );
+    }
+
+    /** 发发看按钮点击：通过 HTTP API 请求查看未亮公共牌 (对齐 Unity RequestReplayPublicCards) */
+    click_viewPubButton() {
+        if (!this.$ViewPubButton) return;
+        let btn = this.$ViewPubButton.getComponent(cc.Button);
+        if (btn) btn.interactable = false;
+        let round = this.getViewPubRound();
+        let roomId = this._lastResponseData?.s?.rid || this.historyInfoData.room_id;
+        let handNum = this._lastResponseData?.s?.hand || this.currentPage;
+        console.log(
+            '[UITexasHistory] click_viewPubButton request params:',
+            JSON.stringify({
+                room_id: roomId,
+                hand_num: handNum,
+                round: round,
+                // 诊断字段
+                _lastResponseData_rid: this._lastResponseData?.s?.rid,
+                _lastResponseData_hand: this._lastResponseData?.s?.hand,
+                _lastResponseData_mid: this._lastResponseData?.s?.mid,
+                _lastResponseData_unique: this._lastResponseData?.s?.unique,
+                historyInfoData_room_id: this.historyInfoData?.room_id,
+                currentPage: this.currentPage,
+                totalPage: this.totalPage,
+                PublicCards: this.PublicCards,
+                cacheRoomId: GameCache.Instance.room_id,
+                cacheMatchId: GameCache.Instance.match_id,
+                cacheUniqueId: GameCache.Instance.CurGame?.cacheUniqueId
+            })
+        );
+        WWW.Instance.CommonAPI({
+            web_class: WebRoomCenterHistoryViewPublicCards,
+            body: WebRoomCenterHistoryViewPublicCards.Request({
+                room_id: roomId,
+                hand_num: handNum,
+                round: round
+            })
+        }).then(
+            (res: any) => {
+                if (!cc.isValid(this.node)) return;
+                if (btn) btn.interactable = true;
+                if (res?.code === 0 && res?.data) {
+                    let round = this.getViewPubRound();
+                    this.mergeViewedPublicCards(res.data.pub_cards, res.data.pub_cards2, round);
+                    // 将发发看数据写回缓存
+                    this.updateReplayCacheWithViewedPublicCards(res.data);
+                    // 用新数据重新渲染界面
+                    this.renderPublicCards();
+                    // 更新按钮状态
+                    this.updateViewPubButtonState();
+                    // 刷新钻石余额
+                    this.reqDiamondBalance();
+                    // 刷新发发看价格
+                    this.reqViewPubPrice();
+                } else {
+                    if (res?.code === 90003) {
+                        UIComponent.Instance.Toast('该手牌尚未同步到历史记录，请稍后再试');
+                    } else {
+                        UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(res?.code));
+                    }
+                }
+            },
+            () => {
+                if (btn) btn.interactable = true;
+            }
+        );
+    }
+
+    // region 收藏功能 (对齐 Unity OnClickCollect / RequestReplayCollectedStatus)
+    /** 收藏按钮点击 */
+    click_favoBtn() {
+        if (!this.$favoBtn) return;
+        if (!this._hasMe) return;
+        console.log(
+            '[UITexasHistory] click_favoBtn _isCollected=' + this._isCollected,
+            JSON.stringify({
+                hasLastData: !!this._lastResponseData,
+                rid: this._lastResponseData?.s?.rid,
+                unique: this._lastResponseData?.s?.unique,
+                hand: this._lastResponseData?.s?.hand,
+                mid: this._lastResponseData?.s?.mid,
+                name: this._lastResponseData?.s?.name,
+                // 完整 s 字段的 key 列表
+                sKeys: this._lastResponseData?.s ? Object.keys(this._lastResponseData.s) : null
+            })
+        );
+        if (this._isCollected) {
+            this.reqRemoveCollect();
+        } else {
+            this.reqAddCollect();
+        }
+    }
+
+    /** 查询当前手牌是否已收藏 (对齐 Unity RequestReplayCollectedStatus) */
+    private reqCollectStatus() {
+        let s = this._lastResponseData?.s;
+        let roomId = s?.rid || this.historyInfoData?.room_id || GameCache.Instance.room_id;
+        let roomUniqueId = s?.unique || this.historyInfoData?.room_unique_id || GameCache.Instance.CurGame?.cacheUniqueId || '';
+        let handNum = s?.hand || this.currentPage;
+        if (!roomId || !handNum) return;
+        WWW.Instance.CommonAPI({
+            web_class: WebMiscGameRoundStatus,
+            body: WebMiscGameRoundStatus.Request({
+                room_id: roomId,
+                room_unique_id: roomUniqueId,
+                hand_num: handNum
+            })
+        }).then((res: any) => {
+            if (!cc.isValid(this.node)) return;
+            console.log('[UITexasHistory] reqCollectStatus response:', JSON.stringify(res?.data));
+            // ResponseData 结构: { data?: { records?: ... } }，也可能直接 { records?: ... }
+            let records = res?.data?.data?.records ?? res?.data?.records;
+            let isCollected = res?.code === 0 && records?.length > 0 && records[0].remove === 0;
+            console.log('[UITexasHistory] reqCollectStatus isCollected=' + isCollected, 'records=' + JSON.stringify(records));
+            this.refreshCollectShow(isCollected);
+        });
+    }
+
+    /** 请求收藏当前手牌 */
+    private reqAddCollect() {
+        let s = this._lastResponseData?.s;
+        let roomId = s?.rid || this.historyInfoData?.room_id || GameCache.Instance.room_id;
+        let matchId = s?.mid || this.historyInfoData?.match_id || GameCache.Instance.match_id || 0;
+        let roomUniqueId = s?.unique || this.historyInfoData?.room_unique_id || GameCache.Instance.CurGame?.cacheUniqueId || '';
+        let handNum = s?.hand || this.currentPage;
+        let name = GameCache.Instance.roomName || '';
+        let btn = this.$favoBtn?.getComponent(cc.Button);
+        if (btn) btn.interactable = false;
+        let params = {
+            id: 0,
+            room_id: roomId,
+            match_id: matchId,
+            room_unique_id: roomUniqueId,
+            name: name,
+            hand_num: handNum,
+            change: 0,
+            type: 0,
+            open: 0
+        };
+        console.log('[UITexasHistory] reqAddCollect params:', JSON.stringify(params));
+        WWW.Instance.CommonAPI({
+            web_class: WebMiscGameRecordRound,
+            body: WebMiscGameRecordRound.Request(params)
+        }).then(
+            (res: any) => {
+                if (!cc.isValid(this.node)) return;
+                if (btn) btn.interactable = true;
+                console.log('[UITexasHistory] reqAddCollect response:', JSON.stringify(res));
+                if (res?.code === 0) {
+                    this.refreshCollectShow(true);
+                    UIComponent.Instance.Toast('收藏成功');
+                } else {
+                    UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(res?.code));
+                }
+            },
+            (err: any) => {
+                if (!cc.isValid(this.node)) return;
+                if (btn) btn.interactable = true;
+                console.log('[UITexasHistory] reqAddCollect FAIL:', JSON.stringify(err));
+                UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(err?.code));
+            }
+        );
+    }
+
+    /** 请求取消收藏 (对齐 Unity RequestDeleteCollectedReplay) */
+    private reqRemoveCollect() {
+        let s = this._lastResponseData?.s;
+        let roomId = s?.rid || this.historyInfoData?.room_id || GameCache.Instance.room_id;
+        let roomUniqueId = s?.unique || this.historyInfoData?.room_unique_id || GameCache.Instance.CurGame?.cacheUniqueId || '';
+        let handNum = s?.hand || this.currentPage;
+        WWW.Instance.CommonAPI({
+            web_class: WebMiscGameRemoveRound,
+            body: WebMiscGameRemoveRound.Request({
+                room_id: roomId,
+                room_unique_id: roomUniqueId,
+                hand_num: handNum
+            })
+        }).then((res: any) => {
+            if (!cc.isValid(this.node)) return;
+            if (res?.code === 0) {
+                this.refreshCollectShow(false);
+                UIComponent.Instance.Toast('已取消收藏');
+            } else {
+                UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(res?.code));
+            }
+        });
+    }
+
+    /** 更新收藏按钮状态：是否可点击 + star 颜色 (对齐 Unity：必须参与这手牌才能收藏) */
+    private refreshCollectShow(isCollected: boolean) {
+        this._isCollected = isCollected;
+        if (!this.$favoBtn) {
+            console.log('[UITexasHistory] refreshCollectShow: $favoBtn is null');
+            return;
+        }
+        let canCollect = this._hasMe;
+        let btn = this.$favoBtn.getComponent(cc.Button);
+        if (btn) btn.interactable = canCollect;
+        this.$favoBtn.opacity = canCollect ? 255 : 128;
+        let star = this.$favoBtn.getChildByName('Background')?.getChildByName('$star');
+        console.log('[UITexasHistory] refreshCollectShow isCollected=' + isCollected + ', _hasMe=' + this._hasMe + ', star=' + (star ? 'found' : 'NOT FOUND'));
+        if (star) {
+            star.color = canCollect && isCollected ? cc.color(255, 200, 50) : cc.color(255, 255, 255);
+        }
+    }
+
+    // endregion 收藏功能
+    /** 推断当前需要查看的公共牌轮次 (HTTP API: 1=flop, 2=turn, 3=river) */
+    private getViewPubRound(): number {
+        // PublicCards[0]==0 → 连flop都没有 → round=1
+        // PublicCards[3]==0 → 有flop但没turn → round=2
+        // 否则 → 有turn但没river → round=3
+        if (!this.PublicCards || this.PublicCards[0] === 0) return 1;
+        if (this.PublicCards[3] === 0) return 2;
+        return 3;
+    }
+
+    /** 将服务端返回的公共牌数据合并到 PublicCards 数组 (对齐 Unity ExecutePublicCards) */
+    private mergeViewedPublicCards(pubCardsStr: string, pubCards2Str: string, round: number) {
+        if (!pubCardsStr) return;
+        let cards = pubCardsStr
+            .split(',')
+            .map(s => parseInt(s))
+            .filter(n => !isNaN(n));
+        if (round === 1) {
+            // flop: 替换位置 0-2
+            for (let i = 0; i < cards.length && i < 3; i++) {
+                this.PublicCards[i] = cards[i];
+            }
+        } else if (round === 2) {
+            // turn: 替换位置 3
+            if (cards.length > 0) this.PublicCards[3] = cards[0];
+        } else if (round === 3) {
+            // river: 替换位置 4
+            if (cards.length > 0) this.PublicCards[4] = cards[0];
+        }
+        // 第二套公共牌 (Bomb Pot)
+        if (pubCards2Str && this.HaveSecondCard) {
+            let cards2 = pubCards2Str
+                .split(',')
+                .map(s => parseInt(s))
+                .filter(n => !isNaN(n));
+            if (round === 1) {
+                for (let i = 0; i < cards2.length && i < 3; i++) {
+                    this.SecondPublicCards[i] = cards2[i];
+                }
+            } else if (round === 2) {
+                if (cards2.length > 0) this.SecondPublicCards[3] = cards2[0];
+            } else if (round === 3) {
+                if (cards2.length > 0) this.SecondPublicCards[4] = cards2[0];
+            }
+        }
+    }
+
+    /** 重新渲染公共牌 UI (Score、Showdown、Flop/Turn/River 区、详情页公共牌) */
+    private renderPublicCards() {
+        // Score 公共牌
+        if (this.$Score_PublicCards) {
+            this.$Score_PublicCards.children.forEach((item, index) => {
+                item.active = this.PublicCards[index] > 0;
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+                    GameUtil.GetCardNameByNum(this.PublicCards[index]),
+                    AssetFold.texture_SmallCard0
+                );
+            });
+        }
+        // Showdown 公共牌
+        if (this.$Showdown_PublicCards) {
+            this.$Showdown_PublicCards.children.forEach((item, index) => {
+                item.active = this.PublicCards[index] > 0;
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+                    GameUtil.GetCardNameByNum(this.PublicCards[index]),
+                    AssetFold.texture_SmallCard0
+                );
+            });
+        }
+        // 第二套公共牌
+        if (this.HaveSecondCard && this.$Showdown2_PublicCards) {
+            this.$Showdown2_PublicCards.children.forEach((item, index) => {
+                item.active = this.SecondPublicCards[index] > 0;
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
+                    GameUtil.GetCardNameByNum(this.SecondPublicCards[index]),
+                    AssetFold.texture_SmallCard0
+                );
+            });
+        }
+        // Flop/Turn/River 区的卡牌
+        if (this.$Flop_Cards) {
+            this.$Flop_Cards.children.forEach((item, index) => {
+                let sprite = item.getComponent(cc.Sprite) || item.getComponentInChildren(cc.Sprite);
+                if (sprite) {
+                    sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
+                }
+                item.active = this.PublicCards[index] > 0;
+            });
+        }
+        if (this.$Turn_Cards) {
+            this.$Turn_Cards.children.forEach((item, index) => {
+                let sprite = item.getComponent(cc.Sprite) || item.getComponentInChildren(cc.Sprite);
+                if (sprite) {
+                    sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
+                }
+                item.active = this.PublicCards[index] > 0;
+            });
+        }
+        if (this.$River_Cards) {
+            this.$River_Cards.children.forEach((item, index) => {
+                let cardValue = this.PublicCards[index];
+                let sprite = item.getComponent(cc.Sprite) || item.getComponentInChildren(cc.Sprite);
+                if (sprite) {
+                    sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(cardValue), AssetFold.texture_SmallCard0);
+                }
+                item.active = cardValue > 0;
+            });
+        }
+        // 更新详情页中每个玩家卡片项的公共牌 (Score/Showdown 中的 public_cards 子节点)
+        this.updateDetailPublicCards();
+        // 重新渲染 Dashboard 概览区（公共牌已更新）
+        for (let i = 0; i < this.dashboardNodes.length; i++) {
+            if (!cc.isValid(this.dashboardNodes[i])) continue;
+            let comp = this.dashboardNodes[i].getComponent(playerCardNode);
+            if (comp) {
+                comp.setData({
+                    userName: this.playerInfos[i]?.userName || '',
+                    headPic: this.playerInfos[i]?.headPic || '',
+                    handCards: this.playerInfos[i]?.handCards || [],
+                    publicCards: this.PublicCards,
+                    publicCards2: this.HaveSecondCard && this.SecondPublicCards.length > 0 ? this.SecondPublicCards : undefined,
+                    cardType: this.playerInfos[i]?.maxCardType,
+                    actName: '',
+                    actChip: 0,
+                    raiseTimes: 0,
+                    winAnte: this.playerInfos[i]?.winAnte || 0,
+                    isMine: this.playerInfos[i]?.isMine || false
+                });
+            }
+        }
+    }
+
+    /** 更新详情页中每个玩家卡片项的公共牌显示 */
+    private updateDetailPublicCards() {
+        // 更新 $Score_Childs 中的公共牌
+        this.updateDetailChildsPublicCards(this.$Score_Childs);
+        // 更新 $Showdown_Childs 中的公共牌
+        this.updateDetailChildsPublicCards(this.$Showdown_Childs);
+    }
+
+    /** 更新某个详情子节点列表中所有玩家卡片的公共牌 */
+    private updateDetailChildsPublicCards(childsNode: cc.Node) {
+        if (!childsNode) return;
+        childsNode.children.forEach(go => {
+            let public_cards: cc.Node;
+            if (this.HaveSecondCard) {
+                // 双套牌布局
+                let public_cards1 = cc.find('cards_position/public_cards/cards1', go);
+                let public_cards2 = cc.find('cards_position/public_cards/cards2', go);
+                if (public_cards1) {
+                    for (let i = 0; i < public_cards1.children.length && i < 5; i++) {
+                        let item = public_cards1.children[i];
+                        if (this.PublicCards[i] == 0) {
+                            item.active = false;
+                        } else {
+                            item.active = true;
+                            let sprite = item.getComponent(cc.Sprite);
+                            if (sprite)
+                                sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0);
+                        }
+                    }
+                }
+                if (public_cards2) {
+                    for (let i = 0; i < public_cards2.children.length && i < 5; i++) {
+                        let item = public_cards2.children[i];
+                        if (this.SecondPublicCards[i] == 0) {
+                            item.active = false;
+                        } else {
+                            item.active = true;
+                            let sprite = item.getComponent(cc.Sprite);
+                            if (sprite)
+                                sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_SmallCard0);
+                        }
+                    }
+                }
+            } else {
+                // 单套牌布局
+                public_cards = cc.find('cards_position/public_cards', go);
+                if (public_cards) {
+                    public_cards.children.forEach((item, index) => {
+                        let sprite = item.getComponent(cc.Sprite);
+                        if (!sprite) return;
+                        item.active = this.PublicCards[index] > 0;
+                        sprite.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
+                    });
+                }
+            }
+        });
+    }
+
+    /** 更新发发看按钮状态 */
+    private updateViewPubButtonState() {
+        if (!this.$ViewPubButton) return;
+        let riverRevealed = this.PublicCards[4] !== 0;
+        let canView = !riverRevealed && this._hasMe;
+        let hasHidden = canView && this.hasHiddenPublicCards();
+        let btn = this.$ViewPubButton.getComponent(cc.Button);
+        if (btn) btn.interactable = hasHidden;
+        this.$ViewPubButton.opacity = hasHidden ? 255 : 128;
+    }
+
+    /** 判断是否还有未查看的公共牌 */
+    private hasHiddenPublicCards(): boolean {
+        if (!this.PublicCards) return false;
+        for (let i = 0; i < 5; i++) {
+            if (this.PublicCards[i] === 0) return true;
+        }
+        return false;
+    }
+
+    /** 请求发发看免费次数+价格并显示到 $ViewPubCost */
+    private async reqViewPubPrice() {
+        if (!this.$ViewPubCost) return;
+        try {
+            // 获取免费次数
+            this._viewPubFreeCount = await this._reqViewPubFreeCount();
+            if (this._viewPubFreeCount > 0) {
+                // 对齐 Unity：显示 "VIP免费 {剩余次数}"
+                let label = this.$ViewPubCost.getComponent(cc.Label);
+                if (label) label.string = `VIP免费 ${this._viewPubFreeCount}`;
+                return;
+            }
+            // config_type=8 (SeeMorePublic)，thousand: 1=flop, 2=turn, 3=river
+            let round = this.getViewPubRound();
+            let thousand = round; // 1,2,3 对应 flop/turn/river
+            let typeExt = thousand * 1000; // 对齐 GetDiamondTypeText(8, thousand)
+            await DiamondModel.Instance.ReqDiamondConfig(8);
+            let diamondConfig = DiamondModel.Instance.GetDiamondConfig(typeExt, 8);
+            let price = this.getPriceFromConfig(diamondConfig);
+            let label = this.$ViewPubCost.getComponent(cc.Label);
+            if (label) label.string = `${price}`;
+        } catch (e) {
+            cc.log('[UITexasHistory] reqViewPubPrice failed', e);
+        }
+    }
+
+    /** 请求发发看免费次数 */
+    private _reqViewPubFreeCount(): Promise<number> {
+        return new Promise(resolve => {
+            WWW.Instance.CommonAPI({
+                web_class: WebRoomCenterHistoryViewPublicCardsFreeCount
+            }).then(
+                (res: any) => {
+                    let freeCount = res?.data?.free_count || 0;
+                    resolve(freeCount);
+                },
+                () => {
+                    resolve(0);
+                }
+            );
+        });
     }
 
     /** 合并偷偷看到的手牌数据到缓存 */
@@ -482,6 +967,21 @@ export default class UITexasHistory extends UIBasePlus {
         }
     }
 
+    /** 将发发看数据写回当前手牌的 replaySet 缓存 (对齐 Unity：更新 _recordData.pub_cards 后写入) */
+    private async updateReplayCacheWithViewedPublicCards(viewData: { pub_cards?: string; pub_cards2?: string }) {
+        const userId = GameCache.Instance.nUserId;
+        const roomId = GameCache.Instance.room_id;
+        const matchId = GameCache.Instance.match_id;
+        const handNum = this.currentPage;
+        const cached = (await replayGet(roomKey(userId, roomId, handNum))) ?? (matchId ? await replayGet(matchKey(userId, matchId, handNum)) : null);
+        if (cached) {
+            if (viewData.pub_cards) cached.pub_cards = viewData.pub_cards;
+            if (viewData.pub_cards2) cached.pub_cards2 = viewData.pub_cards2;
+            replaySet(roomKey(userId, roomId, handNum), cached);
+            if (matchId) replaySet(matchKey(userId, matchId, handNum), cached);
+        }
+    }
+
     /** 从缓存中获取偷偷看到的玩家手牌 */
     private getWatchedHandCards(userRid: number): number[] {
         for (let i = 0; i < this.beWatchedUserHands.length; i++) {
@@ -521,11 +1021,11 @@ export default class UITexasHistory extends UIBasePlus {
     }
 
     private registerHandler() {
-        GC.notify.register(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this); //自己坐下
+        GC.notify.register(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);
     }
 
     private removeHandler() {
-        GC.notify.remove(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this); //自己坐下
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);
     }
 
     Protocol_Holdem_PublicReplay_Handler(response) {
@@ -620,19 +1120,45 @@ export default class UITexasHistory extends UIBasePlus {
         this.playerCardPrefab = await ResManager.GetOrLoad<cc.Prefab>('texas', 'prefab/widgetLayer/playerCardNode');
     }
 
-    /** 请求偷偷看价格并显示到 $PeekCost 上 */
+    /** 请求偷偷看次数+价格并显示到 $PeekCost 上（支持阶梯收费） */
     private async reqPeekPrice() {
         if (!this.$PeekCost) return;
         try {
-            // 请求 config_type=30（看全部手牌），type_ext=11（观战未坐下）
+            // 先从服务端获取当前偷看次数
+            this._peekCount = await this._reqWatchNum();
+            // config_type=30（看全部手牌），type_ext 阶梯：11/21/31/41/51（11 + 10 * peekCount，最多4次）
+            const times = Math.min(this._peekCount, 4);
+            const typeExt = 11 + 10 * times;
+            console.log('[UITexasHistory] reqPeekPrice peekCount=' + this._peekCount + ', times=' + times + ', typeExt=' + typeExt);
             await DiamondModel.Instance.ReqDiamondConfig(30);
-            let diamondConfig = DiamondModel.Instance.GetDiamondConfig(11, 30);
+            let diamondConfig = DiamondModel.Instance.GetDiamondConfig(typeExt, 30);
+            console.log('[UITexasHistory] diamondConfig=' + JSON.stringify(diamondConfig));
             let price = this.getPriceFromConfig(diamondConfig);
             let label = this.$PeekCost.getComponent(cc.Label);
             if (label) label.string = `${price}`;
         } catch (e) {
             cc.log('[UITexasHistory] reqPeekPrice failed', e);
         }
+    }
+
+    /** 请求偷看次数（HTTP 接口，对齐 WebSocket 1029） */
+    private _reqWatchNum(): Promise<number> {
+        return new Promise(resolve => {
+            let roomId = this.historyInfoData?.room_id || GameCache.Instance.room_id;
+            WWW.Instance.CommonAPI({
+                web_class: WebRoomCenterGameWatchNum,
+                body: WebRoomCenterGameWatchNum.Request({ room_id: roomId })
+            }).then(
+                (res: any) => {
+                    console.log('[UITexasHistory] _reqWatchNum response=' + JSON.stringify(res?.data));
+                    let payTimes = res?.data?.pay_times || 0;
+                    resolve(payTimes);
+                },
+                () => {
+                    resolve(0);
+                }
+            );
+        });
     }
 
     /** 从钻石配置中按 smallBlind 匹配价格 */
@@ -827,6 +1353,14 @@ export default class UITexasHistory extends UIBasePlus {
         this.AllPlayerCardsInfosTurn = [];
         this.AllPlayerCardsInfosRiver = [];
         this.AllPlayerCardsInfosWinner = [];
+        // 判断自己是否参与了这手牌 (对齐 Unity _hasMe)
+        this._hasMe = false;
+        for (let i = 0; i < ResponseData.s.table.pl.length; i++) {
+            if (ResponseData.s.table.pl[i].uid == GameCache.Instance.nUserId) {
+                this._hasMe = true;
+                break;
+            }
+        }
         let tableSeatIds = []; //本手参与玩家座位号
         let banerSeatId = ResponseData.s.table.btn; //庄位
         for (let i = 0; i < ResponseData.s.table.pl.length; i++) {
@@ -1257,9 +1791,26 @@ export default class UITexasHistory extends UIBasePlus {
             let hasHidden = this.hasHiddenCards(ResponseData);
             if (peekBtn) peekBtn.interactable = hasHidden;
             this.$PeekButton.opacity = hasHidden ? 255 : 128;
+            // 切换牌局时刷新价格（阶梯次数可能已变）
+            if (hasHidden) this.reqPeekPrice();
         }
+        // 发发看按钮 (对齐 Unity SetViewPublicCardPrice: _firstPublicCards[4]!=0 || !_hasMe → 不可点击)
+        if (this.$ViewPubButton) {
+            let riverRevealed = this.PublicCards[4] !== 0;
+            let canView = !riverRevealed && this._hasMe;
+            let hasHidden = canView && this.hasHiddenPublicCards();
+            let viewPubBtn = this.$ViewPubButton.getComponent(cc.Button);
+            if (viewPubBtn) viewPubBtn.interactable = hasHidden;
+            this.$ViewPubButton.opacity = hasHidden ? 255 : 128;
+            if (hasHidden) this.reqViewPubPrice();
+        }
+        // 缓存回放数据用于发发看后重新渲染
+        this._lastResponseData = ResponseData;
         // 默认折叠详情区域
         this.enforceDetailsVisibility();
+        // 查询当前手牌是否已收藏并更新 star 颜色
+        this.refreshCollectShow(false);
+        this.reqCollectStatus();
     }
 
     setBtnState() {

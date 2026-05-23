@@ -8,6 +8,7 @@ import { ProtocolCode } from '../../net/websocket/ProtocolCode';
 import { Broadcast, BroadcastCode, BroadcastMsg } from '../../net/websocket/ProtocolHoldemMessages';
 import { Def, Operator, PlayerCards, PlayerChipChange, Result } from '../../protobuf/holdem/define_pb';
 import { ServerMessageActionAll } from '../../protobuf/holdem/recv_th_action_all_pb';
+import ChatManager from '../../crazyPoker/gameplay/common/view/chat/ChatManager';
 import { ServerMessageAddTimeOthers } from '../../protobuf/holdem/recv_th_add_time_others_pb';
 import { ServerMessageAgreeSecondPcs } from '../../protobuf/holdem/recv_th_agree_second_pcs_pb';
 import { ServerMessageAgreeSecondPcsTrigged } from '../../protobuf/holdem/recv_th_agree_second_pcs_trigged_pb';
@@ -39,6 +40,8 @@ import { ServerMessageSeated } from '../../protobuf/holdem/req_th_seated_pb';
 import { ServerMessageSetAutoOnTable } from '../../protobuf/holdem/req_th_set_auto_on_table_pb';
 import { ServerMessageShowdown } from '../../protobuf/holdem/req_th_showdown_pb';
 import { ServerMessageShowPublicCards } from '../../protobuf/holdem/req_th_show_public_cards_pb';
+import { ServerMessageViewPlayerCards } from '../../protobuf/holdem/req_th_view_player_cards_pb';
+import { ServerMessageViewPlayerCardsNum } from '../../protobuf/holdem/req_th_view_player_cards_num_pb';
 import { ServerMessageSquidInActive } from '../../protobuf/holdem/req_th_squid_in_active_pb';
 import { ServerMessageStoreChips } from '../../protobuf/holdem/req_th_store_chips_pb';
 import { ServerMessageUtilAntiCheatRoomVideo } from '../../protobuf/holdem/recv_util_anti_cheat_room_video_pb';
@@ -75,7 +78,7 @@ import UIAutoOperationComponent from '../ui/UIAutoOperationComponent';
 import UIOutChipsTipComponent from '../ui/UIOutChipsTipComponent';
 import GameUtil, { RoomType } from '../util/GameUtil';
 import MTTGame from '../texas/MTTGame';
-import { InsuranceData, WrapTriggedInsuranceData } from '../new_ui/UIInsurancePanel';
+import { InsuranceData, WrapTriggerInsuranceData } from '../new_ui/UIInsuranceNewPanel';
 import AgoraManager from '../../net/agora/AgoraManager';
 import AgoraVideoRender from '../../net/agora/AgoraVideoRender';
 import { VideoModel } from '../../crazyPoker/gameplay/common/constant/VideoModel';
@@ -107,6 +110,8 @@ export default class TexasGameProtocol {
         GC.notify.register(ProtocolCode.Protocol_Holdem_AddTimeOthers, this.HANDLER_REQ_ADD_TIME_OTHERS, this); // 其他人操作加时
         GC.notify.register(ProtocolCode.Protocol_Holdem_ShowPublicCards, this.HANDLER_REQ_SEE_MORE_PUBLIC_ACTION, this); // 查看未发公共牌
         GC.notify.register(ProtocolCode.Protocol_Holdem_ShowPublicCardsOthers, this.HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER, this); // 查看未发公共牌
+        GC.notify.register(ProtocolCode.Protocol_Holdem_ViewPlayerCards, this.HANDLER_REQ_VIEW_PLAYER_CARDS, this); // 付费看手牌
+        GC.notify.register(ProtocolCode.Protocol_Holdem_ViewPlayerCardsNum, this.HANDLER_REQ_VIEW_PLAYER_CARDS_NUM, this); // 看手牌次数
         GC.notify.register(ProtocolCode.Protocol_Holdem_SidePots, this.HANDLER_REQ_SHOW_SIDE_POTS, this); // 显示分池筹码
         GC.notify.register(ProtocolCode.Protocol_Holdem_InsuranceTrigged, this.HANDLER_REQ_INSURANCE_TRIGGED, this); // 保险触发
         GC.notify.register(ProtocolCode.Protocol_Holdem_BuyInsurance, this.HANDLER_REQ_CLAIM_INSURANCE, this); // 保险赔付消息
@@ -146,6 +151,8 @@ export default class TexasGameProtocol {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_AddTimeOthers, this.HANDLER_REQ_ADD_TIME_OTHERS, this); // 其他人操作加时
         GC.notify.remove(ProtocolCode.Protocol_Holdem_ShowPublicCards, this.HANDLER_REQ_SEE_MORE_PUBLIC_ACTION, this); // 查看未发公共牌
         GC.notify.remove(ProtocolCode.Protocol_Holdem_ShowPublicCardsOthers, this.HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER, this); // 查看未发公共牌
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_ViewPlayerCards, this.HANDLER_REQ_VIEW_PLAYER_CARDS, this); // 付费看手牌
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_ViewPlayerCardsNum, this.HANDLER_REQ_VIEW_PLAYER_CARDS_NUM, this); // 看手牌次数
         GC.notify.remove(ProtocolCode.Protocol_Holdem_SidePots, this.HANDLER_REQ_SHOW_SIDE_POTS, this); // 显示分池筹码
         GC.notify.remove(ProtocolCode.Protocol_Holdem_InsuranceTrigged, this.HANDLER_REQ_INSURANCE_TRIGGED, this); // 保险触发
         GC.notify.remove(ProtocolCode.Protocol_Holdem_BuyInsurance, this.HANDLER_REQ_CLAIM_INSURANCE, this); // 保险赔付消息
@@ -764,6 +771,32 @@ export default class TexasGameProtocol {
     }
 
     /// <summary>
+    /// 付费看手牌响应 (1026)
+    /// </summary>
+    protected HANDLER_REQ_VIEW_PLAYER_CARDS(rec: ServerMessageViewPlayerCards.AsObject) {
+        if (rec == null) return;
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
+            this.game.InteractableLookHandCard(true);
+            return;
+        }
+        this.game.ShowSeeMorePublicTips(CPErrorCode.LanguageDescription(20028)); // 查看手牌成功
+        this.game.InteractableLookHandCard(true);
+        // 成功后刷新次数
+        this.game.SendViewPlayerCardsNum();
+    }
+
+    /// <summary>
+    /// 看手牌次数响应 (1029)
+    /// </summary>
+    protected HANDLER_REQ_VIEW_PLAYER_CARDS_NUM(rec: ServerMessageViewPlayerCardsNum.AsObject) {
+        if (rec == null) return;
+        if (rec.status == 0) {
+            this.game.lookCardsPayTimes = rec.payTimes || 0;
+        }
+    }
+
+    /// <summary>
     /// 展示底牌
     /// </summary>
     /// <param name="response"></param>
@@ -813,6 +846,8 @@ export default class TexasGameProtocol {
         if (rec.status != 0) {
             this.game.ClickAddTime = false;
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status)); //CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_ADD_TIME, rec.Status)
+            // 加时失败，倒计时已归零，需要手动关闭操作面板
+            this.game.HideOperationPanel();
             return;
         }
         this.game.delayCount = rec.times;
@@ -820,7 +855,7 @@ export default class TexasGameProtocol {
         if (null == mSeat) return;
         mSeat.AddOperationTime(rec.duration);
         this.game.UpdateDelayBtn();
-        this.game.ClickAddTime = false;
+        // ClickAddTime 在 UIOperationComponent.HANDLER_REQ_ADD_TIME 中恢复倒计时后清除
         UIComponent.Instance.ToastLanguage('UITexas_AddTimeSuccess');
     }
 
@@ -1075,9 +1110,7 @@ export default class TexasGameProtocol {
             Seat.StopWinArmature();
             Seat.PlayWinArmature();
             Seat.UpdateRecyclingWinChip();
-            let PlayRecyclingWinChipAnimation_Tween = Seat.PlayRecyclingWinChipAnimation(
-                this.game.uirc.main.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position)
-            );
+            let PlayRecyclingWinChipAnimation_Tween = Seat.PlayRecyclingWinChipAnimation(this.game.GetRecyclingChipPosV3());
             if (PlayRecyclingWinChipAnimation_Tween) {
                 tween.then(
                     cc.callFunc(() => {
@@ -1253,7 +1286,7 @@ export default class TexasGameProtocol {
                 mSeat.UpdateHunterAward();
             }
             let PlayRecyclingWinChipAnimation_Tween: { tween?: cc.Tween; complete?: Function; IsPlaying?: boolean; Kill?: Function } =
-                mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.main.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
+                mSeat.PlayRecyclingWinChipAnimation(this.game.GetRecyclingChipPosV3());
             if (PlayRecyclingWinChipAnimation_Tween) {
                 tween.then(
                     cc.callFunc(() => {
@@ -1324,7 +1357,7 @@ export default class TexasGameProtocol {
     /// </summary>
     /// <param name="source"></param>
     public HandleGetPublicCards(source: ServerMessagePublicCards.AsObject): void {
-        UIComponent.Instance.HideUI(PrefabUI.UIInsurancePanel);
+        UIComponent.Instance.HideUI(PrefabUI.UIInsuranceNewPanel);
         UIComponent.Instance.HideUI(PrefabUI.UIAgreeSecondPcsComponent);
         this.game.autoCall = false;
         this.game.autoAllin = false;
@@ -1485,7 +1518,7 @@ export default class TexasGameProtocol {
         this.game.cacheRound = rec.round;
         GameCache.Instance.GameStatus = this.game.gamestatus;
         UIComponent.Instance.HideUI(PrefabUI.UIAutoOperationComponent);
-        UIComponent.Instance.HideUI(PrefabUI.UIOperationComponent);
+        this.game.HideOperationPanel();
         const squidOldCountMap = new Map<number, number>();
         const squidNoMarkCountBefore = this.game.CountSquidNoMarkPlayers();
         if (this.game.squidEnabled) {
@@ -1502,8 +1535,13 @@ export default class TexasGameProtocol {
             if (mSeat.IsMySeat) {
                 this.game.callTimeCount = Number((rec.resultsList[i] as any).callTimeCount || 0);
                 this.game.callTimeStay = !!(rec.resultsList[i] as any).callTimeStay;
+                console.log(
+                    '[ShowButtons] IsMySeat, standUp=' + rec.resultsList[i].standUp + ', isParticipating=' + this.game.mainPlayer.isParticipateInTheGame
+                );
                 if (!rec.resultsList[i].standUp) {
                     this.game.ShowSeeMorePublic();
+                    this.game.ShowLookHandCard();
+                    this.game.SendViewPlayerCardsNum();
                 }
             }
         }
@@ -1692,17 +1730,29 @@ export default class TexasGameProtocol {
         if (rec == null) {
             return;
         }
-        console.log('ProtocolHoldemGetMsgHandler :: ', rec);
-        let json = Buffer.from(rec.extra.toString(), 'base64').toString();
-        let responseData = Broadcast.Response(json);
+        let json: string;
+        try {
+            const _bin = atob(rec.extra.toString());
+            const _u8 = new Uint8Array(_bin.length);
+            for (let i = 0; i < _bin.length; i++) _u8[i] = _bin.charCodeAt(i);
+            json = new TextDecoder('utf-8').decode(_u8);
+        } catch (e) {
+            console.warn('[GetMsg] extra decode error:', e);
+            return;
+        }
+        let responseData: { code: number; data: string };
+        try {
+            responseData = Broadcast.Response(json);
+        } catch (e) {
+            console.warn('[GetMsg] JSON parse error, raw json:', json?.substring(0, 200));
+            return;
+        }
         let code: number = responseData.code;
         let data: string = responseData.data;
-        console.log('[Emoji] GetMsg code=', code, 'data=', data);
         switch (code) {
             case BroadcastCode.BroadcastMsg:
             case 10001:
                 var broadcastMsg = BroadcastMsg.Response(data);
-                console.log('[Emoji] 收到广播:', 'type=', broadcastMsg.type, 'user_id=', broadcastMsg.user_id, 'name=', broadcastMsg.name);
                 {
                     const EMOJI_TYPE_BASE = Def.ConsumeType.CT_EMOJI_1 * 100;
                     const emojiOffset = broadcastMsg.type - EMOJI_TYPE_BASE;
@@ -1718,11 +1768,13 @@ export default class TexasGameProtocol {
                 {
                     const PROP_TYPE_BASE = Def.ConsumeType.CT_EMOJI_2 * 100; // 600
                     const propOffset = broadcastMsg.type - PROP_TYPE_BASE;
-                    console.log('[ThrowProp] 检测道具 type=', broadcastMsg.type, 'base=', PROP_TYPE_BASE, 'offset=', propOffset);
                     if (propOffset >= 0 && propOffset < 12) {
-                        console.log('[ThrowProp] 进入道具分支, throwPropMgr=', !!this.game?.throwPropMgr);
                         this.game?.throwPropMgr?.handlePropMessage(broadcastMsg);
                     }
+                }
+                // 聊天/弹幕消息转发给 ChatManager (type=0 为聊天文本)
+                {
+                    ChatManager.Instance.handleBroadcastMsg(broadcastMsg);
                 }
                 break;
             case BroadcastCode.BroadcastVoiceprint:
@@ -1943,7 +1995,34 @@ export default class TexasGameProtocol {
         }
         GameCache.Instance.CurGame.cacheRound = rec.round;
         if (rec.operatorList == null || rec.operatorList.length == 0) {
-            UIComponent.Instance.Toast(i18nMgr.Get('Purchase_insurance'));
+            if (rec.invalidPotsList && rec.invalidPotsList.length > 0) {
+                for (const invalidPot of rec.invalidPotsList) {
+                    switch (invalidPot.reason) {
+                        case Def.IIReason.IIR_ZERO_OUTS:
+                        case Def.IIReason.IIR_NO_ODDS_FOUND: {
+                            const outsNum = (GameUtil.OutsList.get(invalidPot.potUserCount) ?? []).length;
+                            UIComponent.Instance.Toast(
+                                i18nMgr.Get('adaptation20005') +
+                                    (invalidPot.potId + 1) +
+                                    ':' +
+                                    StringHelper.Format(i18nMgr.Get('UIInsuranceReasonTips1'), [outsNum])
+                            );
+                            break;
+                        }
+                        case Def.IIReason.IIR_NO_ODDS_TABLE_FOUND:
+                            UIComponent.Instance.Toast(i18nMgr.Get('adaptation20005') + (invalidPot.potId + 1) + ':' + i18nMgr.Get('UIInsuranceReasonTips2'));
+                            break;
+                        case Def.IIReason.IIR_EV_LIMIT:
+                            UIComponent.Instance.Toast(i18nMgr.Get('UIEVInsuranceTips5'));
+                            break;
+                        default:
+                            UIComponent.Instance.Toast(i18nMgr.Get('Purchase_insurance'));
+                            break;
+                    }
+                }
+            } else {
+                UIComponent.Instance.Toast(i18nMgr.Get('Purchase_insurance'));
+            }
             return;
         }
         this.HandlerInsueranceData(rec.operatorList);
@@ -1977,25 +2056,29 @@ export default class TexasGameProtocol {
             if (!CanInsurance || mOperator == null)
                 // 如果可购买保险用户中没有自己，不用往下执行
                 return;
-            //List < UIInsuranceComponent.WrapTriggedInsuranceData > wrapTriggedInsuranceDatas = new List<UIInsuranceComponent.WrapTriggedInsuranceData>();
-            let wrapTriggedInsuranceDatas: WrapTriggedInsuranceData[] = [];
-            //UIInsuranceComponent.WrapTriggedInsuranceData mWrapTriggedInsuranceData = null;
-            let mWrapTriggedInsuranceData: WrapTriggedInsuranceData = null;
+            //List < UIInsuranceComponent.WrapTriggerInsuranceData > wrapTriggedInsuranceDatas = new List<UIInsuranceComponent.WrapTriggerInsuranceData>();
+            let wrapTriggedInsuranceDatas: WrapTriggerInsuranceData[] = [];
+            //UIInsuranceComponent.WrapTriggerInsuranceData mWrapTriggerInsuranceData = null;
+            let mWrapTriggerInsuranceData: WrapTriggerInsuranceData = null;
             mOperator.insuranceLimitList.forEach(insurancePotLimit => {
-                mWrapTriggedInsuranceData = new WrapTriggedInsuranceData();
-                mWrapTriggedInsuranceData.outsPerUser = [];
-                mWrapTriggedInsuranceData.userNames = [];
-                mWrapTriggedInsuranceData.playerCards = [];
-                mWrapTriggedInsuranceData.outsCards = [];
+                mWrapTriggerInsuranceData = new WrapTriggerInsuranceData();
+                mWrapTriggerInsuranceData.outsPerUser = [];
+                mWrapTriggerInsuranceData.userNames = [];
+                mWrapTriggerInsuranceData.userIds = [];
+                mWrapTriggerInsuranceData.playerCards = [];
+                mWrapTriggerInsuranceData.outsCards = [];
                 //赋值保险池等数据，
-                mWrapTriggedInsuranceData.subPot = insurancePotLimit.potId;
-                mWrapTriggedInsuranceData.pot = insurancePotLimit.potAmount;
-                mWrapTriggedInsuranceData.potTotalCost = insurancePotLimit.bet;
-                mWrapTriggedInsuranceData.leastAmount = insurancePotLimit.min;
-                mWrapTriggedInsuranceData.mostAmount = insurancePotLimit.max;
-                mWrapTriggedInsuranceData.PotUserCount = insurancePotLimit.potUserCount;
-                mWrapTriggedInsuranceData.PotLeaderCount = insurancePotLimit.potLeaderCount;
-                mWrapTriggedInsuranceData.potAllowOutSelection = insurancePotLimit.insuranced > 0 ? 0 : 1;
+                mWrapTriggerInsuranceData.subPot = insurancePotLimit.potId;
+                mWrapTriggerInsuranceData.pot = insurancePotLimit.potAmount;
+                mWrapTriggerInsuranceData.potTotalCost = insurancePotLimit.bet;
+                mWrapTriggerInsuranceData.leastAmount = insurancePotLimit.min;
+                mWrapTriggerInsuranceData.mostAmount = insurancePotLimit.max;
+                mWrapTriggerInsuranceData.odds = insurancePotLimit.odds;
+                mWrapTriggerInsuranceData.potUserCount = insurancePotLimit.potUserCount;
+                mWrapTriggerInsuranceData.potLeaderCount = insurancePotLimit.potLeaderCount;
+                GameCache.Instance._texasData._buyInsurancePotUserCount.set(insurancePotLimit.potId, insurancePotLimit.potUserCount);
+                mWrapTriggerInsuranceData.insuranced = insurancePotLimit.insuranced;
+                mWrapTriggerInsuranceData.potAllowOutSelection = insurancePotLimit.insuranced > 0 ? 0 : 1;
                 for (let userOuts of insurancePotLimit.outsDetailList) {
                     let ins_Seat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(userOuts.seatId));
                     if (ins_Seat == null) {
@@ -2003,21 +2086,23 @@ export default class TexasGameProtocol {
                         continue;
                     }
                     //需要显示玩家手牌和名字，通过座位号在牌局中缓存座位，获取已下发得手牌和名字。
-                    mWrapTriggedInsuranceData.userNames.push(ins_Seat.Player.nick);
-                    mWrapTriggedInsuranceData.playerCards.push(ins_Seat.Player.cards);
+                    mWrapTriggerInsuranceData.userNames.push(ins_Seat.Player.nick);
+                    mWrapTriggerInsuranceData.userIds.push(ins_Seat.Player.userID);
+                    mWrapTriggerInsuranceData.playerCards.push(ins_Seat.Player.cards);
                     //各个玩家
-                    mWrapTriggedInsuranceData.outsPerUser.push(userOuts.outsCardsList.length);
+                    mWrapTriggerInsuranceData.outsPerUser.push(userOuts.outsCardsList.length);
                     //添加所有玩家outs ，在保险界面处理是否平分outs
-                    mWrapTriggedInsuranceData.outsCards.push(userOuts.outsCardsList);
+                    mWrapTriggerInsuranceData.outsCards.push(userOuts.outsCardsList);
                 }
-                wrapTriggedInsuranceDatas.push(mWrapTriggedInsuranceData);
+                wrapTriggedInsuranceDatas.push(mWrapTriggerInsuranceData);
             });
             let data: InsuranceData = new InsuranceData();
             data.publicCards = this.game.GetPublicCards(1);
             data.triggedDatas = wrapTriggedInsuranceDatas;
             data.timeLeft = this.game.mainPlayer.timeLeft_insurance;
             data.delayTimes = this.game.mainPlayer.delayTimes;
-            UIComponent.Instance.ShowUI(PrefabUI.UIInsurancePanel, data);
+            data.round = this.game.cacheRound;
+            UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceNewPanel, data);
         };
         mTweenCallback();
     }
@@ -2062,16 +2147,21 @@ export default class TexasGameProtocol {
                 }
                 this.game.cacheTrunOutsCards.set(rec.seatId, mouts);
                 if (this.game.GetLocalSeatID(rec.seatId) == this.game.mainPlayer.seatID) {
-                    this.game.cacheBuyActiveAmount = potInsuranceBuy.activeAmount;
-                    if (this.game.uirc.Image_InsuranceTips.activeInHierarchy) {
-                        this.game.uirc.Image_InsuranceTips.active = false;
+                    const insuranceMode = GameCache.Instance._texasData._insuranceMode;
+                    if (insuranceMode === Def.IsuranceMode.IM_NORMAL || insuranceMode === Def.IsuranceMode.IM_NEW_NORMAL) {
+                        const potUserCount =
+                            GameCache.Instance._texasData._buyInsurancePotUserCount.get(potInsuranceBuy.potId) ?? this.game.cacheBuyInsurancePotUserCount;
+                        this.game.cacheBuyInsurancePotUserCount = potUserCount;
+                        this.game.cacheBuyActiveAmount = potInsuranceBuy.activeAmount;
+                        if (this.game.uirc.Image_InsuranceTips.activeInHierarchy) {
+                            this.game.uirc.Image_InsuranceTips.active = false;
+                        }
+                        this.game.uirc.ShowInsuranceTip(
+                            potInsuranceBuy.activeOutsList.length,
+                            potInsuranceBuy.activeAmount,
+                            GameUtil.GetOddsByPlayerNum(potUserCount, potInsuranceBuy.activeOutsList.length) * potInsuranceBuy.activeAmount
+                        );
                     }
-                    this.game.uirc.ShowInsuranceTip(
-                        potInsuranceBuy.activeOutsList.length,
-                        potInsuranceBuy.activeAmount,
-                        GameUtil.GetOddsByPlayerNum(this.game.cacheBuyInsurancePotUserCount, potInsuranceBuy.activeOutsList.length) *
-                            potInsuranceBuy.activeAmount
-                    );
                 }
             }
             if (potInsuranceBuy.passiveAmount > 0 && this.game.GetLocalSeatID(rec.seatId) == this.game.mainPlayer.seatID) {

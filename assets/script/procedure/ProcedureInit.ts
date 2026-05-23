@@ -3,7 +3,7 @@ import GC from '../frame/GameControl';
 import H5MsgMgr from '../H5MsgMgr';
 import { i18nMgr } from '../i18n/i18nMgr';
 import * as MainUtils from '../MainUtils';
-import { PreloadDefinitionTexas, PreloadParams } from '../manager/ResManager';
+import { PreloadDefinitionGame, PreloadDefinitionSound, PreloadDefinitionTexas, PreloadParams } from '../manager/ResManager';
 import StorageKey from '../session/StorageKey';
 import UIComponent, { PrefabUI } from '../ui/UIComponent';
 import ProcedureBase from './ProcedureBase';
@@ -32,7 +32,7 @@ export default class ProcedureInit extends ProcedureBase {
         console.log('[Procedure]', '等待 H5 层指令...');
         //显示房间进入loading
         UIComponent.Instance.ShowUI<PreloadParams>(PrefabUI.UIPreloading, {
-            preloadDefinition: PreloadDefinitionTexas,
+            preloadDefinition: [PreloadDefinitionGame, PreloadDefinitionSound, PreloadDefinitionTexas],
             complete: () => {
                 console.log('[Procedure]', 'ProcedureInit 结束，资源加载完全');
                 this._resolveDone(true);
