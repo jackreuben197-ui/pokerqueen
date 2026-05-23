@@ -1287,7 +1287,11 @@ export default class UITexas extends BaseScene {
     }
 
     private click_btn_im() {
-        UIComponent.open(UIDefine.UIBlank_dialog, { title: '客服界面' });
+        H5MsgMgr.sendToH5('showPanel', 1, {
+            panelType: 'supportChat',
+            props: {}
+        });
+        // UIComponent.open(UIDefine.UIBlank_dialog, { title: '客服界面' });
     }
 
     private click_btn_safety_guard() {
