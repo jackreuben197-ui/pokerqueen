@@ -1,6 +1,6 @@
 import { StringHelper } from '../../../../../../helper/StringHelper';
 import { i18nMgr } from '../../../../../../i18n/i18nMgr';
-import RemoteSprite from './RemoteSprite';
+import RemoteSprite from '../../common/RemoteSprite';
 const { ccclass, property, menu } = cc._decorator;
 
 export interface RateDetail {

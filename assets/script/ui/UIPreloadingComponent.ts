@@ -38,25 +38,25 @@ export default class UIPreloadingComponent extends UIBase {
         this.progress_desc.string = content;
     }
 
-    onShow(param?: PreloadParams) {
+    async onShow(param?: PreloadParams) {
         super.onShow(param);
         this.setProgress(0);
         const parts = param.preloadDefinition.length;
-        let part = Math.round(10000 / parts / 10000);
-        param.preloadDefinition.reduce(
-            (chain, definition, index) => {
-                return chain.then(() => {
-                    this.loadResources(definition.bundle, definition.dir, param.stopProgress, index * part);
-                });
-            },
-            Promise.resolve().then(() => {
-                param.complete?.();
-            })
-        );
+        let part = Math.round(10000 / parts )/ 10000;
+        try {
+            for (let i= 0; i< parts; i++) {
+                const definition = param.preloadDefinition[i];
+                await this.loadResources(definition.bundle, definition.dir, param.stopProgress, i* part);
+            }
+            param.complete?.();
+        } catch(e) {
+            param.error?.(e instanceof Error ? e : new Error(String(e)));
+        }
     }
 
     private loadResources(bundleName: string, dir: string, stopProgress: boolean, pastProgress: number): Promise<void> {
         return new Promise((resovle, reject) => {
+            console.log(pastProgress);
             if (bundleName == BUNDLE_RESOURCES) {
                 cc.resources.loadDir(
                     dir,
@@ -73,7 +73,7 @@ export default class UIPreloadingComponent extends UIBase {
                         if (error) {
                             console.warn(LN, `资源加载失败:${bundleName}/${dir}`);
                             UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
-                            reject(error);
+                            reject(error as Error);
                             return;
                         }
                         console.log(LN, `资源加载完成:${bundleName}/${dir}`, assets.length);

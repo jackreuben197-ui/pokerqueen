@@ -38,6 +38,7 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
             seatData.roundBet = player.roundBet;
             seatData.handBet = player.handBet;
             seatData.cards  = player.cardsList;
+            console.log('1111111111', player.cardsList);
         })
         setTimeout(() => {roomData.seatsStateManager.seated(3, true)}, 3000);
         // if (data.myInfo) {

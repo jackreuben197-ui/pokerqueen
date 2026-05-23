@@ -4,7 +4,7 @@ import TexasGameRoomData from "../../../../texas/data/TexasGameRoomData";
 import TexasGameRoomDataPlayer, { chipsWithStore } from "../../../../texas/data/TexasGameRoomDataPlayer";
 import TexasGameRoomDataSeatsStateManager from "../../../../texas/data/TexasGameRoomDataSeatsStateManager";
 import roomDataManager from "../../../core/RoomDataManager";
-import RemoteSprite from "../../chips/usdtdiamond/RemoteSprite";
+import RemoteSprite from "../../common/RemoteSprite";
 import Seat from "./Seat";
 
 

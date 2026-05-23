@@ -1,7 +1,7 @@
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
-@menu('CrazyPoker/AddChips/usdtdiamond/RemoteSprite')
+@menu('CrazyPoker/Common/RemoteSprite')
 export default class RemoteSprite extends cc.Component {
     private _sprite: cc.Sprite = null;
     private _url: string = '';

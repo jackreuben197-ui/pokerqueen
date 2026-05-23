@@ -17,7 +17,7 @@ import { UIConfirmDialogParam } from '../common/UIConfirmDialog';
 import { HttpUSDTApplyListProtocol } from '../../../../module/message/CPHotfixWebMessage/usdt/HttpUSDTApplyListProtocol';
 import { UIRechargeDiamondParam } from './UIRechargeDiamond';
 import { HttpUSDTApplyProtocol } from '../../../../module/message/CPHotfixWebMessage/usdt/HttpUSDTApplyProtocol';
-import RemoteSprite from './usdtdiamond/RemoteSprite';
+import RemoteSprite from '../common/RemoteSprite';
 import { RoomInfo } from '../../../../../protobuf/holdem/define_pb';
 import StepSlider from '../common/StepSlider';
 import SwitchNode from '../common/SwitchNode';

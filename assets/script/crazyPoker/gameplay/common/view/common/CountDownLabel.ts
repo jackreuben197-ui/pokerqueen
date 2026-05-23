@@ -1,7 +1,7 @@
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
-@menu('CrazyPoker/AddChips/usdtdiamond/CountDownLabel')
+@menu('CrazyPoker/Common/CountDownLabel')
 export default class CountDownLabel extends cc.Component {
 
     // 倒计时结束时的强类型回调

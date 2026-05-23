@@ -2,8 +2,8 @@ import { StringHelper } from '../../../../../helper/StringHelper';
 import { i18nMgr } from '../../../../../i18n/i18nMgr';
 import UIBase from '../../../../../ui/UIBase';
 import UIComponent from '../../../../../ui/UIComponent';
-import CountDownLabel from './usdtdiamond/CountDownLabel';
-import RemoteSprite from './usdtdiamond/RemoteSprite';
+import CountDownLabel from '../common/CountDownLabel';
+import RemoteSprite from '../common/RemoteSprite';
 const { ccclass, property, menu } = cc._decorator;
 
 export interface UIRechargeDiamondParam {

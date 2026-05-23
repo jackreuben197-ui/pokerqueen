@@ -3,7 +3,7 @@ import TexasGameRoomData from "../../../../texas/data/TexasGameRoomData";
 import TexasGameRoomDataPlayer, { chipsWithStore } from "../../../../texas/data/TexasGameRoomDataPlayer";
 import { SeatPosition } from "../../../../texas/data/TexasGameRoomDataSeatsStateManager";
 import roomDataManager from "../../../core/RoomDataManager";
-import RemoteSprite from "../../chips/usdtdiamond/RemoteSprite";
+import RemoteSprite from "../../common/RemoteSprite";
 
 const { ccclass, property, menu } = cc._decorator;
 
