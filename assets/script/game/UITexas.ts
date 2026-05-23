@@ -1291,7 +1291,6 @@ export default class UITexas extends BaseScene {
             panelType: 'supportChat',
             props: {}
         });
-        // UIComponent.open(UIDefine.UIBlank_dialog, { title: '客服界面' });
     }
 
     private click_btn_safety_guard() {
