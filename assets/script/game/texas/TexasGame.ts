@@ -4608,27 +4608,19 @@ export default class TexasGame {
                     setting = diamondConfig.setting[0];
                 }
                 if (setting) {
-                    if (diamondConfig.status == 2 || setting.discount_price == 0) {
-                        // 关闭收费 或 折扣价为0 → 免费
+                    if (diamondConfig.status == 2) {
+                        // status=2 关闭收费 → 免费
                         priceText = '免费';
-                        diamondCost.active = true;
-                    } else if (setting.discount_price < setting.price) {
+                    } else if (setting.discount_price > 0 && setting.discount_price < setting.price) {
                         // 有折扣 → 显示折扣价
                         priceText = `${setting.discount_price}`;
-                        diamondCost.active = true;
                     } else {
-                        // 无折扣 → 显示原价
+                        // 无折扣或discount_price=0 → 显示原价
                         priceText = `${setting.price}`;
-                        diamondCost.active = true;
                     }
                 }
             }
-            // VIP免费次数优先
-            let vipSub = GC.data.user.info.subscription;
-            if (vipSub && vipSub.free_add_time_num > 0 && vipSub.free_added_time_num < vipSub.free_add_time_num) {
-                priceText = '免费';
-                diamondCost.active = true;
-            }
+            diamondCost.active = true;
             textDiamondCost.getComponent(cc.Label).string = priceText;
             this.uirc.Button_Delay.getComponent(cc.Button).interactable = true;
             this.uirc.Button_Delay.getChildByName('Text_Time').getComponent(cc.Label).string = this.delayCount > 0 ? '+20s' : '+30s';

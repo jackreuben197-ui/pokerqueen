@@ -6,7 +6,6 @@ import { CPErrorCode } from '../../i18n/CPErrorCode';
 import PublicHelper from '../../helper/PublicHelper';
 import { StringHelper } from '../../helper/StringHelper';
 import { WebRoomCenterHistoryReplay, WebRoomCenterHistoryViewPublicCards, WebRoomCenterHistoryViewPublicCardsFreeCount, WebRoomCenterGameWatch, WebRoomCenterGameWatchNum, WebUserDiamondsWallet, WWW } from '../../net/https/WebRequest';
-import HttpRequest from '../../net/https/HttpRequest';
 import ProtocolAgency from '../../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../../net/websocket/ProtocolCode';
 import UIBasePlus from '../../ui/UIBasePlus';
@@ -525,6 +524,7 @@ export default class UITexasHistory extends UIBasePlus {
     /** 收藏按钮点击 */
     click_favoBtn() {
         if (!this.$favoBtn) return;
+        if (!this._hasMe) return;
         console.log('[UITexasHistory] click_favoBtn _isCollected=' + this._isCollected, JSON.stringify({
             hasLastData: !!this._lastResponseData,
             rid: this._lastResponseData?.s?.rid,
@@ -567,38 +567,17 @@ export default class UITexasHistory extends UIBasePlus {
         });
     }
 
-    /** 请求收藏当前手牌 (对齐 Unity OnClickCollect → RequestReplayDetail → Collect3) */
+    /** 请求收藏当前手牌 */
     private reqAddCollect() {
-        let roomId = this.historyInfoData?.room_id || GameCache.Instance.room_id;
-        let matchId = this.historyInfoData?.match_id || GameCache.Instance.match_id || 0;
-        let roomUniqueId = this.historyInfoData?.room_unique_id || GameCache.Instance.CurGame?.cacheUniqueId || '';
-        let handNum = this.currentPage;
+        let s = this._lastResponseData?.s;
+        let roomId = s?.rid || this.historyInfoData?.room_id || GameCache.Instance.room_id;
+        let matchId = s?.mid || this.historyInfoData?.match_id || GameCache.Instance.match_id || 0;
+        let roomUniqueId = s?.unique || this.historyInfoData?.room_unique_id || GameCache.Instance.CurGame?.cacheUniqueId || '';
+        let handNum = s?.hand || this.currentPage;
         let name = GameCache.Instance.roomName || '';
         let btn = this.$favoBtn?.getComponent(cc.Button);
         if (btn) btn.interactable = false;
 
-        // 第一步：通过 GET /api/roomcenter/history/replay/{room_id} 触发服务端持久化回放数据
-        // Unity 先调 RequestReplayDetail GET 该接口持久化后再收藏
-        // CC 用 WebSocket 获取回放，服务端没持久化，直接收藏会报 90001
-        let replayApi = '/api/roomcenter/history/replay/' + roomId;
-        HttpRequest.Send({
-            api: replayApi,
-            isGet: true,
-            onSuccess: () => {
-                if (!cc.isValid(this.node)) { if (btn) btn.interactable = true; return; }
-                console.log('[UITexasHistory] reqAddCollect: replay GET success, now collecting');
-                this.doCollect(roomId, matchId, roomUniqueId, handNum, name, btn);
-            },
-            onFailure: () => {
-                if (!cc.isValid(this.node)) { if (btn) btn.interactable = true; return; }
-                console.log('[UITexasHistory] reqAddCollect: replay GET failed, trying direct');
-                this.doCollect(roomId, matchId, roomUniqueId, handNum, name, btn);
-            }
-        });
-    }
-
-    /** 实际发送收藏请求 */
-    private doCollect(roomId: number, matchId: number, roomUniqueId: string, handNum: number, name: string, btn: cc.Button) {
         let params = {
             id: 0,
             room_id: roomId,
@@ -610,14 +589,14 @@ export default class UITexasHistory extends UIBasePlus {
             type: 0,
             open: 0
         };
-        console.log('[UITexasHistory] doCollect params:', JSON.stringify(params));
+        console.log('[UITexasHistory] reqAddCollect params:', JSON.stringify(params));
         WWW.Instance.CommonAPI({
             web_class: WebMiscGameRecordRound,
             body: WebMiscGameRecordRound.Request(params)
         }).then((res: any) => {
             if (!cc.isValid(this.node)) return;
             if (btn) btn.interactable = true;
-            console.log('[UITexasHistory] doCollect response:', JSON.stringify(res));
+            console.log('[UITexasHistory] reqAddCollect response:', JSON.stringify(res));
             if (res?.code === 0) {
                 this.refreshCollectShow(true);
                 UIComponent.Instance.Toast('收藏成功');
@@ -627,7 +606,7 @@ export default class UITexasHistory extends UIBasePlus {
         }, (err: any) => {
             if (!cc.isValid(this.node)) return;
             if (btn) btn.interactable = true;
-            console.log('[UITexasHistory] doCollect FAIL:', JSON.stringify(err));
+            console.log('[UITexasHistory] reqAddCollect FAIL:', JSON.stringify(err));
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(err?.code));
         });
     }
@@ -656,17 +635,21 @@ export default class UITexasHistory extends UIBasePlus {
         });
     }
 
-    /** 更新收藏 star 颜色 (对齐 Unity RefreshCollectShow) */
+    /** 更新收藏按钮状态：是否可点击 + star 颜色 (对齐 Unity：必须参与这手牌才能收藏) */
     private refreshCollectShow(isCollected: boolean) {
         this._isCollected = isCollected;
         if (!this.$favoBtn) {
             console.log('[UITexasHistory] refreshCollectShow: $favoBtn is null');
             return;
         }
+        let canCollect = this._hasMe;
+        let btn = this.$favoBtn.getComponent(cc.Button);
+        if (btn) btn.interactable = canCollect;
+        this.$favoBtn.opacity = canCollect ? 255 : 128;
         let star = this.$favoBtn.getChildByName('Background')?.getChildByName('$star');
-        console.log('[UITexasHistory] refreshCollectShow isCollected=' + isCollected + ', star=' + (star ? 'found' : 'NOT FOUND'));
+        console.log('[UITexasHistory] refreshCollectShow isCollected=' + isCollected + ', _hasMe=' + this._hasMe + ', star=' + (star ? 'found' : 'NOT FOUND'));
         if (star) {
-            star.color = isCollected ? cc.color(255, 200, 50) : cc.color(255, 255, 255);
+            star.color = (canCollect && isCollected) ? cc.color(255, 200, 50) : cc.color(255, 255, 255);
         }
     }
 
