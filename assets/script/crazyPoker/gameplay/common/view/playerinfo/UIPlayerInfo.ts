@@ -137,10 +137,10 @@ export default class UIPlayerInfo extends UIBasePlus {
                 e.stopPropagation();
             });
         }
-        // male/female 在 NickName 节点下面
-        if (this.cc_Label$NickName) {
-            this._male = this.cc_Label$NickName.node.getChildByName('male');
-            this._female = this.cc_Label$NickName.node.getChildByName('female');
+        // male/female 与 NickName 同级，都在 $nickNameNode 下面
+        if (this.$nickNameNode) {
+            this._male = this.$nickNameNode.getChildByName('male');
+            this._female = this.$nickNameNode.getChildByName('female');
         }
         this.initNoteNodes();
         this.initTabs();
