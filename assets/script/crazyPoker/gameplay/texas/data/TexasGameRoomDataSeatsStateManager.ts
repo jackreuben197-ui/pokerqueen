@@ -1,4 +1,6 @@
 import Seat from '../../../../game/seat/Seat';
+import { AnimateDisplayTypeButton, AnimateDisplayTypePosition } from '../constants/AnimateDisplayType';
+import TexasGameRoomData from './TexasGameRoomData';
 import TexasGameRoomDataPlayer from './TexasGameRoomDataPlayer';
 import TexasGameRoomDataPlayerMine from './TexasGameRoomDataPlayerMine';
 
@@ -32,8 +34,25 @@ const SeatsArrange: Record<number,SeatPosition[]> = {
 } as const;
 
 export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
+    private _parentRoomData: TexasGameRoomData;
+    constructor(p: TexasGameRoomData) {
+        super();
+        this._parentRoomData = p;
+    }
+
     private _playerMap: Map<number, TexasGameRoomDataPlayer> = new Map();
-    private _playerMine: TexasGameRoomDataPlayerMine;
+    private _playerMine: TexasGameRoomDataPlayerMine = null;
+    public static readonly BUTTON_CHANGE = 'BUTTON_CHANGE';
+    private _buttonPostition: number;
+    public get buttonPosition() {return this._buttonPostition};
+    public setButtonPosition(c: number, bat: AnimateDisplayTypeButton) {
+        if (c == this._buttonPostition) return;
+        const prev = this._buttonPostition;
+        this._buttonPostition = c;
+        this.emit(TexasGameRoomDataSeatsStateManager.BUTTON_CHANGE, prev, this._buttonPostition, bat);
+    }
+
+
     public static readonly SEATS_CHANGE = 'SEATS_CHANGE';
     private _seatsCount: number;
 
@@ -58,7 +77,7 @@ export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
                 if (this._playerMap.has(i)) {
                     continue;
                 }
-                this._playerMap.set(i, new TexasGameRoomDataPlayer(i, arrage[i-1]));
+                this._playerMap.set(i, new TexasGameRoomDataPlayer(i, arrage[i-1], this._parentRoomData));
                 continue;
             }
             this._playerMap.delete(i);
@@ -66,24 +85,23 @@ export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
         this.emit(TexasGameRoomDataSeatsStateManager.SEATS_CHANGE, this._seatsCount);
     }
 
-    private _mySeat: number = 0;
-    public get mySeat() {return this._mySeat};
-    public set mySeat(s: number) {
-        if (this.mySeat == s) return;
+    public get mySeat() {return this._playerMine?.seatedPlayer};
+    public setMySeat(s: number) {
+        if (this._playerMine?.seatedPlayer.seatNo == s) return;
         //重排
         const arrage = SeatsArrange[this._seatsCount];
         let j = 0;
         for (let i = s; i < s + this._seatsCount; i++) {
             let ss = i % this.seatsCount == 0 ? this.seatsCount : i % this.seatsCount;
             const player = this._playerMap.get(ss);
-            player.setPosition(arrage[j], false);
+            player.setPosition(arrage[j], AnimateDisplayTypePosition.Static);
             j++;
         }
         let ss = this.getSeatPlayer(s);
         this._playerMine = new TexasGameRoomDataPlayerMine(ss);
     }
 
-    public seated(seatNo: number, isSelf: boolean) {
+    public seated(seatNo: number, isSelf: boolean): TexasGameRoomDataPlayer|TexasGameRoomDataPlayerMine{
         if (isSelf) {
              //重排
             const arrage = SeatsArrange[this._seatsCount];
@@ -91,13 +109,20 @@ export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
             for (let i = seatNo; i < seatNo + this._seatsCount; i++) {
                 let ss = i % this.seatsCount == 0 ? this.seatsCount : i % this.seatsCount;
                 const player = this._playerMap.get(ss);
-                player.setPosition(arrage[j], true);
+                player.setPosition(arrage[j], AnimateDisplayTypePosition.ToTarget);
                 j++;
             }
             let ss = this.getSeatPlayer(seatNo);
             this._playerMine = new TexasGameRoomDataPlayerMine(ss);
+            return this._playerMine;
         }
+        return this.getSeatPlayer(seatNo);
     }
 
+    public handClear() {
+        this._playerMap.forEach(p => {
+            p.handClear();
+        })
+    }
 
 }

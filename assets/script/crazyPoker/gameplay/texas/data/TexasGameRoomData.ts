@@ -16,5 +16,5 @@ export default class TexasGameRoomData extends RoomData {
     // 回合信息
     public readonly roundState = new TexasGameRoomDataRoundState();
     // 座位信息
-    public readonly seatsStateManager = new TexasGameRoomDataSeatsStateManager();
+    public readonly seatsStateManager = new TexasGameRoomDataSeatsStateManager(this);
 }

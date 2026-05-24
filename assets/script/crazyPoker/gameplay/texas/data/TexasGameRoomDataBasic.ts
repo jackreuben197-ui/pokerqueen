@@ -1,4 +1,5 @@
 import GameplayUtil from '../../common/util/GameplayUtil';
+import {Def} from '../../../../protobuf/holdem/define_pb';
 
 export interface tableBetInfo {
     sb: number;
@@ -14,7 +15,14 @@ export default class TexasGameRoomDataBasic extends cc.EventTarget {
     public betType: number;
     public isMtt: boolean;
     public delaySeeCard: boolean;
-    //
+    public _gameStatus: Def.GameStatusMap[keyof typeof Def.GameStatus];
+    public get gameStatus() {
+        return this._gameStatus;
+    }
+    public set gameStatus(r: Def.GameStatusMap[keyof typeof Def.GameStatus]) {
+        this._gameStatus = r;
+    }
+    
     private _roomType: number;
 
     public get roomType() {
@@ -58,5 +66,9 @@ export default class TexasGameRoomDataBasic extends cc.EventTarget {
         if (n == this._handNum) return;
         this._handNum = n;
         this.emit(TexasGameRoomDataBasic.TABLE_HANDINFO_CHANGE, this._handNum);
+    }
+
+    public handClear() {
+        this.gameStatus = Def.GameStatus.WAIT_HAND_START;
     }
 }

@@ -64,7 +64,6 @@ const { ccclass, property, menu, executeInEditMode } = cc._decorator;
 // };
 
 @ccclass
-@executeInEditMode // 允许该组件在编辑器模式下实时执行
 @menu('CrazyPoker/Common/CardView')
 export default class CardView extends cc.Component {
     private cardSprite: cc.Sprite = null;
@@ -74,10 +73,17 @@ export default class CardView extends cc.Component {
         return this._cardNum;
     }
     public set cardNum(value: number) {
+        if (this._cardNum == value) {
+            return;
+        }
         this._cardNum = value;
         // 属性面板发生数值修改时，立即执行外观刷新以实现预览
         this.refreshCardView();
     }
+    // 用于临时存一下卡牌,后面用来动画用
+    public storeCardNum: number;
+    private _bgSf:cc.SpriteFrame = null;
+
 
     /**
      * Cocos 生命周期：节点加载时调用
@@ -87,6 +93,7 @@ export default class CardView extends cc.Component {
         let node = this.getComponent(cc.Sprite);
         if (!node) console.error('[CardView]', 'no ccSprite on this node')
         this.cardSprite = node;
+        this._bgSf = AssetContext.getAsset<cc.SpriteFrame>(GameplayUtil.CardNoToLocalResource(0),  AssetFold.texture_BigCard1);
         this.refreshCardView();
     }
 
@@ -94,7 +101,10 @@ export default class CardView extends cc.Component {
      * 内部公共刷新方法，兼顾运行态与编辑态
      */
     private refreshCardView(): void {
-        const sf = AssetContext.getAsset<cc.SpriteFrame>(GameplayUtil.CardNoToLocalResource(this._cardNum),  AssetFold.texture_BigCard1);
+        let sf = this._bgSf; 
+        if (this._cardNum != 0) {
+            sf = AssetContext.getAsset<cc.SpriteFrame>(GameplayUtil.CardNoToLocalResource(this._cardNum),  AssetFold.texture_BigCard1);
+        }
         if (sf) {
             if (this.cardSprite) {
                 this.cardSprite.spriteFrame = sf;
@@ -105,5 +115,53 @@ export default class CardView extends cc.Component {
                 console.error(`[CardView] 未能成功获取到 cardNum 为 ${this._cardNum} 的 SpriteFrame 指针`);
             }
         }
+    }
+
+    /**
+     * 外部异步翻牌动画入口
+     * @param targetCardNum 最终需要翻转到的目标牌面ID
+     * @param duration 动画总时长，单位秒
+     * @param onComplete 动画结束后的可选回调函数
+     */
+    public animateFlipToFront(targetCardNum: number, duration: number = 0.4, onComplete?: () => void): void {
+        if (!this.cardSprite) {
+            console.error("[CardView] 找不到绑定的 cardSprite 组件，无法执行动画");
+            return;
+        }
+        const halfDuration = duration / 2;
+        // 前置状态重置：确保卡牌初始为背面且缩放、角度均恢复默认值
+        this.cardNum = 0
+        this.node.scaleX = 1;
+        this.node.angle = 0;
+        // 使用 cc.tween 链式构造 2D 空间翻转动效
+        cc.tween(this.node)
+            // 第一阶段：卡牌水平压扁至侧面（scaleX由1变为0）
+            .to(halfDuration, { 
+                scaleX: 0, 
+                scaleY: 1.05, 
+                angle: -5 
+            }, { easing: 'cubicIn' })
+            // 中间判定点：此时卡牌刚好在侧面且完全不可见，立即替换内部数据和纹理引用
+            .call(() => {
+                this.cardNum = targetCardNum;
+            })
+            // 第二阶段：卡牌从侧面重新展开至正面（scaleX由0恢复到1）
+            .to(halfDuration, { 
+                scaleX: 1, 
+                scaleY: 1, 
+                angle: 0 
+            }, { easing: 'cubicOut' })
+            
+            // 第三阶段：轻微的物理回弹动效以增强视觉立体感
+            .to(0.05, { scaleX: 1.03, scaleY: 0.97 }, { easing: 'sineOut' })
+            .to(0.05, { scaleX: 1, scaleY: 1 }, { easing: 'sineIn' })
+            
+            // 结束回调
+            .call(() => {
+                if (onComplete) {
+                    onComplete();
+                }
+            })
+            .start();
     }
 }

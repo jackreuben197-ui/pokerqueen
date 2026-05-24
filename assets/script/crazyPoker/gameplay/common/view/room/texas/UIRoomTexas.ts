@@ -1,5 +1,7 @@
+
 import BaseScene from '../../../../../../ui/scene/BaseScene';
 import PotsInfo from './PotsInfo';
+import PublicCardsInfo from './PublicCardsInfo';
 import RoomInfo from './RoomInfo';
 import SeatManager from './SeatManager';
 
@@ -19,10 +21,13 @@ export default class UIRoomTexas extends BaseScene {
     private potsInfo: PotsInfo = null;
     @property(SeatManager) 
     private seatManager: SeatManager = null;
+    @property(PublicCardsInfo)
+    private publicCardsInfo: PublicCardsInfo = null;
 
     Enter(param: UIRoomTexasEnterParam) {
         this.roomInfo.initData(param.roomID, param.matchID);
         this.potsInfo.initData(param.roomID, param.matchID);
         this.seatManager.initData(param.roomID, param.matchID);
+        this.publicCardsInfo.initData(param.roomID, param.matchID);
     }
 }

@@ -26,6 +26,7 @@ export enum LoadIndicator {
  * @remarks 通过入口(entrance)才能进入或离开玩法
  */
 export default abstract class AGameplayEntrance {
+    public oldPathForEnter: boolean = false;
 
     // ==================== 属性 ====================
     /**

@@ -1,27 +1,40 @@
-import Seat from "../../../../game/seat/Seat";
+import { Def } from "../../../../protobuf/holdem/define_pb";
+import { AnimateDisplayTypeAction, AnimateDisplayTypeCards, AnimateDisplayTypePosition, AnimateDisplayTypeRoundBet } from "../constants/AnimateDisplayType";
+import TexasGameRoomData from "./TexasGameRoomData";
 import TexasGameRoomDataPlayerMine from "./TexasGameRoomDataPlayerMine";
 import { SeatPosition } from "./TexasGameRoomDataSeatsStateManager";
 
-export interface chipsWithStore {
-    chips: number;
-    store: number;
-}
-
 export default class TexasGameRoomDataPlayer extends cc.EventTarget {
+    private _parentRoomData: TexasGameRoomData;
     public readonly seatNo: number;
     public userID: number;
     public clubID: number;
     public handBet: number;
-    public myInfo: TexasGameRoomDataPlayerMine;
+    public myInfo: TexasGameRoomDataPlayerMine = null;
+    public roundActioned: boolean;
+    public deposit: number;
 
-    public isMine(): boolean{
-        return this.myInfo != null;
-    }
-
-    constructor(seatNo: number, position:SeatPosition) {
+    constructor(seatNo: number, position:SeatPosition, roomData: TexasGameRoomData) {
         super();
         this.seatNo = seatNo;
         this._position = position;
+        this._parentRoomData = roomData;
+    }
+
+    public get delayViewCard() { return this._parentRoomData.basicInfo.delaySeeCard};
+    public get directlyViewCard() { return this._parentRoomData.basicInfo.gameStatus >= Def.GameStatus.HAND_PREFLOP && this.roundActioned};
+
+    public get isMine(): boolean{
+        return this.myInfo != null;
+    }
+
+    public static readonly ACTION_CHANGE = 'ACTION_CHANGE';
+    public _action: Def.ActionMap[keyof Def.ActionMap];
+    public get action() { return this._action};
+    public setAction(c: Def.ActionMap[keyof Def.ActionMap], aat: AnimateDisplayTypeAction) {
+        if (this._action == c ) return;
+        this._action = c; 
+        this.emit(TexasGameRoomDataPlayer.ACTION_CHANGE, this._action, aat);
     }
 
     // 座位位置变动
@@ -29,10 +42,10 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
     private _position: SeatPosition;
 
     public get position() { return this._position};
-    public setPosition(c: SeatPosition, animated = false) {
+    public setPosition(c: SeatPosition, pat: AnimateDisplayTypePosition ) {
         if (this._position == c ) return;
         this._position = c; 
-        this.emit(TexasGameRoomDataPlayer.SEAT_POSITION_CHANGE, this._position, animated);
+        this.emit(TexasGameRoomDataPlayer.SEAT_POSITION_CHANGE, this._position, pat);
     }
 
     public static readonly CARDS_CHANGE = 'SHOW_CARDS_CHANGE';
@@ -42,14 +55,14 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
         return this._cards;
     }
 
-    public set cards(c: number[]) {
+    public updateCards(c: number[], cte: AnimateDisplayTypeCards = AnimateDisplayTypeCards.Static) {
         if (this._cards.length == c.length) {
             if (this._cards.filter((v, i) => v != c[i]).length == 0) {
                 return;
             }
         }
         this._cards = c;
-        this.emit(TexasGameRoomDataPlayer.CARDS_CHANGE, this._cards);
+        this.emit(TexasGameRoomDataPlayer.CARDS_CHANGE, this._cards, cte);
     }
 
     public static readonly NICKNAME_CHANGE = 'NICKNAME_CHANGE';
@@ -98,10 +111,10 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
         return this._roundBet;
     }
 
-    public set roundBet(c: number) {
+    public setRoundBet(c: number, aat: AnimateDisplayTypeRoundBet) {
         if (this._roundBet == c) return;
         this._roundBet = c;
-        this.emit(TexasGameRoomDataPlayer.ROUND_BET_CHANGE, this._roundBet);
+        this.emit(TexasGameRoomDataPlayer.ROUND_BET_CHANGE, this._roundBet, aat);
     }
 
     // public static readonly CHIP_CHANGE = 'CHIPS_CHANGE';
@@ -117,19 +130,6 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
     //     this.emit(TexasGameRoomDataPlayer.CHIP_CHANGE, this._chip);
     // }
 
-    // public static readonly CHIPS_AND_STORE_CHANGE = 'CHIPS_AND_STORE_CHANGE';
-    // private _chipsWithStore: chipsWithStore = null;
-
-    // public get chipsWithStore() {
-    //     return this.chipsWithStore;
-    // }
-
-    // public set chipsWithStore(c: chipsWithStore) {
-    //     if (this._chipsWithStore && this._chipsWithStore.chips == c.chips && this._chipsWithStore.store == c.store) return;
-    //     this._chipsWithStore = c;
-    //     this.emit(TexasGameRoomDataPlayer.CHIPS_AND_STORE_CHANGE, this._chipsWithStore);
-    // }
-
     public static readonly EMPTY_SEAT = 'EMPTY_SEAT';
 
     public emptySeat() {
@@ -141,5 +141,15 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
         //this._chipsWithStore = null;
         this._cards = [];
         this.emit(TexasGameRoomDataPlayer.EMPTY_SEAT);
+    }
+
+    public handClear() {
+        if (this.userID > 0) {
+            this.setAction(Def.Action.NONE, AnimateDisplayTypeAction.ShowAction);
+            this.handBet = 0;
+            this.setRoundBet(0, AnimateDisplayTypeRoundBet.Static);
+            this.updateCards([], AnimateDisplayTypeCards.Static);
+            this.roundActioned = false;
+        }
     }
 }

@@ -5,6 +5,10 @@ import SceneManager from '../../../../manager/SceneManager';
 import { UIDefine } from '../../../../define/UIDefine';
 import UIComponent, { PrefabUI } from '../../../../ui/UIComponent';
 import { UIRoomTexasEnterParam } from '../../common/view/room/texas/UIRoomTexas';
+import { AnimateDisplayTypeAction, AnimateDisplayTypeButton, AnimateDisplayTypeCards, AnimateDisplayTypePublicCards, AnimateDisplayTypeRoundBet } from '../../texas/constants/AnimateDisplayType';
+import TexasGameRoomDataPlayer from '../../texas/data/TexasGameRoomDataPlayer';
+import TexasGameRoomDataPlayerMine from '../../texas/data/TexasGameRoomDataPlayerMine';
+import { Def } from '../../../../protobuf/holdem/define_pb';
 const LN = '[EnterRoom]';
 
 // EnterRoom 1002
@@ -20,14 +24,18 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
         console.error(LN, 'no store room data');
         return;
     }
-
     UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
     if (data.status == 0) {
         roomData.basicInfo.sbante = { sb: data.roomInfo.smallBlind, ante: data.roomInfo.ante };
+        roomData.basicInfo.gameStatus = data.gameStatus;
         if (data.handInfo) {
             roomData.basicInfo.handNum = data.handInfo.handNum;
             roomData.potInfo.allPot = data.handInfo.allBet;
             roomData.potInfo.potList = data.handInfo.potsList;
+            roomData.potInfo.secPotList =data.handInfo.secondPotsList;
+            roomData.seatsStateManager.setButtonPosition(data.handInfo.buSeatId, AnimateDisplayTypeButton.Static);
+            roomData.publicCards.addPublicCards(data.handInfo.publicCardsList, AnimateDisplayTypePublicCards.Static);
+            roomData.publicCards.addSecondPublicCards(data.handInfo.secondPublicCardsList, AnimateDisplayTypePublicCards.Static);
         }
         data.playersList.forEach((player) => {
             let seatData = roomData.seatsStateManager.getSeatPlayer(player.seatId);
@@ -35,63 +43,44 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
             seatData.userID = player.userRid;
             seatData.avatar = player.avatar;
             seatData.chip = player.chip;
-            seatData.roundBet = player.roundBet;
+            seatData.setRoundBet(player.roundBet, AnimateDisplayTypeRoundBet.Static);
             seatData.handBet = player.handBet;
-            seatData.cards  = player.cardsList;
-            console.log('1111111111', player.cardsList);
+            seatData.roundActioned = player.roundActioned;
+            seatData.updateCards(player.cardsList, AnimateDisplayTypeCards.Static);
+            seatData.setAction(player.action, AnimateDisplayTypeAction.Static);
+            seatData.deposit = player.deposit;
         })
-        setTimeout(() => {roomData.seatsStateManager.seated(3, true)}, 3000);
-        // if (data.myInfo) {
-            
-        // }
-        // if (matchID > 0) {
-        //     // roomData.roomID =
-        //     // //matchId;
-        //     // console.log(LN, `Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.Instance.room_id}`);
-        // }
-        // // if (ProcedureManager.currProcedure.id == ProcedureEnum.Texas) {
-        //     let game_enter_type = GameCache.Instance.enter_param.game_enter_type;
-        //     //ProcedureManager.currProcedure.param?.game_enter_type;
-        //     // if (game_enter_type?.length) {
-        //     //     for (let i = 0; i < fromUIs.length; i++) {
-        //     //         UIComponent.Instance.CloseNoAnimation(fromUIs[i]);
-        //     //     }
-        //     // }
-        //     switch (game_enter_type) {
-        //         case 0:
-        //             break;
-        //         case 1: //工會
-        //             UIComponent.Instance.CloseNoAnimation(UIDefine.UIClubHome);
-        //             break;
-        //         case 2: //朋友
-        //             UIComponent.Instance.CloseNoAnimation(UIDefine.UIClubCreateMatchHome);
-        //             UIComponent.Instance.CloseNoAnimation(UIDefine.UIClubCreateMatch);
-        //             break;
-        //         case 3: //MTT
-        //             //UIComponent.Instance.CloseNoAnimation(UIDefine.MttDetailForm);
-        //             // UIComponent.Instance.CloseNoAnimation(UIDefine.MttListForm);
-        //             // UIComponent.Instance.CloseNoAnimation(UIDefine.UIMTTDetail);
-        //             // UIComponent.Instance.CloseNoAnimation(UIDefine.UIMTTList);
-        //             break;
-        //     }
-        // }
+        // setTimeout( () => {
+        //     let seatData = roomData.seatsStateManager.getSeatPlayer(3);
+        //     seatData.setAction(Def.Action.RAISE, AnimateDisplayTypeAction.ShowAction);
+        // }, 3000);
+        let mine:TexasGameRoomDataPlayerMine = null;
+        if (data.myInfo) {
+            if (data.myInfo.seatId > 0) {
+                roomData.seatsStateManager.setMySeat(data.myInfo.seatId);
+                mine = roomData.seatsStateManager.getMine();
+                mine.storeChips = mine.storeChips;
+            }
+        }
+        data.operatorList.forEach(operator => {
+            if (mine && operator.seatId == mine.seatedPlayer.seatNo) {
+                //@TODO 本人操作的准备
+                //mine.prepareAction(operator.ActionLimit, AnimateDisplayType)
+                //mine.prepareInsurance();
+                //mine.prepareAgreeSecondPubcards();
+            }else{
+                let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
+                //@TODO 非本人操作
+                //seatData.prepareAction();
+                //seatData.prepareInsurance();
+                //seatData.prepareAgreeSecondPubliccards();
+            }
+        })
+       
         await SceneManager.Instance.switchScene<UIRoomTexasEnterParam>(UIDefine.UIRoomTexas, null, {
             roomID: roomID,
             matchID: matchID,
             observer: false
         });
-        // this.game.SMAgency.ChangeGameState(TexasGameState.Init, response);
-        // // 进房成功后加入 Agora 视频频道（确保场景和协议都已就绪）
-        // this.game.TexasGameProtocol.JoinVideoChannelAfterEnterRoom();
     }
-
-    // } else if (response.status == ServerErrorCode.Gameplay_AutoSeatReturnToInvalidGame && isMTT) {
-    //     console.log(LN, `Protocol_Holdem_EnterRoom_Handler: response.state : ServerErrorCode.Gameplay_AutoSeatReturnToInvalidGame`);
-    //     // 进入ExchangeRoom状态，等待换房
-    //     this.game.SMAgency.ChangeGameState(TexasGameState.ExchangeRoom, null);
-    // } else {
-    //     UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(response.status));
-    //     // 进入房间失败
-    //     this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);
-    // }
 }

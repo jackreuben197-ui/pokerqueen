@@ -46,7 +46,7 @@ export default class UIPreloadingComponent extends UIBase {
         try {
             for (let i= 0; i< parts; i++) {
                 const definition = param.preloadDefinition[i];
-                await this.loadResources(definition.bundle, definition.dir, param.stopProgress, i* part);
+                await this.loadResources(definition.bundle, definition.dir, param.stopProgress, i* part, part);
             }
             param.complete?.();
         } catch(e) {
@@ -54,15 +54,14 @@ export default class UIPreloadingComponent extends UIBase {
         }
     }
 
-    private loadResources(bundleName: string, dir: string, stopProgress: boolean, pastProgress: number): Promise<void> {
+    private loadResources(bundleName: string, dir: string, stopProgress: boolean, pastProgress: number, totalPercent: number): Promise<void> {
         return new Promise((resovle, reject) => {
-            console.log(pastProgress);
             if (bundleName == BUNDLE_RESOURCES) {
                 cc.resources.loadDir(
                     dir,
                     (finish: number, total: number, item: cc.AssetManager.RequestItem) => {
                         if (stopProgress) return;
-                        let percent = finish / total + pastProgress;
+                        let percent = totalPercent * (finish / total) + pastProgress;
                         this.asset_count = total;
                         //纠错，保证当前进度不会小于上次进度
                         percent = Math.max(percent, this.prevPercent);
@@ -98,7 +97,7 @@ export default class UIPreloadingComponent extends UIBase {
                     dir,
                     (finish: number, total: number, item: cc.AssetManager.RequestItem) => {
                         if (stopProgress) return;
-                        let percent = finish / total + pastProgress;
+                        let percent = totalPercent * (finish / total) + pastProgress;
                         //纠错，保证当前进度不会小于上次进度
                         percent = Math.max(percent, this.prevPercent);
                         this.setProgress(percent);

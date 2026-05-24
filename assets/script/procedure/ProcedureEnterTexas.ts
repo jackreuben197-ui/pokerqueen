@@ -26,9 +26,11 @@ export default class ProcedureEnterTexas extends ProcedureBase {
         H5MsgMgr.sendToH5('h5Hide', 1);
         // 监听 wsError：进房过程中 WS 断开则直接退回 H5
         this._isEntering = true;
-        H5MsgMgr.Instance.on('wsError', this._onWsError, this);
+        H5MsgMgr.Instance.on('wsError', this._onWsError);
         // 创建德州玩法入口
         const entrance = AGameplayEntranceProvider.createEntrance(GameCache.Instance.room_type, GameCache.Instance.match_id, GameCache.Instance.room_id);
+        // 使用老路由方式
+        entrance.oldPathForEnter = true;
         this._entrance = entrance;
         this.onComplete();
     }

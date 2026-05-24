@@ -1,10 +1,8 @@
 
-import { StringHelper } from "../../../../../../helper/StringHelper";
+import { AnimateDisplayTypeButton } from "../../../../texas/constants/AnimateDisplayType";
 import TexasGameRoomData from "../../../../texas/data/TexasGameRoomData";
-import TexasGameRoomDataPlayer, { chipsWithStore } from "../../../../texas/data/TexasGameRoomDataPlayer";
 import TexasGameRoomDataSeatsStateManager from "../../../../texas/data/TexasGameRoomDataSeatsStateManager";
 import roomDataManager from "../../../core/RoomDataManager";
-import RemoteSprite from "../../common/RemoteSprite";
 import Seat from "./Seat";
 
 
@@ -18,8 +16,15 @@ export default class SeatManager extends cc.Component {
     @property(cc.Prefab)
     private seatPrefab: cc.Prefab = null;
 
+    @property({type: cc.Node, tooltip: '发牌的起始节点'}) 
+    private dealNode: cc.Node = null;
+    
+    @property({type: cc.Node, tooltip: '底池的起始节点'}) 
+    private potNot: cc.Node = null;
+
     private _seatManager: TexasGameRoomDataSeatsStateManager;
     private _seatNodes: cc.Node[] = [];
+    private _seatNodesMap: Map<number, Seat> = new Map();
 
     public initData(roomID: number, matchID: number) {
         const roomData = roomDataManager.getRoomData<TexasGameRoomData>(roomID, matchID);
@@ -47,23 +52,46 @@ export default class SeatManager extends cc.Component {
 
     private _bindEventsAndRefresh() {
         this._seatManager.on(TexasGameRoomDataSeatsStateManager.SEATS_CHANGE, this.onUpdateSeats, this);
+        this._seatManager.on(TexasGameRoomDataSeatsStateManager.BUTTON_CHANGE, this.onUpdateButton, this);
         this.onUpdateSeats(this._seatManager.seatsCount);
+        this.onUpdateButton(0, this._seatManager.buttonPosition, AnimateDisplayTypeButton.Static);
+    }
+
+    private onUpdateButton(prevSeat:number, currentSeat: number, bat: AnimateDisplayTypeButton) {
+        if (bat == AnimateDisplayTypeButton.Static) {
+            if (prevSeat > 0) {
+                const ps = this._seatNodesMap.get(prevSeat);
+                ps.animateButtonChange(false);
+            }
+            const cps = this._seatNodesMap.get(currentSeat);
+            cps.animateButtonChange(true);
+            return;
+        }
+        if (prevSeat > 0) {
+            const ps = this._seatNodesMap.get(prevSeat);
+            ps.animateButtonChange(false);
+            const cps = this._seatNodesMap.get(currentSeat);
+            cps.animateButtonChange(true, ps.buttonIcon);
+            return;
+        }
+        const cps = this._seatNodesMap.get(currentSeat);
+        cps.animateButtonChange(true);
     }
 
     private onUpdateSeats(count: number) {
+        this._seatNodesMap.clear();
         if (this._seatNodes.length != count) {
             for (let i = 0; i< count; i++) {
                 let nd = cc.instantiate(this.seatPrefab);
                 nd.parent = this.node;
                 this._seatNodes.push(nd);
+                this._seatNodesMap.set(i+1, nd.getComponent(Seat));
             }
         }
-        console.log(LN, 'seat count', this._seatNodes.length);
-        this._seatNodes.forEach((node,index) => {
-            let seatData = this._seatManager.getSeatPlayer(index+1);
-            const comp = node.getComponent(Seat);
-            comp.initData(seatData);
-        })
+        this._seatNodesMap.forEach((comp, seatNo) => {
+            const seatData = this._seatManager.getSeatPlayer(seatNo);
+            comp.initData(seatData, this.potNot, this.dealNode);
+        });
     }
 
 }

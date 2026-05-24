@@ -27,4 +27,23 @@ export default class TexasGameRoomDataPotInfo extends cc.EventTarget {
         this._pots = pots;
         this.emit(TexasGameRoomDataPotInfo.POTLIST_CHANGE, this._pots);
     }
+
+    // _pots
+    public static readonly SEC_POTLIST_CHANGE = 'SEC_POTLIST_CHANGE';
+    private _secPots: SidePot.AsObject[];
+
+    public get secPotList() {
+        return this._secPots;
+    }
+
+    public set secPotList(pots: Array<SidePot.AsObject>) {
+        this._secPots = pots;
+        this.emit(TexasGameRoomDataPotInfo.SEC_POTLIST_CHANGE, this._pots);
+    }
+
+    public handClear() {
+        this.secPotList = [];
+        this.potList = [];
+        this.allPot = 0;
+    }
 }

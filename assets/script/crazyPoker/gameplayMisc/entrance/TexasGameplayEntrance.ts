@@ -10,6 +10,8 @@ import { i18nMgr } from '../../../i18n/i18nMgr';
 import { ClientMessageEnterRoom } from '../../../protobuf/holdem/req_th_enter_room_pb';
 import TexasGameRoomData from '../../gameplay/texas/data/TexasGameRoomData';
 import roomDataManager from '../../gameplay/common/core/RoomDataManager';
+import ProcedureManager from '../../../manager/ProcedureManager';
+import { ProcedureEnum } from '../../../define/EIDefine';
 
 /**
  * @description 德州玩法入口
@@ -369,6 +371,12 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
      * @param isUseCache 是否使用缓存
      */
     public override async requestEnterAsync(isUseCache: boolean): Promise<number> {
+        // 兼容老路有方式
+        if (this.oldPathForEnter) {
+            // 请求进入德州房间
+            ProcedureManager.StartProcedure(ProcedureEnum.Texas, GameCache.Instance.enter_param);
+            return 0;
+        }
         const roomData = new TexasGameRoomData(this._roomId, this.matchId);
         roomData.basicInfo.roomName = this._roomInfo.name;
         roomData.basicInfo.roomType = this._roomInfo.roomType;
@@ -391,8 +399,6 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
             MatchID: this.matchId,
             Body: body
         });
-        // 请求进入德州房间
-        //ProcedureManager.StartProcedure(ProcedureEnum.Texas, GameCache.Instance.enter_param);
         return 0;
     }
 }

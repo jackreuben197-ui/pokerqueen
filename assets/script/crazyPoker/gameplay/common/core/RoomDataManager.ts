@@ -7,6 +7,11 @@ class RoomDataManager {
         cc.log('[RoomDataManager] 数据总管单例初始化');
     }
 
+    public existRoomData(roomID: number, matchID: number): boolean {
+        const key = roomID + '-' + matchID;
+        return this._roomCache.has(key);
+    }
+
     // 获取或创建对应房间的数据实例
     public getRoomData<T extends RoomData>(roomID: number, matchID: number): T {
         const key = roomID + '-' + matchID;
