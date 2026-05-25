@@ -1,7 +1,11 @@
 import { LogStyle } from '../../config/GameConfig';
+import { ProcedureEnum } from '../../define/EIDefine';
 import GC from '../../frame/GameControl';
 import { GameCache } from '../../game/GameCache';
 import H5MsgMgr from '../../H5MsgMgr';
+import ProcedureManager from '../../manager/ProcedureManager';
+import ProcedureEnterTexas from '../../procedure/ProcedureEnterTexas';
+import { ServerMessageNotificationRoomReady } from '../../protobuf/holdem/recv_g_notification_room_ready_pb';
 import { ClientMessageLeave } from '../../protobuf/holdem/req_th_leave_pb';
 import LoginSession from '../../session/LoginSession';
 import OpCodeHelper from './OpCodeHelper';
@@ -227,7 +231,8 @@ export default class ProtocolAgency extends cc.Component {
             code < 1000 &&
             code != ProtocolCode.Protocol_Holdem_Rooms &&
             code != ProtocolCode.Protocol_Holdem_MttDetail &&
-            code != ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo
+            code != ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo && 
+            code != ProtocolCode.Protocol_Holdem_NotificationRoomReady
         ) {
             console.log(LN, 'drop code:', code);
             return;
@@ -299,9 +304,23 @@ export default class ProtocolAgency extends cc.Component {
                 this.gTimeStamp = (body as any).timestamp;
             }
         }
+        // 拆和卓进房间
+        if (code == ProtocolCode.Protocol_Holdem_NotificationRoomReady) {
+            this._mttExchangeRoomReady(body);
+            return;
+        }
         GC.notify.post(code, body, roomid, matchid);
         body = null;
         body_ua = null;
+    }
+
+    static _mttExchangeRoomReady(data: ServerMessageNotificationRoomReady.AsObject){
+        console.log('# MTT: _mttExchangeRoomReady');
+        if (data == null) return;
+        if (data.room.matchId == 0) return;
+        GameCache.Instance.match_id = data.room.matchId;
+        GameCache.Instance.room_id = data.room.roomId;
+        ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas);
     }
 
     static _readNumber(ua: Uint8Array, offset: number, size: number): number {
