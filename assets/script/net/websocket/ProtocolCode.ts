@@ -54,6 +54,7 @@ export enum ProtocolCode {
     Protocol_Holdem_PlayerJackpotSummary = Code.MSG_D_PLAYER_JACKPOT_SUMMARY, // Code: 1027 Jackpot玩家汇总
     Protocol_Holdem_ViewPlayerCards = Code.MSG_D_VIEW_PLAYER_CARDS, // Code: 1026 付费看其他玩家手牌
     Protocol_Holdem_ViewPlayerCardsNum = Code.MSG_D_VIEW_PLAYER_CARDS_NUM, // Code: 1029 查看手牌次数
+    Protocol_Holdem_UserGameWatch = Code.MSG_S_USER_GAME_WATCH, // Code: 110 被看牌者通知
     Protocol_Holdem_ShowPublicCardsOthers = Code.MSG_S_SHOW_PUBLIC_CARDS_OTHERS, // Code: 1100 其他人收到有人看公共牌
     Protocol_Holdem_Showcards = Code.MSG_S_SHOWCARDS, // Code: 1101 亮牌
     Protocol_Holdem_SeatedOthers = Code.MSG_S_SEATED_OTHERS, // Code: 1102 房间内人收到有人坐下的信息（不包括坐下的本人）
@@ -81,6 +82,7 @@ export enum ProtocolCode {
     Protocol_Holdem_SyncHand = Code.MSG_S_SYNC_HAND, // Code: 1124 等待同步开始(MTT)
     Protocol_Holdem_SquidIn = Code.MSG_S_SQUID_IN, // Code: 1125 鱿鱼轮加入状态变更
     Protocol_Holdem_NextChange = Code.MSG_S_NEXT_CHANGE, // Code: 1126 下一手房间配置变更
+    Protocol_Holdem_ShowViewCards = Code.MSG_S_SHOW_VIEW_CARDS, // Code: 1127 偷偷看手牌推送
     Protocol_Holdem_JackpotGoldChange = Code.MSG_S_JACKPOT_GOLD_CHANGE, // Code: 1129 Jackpot金额变化
     Protocol_Holdem_JackpotAward = Code.MSG_S_JACKPOT_AWARD, // Code: 1130 Jackpot获奖
     Protocol_Holdem_RoomUserSendDiamond = Code.MSG_S_ROOM_USER_SEND_DIAMOND, // Code: 132 赠送钻石广播
