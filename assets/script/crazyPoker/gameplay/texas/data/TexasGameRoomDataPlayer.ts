@@ -1,9 +1,11 @@
 import { Def } from "../../../../protobuf/holdem/define_pb";
 import { AnimateDisplayTypeAction, AnimateDisplayTypeCards, AnimateDisplayTypePosition, AnimateDisplayTypeRoundBet } from "../constants/AnimateDisplayType";
+import { Operator } from "./model/Operator";
 import TexasGameRoomData from "./TexasGameRoomData";
 import TexasGameRoomDataPlayerMine from "./TexasGameRoomDataPlayerMine";
 import { SeatPosition } from "./TexasGameRoomDataSeatsStateManager";
 
+const LN = '[TexasGameRoomDataPlayer]';
 export default class TexasGameRoomDataPlayer extends cc.EventTarget {
     private _parentRoomData: TexasGameRoomData;
     public readonly seatNo: number;
@@ -43,7 +45,7 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
 
     public get position() { return this._position};
     public setPosition(c: SeatPosition, pat: AnimateDisplayTypePosition ) {
-        if (this._position == c ) return;
+        if (this._position == c) return;
         this._position = c; 
         this.emit(TexasGameRoomDataPlayer.SEAT_POSITION_CHANGE, this._position, pat);
     }
@@ -117,18 +119,16 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
         this.emit(TexasGameRoomDataPlayer.ROUND_BET_CHANGE, this._roundBet, aat);
     }
 
-    // public static readonly CHIP_CHANGE = 'CHIPS_CHANGE';
-    // private _chip: number;
+    public static readonly PREPARE_OPERATION = 'PREPARE_OPERATION';
+    private _operator:Operator;
+    public get operator() {
+        return this._operator;
+    }
 
-    // public get chip() {
-    //     return this._chip;
-    // }
-
-    // public set chip(c: number) {
-    //     if (this._chip == c) return;
-    //     this._chip = c;
-    //     this.emit(TexasGameRoomDataPlayer.CHIP_CHANGE, this._chip);
-    // }
+    public prepareOperation(c: Operator) {
+        this._operator = c;
+        this.emit(TexasGameRoomDataPlayer.PREPARE_OPERATION, this._operator);
+    }
 
     public static readonly EMPTY_SEAT = 'EMPTY_SEAT';
 
@@ -145,11 +145,13 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
 
     public handClear() {
         if (this.userID > 0) {
-            this.setAction(Def.Action.NONE, AnimateDisplayTypeAction.ShowAction);
+            this.setAction(Def.Action.NONE, AnimateDisplayTypeAction.Done);
             this.handBet = 0;
             this.setRoundBet(0, AnimateDisplayTypeRoundBet.Static);
             this.updateCards([], AnimateDisplayTypeCards.Static);
             this.roundActioned = false;
         }
     }
+
+    
 }

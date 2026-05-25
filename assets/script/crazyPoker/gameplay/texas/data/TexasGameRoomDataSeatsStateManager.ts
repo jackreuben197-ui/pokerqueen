@@ -20,6 +20,8 @@ export enum SeatPosition {
     TopRight,
     MiddleRight,
     BottomRight,
+    TopLeft7, // 7人桌的修正
+    TopRight7,// 7人桌的修正
 }
 
 const SeatsArrange: Record<number,SeatPosition[]> = {
@@ -28,7 +30,7 @@ const SeatsArrange: Record<number,SeatPosition[]> = {
     4: [SeatPosition.BottomMiddle,SeatPosition.MiddleLeft,SeatPosition.TopMiddle,SeatPosition.MiddleRight],
     5: [SeatPosition.BottomMiddle,SeatPosition.MiddleLeft,SeatPosition.TopLeft1,SeatPosition.TopRight1,SeatPosition.MiddleRight],
     6: [SeatPosition.BottomMiddle,SeatPosition.BottomLeft,SeatPosition.TopLeft,SeatPosition.TopMiddle,SeatPosition.TopRight,SeatPosition.BottomRight],
-    7: [SeatPosition.BottomMiddle,SeatPosition.BottomLeft,SeatPosition.TopLeft,SeatPosition.TopLeft1,SeatPosition.TopRight1,SeatPosition.TopRight,SeatPosition.BottomRight],
+    7: [SeatPosition.BottomMiddle,SeatPosition.BottomLeft,SeatPosition.TopLeft7,SeatPosition.TopLeft1,SeatPosition.TopRight1,SeatPosition.TopRight7,SeatPosition.BottomRight],
     8: [SeatPosition.BottomMiddle,SeatPosition.BottomLeft,SeatPosition.MiddleLeft,SeatPosition.TopLeft,SeatPosition.TopMiddle,SeatPosition.TopRight,SeatPosition.MiddleRight,SeatPosition.BottomRight],
     9: [SeatPosition.BottomMiddle,SeatPosition.BottomLeft,SeatPosition.MiddleLeft,SeatPosition.TopLeft,SeatPosition.TopLeft1,SeatPosition.TopRight1,SeatPosition.TopRight,SeatPosition.MiddleRight,SeatPosition.BottomRight],
 } as const;

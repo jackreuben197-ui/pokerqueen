@@ -30,7 +30,6 @@ export default class PublicCardsInfo extends cc.Component {
         }
         for (let i=5; i<10; i++) {
             this._secPublicCards.push(this.node.children[i].getComponent(CardView));
-            console.log(this._secPublicCards[i-5]);
         }
     }
 

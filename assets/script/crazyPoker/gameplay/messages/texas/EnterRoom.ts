@@ -9,6 +9,7 @@ import { AnimateDisplayTypeAction, AnimateDisplayTypeButton, AnimateDisplayTypeC
 import TexasGameRoomDataPlayer from '../../texas/data/TexasGameRoomDataPlayer';
 import TexasGameRoomDataPlayerMine from '../../texas/data/TexasGameRoomDataPlayerMine';
 import { Def } from '../../../../protobuf/holdem/define_pb';
+import { Operator } from '../../texas/data/model/Operator';
 const LN = '[EnterRoom]';
 
 // EnterRoom 1002
@@ -28,6 +29,7 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
     if (data.status == 0) {
         roomData.basicInfo.sbante = { sb: data.roomInfo.smallBlind, ante: data.roomInfo.ante };
         roomData.basicInfo.gameStatus = data.gameStatus;
+        roomData.basicInfo.opDuration = data.roomInfo.opDuration;
         if (data.handInfo) {
             roomData.basicInfo.handNum = data.handInfo.handNum;
             roomData.potInfo.allPot = data.handInfo.allBet;
@@ -50,10 +52,6 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
             seatData.setAction(player.action, AnimateDisplayTypeAction.Static);
             seatData.deposit = player.deposit;
         })
-        // setTimeout( () => {
-        //     let seatData = roomData.seatsStateManager.getSeatPlayer(3);
-        //     seatData.setAction(Def.Action.RAISE, AnimateDisplayTypeAction.ShowAction);
-        // }, 3000);
         let mine:TexasGameRoomDataPlayerMine = null;
         if (data.myInfo) {
             if (data.myInfo.seatId > 0) {
@@ -70,10 +68,19 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
                 //mine.prepareAgreeSecondPubcards();
             }else{
                 let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
-                //@TODO 非本人操作
-                //seatData.prepareAction();
-                //seatData.prepareInsurance();
-                //seatData.prepareAgreeSecondPubliccards();
+                let op = new Operator();
+                op.alreadyDelayTImes = operator.delayTimes;
+                op.deadlineTImestamp = operator.opDeadline;
+                op.leftOpDuration = operator.leftOpTime;
+                op.totalOpDuration = roomData.basicInfo.opDuration;
+                if (operator.isInsurance) {
+                    op.opType = 2;
+                }else if (operator.isAgreeSecondPc) {
+                    op.opType = 3;
+                }else {
+                    op.opType = 1;
+                }
+                seatData.prepareOperation(op);
             }
         })
        

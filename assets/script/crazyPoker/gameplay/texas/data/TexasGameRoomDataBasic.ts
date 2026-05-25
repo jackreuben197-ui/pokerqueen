@@ -13,8 +13,11 @@ export default class TexasGameRoomDataBasic extends cc.EventTarget {
     public gameType: number;
     public pokerType: number;
     public betType: number;
+    public opDuration: number;
     public isMtt: boolean;
     public delaySeeCard: boolean;
+    private _handCardNum: number;
+    public get handCardNum() {return this._handCardNum};
     public _gameStatus: Def.GameStatusMap[keyof typeof Def.GameStatus];
     public get gameStatus() {
         return this._gameStatus;
@@ -35,6 +38,16 @@ export default class TexasGameRoomDataBasic extends cc.EventTarget {
         this.pokerType = pokerType;
         this.betType = betType;
         this.isMtt = isMTT;
+        switch(this.gameType) {
+        case 1:
+            this._handCardNum = 4;
+        case 2:
+            this._handCardNum = 5;
+        case 3:
+            this._handCardNum = 6;
+        default:
+            this._handCardNum = 2;
+        }
     }
 
     // 朋友卓信息
