@@ -348,6 +348,10 @@ export default class TexasGame {
     /// 同步到同盟的id 未同步时为0
     /// </summary>
     public tribeId: number = 0;
+    /// <summary>
+    /// 同步到俱乐部的id 未同步时为0
+    /// </summary>
+    public clubId: number = 0;
     /// APP的最新版本，如果当前app版本较小，则在牌桌中间显示升级提示
     /// </summary>
     public ServerVersion: string = null;
@@ -855,6 +859,7 @@ export default class TexasGame {
             this.callTimeCount = Number((rec.myInfo as any).callTimeCount || this.callTimeCount || 0);
         }
         this.tribeId = GameCache.Instance.TribeId;
+        this.clubId = GameCache.Instance.ClubID;
         this.ShowSafetyGuardBtn();
         this.bringinEqualLeader = GameCache.Instance._bringinEqualLeader;
         this.minPlayerChipRate = GameCache.Instance._minPlayerChipRate;
@@ -3927,6 +3932,7 @@ export default class TexasGame {
             });
         }
         this.tribeId = 0;
+        this.clubId = 0;
         this.ServerVersion = '';
         this.autoFold = false;
         this.autoCall = false;

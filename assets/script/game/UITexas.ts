@@ -1283,7 +1283,10 @@ export default class UITexas extends BaseScene {
     private click_btn_im() {
         H5MsgMgr.sendToH5('showPanel', 1, {
             panelType: 'supportChat',
-            props: {}
+            props: {
+                tribeId: this.game.tribeId,
+                clubId: this.game.clubId,
+            }
         });
     }
 
