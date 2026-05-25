@@ -392,7 +392,11 @@ export default class MttTexasGameplayEntrance extends AGameplayEntrance {
         GameCache.Instance._mttAutoDelayTime = isClear ? 0 : mtt.autoDelayTime;
         // 反作弊配置
         GameCache.Instance._antiCheatType = isClear ? 0 : mtt.antiCheatType;
-        if (AntiCheatType.VIDEO) GameCache.Instance._videoModel = mtt.antiCheatVideoType;
+        if (GameCache.Instance._antiCheatType == AntiCheatType.VIDEO) {
+            GameCache.Instance._videoModel = mtt.antiCheatVideoType;
+        } else {
+            GameCache.Instance._videoModel = 0;
+        }
         GameCache.Instance._normalAntiCheatOrderType = mtt.antiCheatOrderMicType;
         GameCache.Instance._normalAntiCheatOrderMicType = mtt.antiCheatOrderMicType;
         // TODO: 反作弊顺序类型处理

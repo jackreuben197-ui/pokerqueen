@@ -143,6 +143,8 @@ export default class TexasGameMessageHandler {
             ReconnectComponent.Instance.HideMask();
         }
         if (response.status == 0) {
+            // 进房时初始化偷偷看次数（对齐 Unity: _lookCardsPlayTimes = msgData.PayTimes）
+            this.game.lookCardsPayTimes = response.payTimes || 0;
             if (isMTT) {
                 // 缓存房间id
                 console.log(LN, response.mttRoom, roomId);

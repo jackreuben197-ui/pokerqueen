@@ -21,6 +21,8 @@ import { ServerMessageKeepSeat } from '../../protobuf/holdem/recv_th_keep_seat_p
 import { ServerMessagePostStatusChange } from '../../protobuf/holdem/recv_th_post_status_change_pb';
 import { ServerMessagePublicCards } from '../../protobuf/holdem/recv_th_public_cards_pb';
 import { ServerMessageRoomUserSendDiamond } from '../../protobuf/holdem/recv_g_room_user_send_diamond_pb';
+import { ServerMessageShowViewCards } from '../../protobuf/holdem/recv_th_show_view_cards_pb';
+import { ServerMessageUserGameWatch } from '../../protobuf/holdem/recv_g_user_game_watch_pb';
 import { ServerMessageNextChange } from '../../protobuf/holdem/recv_th_next_change_pb';
 import { ServerMessageSeatedOthers } from '../../protobuf/holdem/recv_th_seated_others_pb';
 import { ServerMessageShowcards } from '../../protobuf/holdem/recv_th_showcards_pb';
@@ -135,6 +137,8 @@ export default class TexasGameProtocol {
         GC.notify.register(ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo, this.HANDLER_RANDOM_VIDEO_VERIFY, this); // 随机视频验证
         GC.notify.register(ProtocolCode.Protocol_Holdem_VideoMaskChange, this.HANDLER_REQ_VIDEO_MASK_CHANGE, this); // 视频窗花变更
         GC.notify.register(ProtocolCode.Protocol_Holdem_RoomUserSendDiamond, this.ProtocolHoldemRoomUserSendDiamondHandler, this); // 赠送钻石广播
+        GC.notify.register(ProtocolCode.Protocol_Holdem_ShowViewCards, this.HANDLER_REQ_SHOW_VIEW_CARDS, this); // 偷偷看手牌推送 (1127)
+        GC.notify.register(ProtocolCode.Protocol_Holdem_UserGameWatch, this.HANDLER_REQ_USER_GAME_WATCH, this); // 被看牌者通知 (110)
     }
 
     public RemoveMsgHandler(): void {
@@ -176,6 +180,8 @@ export default class TexasGameProtocol {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo, this.HANDLER_RANDOM_VIDEO_VERIFY, this); // 随机视频验证
         GC.notify.remove(ProtocolCode.Protocol_Holdem_VideoMaskChange, this.HANDLER_REQ_VIDEO_MASK_CHANGE, this); // 视频窗花变更
         GC.notify.remove(ProtocolCode.Protocol_Holdem_RoomUserSendDiamond, this.ProtocolHoldemRoomUserSendDiamondHandler, this); // 赠送钻石广播
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_ShowViewCards, this.HANDLER_REQ_SHOW_VIEW_CARDS, this); // 偷偷看手牌推送 (1127)
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_UserGameWatch, this.HANDLER_REQ_USER_GAME_WATCH, this); // 被看牌者通知 (110)
         // 清理随机验证倒计时
         this._clearRandomVideoTimer();
     }
@@ -726,16 +732,39 @@ export default class TexasGameProtocol {
             return;
         }
         if (rec.status != 0) {
-            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status)); //CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_SEE_MORE_PUBLIC_ACTION, rec.Status)
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
+            this.game.InteractableSeeMorePublic(true);
             return;
         }
-        // GameCache.Instance.gold -= this.game.checkPublicCardsCost;
-        GC.data.user.info.gold -= this.game.checkPublicCardsCost;
-        this.game.cacheRound = rec.round;
+        // 游戏状态校验：必须处于结算阶段
+        if (this.game.GameState != TexasGameState.HandShowdown && this.game.GameState != TexasGameState.HandRiver) {
+            console.log('[SeeMorePublic] 收到成功响应但游戏状态不是结算/河牌:', this.game.GameState);
+        }
+        // 更新round（全看模式服务器返回UNDEFINED时映射为RIVER）
+        if (rec.round == Def.Round.UNDEFINED) {
+            this.game.cacheRound = 4; // Def.Round.RIVER
+        } else {
+            this.game.cacheRound = rec.round;
+        }
         this.game.UpgradePublicCards(1, rec.publicCardsList);
         if (this.game.isBombPot) {
             this.game.AddSecondPublicCardsBombPot(rec.publicCards2List || []);
             this.game.IsSecondPsc = this.game.GetPublicCardsCount(2) > 0;
+        }
+        // 免费次数扣减
+        if (this.game._viewPubFreeCount > 0) {
+            this.game._viewPubFreeCount--;
+        }
+        // 显示成功提示
+        let public_card_count = this.game.GetPublicCardsCount(1);
+        if (this.game._publicViewType == 2) {
+            this.game.ShowSeeMorePublicTips(CPErrorCode.LanguageDescription(10018)); // "查看翻牌" - 全看成功
+        } else if (public_card_count == 3) {
+            this.game.ShowSeeMorePublicTips(CPErrorCode.LanguageDescription(10018)); // 翻牌成功
+        } else if (public_card_count == 4) {
+            this.game.ShowSeeMorePublicTips(CPErrorCode.LanguageDescription(10019)); // 转牌成功
+        } else {
+            this.game.ShowSeeMorePublicTips(CPErrorCode.LanguageDescription(10020)); // 河牌成功
         }
         //启用按钮
         this.game.InteractableSeeMorePublic(true);
@@ -743,6 +772,12 @@ export default class TexasGameProtocol {
         if (this.game.GetPublicCardsCount(1) == 5) {
             this.game.HideSeeMorePublic();
         }
+        // 刷新价格显示（免费次数可能已变化）
+        this.game.SetSeeMorePublicCardPrice();
+        // 刷新钻石余额（服务端真实扣费）
+        this.game._reqDiamondBalance();
+        // 再从服务端刷新免费次数
+        this.game.RefreshViewPubFreeCount();
         this.game.UpdatePublicCardsNoAnim();
     }
 
@@ -780,8 +815,8 @@ export default class TexasGameProtocol {
             this.game.InteractableLookHandCard(true);
             return;
         }
-        this.game.ShowSeeMorePublicTips(CPErrorCode.LanguageDescription(20028)); // 查看手牌成功
-        this.game.InteractableLookHandCard(true);
+        this.game.ShowSeeMorePublicTips(i18nMgr.Get('UITexas_LookCardFlipSuccessTips')); // 偷偷看成功：翻牌成功,详情可去牌谱查看
+        this.game.HideLookHandCard(); // 成功后隐藏按钮（对齐 Unity: _lookCardBg.SetActive(false)）
         // 成功后刷新次数
         this.game.SendViewPlayerCardsNum();
     }
@@ -793,6 +828,52 @@ export default class TexasGameProtocol {
         if (rec == null) return;
         if (rec.status == 0) {
             this.game.lookCardsPayTimes = rec.payTimes || 0;
+            // 收到次数后刷新价格（对齐 Unity OnMsgLookCardsTime）
+            this.game.SetLookHandCardPrice();
+        }
+    }
+
+    /// <summary>
+    /// 偷偷看手牌推送 (1127)：服务端推送被偷看的手牌数据，在座位上显示小牌面
+    /// 对齐 Unity OnMsgShowViewCards / TexasSeat.ShowSmallCard
+    /// </summary>
+    protected HANDLER_REQ_SHOW_VIEW_CARDS(rec: ServerMessageShowViewCards.AsObject) {
+        if (!rec || !rec.playerCardsList) return;
+        for (let i = 0; i < rec.playerCardsList.length; i++) {
+            const card = rec.playerCardsList[i];
+            if (card.seatId == 0) continue;
+            const seat = this.game.GetSeatByServerSeatID(card.seatId);
+            if (!seat || !seat.Player || seat.IsMySeat) continue;
+            // 将手牌数据写入 Player
+            const cards: number[] = [];
+            for (let k = 0; k < card.cardsList.length; k++) {
+                cards.push(card.cardsList[k]);
+            }
+            seat.Player.SetCards(cards);
+            // 显示小牌面
+            seat.ShowCards(seat.listSmallCardUIInfos);
+            seat.HideCardBack();
+        }
+    }
+
+    /// <summary>
+    /// 被看牌者通知 (110)：有人付费查看了你的手牌
+    /// 对齐 Unity OnMsgUserGameWatch
+    /// </summary>
+    protected HANDLER_REQ_USER_GAME_WATCH(rec: ServerMessageUserGameWatch.AsObject) {
+        if (!rec) return;
+        const userName = rec.userName || '';
+        const roomId = rec.roomId || 0;
+        const handNum = rec.handNum || 0;
+        const amount = rec.amount || 0;
+        if (amount > 0) {
+            UIComponent.Instance.Toast(
+                StringHelper.Format(i18nMgr.Get('UITexas_payLookHandCardToast1'), [userName, String(roomId), String(handNum), String(amount)])
+            );
+        } else {
+            UIComponent.Instance.Toast(
+                StringHelper.Format(i18nMgr.Get('UITexas_payLookHandCardToast2'), [userName, String(roomId), String(handNum)])
+            );
         }
     }
 
