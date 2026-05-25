@@ -19,6 +19,8 @@ import {
     WebUserRoomBringin,
     WebRoomCenterIsRoomAdmin,
     WebRoomCenterRoomStart,
+    WebRoomCenterHistoryViewPublicCardsFreeCount,
+    WebUserDiamondsWallet,
     WWW,
     WebGetDiamondConfig,
     WebUserInfo
@@ -454,9 +456,13 @@ export default class TexasGame {
     /// </summary>
     public cacheBuyActiveAmount: number = 0;
     /// <summary>
-    /// 查看公共牌花费
+    /// 发发看剩余免费次数
     /// </summary>
-    public checkPublicCardsCost: number = 50;
+    public _viewPubFreeCount: number = 0;
+    /// <summary>
+    /// 发发看模式：1=分步看(翻牌/转牌/河牌)，2=全看(一次性看所有)
+    /// </summary>
+    public _publicViewType: number = 1;
     /// <summary>
     /// 付费看手牌次数（阶梯收费用）
     /// </summary>
@@ -3341,33 +3347,47 @@ export default class TexasGame {
         });
     }
 
-    private SetSeeMorePublicCardPrice() {
+    public SetSeeMorePublicCardPrice() {
         let normal = this.uirc.Button_SeeMorePublic.getChildByName('normal');
         let discount = this.uirc.Button_SeeMorePublic.getChildByName('discount');
         let free = this.uirc.Button_SeeMorePublic.getChildByName('free');
         normal.active = false;
         discount.active = false;
         free.active = false;
-        let thousand = 0;
-        let public_card_count = this.GetPublicCardsCount(1);
-        if (public_card_count == 0) {
-            thousand = 1;
-        } else if (public_card_count == 3) {
-            thousand = 2;
-        } else {
-            thousand = 3;
+
+        // 先查免费次数，有免费次数则显示"VIP免费"
+        if (this._viewPubFreeCount > 0) {
+            free.active = true;
+            this.uirc.setChildLabel(free, 'label', `VIP免费 ${this._viewPubFreeCount}`);
+            return;
         }
-        let diamondConfig = DiamondModel.Instance.GetDiamondConfig(this.GetDiamondTypeText(8, thousand), 8);
+
+        // 没有免费次数，走钻石价格逻辑
+        let configType = this._publicViewType == 2 ? 31 : 8; // 全看=31, 分步=8
+        let thousand = 0;
+        if (this._publicViewType != 2) {
+            let public_card_count = this.GetPublicCardsCount(1);
+            if (public_card_count == 0) {
+                thousand = 1;
+            } else if (public_card_count == 3) {
+                thousand = 2;
+            } else {
+                thousand = 3;
+            }
+        }
+        let diamondConfig = DiamondModel.Instance.GetDiamondConfig(this.GetDiamondTypeText(configType, thousand), configType);
         if (diamondConfig == null) {
-            console.log(LN, '未拿到查看翻牌配置');
+            // 未拿到配置，先请求再刷新
+            DiamondModel.Instance.ReqDiamondConfig(configType).then(() => {
+                this.SetSeeMorePublicCardPrice();
+            });
             return;
         }
         let DiamondConfigSetting = this.GetSetting(diamondConfig);
-        if (diamondConfig == null || DiamondConfigSetting == null) {
+        if (DiamondConfigSetting == null) {
             console.log(LN, '未拿到查看翻牌配置');
             return;
         }
-        console.log(LN, 'DiamondConfigSetting', DiamondConfigSetting);
         if (DiamondConfigSetting.discount_price == 0) {
             free.active = true;
             this.uirc.setChildLabel(free, 'label', `${DiamondConfigSetting.price}`);
@@ -3379,6 +3399,40 @@ export default class TexasGame {
             this.uirc.setChildLabel(discount, 'old_label', `${DiamondConfigSetting.price}`);
             this.uirc.setChildLabel(discount, 'new_label', `${DiamondConfigSetting.discount_price}`);
         }
+    }
+
+    /** 请求发发看免费次数 */
+    private _reqViewPubFreeCount(): Promise<number> {
+        return new Promise(resolve => {
+            WWW.Instance.CommonAPI({
+                web_class: WebRoomCenterHistoryViewPublicCardsFreeCount
+            }).then(
+                (res: any) => {
+                    let freeCount = res?.data?.free_count || 0;
+                    resolve(freeCount);
+                },
+                () => {
+                    resolve(0);
+                }
+            );
+        });
+    }
+
+    /** 刷新发发看免费次数并更新价格显示 */
+    public async RefreshViewPubFreeCount() {
+        this._viewPubFreeCount = await this._reqViewPubFreeCount();
+        this.SetSeeMorePublicCardPrice();
+    }
+
+    /** 刷新钻石余额 */
+    private _reqDiamondBalance() {
+        WWW.Instance.CommonAPI({
+            web_class: WebUserDiamondsWallet
+        }).then((res: any) => {
+            if (res?.data?.diamonds_wallet) {
+                GC.data.user.info.gold = res.data.diamonds_wallet.diamonds || GC.data.user.info.gold;
+            }
+        });
     }
 
     private GetSetting(diamondConfig: any) {
@@ -3397,22 +3451,29 @@ export default class TexasGame {
         if (!this.mainPlayer.isParticipateInTheGame) return;
         let public_card_count = this.GetPublicCardsCount(1);
         if (public_card_count == 5) return;
-        this.SetSeeMorePublicCardPrice();
-        //let mCost = GameUtil.GetSeeMoreCost(this.smallBlind / 100 ^ 0);
-        //this.uirc.textSeeMorePublicGold.string = `${StringHelper.GetLongString(mCost)}`;
-        switch (public_card_count) {
-            case 0:
-                // textSeeMorePublic.text = $"查看翻牌";
-                this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10018);
-                break;
-            case 3:
-                // textSeeMorePublic.text = $"查看转牌";
-                this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10019);
-                break;
-            default:
-                // textSeeMorePublic.text = $"查看河牌";
-                this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10020);
-                break;
+
+        // 安全屋检查：安全屋模式下，非房管+非白名单+旁观者不显示
+        let isSafeLimit = this.isSafeRoom && !GameCache.Instance._isRoomManager && !GameCache.Instance._isWhiteList && !this.mainPlayer.isParticipateInTheGame;
+        if (isSafeLimit) return;
+
+        // 查询免费次数并刷新价格
+        this.RefreshViewPubFreeCount();
+
+        // 按钮文本：全看模式 vs 分步模式
+        if (this._publicViewType == 2) {
+            this.uirc.textSeeMorePublic.string = '全看';
+        } else {
+            switch (public_card_count) {
+                case 0:
+                    this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10018);
+                    break;
+                case 3:
+                    this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10019);
+                    break;
+                default:
+                    this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10020);
+                    break;
+            }
         }
         if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) //MTT没有查看翻牌
         {
@@ -3641,11 +3702,27 @@ export default class TexasGame {
     }
 
     /// <summary>
-    /// 偷偷看：显示看手牌按钮（结算阶段，玩家未站起时显示）
+    /// 偷偷看：显示看手牌按钮（结算阶段，玩家未站起时显示，对齐 Unity ShowLookHandCard）
     /// </summary>
     public ShowLookHandCard(): void {
         if (!this.mainPlayer.isParticipateInTheGame) return;
         if (GameCache.Instance.room_type >= RoomType.MTTTexasHoldemStandardNoLimit) return; // MTT不显示
+        // 房间未开启偷偷看功能
+        if (GameCache.Instance._lookHandCard == 0) return;
+        // 鱿鱼罚牌中时不显示（对齐 Unity: squidForceShowCard + squidCount 检查）
+        if (GameCache.Instance._squidForceShowCard == 1) {
+            let hasSquidPenalty = false;
+            for (let i = 0; i < this.listSeat.length; i++) {
+                const seat = this.listSeat[i];
+                if (seat && seat.Player && !seat.IsMySeat && seat.Player.squidCount > 0) {
+                    hasSquidPenalty = true;
+                    break;
+                }
+            }
+            if (hasSquidPenalty) return;
+        }
+        // 主玩家 AllIn 时不显示（对齐 Unity: IsMainPlayerAllIn）
+        if (this.mainPlayer.actionStatus == Def.Action.ALLIN) return;
         this.SetLookHandCardPrice();
         this.uirc.Button_LookHandCard.active = true;
         this.InteractableLookHandCard(true);
@@ -3666,15 +3743,20 @@ export default class TexasGame {
     }
 
     /// <summary>
-    /// 偷偷看：计算并显示价格（阶梯收费：基础价 × multiple^times，有上限）
+    /// 偷偷看：计算并显示价格（阶梯收费：看全部模式使用 config_type=30，对齐 Unity SetAllShowCardPrice）
     /// </summary>
-    private SetLookHandCardPrice(): void {
+    public SetLookHandCardPrice(): void {
         const sitDown = this.mainPlayer.isParticipateInTheGame;
         const ext = sitDown ? 12 : 11;
         const times = Math.min(this.lookCardsPayTimes, 4);
-        let diamondConfig = DiamondModel.Instance.GetDiamondConfig(this.GetDiamondTypeText(17, ext + 10 * times), 17);
+        const typeExt = ext + 10 * times;
+        // 看全部模式使用 config_type=30
+        let diamondConfig = DiamondModel.Instance.GetDiamondConfig(typeExt, 30);
         if (!diamondConfig) {
-            console.log(LN, '未拿到偷偷看配置');
+            // 尚未请求过 config_type=30 的配置，先请求再刷新
+            DiamondModel.Instance.ReqDiamondConfig(30).then(() => {
+                this.SetLookHandCardPrice();
+            });
             return;
         }
         const setting = this.GetSetting(diamondConfig);
@@ -4055,6 +4137,8 @@ export default class TexasGame {
         if (this.CanClick() == false) return;
         this.lastClickTime = GlobalSession.NowTimeMS;
         this.InteractableSeeMorePublic(false);
+        // 全看模式发送Round.UNDEFINED(0)，分步模式发送当前round
+        let round = this._publicViewType == 2 ? Def.Round.UNDEFINED : this.cacheRound;
         ProtocolAgency.Send<ClientMessageShowPublicCards.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_ShowPublicCards,
             RoomID: GameCache.Instance.room_id,
@@ -4064,7 +4148,7 @@ export default class TexasGame {
                     roomId: GameCache.Instance.room_id,
                     matchId: GameCache.Instance.match_id
                 },
-                round: this.cacheRound,
+                round: round,
                 consume: Def.ConsumeType.CT_VC_2
             }
         });
@@ -4532,6 +4616,9 @@ export default class TexasGame {
                 break;
             case 8:
                 thousand = Thousand * 1000;
+                break;
+            case 31: // ViewAllPublicCards (全看模式)，thousand始终为0
+                thousand = 0;
                 break;
             default:
                 thousand = 0;

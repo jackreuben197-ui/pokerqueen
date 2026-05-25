@@ -58,6 +58,8 @@ import { ClientMessageRooms, ServerMessageRooms } from '../../protobuf/holdem/re
 import { ServerMessageRoomChangeNotify } from '../../protobuf/holdem/recv_g_room_change_notify_pb';
 import { ServerMessageUtilAntiCheatRoomVideo } from '../../protobuf/holdem/recv_util_anti_cheat_room_video_pb';
 import { ServerMessageVideoMaskChange } from '../../protobuf/holdem/recv_th_video_mask_change_pb';
+import { ServerMessageShowViewCards } from '../../protobuf/holdem/recv_th_show_view_cards_pb';
+import { ServerMessageUserGameWatch } from '../../protobuf/holdem/recv_g_user_game_watch_pb';
 import { ClientMessageMttDetail, ServerMessageMttDetail } from '../../protobuf/holdem/req_rpc_mtt_detail_pb';
 
 export class ProtocolCommon {
@@ -417,5 +419,11 @@ export const ProtocolMap = {
     },
     [ProtocolCode.Protocol_Holdem_VideoMaskChange]: {
         Server: ServerMessageVideoMaskChange
+    },
+    [ProtocolCode.Protocol_Holdem_ShowViewCards]: {
+        Server: ServerMessageShowViewCards
+    },
+    [ProtocolCode.Protocol_Holdem_UserGameWatch]: {
+        Server: ServerMessageUserGameWatch
     }
 };
