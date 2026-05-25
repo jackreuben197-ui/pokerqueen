@@ -815,7 +815,7 @@ export default class TexasGameProtocol {
             this.game.InteractableLookHandCard(true);
             return;
         }
-        this.game.ShowSeeMorePublicTips(CPErrorCode.LanguageDescription(20028)); // 查看手牌成功
+        this.game.ShowSeeMorePublicTips(i18nMgr.Get('UITexas_LookCardFlipSuccessTips')); // 偷偷看成功：翻牌成功,详情可去牌谱查看
         this.game.HideLookHandCard(); // 成功后隐藏按钮（对齐 Unity: _lookCardBg.SetActive(false)）
         // 成功后刷新次数
         this.game.SendViewPlayerCardsNum();
