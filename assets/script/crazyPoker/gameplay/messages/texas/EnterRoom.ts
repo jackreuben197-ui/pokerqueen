@@ -16,9 +16,11 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
     let roomData = roomDataManager.getRoomData<TexasGameRoomData>(roomID, matchID);
     if (!roomData && matchID > 0) {
         roomData = roomDataManager.getRoomData<TexasGameRoomData>(0, matchID);
-        if (roomData) roomData.roomID = roomID;
-        roomDataManager.deleteRoomData(0, matchID);
-        roomDataManager.setRoomData(roomID, matchID, roomData);
+        if (roomData) {
+            roomData.roomID = roomID;
+            roomDataManager.deleteRoomData(0, matchID);
+            roomDataManager.setRoomData(roomID, matchID, roomData);
+        }
     }
     if (!roomData) {
         console.error(LN, 'no store room data');

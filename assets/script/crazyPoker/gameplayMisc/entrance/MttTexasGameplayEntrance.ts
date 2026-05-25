@@ -150,13 +150,11 @@ export default class MttTexasGameplayEntrance extends AGameplayEntrance {
      * 发送 Protocol_Holdem_MttDetail 而非 Protocol_Holdem_Rooms
      */
     public async requestRoomInfoAsync(): Promise<number> {
-        // C#: _protoRoomInfo = new Protocol_Holdem_MttDetail() { request = new ClientMessageMttDetail() { MatchId = (uint)_matchId } };
-        const resp = await ProtocolAgency.SendAsync<ClientMessageMttDetail.AsObject, ServerMessageMttDetail.AsObject>(ProtocolCode.Protocol_Holdem_MttDetail, {
-            matchId: this.matchId,
-            rpcId: 1
-        });
-        // 等待响应 (由 ProcedureEnterTexas.onMsgHoldemRooms 调用 _roomInfoResolve)
         try {
+            const resp = await ProtocolAgency.SendAsync<ClientMessageMttDetail.AsObject, ServerMessageMttDetail.AsObject>(ProtocolCode.Protocol_Holdem_MttDetail, {
+                matchId: this.matchId,
+                rpcId: 1
+            });
             if (resp.status != 0) {
                 console.error(`${this.constructor.name}: requestRoomInfoAsync: ${resp.status}`);
                 return -1;
@@ -336,8 +334,8 @@ export default class MttTexasGameplayEntrance extends AGameplayEntrance {
     protected override cacheGlobalDataBeforeLoad(isClear: boolean): void {
         super.cacheGlobalDataBeforeLoad(isClear);
         // C#: MTTRecord mtt = _mttDetails.Mtt; MTTMore more = _mttDetails.More;
-        const mtt = this._mttDetails.mtt;
-        const more = this._mttDetails.more;
+        const mtt = this._mttDetails?.mtt;
+        const more = this._mttDetails?.more;
         console.log(`${this.constructor.name}: cacheGlobalDataBeforeLoad: matchId=${this.matchId}, isClear=${isClear}`);
         // C#:
         // GameCache.Instance._roomName = isClear ? default : UILoginModel.Instance.GetRoomNameByKey(mtt.Name);
@@ -397,8 +395,8 @@ export default class MttTexasGameplayEntrance extends AGameplayEntrance {
         } else {
             GameCache.Instance._videoModel = 0;
         }
-        GameCache.Instance._normalAntiCheatOrderType = mtt.antiCheatOrderMicType;
-        GameCache.Instance._normalAntiCheatOrderMicType = mtt.antiCheatOrderMicType;
+        GameCache.Instance._normalAntiCheatOrderType = isClear ? 0 : mtt.antiCheatOrderType;
+        GameCache.Instance._normalAntiCheatOrderMicType = isClear ? 0 : mtt.antiCheatOrderMicType;
         // TODO: 反作弊顺序类型处理
         GameCache.Instance._sngInvitationCode = isClear ? '' : mtt.sngInvitationCode;
         GameCache.Instance._antiCheatTimeLimit = isClear ? 0 : mtt.antiCheatTimelimit;
