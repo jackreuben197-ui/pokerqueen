@@ -95,6 +95,7 @@ export default class MTTGameMessageHandler extends TexasGameMessageHandler {
                 matchId: matchId,
                 matchName: matchName,
                 isRebuy: isRebuy,
+                startTime: UIMTTModel.Instance?.MttInfo?.mtt?.start_time ?? '',
                 currentBlindLevel: game.BlindLevel,
                 maxRebuyBlindLevel: game.MaxRebuyBlindLevel,
                 remainRebuyTimes: game.RemainRebuyCount,
