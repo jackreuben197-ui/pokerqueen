@@ -543,18 +543,11 @@ export default class UITexasSettingComponent extends UIBase {
     onValueChangedVoice() {
         let closeVoice = cc.find('Background/closeVoice', this.Toggle_Voice);
         let openVoice = cc.find('Background/openVoice', this.Toggle_Voice);
-        SoundComponent.Instance.soundOn = !SoundComponent.Instance.soundOn;
-        openVoice.active = SoundComponent.Instance.soundOn == true;
-        closeVoice.active = SoundComponent.Instance.soundOn == false;
-        // this.soundIsOpen = !this.soundIsOpen
-        // if (this.soundIsOpen) {
-        //     closeVoice.active = false
-        //     openVoice.active = true;
-        // } else {
-        //     closeVoice.active = true
-        //     openVoice.active = false;
-        // }
-        GC.localStore.setItem(StorageKey.soundIsOpen, SoundComponent.Instance.soundOn ? 1 + '' : 0 + '');
+        let newOn = !SoundComponent.Instance.soundOn;
+        SoundComponent.Instance.setSoundOn(newOn);
+        openVoice.active = newOn;
+        closeVoice.active = !newOn;
+        GC.localStore.setItem(StorageKey.soundIsOpen, newOn ? 1 + '' : 0 + '');
     }
 
     public static GetCurQuickActionNumValue(index) {
