@@ -1,27 +1,17 @@
 const { ccclass, property, menu } = cc._decorator;
 
-/**
- * startTimer 的命名参数接口定义
- */
+export enum PathType {
+    Circle = 0,         // 正圆
+    RoundRect = 1,      // 圆角矩形
+    Custom = 2          // 自定义
+}
+
 export interface ITimerOptions {
     totalTime: number;                  // 倒计时总时长（秒）
     stepInterval?: number;              // 步长回调间隔（秒），不传或传 0 则完全关闭
     elapsedTime?: number;               // 已经走过的时间（秒），默认 0
     onComplete?: () => void;            // 结束回调
     onStep?: (remainingTime: number) => void; // 步长回调
-}
-
-function generateDefaultCirclePoints(): cc.Vec2[] {
-    const pts: cc.Vec2[] = [];
-    const count = 24;
-    for (let i = 0; i < count; i++) {
-        let angle = 90 - (i / count) * 360;
-        let radian = angle * Math.PI / 180;
-        let x = Math.round(Math.cos(radian) * 50 * 100) / 100;
-        let y = Math.round(Math.sin(radian) * 50 * 100) / 100;
-        pts.push(new cc.Vec2(x, y));
-    }
-    return pts;
 }
 
 @ccclass
@@ -35,16 +25,28 @@ export default class ShiningPathTimer extends cc.Component {
     public handle: cc.Node = null;        
 
     @property({
-        type: [cc.Vec2],
-        tooltip: "标准 100x100 空间内的控制点。"
+        type: cc.Enum(PathType),
+        tooltip: "选择倒计时跑道的几何形状：Circle(正圆), RoundRect(圆角矩形), Custom(自定义)"
     })
-    public standardPoints: cc.Vec2[] = generateDefaultCirclePoints();
+    public pathType: PathType = PathType.Circle;
+
+    // 修改：重命名为边框宽度，语义更清晰
+    @property({
+        type: cc.Float,
+        tooltip: "UI贴图中边框路径的绝对宽度（像素）。代码会自动将圆点居中对齐到该边框的中心线上"
+    })
+    public pathThickness: number = 0;
+
+    @property({
+        type: [cc.Vec2],
+        tooltip: "当 pathType 选择为 Custom 时，才会读取此处的自定义标准 100x100 点"
+    })
+    public standardPoints: cc.Vec2[] = [];
 
     @property({
         type: cc.Integer,
         tooltip: "指定哪个控制点索引作为起点"
     })
-    public startIndex: number = 0;
 
     private _totalTime: number = 15;
     private _stepInterval: number = 1.0;
@@ -66,16 +68,52 @@ export default class ShiningPathTimer extends cc.Component {
         this.initPathGeometry();
     }
 
-    /**
-     * 纯几何打点初始化
-     */
-    private initPathGeometry(): void {
-        if (!this.standardPoints || this.standardPoints.length < 2) return;
+    private generateCirclePoints(): cc.Vec2[] {
+        const pts: cc.Vec2[] = [];
+        const count = 24;
+        for (let i = 0; i < count; i++) {
+            let angle = 90 - (i / count) * 360;
+            let radian = angle * Math.PI / 180;
+            let x = Math.round(Math.cos(radian) * 50 * 100) / 100;
+            let y = Math.round(Math.sin(radian) * 50 * 100) / 100;
+            pts.push(cc.v2(x, y));
+        }
+        return pts;
+    }
 
-        const firstStd = this.standardPoints[0];
-        const lastStd = this.standardPoints[this.standardPoints.length - 1];
+    private generateRoundRectPoints(): cc.Vec2[] {
+        return [
+            cc.v2(0, 50),     
+            cc.v2(35, 50),    
+            cc.v2(46, 46),    
+            cc.v2(50, 35),    
+            cc.v2(50, -35),   
+            cc.v2(46, -46),   
+            cc.v2(35, -50),   
+            cc.v2((-35), -50), 
+            cc.v2((-46), -46), 
+            cc.v2((-50), -35), 
+            cc.v2((-50), 35),  
+            cc.v2((-46), 46)   
+        ];
+    }
+
+    private initPathGeometry(): void {
+        let activePts: cc.Vec2[] = [];
+
+        if (this.pathType === PathType.Circle) {
+            activePts = this.generateCirclePoints();
+        } else if (this.pathType === PathType.RoundRect) {
+            activePts = this.generateRoundRectPoints();
+        } else {
+            if (!this.standardPoints || this.standardPoints.length < 2) return;
+            activePts = this.standardPoints.slice();
+        }
+
+        const firstStd = activePts[0];
+        const lastStd = activePts[activePts.length - 1];
         if (!firstStd.equals(lastStd)) {
-            this.standardPoints.push(cc.v2(firstStd.x, firstStd.y));
+            activePts.push(cc.v2(firstStd.x, firstStd.y));
         }
 
         const realWidth = this.node.width;
@@ -83,10 +121,23 @@ export default class ShiningPathTimer extends cc.Component {
         const scaleX = realWidth / 100;
         const scaleY = realHeight / 100;
 
+        // 计算基于边框厚度的绝对物理缩进量（向中心内缩，所以是负值）
+        const calculatedOffset = -this.pathThickness * 0.5;
+
         this._realPoints = [];
-        for (let i = 0; i < this.standardPoints.length; i++) {
-            let stdPt = this.standardPoints[i];
-            this._realPoints.push(cc.v2(stdPt.x * scaleX, stdPt.y * scaleY));
+        for (let i = 0; i < activePts.length; i++) {
+            let stdPt = activePts[i];
+            let realX = stdPt.x * scaleX;
+            let realY = stdPt.y * scaleY;
+            
+            // 只有当设定了边框宽度时，才应用中心线对齐算法
+            if (calculatedOffset !== 0) {
+                let dirFromCenter = cc.v2(realX, realY).normalize();
+                realX += dirFromCenter.x * calculatedOffset;
+                realY += dirFromCenter.y * calculatedOffset;
+            }
+
+            this._realPoints.push(cc.v2(realX, realY));
         }
 
         this._segmentLengths = [];
@@ -103,20 +154,13 @@ export default class ShiningPathTimer extends cc.Component {
             accumulatedLength += this._segmentLengths[i];
             this._pointProgressRatios.push(accumulatedLength / this._totalPathLength);
         }
-
-        if (this.startIndex < 0 || this.startIndex >= this._pointProgressRatios.length) {
-            this.startIndex = 0;
-        }
-        this._startProgressOffset = this._pointProgressRatios[this.startIndex];
+        this._startProgressOffset = this._pointProgressRatios[0];
 
         if (this.progressBar) {
             this.progressBar.fillStart = 0; 
         }
     }
 
-    /**
-     * 开启路径倒计时入口
-     */
     public startTimer(options: ITimerOptions): void {
         if (this._realPoints.length < 2) return;
 
@@ -141,9 +185,6 @@ export default class ShiningPathTimer extends cc.Component {
         this.updateVisual(this._currentTime / this._totalTime);
     }
 
-    /**
-     * 中途延长时间方法
-     */
     public extendTime(extendedSeconds: number): void {
         if (!this._isCounting && this._currentTime <= 0) return;
 
@@ -164,37 +205,24 @@ export default class ShiningPathTimer extends cc.Component {
         }
     }
 
-    /**
-     * 停止倒计时：立刻停止 update 计数，但画面（小圆点、进度条）死死定格在当前的最新状态。
-     */
     public stop(): void {
         this._isCounting = false;
     }
 
-    /**
-     * 暂停倒计时：功能与 stop 类似，但语义上用于后续还会通过 resume 恢复的场景。
-     */
     public pause(): void {
         this._isCounting = false;
     }
 
-    /**
-     * 恢复倒计时：从被 pause 或 stop 锁定的当前时间和位置，继续平滑往下走。
-     */
     public resume(): void {
         if (this._isCounting || this._currentTime <= 0) return;
         this._isCounting = true;
     }
 
-    /**
-     * 重置并彻底清空计时器：画面归零。
-     */
     public reset(): void {
         this._isCounting = false;
         this._currentTime = 0;
         this._onCompleteCallback = null;
         this._onStepCallback = null;
-        
         if (this.progressBar) {
             this.progressBar.fillRange = 0;
         }
@@ -221,9 +249,6 @@ export default class ShiningPathTimer extends cc.Component {
         this.updateVisual(this._currentTime / this._totalTime);
     }
 
-    /**
-     * 纯几何映射驱动渲染
-     */
     private updateVisual(timeProgress: number): void {
         if (!this.handle || this._realPoints.length < 2) return;
 

@@ -9,7 +9,7 @@ import { AnimateDisplayTypeAction, AnimateDisplayTypeButton, AnimateDisplayTypeC
 import TexasGameRoomDataPlayer from '../../texas/data/TexasGameRoomDataPlayer';
 import TexasGameRoomDataPlayerMine from '../../texas/data/TexasGameRoomDataPlayerMine';
 import { Def } from '../../../../protobuf/holdem/define_pb';
-import { Operator } from '../../texas/data/model/Operator';
+import { Operator, OperatorMine } from '../../texas/data/model/Operator';
 const LN = '[EnterRoom]';
 
 // EnterRoom 1002
@@ -63,9 +63,24 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
         data.operatorList.forEach(operator => {
             if (mine && operator.seatId == mine.seatedPlayer.seatNo) {
                 //@TODO 本人操作的准备
-                //mine.prepareAction(operator.ActionLimit, AnimateDisplayType)
-                //mine.prepareInsurance();
-                //mine.prepareAgreeSecondPubcards();
+                let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
+                let op = new OperatorMine();
+                op.alreadyDelayTImes = operator.delayTimes;
+                op.deadlineTImestamp = operator.opDeadline;
+                op.leftOpDuration = operator.leftOpTime;
+                op.totalOpDuration = roomData.basicInfo.opDuration;
+                op.actionLimitList = operator.actionsList;
+                op.insurancePotInvalidList = operator.invalidInsurancePotsList;
+                op.insurancePotLimitList = operator.insuranceLimitList;
+                op.playerCardsList = operator.playerCardsList;
+                if (operator.isInsurance) {
+                    op.opType = 2;
+                }else if (operator.isAgreeSecondPc) {
+                    op.opType = 3;
+                }else {
+                    op.opType = 1;
+                }
+                seatData.prepareOperation(op);
             }else{
                 let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
                 let op = new Operator();
@@ -83,7 +98,6 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
                 seatData.prepareOperation(op);
             }
         })
-       
         await SceneManager.Instance.switchScene<UIRoomTexasEnterParam>(UIDefine.UIRoomTexas, null, {
             roomID: roomID,
             matchID: matchID,

@@ -67,6 +67,8 @@ const { ccclass, property, menu, executeInEditMode } = cc._decorator;
 @menu('CrazyPoker/Common/CardView')
 export default class CardView extends cc.Component {
     private cardSprite: cc.Sprite = null;
+    @property(cc.Node)
+    private highLightSprite: cc.Node = null;
     // 将原本的属性改为私有变量，作为存取器的内部数据载体
     private _cardNum: number = 10;
     public get cardNum(): number {
@@ -95,6 +97,12 @@ export default class CardView extends cc.Component {
         this.cardSprite = node;
         this._bgSf = AssetContext.getAsset<cc.SpriteFrame>(GameplayUtil.CardNoToLocalResource(0),  AssetFold.texture_BigCard1);
         this.refreshCardView();
+    }
+
+    public highlight(b: boolean) {
+        if (this.highLightSprite){
+            this.highLightSprite.active = !b;
+        }
     }
 
     /**

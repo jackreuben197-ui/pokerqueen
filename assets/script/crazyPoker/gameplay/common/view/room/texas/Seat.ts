@@ -4,6 +4,7 @@ import { Def } from "../../../../../../protobuf/holdem/define_pb";
 import { AnimateDisplayTypeAction, AnimateDisplayTypeCards, AnimateDisplayTypePosition, AnimateDisplayTypeRoundBet } from "../../../../texas/constants/AnimateDisplayType";
 import { Operator } from "../../../../texas/data/model/Operator";
 import TexasGameRoomDataPlayer from "../../../../texas/data/TexasGameRoomDataPlayer";
+import TexasGameRoomDataPlayerMine from "../../../../texas/data/TexasGameRoomDataPlayerMine";
 import { SeatPosition } from "../../../../texas/data/TexasGameRoomDataSeatsStateManager";
 import UIViewUtil from "../../../util/UIViewUtil";
 import CardView from "../../common/CardView";
@@ -64,6 +65,8 @@ export default class Seat extends cc.Component {
     private seatActionDisplay: SeatAction = null;
     @property(ShiningPathTimer)
     private otherPersonActionCountdown: ShiningPathTimer = null;
+    @property(sp.Skeleton)
+    private winAnimation: sp.Skeleton = null;
     private _seatPlayer: TexasGameRoomDataPlayer;
     private _cardBacks: cc.Node[] = [];
     private _bigCards: CardView[] = [];
@@ -117,6 +120,9 @@ export default class Seat extends cc.Component {
         this._seatPlayer.on(TexasGameRoomDataPlayer.CARDS_CHANGE, this.onUpdateCards,this);
         this._seatPlayer.on(TexasGameRoomDataPlayer.ACTION_CHANGE, this.onUpdateAction,this);
         this._seatPlayer.on(TexasGameRoomDataPlayer.PREPARE_OPERATION, this.onPrepareAction,this);
+        this._seatPlayer.on(TexasGameRoomDataPlayer.WINNER, this.onWin,this);
+        this._seatPlayer.on(TexasGameRoomDataPlayerMine.HIGHLIGHT_CARDS, this.onHighlightCards, this);
+
         if (this._seatPlayer.userID > 0) {
             this.onUpdateNickname( this._seatPlayer.name);
             this.onUpdateAvatar( this._seatPlayer.avatar);
@@ -250,6 +256,10 @@ export default class Seat extends cc.Component {
 
     private onUpdateCards(cards: number[], atc: AnimateDisplayTypeCards) {
         const l = cards.length;
+        // reset
+        if (l == 0) {
+            this._bigCards.forEach(v => v.highlight(false));
+        }
         if (l > 0 && this._seatPlayer._action == Def.Action.FOLD) {
             this.smallCardsContainer.active = false;
             if (this._seatPlayer.isMine) {
@@ -262,6 +272,7 @@ export default class Seat extends cc.Component {
         const hasShowCard = cards.filter(v => v != 0).length > 0;
         // 如果是显示牌
         if (hasShowCard && (atc == AnimateDisplayTypeCards.Static || atc == AnimateDisplayTypeCards.ShowCards)) {
+            console.log(LN, 'show cards', cards);
             //动作相关隐藏掉
             this.seatActionDisplay.node.active = false;
             //牌面展示
@@ -401,7 +412,6 @@ export default class Seat extends cc.Component {
         case SeatPosition.BottomMiddle:
             this.buttonIcon.setPosition(-160, -120);
             this.roudBetIcon.setPosition(-25, 0);
-            
             this.smallCardsContainer.setPosition(-160,5);
             if (!this._seatPlayer.isMine) {
                 this.roundBetNode.setPosition(0,180);
@@ -433,13 +443,6 @@ export default class Seat extends cc.Component {
             this.bigCardsContainer.setScale(0.8,0.8);
             break;
         case SeatPosition.TopMiddle:
-            this.buttonIcon.setPosition(65, -220);
-            this.roudBetIcon.setPosition(133, 0);
-            this.roundBetNode.setPosition(-85,-215);
-            this.smallCardsContainer.setPosition(-160,5);
-            this.bigCardsContainer.setPosition(0,18);
-            this.bigCardsContainer.setScale(0.8,0.8);
-            break;
         case SeatPosition.TopRight1:
             this.buttonIcon.setPosition(65, -220);
             this.roudBetIcon.setPosition(133, 0);
@@ -459,7 +462,6 @@ export default class Seat extends cc.Component {
             this.bigCardsContainer.setPosition(0,18);
             this.bigCardsContainer.setScale(0.8,0.8);
             break;
-        
         }
         let realPos = seatArrange[pos];
         if (pat == AnimateDisplayTypePosition.ToTarget) {
@@ -490,8 +492,51 @@ export default class Seat extends cc.Component {
         });
     }
 
+    private onWin() {
+        this.animatingChips.active = true;
+        const startPos = UIViewUtil.caculatePostion(this.animatingChips, this._potNode);
+        const endPos = new cc.Vec3(0,0,0);
+        this.animatingChips.setPosition(startPos);
+        this.animatingChips.setScale(1.5,1.5);
+        cc.tween(this.animatingChips)
+            .to(1.0,
+                {
+                    x: endPos.x,
+                    y: endPos.y,
+                    scaleX:1,
+                    scaleY:1,
+                },
+                {
+                    easing: 'cubicOut',
+                }
+            )
+            .call(()=>{
+                this.animatingChips.active = false;
+            })
+            .start();
+        this.winAnimation.node.active = true;
+        this.winAnimation.setAnimation(0, 'animation', false);
+        this.winAnimation.setCompleteListener(() => {
+                //cc.log("动画结束");
+                this.winAnimation.node.active = false;
+            });
+        return;
+    }
+
+    private onHighlightCards(cardsNum: number[]) {
+        const mp: Set<number> = new Set();
+        cardsNum.forEach(v => mp.add(v));
+        this._bigCards.forEach(cd => {
+            if (mp.has(cd.cardNum)) {
+                cd.highlight(true);
+            }else{
+                cd.highlight(false);
+            }
+        })
+    }
+
     private onUpdateEmpty() {
-        console.log('empty');
+        console.log(LN,'empty');
         this._enableDisableUser(false);
     } 
 

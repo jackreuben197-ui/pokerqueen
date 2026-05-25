@@ -30,6 +30,10 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
         return this.myInfo != null;
     }
 
+    public getMine(): TexasGameRoomDataPlayerMine {
+        return this.myInfo;
+    }
+
     public static readonly ACTION_CHANGE = 'ACTION_CHANGE';
     public _action: Def.ActionMap[keyof Def.ActionMap];
     public get action() { return this._action};
@@ -141,6 +145,11 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
         //this._chipsWithStore = null;
         this._cards = [];
         this.emit(TexasGameRoomDataPlayer.EMPTY_SEAT);
+    }
+
+    public static readonly WINNER = 'WINNER';
+    public claimWin() {
+        this.emit(TexasGameRoomDataPlayer.WINNER);
     }
 
     public handClear() {

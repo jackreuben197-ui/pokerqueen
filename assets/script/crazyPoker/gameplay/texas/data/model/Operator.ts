@@ -26,10 +26,10 @@ export class Operator  {
 
 export class OperatorMine extends Operator{
     // 正常
-    public actionLimit?: ActionLimit.AsObject[];
+    public actionLimitList?: ActionLimit.AsObject[];
     // 保险
-    public insurancePotLimit?: InsurancePotLimit.AsObject[];
-    public insurancePotInvalid?: InsurancePotInvalid.AsObject[];
-    public playerCards: PlayerCards[];
+    public insurancePotLimitList?: InsurancePotLimit.AsObject[];
+    public insurancePotInvalidList?: InsurancePotInvalid.AsObject[];
+    public playerCardsList: PlayerCards.AsObject[];
 }
 

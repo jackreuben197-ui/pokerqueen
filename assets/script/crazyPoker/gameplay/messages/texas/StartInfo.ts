@@ -2,7 +2,7 @@ import { Def, PlayerStartInfo } from '../../../../protobuf/holdem/define_pb';
 import { ServerMessageStartInfo } from '../../../../protobuf/holdem/recv_th_start_info_pb';
 import roomDataManager from '../../common/core/RoomDataManager';
 import { AnimateDisplayTypeAction, AnimateDisplayTypeButton, AnimateDisplayTypeCards, AnimateDisplayTypePublicCards, AnimateDisplayTypeRoundBet } from '../../texas/constants/AnimateDisplayType';
-import { Operator } from '../../texas/data/model/Operator';
+import { Operator, OperatorMine } from '../../texas/data/model/Operator';
 import TexasGameRoomData from '../../texas/data/TexasGameRoomData';
 
 // StartInfo 1103
@@ -44,18 +44,39 @@ export default function StartInfo(data: ServerMessageStartInfo.AsObject, roomID:
     if (data.nextOperator) {
         const operator = data.nextOperator;
         let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
-        let op = new Operator();
-        op.alreadyDelayTImes = operator.delayTimes;
-        op.deadlineTImestamp = operator.opDeadline;
-        op.leftOpDuration = operator.leftOpTime;
-        op.totalOpDuration = roomData.basicInfo.opDuration;
-        if (operator.isInsurance) {
-            op.opType = 2;
-        }else if (operator.isAgreeSecondPc) {
-            op.opType = 3;
-        }else {
-            op.opType = 1;
+        if (seatData.isMine) {
+            let op = new OperatorMine();
+            op.alreadyDelayTImes = operator.delayTimes;
+            op.deadlineTImestamp = operator.opDeadline;
+            op.leftOpDuration = operator.leftOpTime;
+            op.totalOpDuration = roomData.basicInfo.opDuration;
+            op.actionLimitList = operator.actionsList;
+            op.insurancePotInvalidList = operator.invalidInsurancePotsList;
+            op.insurancePotLimitList = operator.insuranceLimitList;
+            op.playerCardsList = operator.playerCardsList;
+            if (operator.isInsurance) {
+                op.opType = 2;
+            }else if (operator.isAgreeSecondPc) {
+                op.opType = 3;
+            }else {
+                op.opType = 1;
+            }
+            let mine = roomData.seatsStateManager.getMine();
+            mine.prepareOperation(op);
+        }else{
+            let op = new Operator();
+            op.alreadyDelayTImes = operator.delayTimes;
+            op.deadlineTImestamp = operator.opDeadline;
+            op.leftOpDuration = operator.leftOpTime;
+            op.totalOpDuration = roomData.basicInfo.opDuration;
+            if (operator.isInsurance) {
+                op.opType = 2;
+            }else if (operator.isAgreeSecondPc) {
+                op.opType = 3;
+            }else {
+                op.opType = 1;
+            }
+            seatData.prepareOperation(op);
         }
-        seatData.prepareOperation(op);
     }
 }

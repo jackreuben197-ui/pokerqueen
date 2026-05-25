@@ -49,14 +49,16 @@ export default class PublicCardsInfo extends cc.Component {
         this._publicCardsData.on(TexasGameRoomDataPublicCards.PUBLICCARDS_CHANGE, this.onUpdatePublicCards, this);
         this._publicCardsData.on(TexasGameRoomDataPublicCards.SECOND_PUBLICCARDS_CHANGE, this.onUpdateSecPublicCards, this);
         this._publicCardsData.on(TexasGameRoomDataPublicCards.ALL_PUBLICCARDS_RESET, this.onUpdateResetPublicCards, this);
+        this._publicCardsData.on(TexasGameRoomDataPublicCards.PUBLICCARDS_HIGHLIGHT, this.onHighlightPublicCards, this);
+        this._publicCardsData.on(TexasGameRoomDataPublicCards.SECOND_PUBLICCARDS_HIGHLIGHT, this.onHighlightSecondPublicCards, this);
         // 初始化
         this.onUpdatePublicCards([], this._publicCardsData.publicCards, AnimateDisplayTypePublicCards.Static);
         this.onUpdateSecPublicCards([], this._publicCardsData.secondPublicCards, AnimateDisplayTypePublicCards.Static);
     }
 
     public onUpdateResetPublicCards() {
-        this._publicCards.forEach(v => v.node.active = false);
-        this._secPublicCards.forEach(v => v.node.active = false);
+        this._publicCards.forEach(v => { v.node.active = false; v.highlight(false)});
+        this._secPublicCards.forEach(v => { v.node.active = false; v.highlight(false)});
     }
 
     private onUpdatePublicCards(prev: number[], plus: number[], pat: AnimateDisplayTypePublicCards) {
@@ -134,6 +136,30 @@ export default class PublicCardsInfo extends cc.Component {
                 return;
             }
             node.animateFlipToFront(v, 0.6);
+        })
+    }
+
+    private onHighlightPublicCards(cardsNum: number[]) {
+        const mp: Set<number> = new Set();
+        cardsNum.forEach(v => mp.add(v));
+        this._publicCards.forEach(cd => {
+            if (mp.has(cd.cardNum)) {
+                cd.highlight(true);
+            }else{
+                cd.highlight(false);
+            }
+        })
+    }
+
+    private onHighlightSecondPublicCards(cardsNum: number[]) {
+        const mp: Set<number> = new Set();
+        cardsNum.forEach(v => mp.add(v));
+        this._publicCards.forEach(cd => {
+            if (mp.has(cd.cardNum)) {
+                cd.highlight(true);
+            }else{
+                cd.highlight(false);
+            }
         })
     }
 

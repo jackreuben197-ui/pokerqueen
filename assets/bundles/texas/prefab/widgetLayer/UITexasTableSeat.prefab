@@ -2425,7 +2425,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "15RX4qO41LCpK/S9/SyIPm",
+    "fileId": "7fVRJkdAFKkYBCjbU7NuWl",
     "sync": false
   },
   {
@@ -2549,129 +2549,10 @@
     "handle": {
       "__id__": 62
     },
-    "standardPoints": [
-      {
-        "__type__": "cc.Vec2",
-        "x": 0,
-        "y": 50
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": 12.94,
-        "y": 48.3
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": 25,
-        "y": 43.3
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": 35.36,
-        "y": 35.36
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": 43.3,
-        "y": 25
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": 48.3,
-        "y": 12.94
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": 50,
-        "y": 0
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": 48.3,
-        "y": -12.94
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": 43.3,
-        "y": -25
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": 35.36,
-        "y": -35.36
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": 25,
-        "y": -43.3
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": 12.94,
-        "y": -48.3
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": 0,
-        "y": -50
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": -12.94,
-        "y": -48.3
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": -25,
-        "y": -43.3
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": -35.36,
-        "y": -35.36
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": -43.3,
-        "y": -25
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": -48.3,
-        "y": -12.94
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": -50,
-        "y": 0
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": -48.3,
-        "y": 12.94
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": -43.3,
-        "y": 25
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": -35.36,
-        "y": 35.36
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": -25,
-        "y": 43.3
-      },
-      {
-        "__type__": "cc.Vec2",
-        "x": -12.94,
-        "y": 48.3
-      }
-    ],
-    "startIndex": 0,
+    "pathType": 0,
+    "pathThickness": 8,
+    "standardPoints": [],
+    "_totalTime": 15,
     "_id": ""
   },
   {
@@ -6288,7 +6169,7 @@
       "__id__": 164
     },
     "_name": "Image_Card0",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
@@ -6409,7 +6290,7 @@
       "__id__": 168
     },
     "_name": "Image_Card1",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
@@ -10598,6 +10479,9 @@
     },
     "otherPersonActionCountdown": {
       "__id__": 65
+    },
+    "winAnimation": {
+      "__id__": 277
     },
     "_id": ""
   },

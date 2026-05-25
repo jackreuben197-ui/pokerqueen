@@ -32,7 +32,19 @@ export default class TexasGameRoomDataPublicCards extends cc.EventTarget {
         this.emit(TexasGameRoomDataPublicCards.SECOND_PUBLICCARDS_CHANGE, old, cards, pat);
     }
 
+    public static PUBLICCARDS_HIGHLIGHT = 'PUBLICCARDS_HIGHLIGHT';
+    public higlightPublicards(cards: number[]) {
+        this.emit(TexasGameRoomDataPublicCards.PUBLICCARDS_HIGHLIGHT, cards);
+    }
+
+    public static SECOND_PUBLICCARDS_HIGHLIGHT = 'SECOND_PUBLICCARDS_HIGHLIGHT';
+    public higlightSecondPublicCards(cards: number[]) {
+        this.emit(TexasGameRoomDataPublicCards.SECOND_PUBLICCARDS_HIGHLIGHT, cards);
+    }
+    
     public handClear() {
         this.resetAllPublicCard();
     }
+
+
 }
