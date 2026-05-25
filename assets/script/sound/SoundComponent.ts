@@ -13,6 +13,7 @@ export default class SoundComponent {
     private _musicId: number = -1;
     private _musicClip: cc.AudioClip = null;
     private _musicVolume: number = 1;
+    private _musicPath: string = '';
     private _cache: Map<string, cc.AudioClip> = new Map();
 
     initSound() {
@@ -34,6 +35,8 @@ export default class SoundComponent {
     /** 播放背景音乐，支持指定音量 (0.0 ~ 1.0) */
     playMusicWithVolume(path: string, volume: number = 1) {
         this._musicVolume = volume;
+        this._musicPath = path;
+        if (!this.soundOn) return;
         this._playAudio(path, true);
     }
 
@@ -42,6 +45,20 @@ export default class SoundComponent {
         if (this._musicId !== -1) {
             cc.audioEngine.stop(this._musicId);
             this._musicId = -1;
+        }
+    }
+
+    /** 设置音效开关，同时控制 BGM */
+    setSoundOn(on: boolean) {
+        this.soundOn = on;
+        if (on) {
+            // 恢复 BGM
+            if (this._musicPath && this._musicId === -1) {
+                this._playAudio(this._musicPath, true);
+            }
+        } else {
+            // 关闭 BGM
+            this.stopMusic();
         }
     }
 

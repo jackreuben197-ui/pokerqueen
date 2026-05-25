@@ -211,7 +211,7 @@ export default class MTTGameProtocol extends TexasGameProtocol {
         (this.game as MTTGame).ClearRoundDate(4000);
     }
 
-    Protocol_Holdem_HandClear_Handler(rec) {
+    Protocol_Holdem_HandClear_Handler(rec: ServerMessageHandClear.AsObject) {
         if (rec == null) return;
         this.HandleRoundFinish(null);
     }
