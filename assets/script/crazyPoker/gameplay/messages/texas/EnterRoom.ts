@@ -8,7 +8,7 @@ import { UIRoomTexasEnterParam } from '../../common/view/room/texas/UIRoomTexas'
 import { AnimateDisplayTypeAction, AnimateDisplayTypeButton, AnimateDisplayTypeCards, AnimateDisplayTypePublicCards, AnimateDisplayTypeRoundBet } from '../../texas/constants/AnimateDisplayType';
 import TexasGameRoomDataPlayer from '../../texas/data/TexasGameRoomDataPlayer';
 import TexasGameRoomDataPlayerMine from '../../texas/data/TexasGameRoomDataPlayerMine';
-import { Def } from '../../../../protobuf/holdem/define_pb';
+import { Def, SidePot } from '../../../../protobuf/holdem/define_pb';
 import { Operator, OperatorMine } from '../../texas/data/model/Operator';
 const LN = '[EnterRoom]';
 

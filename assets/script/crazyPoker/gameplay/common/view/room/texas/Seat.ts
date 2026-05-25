@@ -25,9 +25,13 @@ const seatArrange: Record<SeatPosition, cc.Vec3> = {
     [SeatPosition.TopRight]:     cc.v3(480, -730),   // 7 右上
     [SeatPosition.MiddleRight]:  cc.v3(480, -1130),  // 8 右中
     [SeatPosition.BottomRight]:  cc.v3(480, -1585),   // 9 右下
-    [SeatPosition.TopLeft7]:  cc.v3(-480, -970),  // 8 7 人桌的修正
-    [SeatPosition.TopRight7]:  cc.v3(480, -970)   // 9 7 人桌的修正
+    [SeatPosition.TopLeft7]:  cc.v3(-480, -1065),  // 8 7 人桌的修正
+    [SeatPosition.TopRight7]:  cc.v3(480, -1065)   // 9 7 人桌的修正
 };
+
+const redColor = cc.Color.fromHEX(new cc.Color, '#FA2B4B');
+const greenColor = cc.Color.fromHEX(new cc.Color, '#78E4E4');
+const yellowColor = cc.Color.fromHEX(new cc.Color, '#F9CA9F');
 
 const LN = '[Seat]';
 
@@ -128,8 +132,9 @@ export default class Seat extends cc.Component {
             this.onUpdateAvatar( this._seatPlayer.avatar);
             this.onUpdateChip( this._seatPlayer.chip);
             this.onRoundBetChange(this._seatPlayer.roundBet, AnimateDisplayTypeRoundBet.Static);
-            this.onUpdateCards(this._seatPlayer.cards, AnimateDisplayTypeCards.Static);
+            //@TODO 先更新action避免覆盖(以后优化)
             this.onUpdateAction(this._seatPlayer.action, AnimateDisplayTypeAction.Static);
+            this.onUpdateCards(this._seatPlayer.cards, AnimateDisplayTypeCards.Static);
             this.onPrepareAction(this._seatPlayer.operator);
         }else{
             this.onUpdateEmpty();
@@ -172,11 +177,11 @@ export default class Seat extends cc.Component {
         switch(action) {
         case Def.Action.BET:
             this.seatActionDisplay.node.active = true;
-            this.seatActionDisplay.showAction(i18nMgr.Get('UITexas_Bet'));
+            this.seatActionDisplay.showAction(i18nMgr.Get('UITexas_Bet'), greenColor);
             break;
         case Def.Action.CALL:
             this.seatActionDisplay.node.active = true;
-            this.seatActionDisplay.showAction(i18nMgr.Get('adaptation10044'));
+            this.seatActionDisplay.showAction(i18nMgr.Get('adaptation10044'), yellowColor);
             break;
         case Def.Action.FOLD:
             this.seatActionDisplay.node.active = true;
@@ -186,7 +191,7 @@ export default class Seat extends cc.Component {
                     const startPos = this.bigCardsContainer.position;
                     const endPos = UIViewUtil.caculatePostion(this.bigCardsContainer, this._dealNode);
                     cc.tween(this.bigCardsContainer)
-                        .to(0.6, {x:endPos.x, y:endPos.y, scaleX:0, scaleY:0, opacity: 0}, {easing: 'cubicOut'})
+                        .to(0.8, {x:endPos.x, y:endPos.y, scaleX:0, scaleY:0}, {easing: 'cubicOut'})
                         .call(()=>{
                             this.bigCardsContainer.setScale(1,1);
                             this.bigCardsContainer.setPosition(startPos);
@@ -209,15 +214,15 @@ export default class Seat extends cc.Component {
             break;
         case Def.Action.CHECK:
             this.seatActionDisplay.node.active = true;
-            this.seatActionDisplay.showAction(i18nMgr.Get('adaptation10046'));
+            this.seatActionDisplay.showAction(i18nMgr.Get('adaptation10046'), yellowColor);
             break;
         case Def.Action.RAISE:
             this.seatActionDisplay.node.active = true;
-            this.seatActionDisplay.showAction(i18nMgr.Get('adaptation10045'));
+            this.seatActionDisplay.showAction(i18nMgr.Get('adaptation10045'), greenColor);
             break;
         case Def.Action.ALLIN: 
             this.seatActionDisplay.node.active = true;
-            this.seatActionDisplay.showAction(i18nMgr.Get('adaptation30074'));
+            this.seatActionDisplay.showAction(i18nMgr.Get('adaptation30074'), redColor);
             break;
         default:
             this.seatActionDisplay.node.active =false;
@@ -254,7 +259,8 @@ export default class Seat extends cc.Component {
         this.roundBetNode.active = false;
     }
 
-    private onUpdateCards(cards: number[], atc: AnimateDisplayTypeCards) {
+    // AnimateDisplayTypeCards.Deal 时候还会有order
+    private onUpdateCards(cards: number[], atc: AnimateDisplayTypeCards, order?: number) {
         const l = cards.length;
         // reset
         if (l == 0) {
@@ -272,7 +278,6 @@ export default class Seat extends cc.Component {
         const hasShowCard = cards.filter(v => v != 0).length > 0;
         // 如果是显示牌
         if (hasShowCard && (atc == AnimateDisplayTypeCards.Static || atc == AnimateDisplayTypeCards.ShowCards)) {
-            console.log(LN, 'show cards', cards);
             //动作相关隐藏掉
             this.seatActionDisplay.node.active = false;
             //牌面展示
@@ -342,12 +347,13 @@ export default class Seat extends cc.Component {
             //其他人
             if (!this._seatPlayer.isMine) {
                 // 转化为本地的
+                this._dealNode.active =false;
                 const startPos = UIViewUtil.caculatePostion(this.smallCardsContainer, this._dealNode);
                 const endPos = this.smallCardsContainer.position;
                 this.smallCardsContainer.setPosition(startPos);
-                this.smallCardsContainer.setScale(0,0);
-                this.smallCardsContainer.opacity = 0;
+                this.bigCardsContainer.setScale(0.5,0.5);
                 cc.tween(this.smallCardsContainer)
+                    .delay(order * 0.2)
                     .to(0.5, {
                         x: endPos.x,          // 目标 X 坐标
                         y: endPos.y,          // 目标 Y 坐标
@@ -356,7 +362,7 @@ export default class Seat extends cc.Component {
                         scaleY: 1,      // 目标垂直缩放：放大至1.2倍
                     }, { easing: 'cubicOut' })
                     .call(() => {
-                        
+                        this._dealNode.active =false;
                     })
                     .start();
             }
@@ -364,9 +370,9 @@ export default class Seat extends cc.Component {
             const startPos = UIViewUtil.caculatePostion(this.bigCardsContainer, this._dealNode);
             const endPos = this.bigCardsContainer.position;
             this.bigCardsContainer.setPosition(startPos);
-            this.bigCardsContainer.setScale(0,0);
-            this.bigCardsContainer.opacity = 0;
+            this.bigCardsContainer.setScale(0.5,0.5);
             cc.tween(this.bigCardsContainer)
+                .delay(order * 0.2)
                 .to(0.5, {
                     x: endPos.x,          // 目标 X 坐标
                     y: endPos.y,          // 目标 Y 坐标
@@ -375,6 +381,7 @@ export default class Seat extends cc.Component {
                     scaleY: 1,      // 目标垂直缩放：放大至1.2倍
                 }, { easing: 'cubicOut' })
                 .call(() => {
+                    this._dealNode.active =false;
                     if (this._seatPlayer.delayViewCard) return;
                     animateCards.forEach( nd => {
                         nd.animateFlipToFront(nd.storeCardNum, 0.6);
@@ -477,7 +484,7 @@ export default class Seat extends cc.Component {
     }
 
     private onPrepareAction(oper: Operator) {
-        console.log(LN, oper, this._seatPlayer.seatNo);
+        // console.log(LN, oper, this._seatPlayer.seatNo);
         if (!oper) {
             return;
         }
@@ -486,7 +493,6 @@ export default class Seat extends cc.Component {
             totalTime: oper.totalOpDuration,
             elapsedTime: oper.totalOpDuration-oper.leftOpDuration,
             onComplete: () => {
-                console.log(LN, 'onPrepareAction')
                 this.otherPersonActionCountdown.node.active= false;
             }
         });

@@ -61,14 +61,15 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
         return this._cards;
     }
 
-    public updateCards(c: number[], cte: AnimateDisplayTypeCards = AnimateDisplayTypeCards.Static) {
+    public updateCards(c: number[], cte: AnimateDisplayTypeCards = AnimateDisplayTypeCards.Static, order?:number) {
         if (this._cards.length == c.length) {
             if (this._cards.filter((v, i) => v != c[i]).length == 0) {
                 return;
             }
         }
         this._cards = c;
-        this.emit(TexasGameRoomDataPlayer.CARDS_CHANGE, this._cards, cte);
+        if (!order) order = 0;
+        this.emit(TexasGameRoomDataPlayer.CARDS_CHANGE, this._cards, cte, order);
     }
 
     public static readonly NICKNAME_CHANGE = 'NICKNAME_CHANGE';
@@ -162,5 +163,13 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
         }
     }
 
-    
+    public roundClear() {
+        if (this.userID > 0) {
+            if (this.action != Def.Action.FOLD && this.action != Def.Action.ALLIN) {
+                this.setAction(Def.Action.READY, AnimateDisplayTypeAction.Done);
+            }
+            this.setRoundBet(0, AnimateDisplayTypeRoundBet.Static);
+            this.roundActioned = false;
+        }
+    }
 }

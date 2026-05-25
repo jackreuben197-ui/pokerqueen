@@ -101,7 +101,7 @@ export default class CardView extends cc.Component {
 
     public highlight(b: boolean) {
         if (this.highLightSprite){
-            this.highLightSprite.active = !b;
+            this.highLightSprite.active = b;
         }
     }
 

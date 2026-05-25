@@ -30,9 +30,9 @@ export default function StartInfo(data: ServerMessageStartInfo.AsObject, roomID:
         seatData.handBet = 0;
         seatData.roundActioned = false;
         if (player.cardsList.length == 0) {
-            seatData.updateCards([...defaultHandCards], AnimateDisplayTypeCards.Deal);
+            seatData.updateCards([...defaultHandCards], AnimateDisplayTypeCards.Deal, i);
         }else{
-            seatData.updateCards(player.cardsList, AnimateDisplayTypeCards.Deal);
+            seatData.updateCards(player.cardsList, AnimateDisplayTypeCards.Deal, i);
         }
         seatData.setAction(player.action, AnimateDisplayTypeAction.Static);
         seatData.deposit = player.deposit;

@@ -13,6 +13,7 @@ export default function PublicCards(data: ServerMessagePublicCards.AsObject, roo
     }else if (data.extPublicCardsArrayList.length > 0) {
         roomData.publicCards.addSecondPublicCards(data.extPublicCardsArrayList, AnimateDisplayTypePublicCards.Deal);
     }
+    roomData.seatsStateManager.roundClear();
     if (data.nextOperator) {
         const operator = data.nextOperator;
         let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
