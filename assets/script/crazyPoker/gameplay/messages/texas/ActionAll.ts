@@ -3,7 +3,6 @@ import roomDataManager from '../../common/core/RoomDataManager';
 import { AnimateDisplayTypeAction, AnimateDisplayTypeRoundBet } from '../../texas/constants/AnimateDisplayType';
 import { Operator, OperatorMine } from '../../texas/data/model/Operator';
 import TexasGameRoomData from '../../texas/data/TexasGameRoomData';
-import Action from './Action';
 
 // ActionAll 1108
 export default function ActionAll(data: ServerMessageActionAll.AsObject, roomID: number, matchID: number) {
@@ -19,7 +18,7 @@ export default function ActionAll(data: ServerMessageActionAll.AsObject, roomID:
     if (data.nextOperator) {
         const operator = data.nextOperator;
         let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
-        if (seatData.isMine) {
+        if (seatData.mine) {
             let op = new OperatorMine();
             op.alreadyDelayTImes = operator.delayTimes;
             op.deadlineTImestamp = operator.opDeadline;
@@ -36,8 +35,7 @@ export default function ActionAll(data: ServerMessageActionAll.AsObject, roomID:
             }else {
                 op.opType = 1;
             }
-            let mine = roomData.seatsStateManager.getMine();
-            mine.prepareOperation(op);
+            seatData.mine.prepareOperation(op);
         }else{
             let op = new Operator();
             op.alreadyDelayTImes = operator.delayTimes;

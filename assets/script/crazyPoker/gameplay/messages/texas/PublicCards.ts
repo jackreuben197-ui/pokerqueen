@@ -17,7 +17,7 @@ export default function PublicCards(data: ServerMessagePublicCards.AsObject, roo
     if (data.nextOperator) {
         const operator = data.nextOperator;
         let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
-        if (seatData.isMine) {
+        if (seatData.mine) {
             let op = new OperatorMine();
             op.alreadyDelayTImes = operator.delayTimes;
             op.deadlineTImestamp = operator.opDeadline;
@@ -34,8 +34,7 @@ export default function PublicCards(data: ServerMessagePublicCards.AsObject, roo
             }else {
                 op.opType = 1;
             }
-            let mine = roomData.seatsStateManager.getMine();
-            mine.prepareOperation(op);
+            seatData.mine.prepareOperation(op);
         }else{
             let op = new Operator();
             op.alreadyDelayTImes = operator.delayTimes;

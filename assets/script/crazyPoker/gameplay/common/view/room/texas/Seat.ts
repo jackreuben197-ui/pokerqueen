@@ -152,7 +152,7 @@ export default class Seat extends cc.Component {
         // @TIP 用更新用户名,来被动控制显示和消失用户信息
         this._enableDisableUser(true);
         // 自己不显示名字
-        if (this._seatPlayer.isMine) {
+        if (this._seatPlayer.mine) {
             this.nickName.node.active = false;
             this.nickNameSplash.active = false;
             return;
@@ -187,7 +187,7 @@ export default class Seat extends cc.Component {
             this.seatActionDisplay.node.active = true;
             this.seatActionDisplay.fold(i18nMgr.Get('adaptation10047'));
             if (aat == AnimateDisplayTypeAction.Done) {
-                if (this._seatPlayer.isMine) {
+                if (this._seatPlayer.mine) {
                     const startPos = this.bigCardsContainer.position;
                     const endPos = UIViewUtil.caculatePostion(this.bigCardsContainer, this._dealNode);
                     cc.tween(this.bigCardsContainer)
@@ -268,7 +268,7 @@ export default class Seat extends cc.Component {
         }
         if (l > 0 && this._seatPlayer._action == Def.Action.FOLD) {
             this.smallCardsContainer.active = false;
-            if (this._seatPlayer.isMine) {
+            if (this._seatPlayer.mine) {
                 this.bigCardsContainer.active = false;
             }
         }else{
@@ -301,7 +301,7 @@ export default class Seat extends cc.Component {
         }
         const animateCards: CardView[] = [];
         //其他人
-        if (!this._seatPlayer.isMine) {
+        if (!this._seatPlayer.mine) {
             // 全部显示牌隐藏
             this._bigCards.forEach(v => v.node.parent.active = false)
             // 背面(显示)
@@ -345,7 +345,7 @@ export default class Seat extends cc.Component {
         }
         if (atc == AnimateDisplayTypeCards.Deal) {
             //其他人
-            if (!this._seatPlayer.isMine) {
+            if (!this._seatPlayer.mine) {
                 // 转化为本地的
                 this._dealNode.active =false;
                 const startPos = UIViewUtil.caculatePostion(this.smallCardsContainer, this._dealNode);
@@ -414,16 +414,16 @@ export default class Seat extends cc.Component {
 
     // onUpdatePosition 位置变动导致的动画/位置调整
     private onUpdatePosition(pos: SeatPosition, pat: AnimateDisplayTypePosition) {
-        // console.log(LN, 'update positon', this._seatPlayer.isMine, this._seatPlayer.seatNo)
+        // console.log(LN, 'update positon', this._seatPlayer.mine, this._seatPlayer.seatNo)
         switch(pos){
         case SeatPosition.BottomMiddle:
             this.buttonIcon.setPosition(-160, -120);
             this.roudBetIcon.setPosition(-25, 0);
             this.smallCardsContainer.setPosition(-160,5);
-            if (!this._seatPlayer.isMine) {
+            if (!this._seatPlayer.mine) {
                 this.roundBetNode.setPosition(0,180);
-                this.bigCardsContainer.setPosition(0,18);
-                this.bigCardsContainer.setScale(0.8,0.8);
+                this.bigCardsContainer.setPosition(0,0);
+                this.bigCardsContainer.setScale(0.65,0.65);
             }else{
                 this.roundBetNode.setPosition(135,345);
                 this.bigCardsContainer.setPosition(0,192);
@@ -438,16 +438,16 @@ export default class Seat extends cc.Component {
             this.roudBetIcon.setPosition(-25, 0);
             this.roundBetNode.setPosition(190,-70);
             this.smallCardsContainer.setPosition(160,5);
-            this.bigCardsContainer.setPosition(0,18);
-            this.bigCardsContainer.setScale(0.8,0.8);
+            this.bigCardsContainer.setPosition(0,0);
+            this.bigCardsContainer.setScale(0.65,0.65);
             break;
         case SeatPosition.TopLeft1:
             this.buttonIcon.setPosition(65, -220);
             this.roudBetIcon.setPosition(-25, 0);
             this.roundBetNode.setPosition(-65,-215);
             this.smallCardsContainer.setPosition(-160,5);
-            this.bigCardsContainer.setPosition(0,18);
-            this.bigCardsContainer.setScale(0.8,0.8);
+            this.bigCardsContainer.setPosition(0,0);
+            this.bigCardsContainer.setScale(0.65,0.65);
             break;
         case SeatPosition.TopMiddle:
         case SeatPosition.TopRight1:
@@ -455,8 +455,8 @@ export default class Seat extends cc.Component {
             this.roudBetIcon.setPosition(133, 0);
             this.roundBetNode.setPosition(-85,-215);
             this.smallCardsContainer.setPosition(-160,5);
-            this.bigCardsContainer.setPosition(0,18);
-            this.bigCardsContainer.setScale(0.8,0.8);
+            this.bigCardsContainer.setPosition(0,0);
+            this.bigCardsContainer.setScale(0.65,0.65);
             break;
         case SeatPosition.TopRight:
         case SeatPosition.MiddleRight:
@@ -466,8 +466,8 @@ export default class Seat extends cc.Component {
             this.roudBetIcon.setPosition(133, 0);
             this.roundBetNode.setPosition(-180,-70);
             this.smallCardsContainer.setPosition(-160,5);
-            this.bigCardsContainer.setPosition(0,18);
-            this.bigCardsContainer.setScale(0.8,0.8);
+            this.bigCardsContainer.setPosition(0,0);
+            this.bigCardsContainer.setScale(0.65,0.65);
             break;
         }
         let realPos = seatArrange[pos];

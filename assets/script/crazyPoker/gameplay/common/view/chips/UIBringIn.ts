@@ -1,7 +1,6 @@
 import { GameCache } from '../../../../../game/GameCache';
 import { i18nMgr } from '../../../../../i18n/i18nMgr';
 import { BringInChipsType } from '../../constant/BringInChipsType';
-import { GameType, PokerType } from '../../constant/LogicTypeConf';
 import { TableType } from '../../constant/TableType';
 import GameplayUtil from '../../util/GameplayUtil';
 import { StringHelper } from '../../../../../helper/StringHelper';
@@ -21,6 +20,8 @@ import RemoteSprite from '../common/RemoteSprite';
 import { RoomInfo } from '../../../../../protobuf/holdem/define_pb';
 import StepSlider from '../common/StepSlider';
 import SwitchNode from '../common/SwitchNode';
+import UIComponentBase from '../../core/UIComponentBase';
+import { GameType, RoomDataBasicGC } from '../../core/RoomDataGenericConstraints';
 const { ccclass, menu, property } = cc._decorator;
 
 /** 标题枚举 */
@@ -107,12 +108,28 @@ export class AddChipsData {
 }
 const LN = '[UIGameplayAddChipsAndDiamondComponent]';
 
+
+abstract class _DataProvider {
+    abstract getTextBlindTip(): string;
+    abstract getTextBlind(): string;
+    abstract showWallets(): boolean;
+}
+
 /**
  * 核心玩法：带入筹码界面
  */
 @ccclass
-@menu('CrazyPoker/AddChips/UIGameplayAddChipsAndDiamondComponent')
-export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
+@menu('CrazyPoker/Texas/Dialog/UIBringIn')
+export default class UIBringIn<T extends keyof RoomDataBasicGC> extends UIComponentBase<RoomDataBasicGC[T]> {
+
+    public  initialize(param: RoomDataBasicGC[T]):void {
+
+    }
+
+    public onClose<K>(param: K): void {
+        
+    }
+
     // 组件引用
     @property(StepSlider)
     private bringInSlider: StepSlider = null;
@@ -158,11 +175,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     private textTotalDiamond: cc.Label = null;
     @property(cc.Label)
     private textTotalDiamondTitle: cc.Label = null;
-    /**
-     * 金币图标
-     */
-    @property(cc.Sprite)
-    private textTitle: cc.Label = null;
+    
     // 自动充值部分
     @property(cc.Node)
     private autoBringinArea: cc.Node = null;
@@ -274,18 +287,15 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     private _autoBringInRange: number = 0;
     private _autoBringInMin: number = 0;
     // 状态变量
-    private addChipsData: AddChipsData = null;
     private mySelectWallet: IWallet = null;
     private currentSelect: number = 0;
     private walletToggles: cc.Toggle[] = [];
     /** 带入分段 */
-    public sliderSpace: number = 50;
     private _bringInAmount: number = 0;
     private _autoOnTable: number = 0;
     private _autoBringin: boolean = false;
 
-    protected override lateLoad(): void {
-        super.lateLoad();
+    protected override onLoad(): void {
         // 初始化一个节点
         const targetIndex = this.buttonSelectWallet.getSiblingIndex();
         const cnd = cc.instantiate(this.clueItemPrefab);
@@ -333,41 +343,38 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
     }
 
     onShow(obj?: any): void {
-        super.onShow(obj);
-        this.addChipsData = obj as AddChipsData;
         this._updateDisplay();
     }
 
     private _updateDisplay() {
-        console.log(LN, '_updateDisplay', this.addChipsData);
         // 默认带入页面
         this._changeTitleType(E_TitleType.Chips);
         // 初始化钻石购买页
         this.initDiamond();
-        // 根据来源设置标题
-        switch (this.addChipsData._source) {
-            case BringInChipsType.BRING_IN:
-                if (this.textTitle) this.textTitle.string = i18nMgr.Get('UIClub_RoomSitApplyRecords_title');
-                break;
-            case BringInChipsType.SUPPLEMENT:
-                if (this.textTitle) this.textTitle.string = i18nMgr.Get('UITexas_AddChipsMenu');
-                break;
-            case BringInChipsType.AUTO_RECHARGE:
-                if (this.textTitle) this.textTitle.string = i18nMgr.Get('UICreate_AutoRechage');
-                break;
-            case BringInChipsType.MUSHROOM:
-                if (this.textTitle) this.textTitle.string = i18nMgr.Get('UITexas_AddChipsMenu');
-                break;
-            case BringInChipsType.SQUID:
-                if (this.textTitle) this.textTitle.string = i18nMgr.Get('UITexas_AddChipsMenu');
-                break;
-            case BringInChipsType.MATCH:
-                if (this.textTitle) this.textTitle.string = i18nMgr.Get('UIClub_RoomSitApplyRecords_title');
-                break;
-            default:
-                if (this.textTitle) this.textTitle.string = i18nMgr.Get('UIClub_RoomSitApplyRecords_title');
-                break;
-        }
+        // // 根据来源设置标题
+        // switch (this.addChipsData._source) {
+        //     case BringInChipsType.BRING_IN:
+        //         if (this.textTitle) this.textTitle.string = i18nMgr.Get('UIClub_RoomSitApplyRecords_title');
+        //         break;
+        //     case BringInChipsType.SUPPLEMENT:
+        //         if (this.textTitle) this.textTitle.string = i18nMgr.Get('UITexas_AddChipsMenu');
+        //         break;
+        //     case BringInChipsType.AUTO_RECHARGE:
+        //         if (this.textTitle) this.textTitle.string = i18nMgr.Get('UICreate_AutoRechage');
+        //         break;
+        //     case BringInChipsType.MUSHROOM:
+        //         if (this.textTitle) this.textTitle.string = i18nMgr.Get('UITexas_AddChipsMenu');
+        //         break;
+        //     case BringInChipsType.SQUID:
+        //         if (this.textTitle) this.textTitle.string = i18nMgr.Get('UITexas_AddChipsMenu');
+        //         break;
+        //     case BringInChipsType.MATCH:
+        //         if (this.textTitle) this.textTitle.string = i18nMgr.Get('UIClub_RoomSitApplyRecords_title');
+        //         break;
+        //     default:
+        //         if (this.textTitle) this.textTitle.string = i18nMgr.Get('UIClub_RoomSitApplyRecords_title');
+        //         break;
+        // }
         switch (this.addChipsData._type) {
             // 货币
             case 1:

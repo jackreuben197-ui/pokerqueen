@@ -44,3 +44,9 @@ export enum MttPlayerStatus {
     /// </summary>
     CANNOT_JOIN_OVERTIME
 }
+
+export enum GamePlaySubType {
+    NONE = 0,
+    MUSH = 1,
+    SQUID = 2
+}

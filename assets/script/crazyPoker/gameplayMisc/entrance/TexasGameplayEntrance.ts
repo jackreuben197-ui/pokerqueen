@@ -384,6 +384,13 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         roomData.basicInfo.invitationCode = this._roomInfo.invitationCode;
         roomData.basicInfo.sbante = { sb: this._roomInfo.sb, ante: this._roomInfo.ante };
         roomData.basicInfo.handNum = this._roomInfo.handNum;
+        roomData.basicInfo.squidEnabled = this._roomInfo.squidBase > 0;
+        roomData.basicInfo.mushroomEnabled = this._roomInfo.mushroomBase > 0;
+        if (this._roomInfo.antiCheatType == AntiCheatType.VIDEO) {
+           roomData.basicInfo.videoModel = this._roomInfo.antiCheatVideoType;
+        } else {
+           roomData.basicInfo.videoModel = 0;
+        }
         roomData.seatsStateManager.seatsCount = this._roomInfo.seatCount;
         roomDataManager.setRoomData(this._roomId, this.matchId, roomData);
         const body: ClientMessageEnterRoom.AsObject = {

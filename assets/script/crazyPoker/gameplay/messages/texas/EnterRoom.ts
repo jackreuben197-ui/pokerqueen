@@ -54,18 +54,17 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
             seatData.setAction(player.action, AnimateDisplayTypeAction.Static);
             seatData.deposit = player.deposit;
         })
-        let mine:TexasGameRoomDataPlayerMine = null;
         if (data.myInfo) {
             if (data.myInfo.seatId > 0) {
                 roomData.seatsStateManager.setMySeat(data.myInfo.seatId);
-                mine = roomData.seatsStateManager.getMine();
-                mine.storeChips = mine.storeChips;
+                let mine = roomData.seatsStateManager.getSeatPlayer(data.myInfo.seatId).mine;
+                mine.storeChips = data.myInfo.storeChips;
             }
         }
         data.operatorList.forEach(operator => {
-            if (mine && operator.seatId == mine.seatedPlayer.seatNo) {
+            let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
+            if (seatData.mine) {
                 //@TODO 本人操作的准备
-                let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
                 let op = new OperatorMine();
                 op.alreadyDelayTImes = operator.delayTimes;
                 op.deadlineTImestamp = operator.opDeadline;
@@ -82,7 +81,7 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
                 }else {
                     op.opType = 1;
                 }
-                seatData.prepareOperation(op);
+                seatData.mine.prepareOperation(op);
             }else{
                 let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
                 let op = new Operator();

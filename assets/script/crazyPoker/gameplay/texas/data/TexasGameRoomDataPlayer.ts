@@ -1,4 +1,5 @@
 import { Def } from "../../../../protobuf/holdem/define_pb";
+import { VideoModel } from "../../common/constant/VideoModel";
 import { AnimateDisplayTypeAction, AnimateDisplayTypeCards, AnimateDisplayTypePosition, AnimateDisplayTypeRoundBet } from "../constants/AnimateDisplayType";
 import { Operator } from "./model/Operator";
 import TexasGameRoomData from "./TexasGameRoomData";
@@ -12,7 +13,7 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
     public userID: number;
     public clubID: number;
     public handBet: number;
-    public myInfo: TexasGameRoomDataPlayerMine = null;
+    public mine: TexasGameRoomDataPlayerMine = null;
     public roundActioned: boolean;
     public deposit: number;
 
@@ -25,14 +26,7 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
 
     public get delayViewCard() { return this._parentRoomData.basicInfo.delaySeeCard};
     public get directlyViewCard() { return this._parentRoomData.basicInfo.gameStatus >= Def.GameStatus.HAND_PREFLOP && this.roundActioned};
-
-    public get isMine(): boolean{
-        return this.myInfo != null;
-    }
-
-    public getMine(): TexasGameRoomDataPlayerMine {
-        return this.myInfo;
-    }
+    public get needVideoPermision() { return this._parentRoomData.basicInfo.videoModel !== VideoModel.NONE};
 
     public static readonly ACTION_CHANGE = 'ACTION_CHANGE';
     public _action: Def.ActionMap[keyof Def.ActionMap];
@@ -143,6 +137,7 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
         this._chip = 0;
         this._avatar = '';
         this._name = '';
+        this.mine = null;
         //this._chipsWithStore = null;
         this._cards = [];
         this.emit(TexasGameRoomDataPlayer.EMPTY_SEAT);

@@ -43,7 +43,6 @@ export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
     }
 
     private _playerMap: Map<number, TexasGameRoomDataPlayer> = new Map();
-    private _playerMine: TexasGameRoomDataPlayerMine = null;
     public static readonly BUTTON_CHANGE = 'BUTTON_CHANGE';
     private _buttonPostition: number;
     public get buttonPosition() {return this._buttonPostition};
@@ -60,10 +59,6 @@ export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
 
     public getSeatPlayer(i: number) {
         return this._playerMap.get(i);
-    }
-
-    public getMine() {
-        return this._playerMine;
     }
 
     public get seatsCount() {
@@ -87,9 +82,12 @@ export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
         this.emit(TexasGameRoomDataSeatsStateManager.SEATS_CHANGE, this._seatsCount);
     }
 
-    public get mySeat() {return this._playerMine?.seatedPlayer};
+    private _mySeat: number = 0;
+    public get mySeat() {
+        return this._mySeat;
+    };
     public setMySeat(s: number) {
-        if (this._playerMine?.seatedPlayer.seatNo == s) return;
+        if (this._mySeat == s) return;
         //重排
         const arrage = SeatsArrange[this._seatsCount];
         let j = 0;
@@ -97,13 +95,14 @@ export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
             let ss = i % this.seatsCount == 0 ? this.seatsCount : i % this.seatsCount;
             const player = this._playerMap.get(ss);
             player.setPosition(arrage[j], AnimateDisplayTypePosition.Static);
+            if (ss == s) {
+                player.mine = new TexasGameRoomDataPlayerMine();
+            }
             j++;
         }
-        let ss = this.getSeatPlayer(s);
-        this._playerMine = new TexasGameRoomDataPlayerMine(ss);
     }
 
-    public seated(seatNo: number, isSelf: boolean): TexasGameRoomDataPlayer|TexasGameRoomDataPlayerMine{
+    public seated(seatNo: number, isSelf: boolean): TexasGameRoomDataPlayer{
         if (isSelf) {
              //重排
             const arrage = SeatsArrange[this._seatsCount];
@@ -113,10 +112,10 @@ export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
                 const player = this._playerMap.get(ss);
                 player.setPosition(arrage[j], AnimateDisplayTypePosition.ToTarget);
                 j++;
+                if (ss == seatNo) {
+                    player.mine = new TexasGameRoomDataPlayerMine();
+                }
             }
-            let ss = this.getSeatPlayer(seatNo);
-            this._playerMine = new TexasGameRoomDataPlayerMine(ss);
-            return this._playerMine;
         }
         return this.getSeatPlayer(seatNo);
     }

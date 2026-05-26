@@ -36,15 +36,14 @@ export default function StartInfo(data: ServerMessageStartInfo.AsObject, roomID:
         }
         seatData.setAction(player.action, AnimateDisplayTypeAction.Static);
         seatData.deposit = player.deposit;
-        if (seatData.isMine) {
-            let mine = roomData.seatsStateManager.getMine();
-            mine.storeChips = player.storeChips;
+        if (seatData.mine) {
+            seatData.mine.storeChips = player.storeChips;
         }
     }
     if (data.nextOperator) {
         const operator = data.nextOperator;
         let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
-        if (seatData.isMine) {
+        if (seatData.mine) {
             let op = new OperatorMine();
             op.alreadyDelayTImes = operator.delayTimes;
             op.deadlineTImestamp = operator.opDeadline;
@@ -61,8 +60,7 @@ export default function StartInfo(data: ServerMessageStartInfo.AsObject, roomID:
             }else {
                 op.opType = 1;
             }
-            let mine = roomData.seatsStateManager.getMine();
-            mine.prepareOperation(op);
+            seatData.mine.prepareOperation(op);
         }else{
             let op = new Operator();
             op.alreadyDelayTImes = operator.delayTimes;
