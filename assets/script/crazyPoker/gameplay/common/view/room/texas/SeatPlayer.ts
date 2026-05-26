@@ -33,7 +33,7 @@ const seatArrange: Record<SeatPosition, cc.Vec3> = {
 };
 
 @ccclass
-@menu('CrazyPoker/Room/Texas/Seat')
+@menu('CrazyPoker/Room/Texas/SeatPlayer')
 export default class Seat extends cc.Component {
     @property(cc.Label)
     private nickName: cc.Label = null;
