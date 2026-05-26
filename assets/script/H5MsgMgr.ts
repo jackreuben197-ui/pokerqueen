@@ -29,12 +29,12 @@ const TAG = '[H5Bridge]';
 /** 握手超时时间（毫秒） */
 const HANDSHAKE_TIMEOUT = 10000;
 
-export interface H5RouteData{
-    path: string,
-    query: Record<string, any>
-    replace: boolean,
-    ensureVisible: boolean,
-};
+export interface H5RouteData {
+    path: string;
+    query: Record<string, any>;
+    replace: boolean;
+    ensureVisible: boolean;
+}
 
 export default class H5MsgMgr {
     private static _instance: H5MsgMgr = null;

@@ -5,7 +5,13 @@ import SceneManager from '../../../../manager/SceneManager';
 import { UIDefine } from '../../../../define/UIDefine';
 import UIComponent, { PrefabUI } from '../../../../ui/UIComponent';
 import { UIRoomTexasEnterParam } from '../../common/view/room/texas/UIRoomTexas';
-import { AnimateDisplayTypeAction, AnimateDisplayTypeButton, AnimateDisplayTypeCards, AnimateDisplayTypePublicCards, AnimateDisplayTypeRoundBet } from '../../texas/constants/AnimateDisplayType';
+import {
+    AnimateDisplayTypeAction,
+    AnimateDisplayTypeButton,
+    AnimateDisplayTypeCards,
+    AnimateDisplayTypePublicCards,
+    AnimateDisplayTypeRoundBet
+} from '../../texas/constants/AnimateDisplayType';
 import TexasGameRoomDataPlayer from '../../texas/data/TexasGameRoomDataPlayer';
 import TexasGameRoomDataPlayerMine from '../../texas/data/TexasGameRoomDataPlayerMine';
 import { Def, SidePot } from '../../../../protobuf/holdem/define_pb';
@@ -13,7 +19,7 @@ import { Operator, OperatorMine } from '../../texas/data/model/Operator';
 const LN = '[EnterRoom]';
 
 // EnterRoom 1002
-export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, roomID: number, matchID: number): Promise<void> {
+export async function EnterRoom(data: ServerMessageEnterRoom.AsObject, roomID: number, matchID: number): Promise<void> {
     let roomData = roomDataManager.getRoomData<TexasGameRoomData>(roomID, matchID);
     if (!roomData && matchID > 0) {
         roomData = roomDataManager.getRoomData<TexasGameRoomData>(0, matchID);
@@ -27,6 +33,7 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
         console.error(LN, 'no store room data');
         return;
     }
+
     UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
     if (data.status == 0) {
         roomData.basicInfo.sbante = { sb: data.roomInfo.smallBlind, ante: data.roomInfo.ante };
@@ -36,12 +43,12 @@ export default async function EnterRoom(data: ServerMessageEnterRoom.AsObject, r
             roomData.basicInfo.handNum = data.handInfo.handNum;
             roomData.potInfo.allPot = data.handInfo.allBet;
             roomData.potInfo.potList = data.handInfo.potsList;
-            roomData.potInfo.secPotList =data.handInfo.secondPotsList;
+            roomData.potInfo.secPotList = data.handInfo.secondPotsList;
             roomData.seatsStateManager.setButtonPosition(data.handInfo.buSeatId, AnimateDisplayTypeButton.Static);
             roomData.publicCards.addPublicCards(data.handInfo.publicCardsList, AnimateDisplayTypePublicCards.Static);
             roomData.publicCards.addSecondPublicCards(data.handInfo.secondPublicCardsList, AnimateDisplayTypePublicCards.Static);
         }
-        data.playersList.forEach((player) => {
+        data.playersList.forEach(player => {
             let seatData = roomData.seatsStateManager.getSeatPlayer(player.seatId);
             seatData.name = player.name;
             seatData.userID = player.userRid;

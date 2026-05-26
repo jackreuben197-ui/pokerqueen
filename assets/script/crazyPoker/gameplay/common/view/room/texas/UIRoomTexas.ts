@@ -1,4 +1,3 @@
-
 import BaseScene from '../../../../../../ui/scene/BaseScene';
 import PotsInfo from './PotsInfo';
 import PublicCardsInfo from './PublicCardsInfo';
@@ -19,7 +18,7 @@ export default class UIRoomTexas extends BaseScene {
     private roomInfo: RoomInfo = null;
     @property(PotsInfo)
     private potsInfo: PotsInfo = null;
-    @property(SeatManager) 
+    @property(SeatManager)
     private seatManager: SeatManager = null;
     @property(PublicCardsInfo)
     private publicCardsInfo: PublicCardsInfo = null;

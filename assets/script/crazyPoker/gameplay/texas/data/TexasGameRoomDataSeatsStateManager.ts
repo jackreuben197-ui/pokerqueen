@@ -4,7 +4,7 @@ import TexasGameRoomData from './TexasGameRoomData';
 import TexasGameRoomDataPlayer from './TexasGameRoomDataPlayer';
 import TexasGameRoomDataPlayerMine from './TexasGameRoomDataPlayerMine';
 
-//   4 5 6 
+//   4 5 6
 // 3       7
 // 2       8
 // 1       9
@@ -23,8 +23,7 @@ export enum SeatPosition {
     TopLeft7, // 7人桌的修正
     TopRight7,// 7人桌的修正
 }
-
-const SeatsArrange: Record<number,SeatPosition[]> = {
+const SeatsArrange: Record<number, SeatPosition[]> = {
     2: [SeatPosition.BottomMiddle, SeatPosition.TopMiddle],
     3: [SeatPosition.BottomMiddle, SeatPosition.TopLeft,  SeatPosition.TopRight],
     4: [SeatPosition.BottomMiddle,SeatPosition.MiddleLeft,SeatPosition.TopMiddle,SeatPosition.MiddleRight],
@@ -37,6 +36,7 @@ const SeatsArrange: Record<number,SeatPosition[]> = {
 
 export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
     private _parentRoomData: TexasGameRoomData;
+
     constructor(p: TexasGameRoomData) {
         super();
         this._parentRoomData = p;
@@ -45,14 +45,17 @@ export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
     private _playerMap: Map<number, TexasGameRoomDataPlayer> = new Map();
     public static readonly BUTTON_CHANGE = 'BUTTON_CHANGE';
     private _buttonPostition: number;
-    public get buttonPosition() {return this._buttonPostition};
+
+    public get buttonPosition() {
+        return this._buttonPostition;
+    }
+
     public setButtonPosition(c: number, bat: AnimateDisplayTypeButton) {
         if (c == this._buttonPostition) return;
         const prev = this._buttonPostition;
         this._buttonPostition = c;
         this.emit(TexasGameRoomDataSeatsStateManager.BUTTON_CHANGE, prev, this._buttonPostition, bat);
     }
-
 
     public static readonly SEATS_CHANGE = 'SEATS_CHANGE';
     private _seatsCount: number;
@@ -74,7 +77,7 @@ export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
                 if (this._playerMap.has(i)) {
                     continue;
                 }
-                this._playerMap.set(i, new TexasGameRoomDataPlayer(i, arrage[i-1], this._parentRoomData));
+                this._playerMap.set(i, new TexasGameRoomDataPlayer(i, arrage[i - 1], this._parentRoomData));
                 continue;
             }
             this._playerMap.delete(i);
@@ -104,7 +107,7 @@ export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
 
     public seated(seatNo: number, isSelf: boolean): TexasGameRoomDataPlayer{
         if (isSelf) {
-             //重排
+            //重排
             const arrage = SeatsArrange[this._seatsCount];
             let j = 0;
             for (let i = seatNo; i < seatNo + this._seatsCount; i++) {
@@ -129,7 +132,6 @@ export default class TexasGameRoomDataSeatsStateManager extends cc.EventTarget {
     public handClear() {
         this._playerMap.forEach(p => {
             p.handClear();
-        })
+        });
     }
-
 }

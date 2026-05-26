@@ -233,7 +233,7 @@ export default class ProtocolAgency extends cc.Component {
             code < 1000 &&
             code != ProtocolCode.Protocol_Holdem_Rooms &&
             code != ProtocolCode.Protocol_Holdem_MttDetail &&
-            code != ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo && 
+            code != ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo &&
             code != ProtocolCode.Protocol_Holdem_NotificationRoomReady
         ) {
             console.log(LN, 'drop code:', code);
@@ -317,7 +317,7 @@ export default class ProtocolAgency extends cc.Component {
         body_ua = null;
     }
 
-    static _mttExchangeRoomReady(data: ServerMessageNotificationRoomReady.AsObject){
+    static _mttExchangeRoomReady(data: ServerMessageNotificationRoomReady.AsObject) {
         console.log('# MTT: _mttExchangeRoomReady');
         if (data == null) return;
         if (data.room.matchId == 0) return;

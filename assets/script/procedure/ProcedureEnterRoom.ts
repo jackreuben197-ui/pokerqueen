@@ -43,7 +43,7 @@ export default class ProcedureEnterRoom extends ProcedureBase {
                     console.warn('[ProcedureEnterRoom]', 'enterForegroundAsync false');
                     this._entrance = null;
                     ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
-                        needClosedUI: [PrefabUI.UIPreloading],
+                        needClosedUI: [PrefabUI.UIPreloading]
                     });
                 }
             })
@@ -51,7 +51,7 @@ export default class ProcedureEnterRoom extends ProcedureBase {
                 console.error('[ProcedureEnterRoom]', 'err', e);
                 this._entrance = null;
                 ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
-                    needClosedUI: [PrefabUI.UIPreloading],
+                    needClosedUI: [PrefabUI.UIPreloading]
                 });
             });
     }

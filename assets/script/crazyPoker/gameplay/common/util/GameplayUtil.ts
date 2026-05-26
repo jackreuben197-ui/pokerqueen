@@ -64,8 +64,8 @@ export default class GameplayUtil {
         if (cardNo == 0) {
             return 'p_88';
         }
-        let suit = Math.floor(cardNo/ 15);
-        let num = cardNo % 15 - 1;
+        let suit = Math.floor(cardNo / 15);
+        let num = (cardNo % 15) - 1;
         if (num == 13) num = 0;
         const calc = suit * 13 + num;
         return `p_${calc}`;

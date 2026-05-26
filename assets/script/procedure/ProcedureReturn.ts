@@ -3,8 +3,8 @@ import H5MsgMgr, { H5RouteData } from '../H5MsgMgr';
 import UIComponent, { PrefabUI, isPrefabUI } from '../ui/UIComponent';
 
 export interface ProcedureReturnNavigateParam {
-    routeData?: H5RouteData,
-    needClosedUI?: PrefabUI[],
+    routeData?: H5RouteData;
+    needClosedUI?: PrefabUI[];
 }
 
 /**
@@ -19,8 +19,8 @@ export default class ProcedureReturn extends ProcedureBase {
             const navigate = param as ProcedureReturnNavigateParam;
             if (navigate && navigate.needClosedUI) {
                 navigate.needClosedUI.forEach(v => {
-                     UIComponent.Instance.HideUI(v);
-                })
+                    UIComponent.Instance.HideUI(v);
+                });
             }
             if (navigate && navigate.needClosedUI) {
                 H5MsgMgr.sendToH5('h5Navigate', 1, navigate.routeData);

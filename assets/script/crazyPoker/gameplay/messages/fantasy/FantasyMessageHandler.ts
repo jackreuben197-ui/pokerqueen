@@ -1,145 +1,145 @@
 import { Code } from '../../../../protobuf/holdem/code_pb';
-import EnterRoom from './EnterRoom';
-import Seated from './Seated';
-import BringIn from './BringIn';
-import Action from './Action';
-import AutoOpActive from './AutoOpActive';
-import StandupActive from './StandupActive';
-import Leave from './Leave';
-import KeepSeatActive from './KeepSeatActive';
-import AddTime from './AddTime';
-import PublicReplay from './PublicReplay';
-import BroadcastMsg from './BroadcastMsg';
-import PrivateMsg from './PrivateMsg';
-import Roomers from './Roomers';
-import SetAutoOnTable from './SetAutoOnTable';
-import Pair from './Pair';
-import Observers from './Observers';
-import SyncEnter from './SyncEnter';
-import ChatMembers from './ChatMembers';
-import SeatedOthers from './SeatedOthers';
-import StartInfo from './StartInfo';
-import PublicCards from './PublicCards';
-import ChipsChange from './ChipsChange';
-import ActionAll from './ActionAll';
-import AutoOp from './AutoOp';
-import Standup from './Standup';
-import KeepSeat from './KeepSeat';
-import Winner from './Winner';
-import AddTimeOthers from './AddTimeOthers';
-import LeaveNotification from './LeaveNotification';
-import BringInFail from './BringInFail';
-import HandClear from './HandClear';
-import GetMsg from './GetMsg';
-import PairAll from './PairAll';
-import VideoMaskChange from './VideoMaskChange';
+import { FTEnterRoom } from './FTEnterRoom';
+import { FTSeated } from './FTSeated';
+import { FTBringIn } from './FTBringIn';
+import { FTAction } from './FTAction';
+import { FTAutoOpActive } from './FTAutoOpActive';
+import { FTStandupActive } from './FTStandupActive';
+import { FTLeave } from './FTLeave';
+import { FTKeepSeatActive } from './FTKeepSeatActive';
+import { FTAddTime } from './FTAddTime';
+import { FTPublicReplay } from './FTPublicReplay';
+import { FTBroadcastMsg } from './FTBroadcastMsg';
+import { FTPrivateMsg } from './FTPrivateMsg';
+import { FTRoomers } from './FTRoomers';
+import { FTSetAutoOnTable } from './FTSetAutoOnTable';
+import { FTPair } from './FTPair';
+import { FTObservers } from './FTObservers';
+import { FTSyncEnter } from './FTSyncEnter';
+import { FTChatMembers } from './FTChatMembers';
+import { FTSeatedOthers } from './FTSeatedOthers';
+import { FTStartInfo } from './FTStartInfo';
+import { FTPublicCards } from './FTPublicCards';
+import { FTChipsChange } from './FTChipsChange';
+import { FTActionAll } from './FTActionAll';
+import { FTAutoOp } from './FTAutoOp';
+import { FTStandup } from './FTStandup';
+import { FTKeepSeat } from './FTKeepSeat';
+import { FTWinner } from './FTWinner';
+import { FTAddTimeOthers } from './FTAddTimeOthers';
+import { FTLeaveNotification } from './FTLeaveNotification';
+import { FTBringInFail } from './FTBringInFail';
+import { FTHandClear } from './FTHandClear';
+import { FTGetMsg } from './FTGetMsg';
+import { FTPairAll } from './FTPairAll';
+import { FTVideoMaskChange } from './FTVideoMaskChange';
 
 export default class FantasyMessageHandler {
 
     public static handle(code: number, data: any, roomID: number, matchID: number) {
         switch (code) {
             case Code.MSG_D_FT_ENTER_ROOM:
-                EnterRoom(data, roomID, matchID);
-                break; // EnterRoom 1202
+                FTEnterRoom(data, roomID, matchID);
+                break; // FTEnterRoom 1202
             case Code.MSG_D_FT_SEATED:
-                Seated(data, roomID, matchID);
-                break; // Seated 1203
+                FTSeated(data, roomID, matchID);
+                break; // FTSeated 1203
             case Code.MSG_D_FT_BRING_IN:
-                BringIn(data, roomID, matchID);
-                break; // BringIn 1204
+                FTBringIn(data, roomID, matchID);
+                break; // FTBringIn 1204
             case Code.MSG_D_FT_ACTION:
-                Action(data, roomID, matchID);
-                break; // Action 1205
+                FTAction(data, roomID, matchID);
+                break; // FTAction 1205
             case Code.MSG_D_FT_AUTO_OP_ACTIVE:
-                AutoOpActive(data, roomID, matchID);
-                break; // AutoOpActive 1206
+                FTAutoOpActive(data, roomID, matchID);
+                break; // FTAutoOpActive 1206
             case Code.MSG_D_FT_STANDUP_ACTIVE:
-                StandupActive(data, roomID, matchID);
-                break; // StandupActive 1207
+                FTStandupActive(data, roomID, matchID);
+                break; // FTStandupActive 1207
             case Code.MSG_D_FT_LEAVE:
-                Leave(data, roomID, matchID);
-                break; // Leave 1208
+                FTLeave(data, roomID, matchID);
+                break; // FTLeave 1208
             case Code.MSG_D_FT_KEEP_SEAT_ACTIVE:
-                KeepSeatActive(data, roomID, matchID);
-                break; // KeepSeatActive 1209
+                FTKeepSeatActive(data, roomID, matchID);
+                break; // FTKeepSeatActive 1209
             case Code.MSG_D_FT_ADD_TIME:
-                AddTime(data, roomID, matchID);
-                break; // AddTime 1210
+                FTAddTime(data, roomID, matchID);
+                break; // FTAddTime 1210
             case Code.MSG_D_FT_PUBLIC_REPLAY:
-                PublicReplay(data, roomID, matchID);
-                break; // PublicReplay 1211
+                FTPublicReplay(data, roomID, matchID);
+                break; // FTPublicReplay 1211
             case Code.MSG_D_FT_BROADCAST_MSG:
-                BroadcastMsg(data, roomID, matchID);
-                break; // BroadcastMsg 1212
+                FTBroadcastMsg(data, roomID, matchID);
+                break; // FTBroadcastMsg 1212
             case Code.MSG_D_FT_PRIVATE_MSG:
-                PrivateMsg(data, roomID, matchID);
-                break; // PrivateMsg 1213
+                FTPrivateMsg(data, roomID, matchID);
+                break; // FTPrivateMsg 1213
             case Code.MSG_D_FT_ROOMERS:
-                Roomers(data, roomID, matchID);
-                break; // Roomers 1214
+                FTRoomers(data, roomID, matchID);
+                break; // FTRoomers 1214
             case Code.MSG_D_FT_SET_AUTO_ON_TABLE:
-                SetAutoOnTable(data, roomID, matchID);
-                break; // SetAutoOnTable 1215
+                FTSetAutoOnTable(data, roomID, matchID);
+                break; // FTSetAutoOnTable 1215
             case Code.MSG_D_FT_PAIR:
-                Pair(data, roomID, matchID);
-                break; // Pair 1216
+                FTPair(data, roomID, matchID);
+                break; // FTPair 1216
             case Code.MSG_D_FT_OBSERVERS:
-                Observers(data, roomID, matchID);
-                break; // Observers 1217
+                FTObservers(data, roomID, matchID);
+                break; // FTObservers 1217
             case Code.MSG_D_FT_SYNC_ENTER:
-                SyncEnter(data, roomID, matchID);
-                break; // SyncEnter 1218
+                FTSyncEnter(data, roomID, matchID);
+                break; // FTSyncEnter 1218
             case Code.MSG_D_FT_CHAT_MEMBERS:
-                ChatMembers(data, roomID, matchID);
-                break; // ChatMembers 1219
+                FTChatMembers(data, roomID, matchID);
+                break; // FTChatMembers 1219
             case Code.MSG_S_FT_SEATED_OTHERS:
-                SeatedOthers(data, roomID, matchID);
-                break; // SeatedOthers 1301
+                FTSeatedOthers(data, roomID, matchID);
+                break; // FTSeatedOthers 1301
             case Code.MSG_S_FT_START_INFO:
-                StartInfo(data, roomID, matchID);
-                break; // StartInfo 1302
+                FTStartInfo(data, roomID, matchID);
+                break; // FTStartInfo 1302
             case Code.MSG_S_FT_PUBLIC_CARDS:
-                PublicCards(data, roomID, matchID);
-                break; // PublicCards 1303
+                FTPublicCards(data, roomID, matchID);
+                break; // FTPublicCards 1303
             case Code.MSG_S_FT_CHIPS_CHANGE:
-                ChipsChange(data, roomID, matchID);
-                break; // ChipsChange 1304
+                FTChipsChange(data, roomID, matchID);
+                break; // FTChipsChange 1304
             case Code.MSG_S_FT_ACTION_ALL:
-                ActionAll(data, roomID, matchID);
-                break; // ActionAll 1305
+                FTActionAll(data, roomID, matchID);
+                break; // FTActionAll 1305
             case Code.MSG_S_FT_AUTO_OP:
-                AutoOp(data, roomID, matchID);
-                break; // AutoOp 1306
+                FTAutoOp(data, roomID, matchID);
+                break; // FTAutoOp 1306
             case Code.MSG_S_FT_STANDUP:
-                Standup(data, roomID, matchID);
-                break; // Standup 1307
+                FTStandup(data, roomID, matchID);
+                break; // FTStandup 1307
             case Code.MSG_S_FT_KEEP_SEAT:
-                KeepSeat(data, roomID, matchID);
-                break; // KeepSeat 1308
+                FTKeepSeat(data, roomID, matchID);
+                break; // FTKeepSeat 1308
             case Code.MSG_S_FT_WINNER:
-                Winner(data, roomID, matchID);
-                break; // Winner 1309
+                FTWinner(data, roomID, matchID);
+                break; // FTWinner 1309
             case Code.MSG_S_FT_ADD_TIME_OTHERS:
-                AddTimeOthers(data, roomID, matchID);
-                break; // AddTimeOthers 1310
+                FTAddTimeOthers(data, roomID, matchID);
+                break; // FTAddTimeOthers 1310
             case Code.MSG_S_FT_LEAVE_NOTIFICATION:
-                LeaveNotification(data, roomID, matchID);
-                break; // LeaveNotification 1311
+                FTLeaveNotification(data, roomID, matchID);
+                break; // FTLeaveNotification 1311
             case Code.MSG_S_FT_BRING_IN_FAIL:
-                BringInFail(data, roomID, matchID);
-                break; // BringInFail 1313
+                FTBringInFail(data, roomID, matchID);
+                break; // FTBringInFail 1313
             case Code.MSG_S_FT_HAND_CLEAR:
-                HandClear(data, roomID, matchID);
-                break; // HandClear 1314
+                FTHandClear(data, roomID, matchID);
+                break; // FTHandClear 1314
             case Code.MSG_S_FT_GET_MSG:
-                GetMsg(data, roomID, matchID);
-                break; // GetMsg 1315
+                FTGetMsg(data, roomID, matchID);
+                break; // FTGetMsg 1315
             case Code.MSG_S_FT_PAIR_ALL:
-                PairAll(data, roomID, matchID);
-                break; // PairAll 1316
+                FTPairAll(data, roomID, matchID);
+                break; // FTPairAll 1316
             case Code.MSG_S_FT_VIDEO_MASK_CHANGE:
-                VideoMaskChange(data, roomID, matchID);
-                break; // VideoMaskChange 1317
+                FTVideoMaskChange(data, roomID, matchID);
+                break; // FTVideoMaskChange 1317
         }
     }
 }

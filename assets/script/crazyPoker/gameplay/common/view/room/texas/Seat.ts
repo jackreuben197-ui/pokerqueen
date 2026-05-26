@@ -13,7 +13,6 @@ import ShiningPathTimer from "../../common/ShiningPathTimer";
 import SeatAction from "./SeatAction";
 
 const { ccclass, property, menu } = cc._decorator;
-
 const seatArrange: Record<SeatPosition, cc.Vec3> = {
     [SeatPosition.BottomMiddle]: cc.v3(0, -2270),   // 0 下中
     [SeatPosition.BottomLeft]:   cc.v3(-480, -1585), // 1 左下
@@ -41,21 +40,21 @@ export default class Seat extends cc.Component {
     @property(cc.Label)
     private nickName: cc.Label = null;
     @property(cc.Node)
-    private nickNameSplash: cc.Node = null // 分割线
+    private nickNameSplash: cc.Node = null; // 分割线
     @property(RemoteSprite)
     private avatar: RemoteSprite = null;
     @property(cc.Label)
     private chips: cc.Label = null;
-    @property(cc.Button) 
+    @property(cc.Button)
     private emptySeat: cc.Button = null;
-    @property(cc.Node) 
+    @property(cc.Node)
     private userSeat: cc.Node = null;
     @property(cc.Node)
     public buttonIcon: cc.Node = null; // 无奈放开吧
     @property(cc.Node)
-    private smallCardsContainer: cc.Node = null
+    private smallCardsContainer: cc.Node = null;
     // round bet related
-    @property(cc.Node) 
+    @property(cc.Node)
     private roundBetNode: cc.Node = null;
     @property(cc.Label)
     private roundBetLabel: cc.Label = null;
@@ -74,7 +73,6 @@ export default class Seat extends cc.Component {
     private _seatPlayer: TexasGameRoomDataPlayer;
     private _cardBacks: cc.Node[] = [];
     private _bigCards: CardView[] = [];
-
     // 动画的池的位置（可能是发起，也可能是结尾,计算坐标使用)
     private _potNode: cc.Node = null;
     // 发牌
@@ -91,12 +89,12 @@ export default class Seat extends cc.Component {
 
     public onLoad() {
         // 如果绑定点击写这里
-        for (let i=0; i < this.bigCardsContainer.children[0].childrenCount; i++){
+        for (let i = 0; i < this.bigCardsContainer.children[0].childrenCount; i++) {
             //Cards/l2r/New Node/Image_Card(CardView)
             const node = this.bigCardsContainer.children[0].children[i].children[0].getComponent(CardView);
             this._bigCards.push(node);
         }
-        for (let i=0; i < this.smallCardsContainer.children[0].childrenCount; i++){
+        for (let i = 0; i < this.smallCardsContainer.children[0].childrenCount; i++) {
             const node = this.smallCardsContainer.children[0].children[i];
             this._cardBacks.push(node);
         }
@@ -128,9 +126,9 @@ export default class Seat extends cc.Component {
         this._seatPlayer.on(TexasGameRoomDataPlayerMine.HIGHLIGHT_CARDS, this.onHighlightCards, this);
 
         if (this._seatPlayer.userID > 0) {
-            this.onUpdateNickname( this._seatPlayer.name);
-            this.onUpdateAvatar( this._seatPlayer.avatar);
-            this.onUpdateChip( this._seatPlayer.chip);
+            this.onUpdateNickname(this._seatPlayer.name);
+            this.onUpdateAvatar(this._seatPlayer.avatar);
+            this.onUpdateChip(this._seatPlayer.chip);
             this.onRoundBetChange(this._seatPlayer.roundBet, AnimateDisplayTypeRoundBet.Static);
             //@TODO 先更新action避免覆盖(以后优化)
             this.onUpdateAction(this._seatPlayer.action, AnimateDisplayTypeAction.Static);
@@ -237,23 +235,24 @@ export default class Seat extends cc.Component {
                 this.animatingChips.setPosition(0, 0);
                 const endPos = UIViewUtil.caculatePostion(this.animatingChips, this.roundBetNode);
                 cc.tween(this.animatingChips)
-                    .to(0.5,
+                    .to(
+                        0.5,
                         {
                             x: endPos.x,
                             y: endPos.y
                         },
                         {
-                            easing: 'cubicOut',
+                            easing: 'cubicOut'
                         }
                     )
-                    .call(()=>{
-                        this.roundBetLabel.string =StringHelper.GetLongString(amount);
+                    .call(() => {
+                        this.roundBetLabel.string = StringHelper.GetLongString(amount);
                         this.animatingChips.active = false;
                     })
                     .start();
                 return;
             }
-            this.roundBetLabel.string =StringHelper.GetLongString(amount);
+            this.roundBetLabel.string = StringHelper.GetLongString(amount);
             return;
         }
         this.roundBetNode.active = false;
@@ -271,7 +270,7 @@ export default class Seat extends cc.Component {
             if (this._seatPlayer.mine) {
                 this.bigCardsContainer.active = false;
             }
-        }else{
+        } else {
             this.smallCardsContainer.active = true;
             this.bigCardsContainer.active = true;
         }
@@ -288,7 +287,7 @@ export default class Seat extends cc.Component {
                     node.node.parent.active = true;
                     if (AnimateDisplayTypeCards.ShowCards == atc && cards[i] > 0) {
                         node.animateFlipToFront(cards[i], 0.6);
-                    }else{
+                    } else {
                         node.cardNum = cards[i];
                     }
                     continue;
@@ -296,17 +295,17 @@ export default class Seat extends cc.Component {
                 node.node.parent.active = false;
             }
             // 背面(全部隐藏)
-            this._cardBacks.forEach(v => v.active = false);
+            this._cardBacks.forEach(v => (v.active = false));
             return;
         }
         const animateCards: CardView[] = [];
         //其他人
         if (!this._seatPlayer.mine) {
             // 全部显示牌隐藏
-            this._bigCards.forEach(v => v.node.parent.active = false)
+            this._bigCards.forEach(v => (v.node.parent.active = false));
             // 背面(显示)
-            for (let i=0; i < this._cardBacks.length; i++){
-                const node =this._cardBacks[i];
+            for (let i = 0; i < this._cardBacks.length; i++) {
+                const node = this._cardBacks[i];
                 if (i < l) {
                     node.active = true;
                     continue;
@@ -316,7 +315,7 @@ export default class Seat extends cc.Component {
         } else {
             // 自己
             // 背面(全部隐藏)
-            this._cardBacks.forEach(v => v.active = false);
+            this._cardBacks.forEach(v => (v.active = false));
             // 显示牌先显示背面
             //牌面展示
             for (let i=0; i < this._bigCards.length; i++){
@@ -332,15 +331,15 @@ export default class Seat extends cc.Component {
                 node.node.parent.active = false;
             }
             // 如果是静态就直接展示
-            if (atc == AnimateDisplayTypeCards.Static ) {
+            if (atc == AnimateDisplayTypeCards.Static) {
                 // 等后面操作
                 if (!this._seatPlayer.directlyViewCard) return;
                 //动作相关隐藏掉
                 this.seatActionDisplay.node.active = false;
                 // 直接显示
-                animateCards.forEach( nd => {
+                animateCards.forEach(nd => {
                     nd.cardNum = nd.storeCardNum;
-                }) 
+                });
             }
         }
         if (atc == AnimateDisplayTypeCards.Deal) {
@@ -383,33 +382,32 @@ export default class Seat extends cc.Component {
                 .call(() => {
                     this._dealNode.active =false;
                     if (this._seatPlayer.delayViewCard) return;
-                    animateCards.forEach( nd => {
+                    animateCards.forEach(nd => {
                         nd.animateFlipToFront(nd.storeCardNum, 0.6);
-                    }) 
+                    });
                 })
                 .start();
         }
     }
 
     public animateButtonChange(enable: boolean, positionFromNode?: cc.Node) {
-       this.buttonIcon.active = enable;
-       if (enable && positionFromNode) {
+        this.buttonIcon.active = enable;
+        if (enable && positionFromNode) {
             const startPos = UIViewUtil.caculatePostion(this.buttonIcon, positionFromNode);
             const endPos = this.buttonIcon.position;
             this.buttonIcon.setPosition(startPos);
             cc.tween(this.buttonIcon)
-                .to(0.6,
+                .to(
+                    0.6,
                     {
                         x: endPos.x,
-                        y: endPos.y,
+                        y: endPos.y
                     },
-                    { easing: 'cubicOut' },
+                    { easing: 'cubicOut' }
                 )
-                .call(() => {
-
-                })
+                .call(() => {})
                 .start();
-       }
+        }
     }
 
     // onUpdatePosition 位置变动导致的动画/位置调整
@@ -474,10 +472,8 @@ export default class Seat extends cc.Component {
         if (pat == AnimateDisplayTypePosition.ToTarget) {
             this.node.opacity = 0;
             cc.tween(this.node)
-                .parallel(
-                    cc.tween().to(1, {opacity: 255}),
-                    cc.tween().to(1, {position: realPos}, { easing: 'backOut'})
-                ).start();
+                .parallel(cc.tween().to(1, { opacity: 255 }), cc.tween().to(1, { position: realPos }, { easing: 'backOut' }))
+                .start();
             return;
         }
         this.node.setPosition(realPos);
@@ -544,6 +540,5 @@ export default class Seat extends cc.Component {
     private onUpdateEmpty() {
         console.log(LN,'empty');
         this._enableDisableUser(false);
-    } 
-
+    }
 }

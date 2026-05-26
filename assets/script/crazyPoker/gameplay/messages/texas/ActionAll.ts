@@ -5,7 +5,7 @@ import { Operator, OperatorMine } from '../../texas/data/model/Operator';
 import TexasGameRoomData from '../../texas/data/TexasGameRoomData';
 
 // ActionAll 1108
-export default function ActionAll(data: ServerMessageActionAll.AsObject, roomID: number, matchID: number) {
+export function ActionAll(data: ServerMessageActionAll.AsObject, roomID: number, matchID: number) {
     const roomData = roomDataManager.getRoomData<TexasGameRoomData>(roomID, matchID);
     const seatPlayer = roomData.seatsStateManager.getSeatPlayer(data.operatorSeatId);
     seatPlayer.setAction(data.action, AnimateDisplayTypeAction.Done);

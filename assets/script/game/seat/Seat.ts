@@ -99,6 +99,14 @@ export default class Seat {
     sequenceUpdateBubble: { tween?: cc.Tween; complete?: Function; IsPlaying?: boolean; Kill?: Function } = null;
     tweenerHideBubble: { tween?: cc.Tween; complete?: Function; IsPlaying?: boolean; Kill?: Function } = null;
     IsDisposed: boolean = false;
+    // All In Spine 动画节点
+    private _allinSpineNode: cc.Node = null;
+    // 自己赢的 YouWin Spine 动画节点
+    private _youwinSpineNode: cc.Node = null;
+    // 静态缓存 SkeletonData（所有座位共享）
+    private static _allinSelfSkeletonData: sp.SkeletonData = null;
+    private static _allinOtherSkeletonData: sp.SkeletonData = null;
+    private static _youwinSkeletonData: sp.SkeletonData = null;
 
     constructor(
         public id: number,
@@ -1133,21 +1141,18 @@ export default class Seat {
     /// 停止allin动画
     /// </summary>
     public StopAllinArmature(): void {
-        // if (null != this.armatureAllin.dragonAnimation && armatureAllin.dragonAnimation.isPlaying)
-        //     armatureAllin.dragonAnimation.Stop();
-        // armatureAllin.gameObject.SetActive(false);
+        if (this._allinSpineNode) {
+            this._allinSpineNode.destroy();
+            this._allinSpineNode = null;
+        }
     }
 
     /// <summary>
     /// 停止赢牌头像动画
     /// </summary>
     public StopWinArmature(): void {
-        // armatureYouWin.gameObject.SetActive(false);
-        // transWinner.gameObject.SetActive(false);
-        // Image_OtherWinnerCardType.gameObject.SetActive(false);
-        // Image_OtherWinner.gameObject.SetActive(false);
-        // imageWinner.gameObject.SetActive(false);
         this.uirc.Spine_Winner.node.active = false;
+        this._stopYouWinAnim();
     }
 
     /// <summary>
@@ -1324,35 +1329,154 @@ export default class Seat {
         if (isAllinShowVoice) {
             GC.sound.Play('sfx_desk_allin');
         }
-        // armatureAllin.gameObject.SetActive(true);
-        // if (null != armatureAllin.dragonAnimation) {
-        //     armatureAllin.dragonAnimation.Reset();
-        //     armatureAllin.dragonAnimation.Play();
-        // }
+        this._loadAndPlayAllinSpine();
+    }
+
+    /**
+     * 动态加载并播放 All In Spine 动画
+     * 自己用 Texas_Allin_Self，对手用 Texas_Allin_Other
+     */
+    private _loadAndPlayAllinSpine(): void {
+        if (this.IsDisposed || !this.ui) return;
+
+        // 先清理已有的
+        this.StopAllinArmature();
+
+        const isSelf = this.IsMySeat;
+        const cachedData = isSelf ? Seat._allinSelfSkeletonData : Seat._allinOtherSkeletonData;
+        const resPath = isSelf ? 'spine/Texas_Allin_Self/skeleton' : 'spine/Texas_Allin_Other/skeleton';
+
+        if (cachedData) {
+            this._createAllinSpineNode(cachedData);
+        } else {
+            cc.resources.load(resPath, sp.SkeletonData, (err, skeletonData: sp.SkeletonData) => {
+                if (err) {
+                    console.error('加载 AllIn Spine 失败:', resPath, err.message);
+                    return;
+                }
+                if (isSelf) {
+                    Seat._allinSelfSkeletonData = skeletonData;
+                } else {
+                    Seat._allinOtherSkeletonData = skeletonData;
+                }
+                // 确保座位还未被销毁
+                if (!this.IsDisposed && this.ui) {
+                    this._createAllinSpineNode(skeletonData);
+                }
+            });
+        }
+    }
+
+    /**
+     * 创建 All In Spine 节点并播放动画
+     */
+    private _createAllinSpineNode(skeletonData: sp.SkeletonData): void {
+        const spineNode = new cc.Node('AllinSpine');
+        const skeleton = spineNode.addComponent(sp.Skeleton);
+        // 首帧透明，跳过 skeletonData 赋值时的 setup pose 渲染
+        spineNode.opacity = 0;
+        skeleton.skeletonData = skeletonData;
+        // 挂到座位节点下，与 Spine_Winner 同级
+        this.ui.addChild(spineNode);
+        // 播放 animation，不循环
+        skeleton.setAnimation(0, 'animation', false);
+        // 下一帧恢复透明度，此时动画已从第0帧开始正常推进
+        skeleton.scheduleOnce(() => {
+            if (spineNode.isValid) {
+                spineNode.opacity = 255;
+            }
+        }, 0);
+        skeleton.setCompleteListener(() => {
+            if (spineNode.isValid) {
+                spineNode.destroy();
+            }
+            if (this._allinSpineNode === spineNode) {
+                this._allinSpineNode = null;
+            }
+        });
+        this._allinSpineNode = spineNode;
     }
 
     /// <summary>
     /// 播放赢牌头像特效
+    /// 自己赢播放 YouWin Spine 动画，他人赢播放 Spine_Winner
     /// </summary>
     public PlayWinArmature(): void {
-        // this.UpdateWinCoin();
-        // if (!Player.isWin) {
-        //     return;
-        // }
-        // transWinner.gameObject.SetActive(true);
-        // if (IsMySeat) {
-        //     armatureYouWin.gameObject.SetActive(true);
-        // }
-        // else {
-        //     armatureYouWin.gameObject.SetActive(false);
-        // }
-        if (this.Player.isWin) {
+        if (!this.Player.isWin) return;
+
+        if (this.IsMySeat) {
+            // 自己赢：播放胜利音效 + YouWin 动画
+            GC.sound.Play('sfx_win');
+            this._playYouWinAnim();
+        } else {
+            // 他人赢：播放 Spine_Winner
             this.uirc.Spine_Winner.node.active = true;
             this.uirc.Spine_Winner.setAnimation(0, 'animation', false);
             this.uirc.Spine_Winner.setCompleteListener(() => {
-                //cc.log("动画结束");
                 this.StopWinArmature();
             });
+        }
+    }
+
+    /**
+     * 动态加载并播放 YouWin Spine 动画
+     */
+    private _playYouWinAnim(): void {
+        if (this.IsDisposed || !this.ui) return;
+
+        // 先清理已有的
+        this._stopYouWinAnim();
+
+        if (Seat._youwinSkeletonData) {
+            this._createYouWinSpineNode(Seat._youwinSkeletonData);
+        } else {
+            cc.resources.load('spine/youwin/youwin', sp.SkeletonData, (err, skeletonData: sp.SkeletonData) => {
+                if (err) {
+                    console.error('加载 YouWin Spine 失败:', err.message);
+                    return;
+                }
+                Seat._youwinSkeletonData = skeletonData;
+                if (!this.IsDisposed && this.ui) {
+                    this._createYouWinSpineNode(skeletonData);
+                }
+            });
+        }
+    }
+
+    /**
+     * 创建 YouWin Spine 节点并播放动画
+     */
+    private _createYouWinSpineNode(skeletonData: sp.SkeletonData): void {
+        const spineNode = new cc.Node('YouWinSpine');
+        const skeleton = spineNode.addComponent(sp.Skeleton);
+        spineNode.opacity = 0;
+        skeleton.skeletonData = skeletonData;
+        this.ui.addChild(spineNode);
+        skeleton.setAnimation(0, 'animation', false);
+        // 下一帧恢复透明度，跳过 setup pose
+        skeleton.scheduleOnce(() => {
+            if (spineNode.isValid) {
+                spineNode.opacity = 255;
+            }
+        }, 0);
+        skeleton.setCompleteListener(() => {
+            if (spineNode.isValid) {
+                spineNode.destroy();
+            }
+            if (this._youwinSpineNode === spineNode) {
+                this._youwinSpineNode = null;
+            }
+        });
+        this._youwinSpineNode = spineNode;
+    }
+
+    /**
+     * 停止 YouWin 动画
+     */
+    private _stopYouWinAnim(): void {
+        if (this._youwinSpineNode) {
+            this._youwinSpineNode.destroy();
+            this._youwinSpineNode = null;
         }
     }
 
@@ -1667,6 +1791,8 @@ export default class Seat {
 
     Dispose() {
         this.KillAllTweener();
+        this.StopAllinArmature();
+        this.StopWinArmature();
         this.ClearData();
         this.StopAllActions();
         this.ui = null;

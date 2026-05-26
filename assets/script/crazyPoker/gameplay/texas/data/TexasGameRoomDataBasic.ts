@@ -20,13 +20,15 @@ export default class TexasGameRoomDataBasic extends cc.EventTarget {
     private _handCardNum: number;
     public get handCardNum() {return this._handCardNum};
     public _gameStatus: Def.GameStatusMap[keyof typeof Def.GameStatus];
+
     public get gameStatus() {
         return this._gameStatus;
     }
+
     public set gameStatus(r: Def.GameStatusMap[keyof typeof Def.GameStatus]) {
         this._gameStatus = r;
     }
-    
+
     private _roomType: number;
 
     public get roomType() {

@@ -17,7 +17,7 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
     public roundActioned: boolean;
     public deposit: number;
 
-    constructor(seatNo: number, position:SeatPosition, roomData: TexasGameRoomData) {
+    constructor(seatNo: number, position: SeatPosition, roomData: TexasGameRoomData) {
         super();
         this.seatNo = seatNo;
         this._position = position;
@@ -30,10 +30,14 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
 
     public static readonly ACTION_CHANGE = 'ACTION_CHANGE';
     public _action: Def.ActionMap[keyof Def.ActionMap];
-    public get action() { return this._action};
+
+    public get action() {
+        return this._action;
+    }
+
     public setAction(c: Def.ActionMap[keyof Def.ActionMap], aat: AnimateDisplayTypeAction) {
-        if (this._action == c ) return;
-        this._action = c; 
+        if (this._action == c) return;
+        this._action = c;
         this.emit(TexasGameRoomDataPlayer.ACTION_CHANGE, this._action, aat);
     }
 
