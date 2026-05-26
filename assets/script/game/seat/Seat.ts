@@ -631,7 +631,9 @@ export default class Seat {
                 this.ShowBubbleBG(this.uirc.Image_Bubble, 'allin');
                 this.uirc.textBubble.string = CPErrorCode.LanguageDescription(30074);
                 this.uirc.textBubble.node.active = true;
-                this.PlayAllinArmature(isAllinShowVioce);
+                if (!isReconect) {
+                    this.PlayAllinArmature(isAllinShowVioce);
+                }
                 break;
             case Def.Action.CHECK:
                 this.ShowBubbleBG(this.uirc.Image_Bubble, 'check');
