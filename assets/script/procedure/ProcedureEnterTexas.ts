@@ -7,6 +7,7 @@ import UIComponent, { PrefabUI } from '../ui/UIComponent';
 import ProcedureBase from './ProcedureBase';
 import AGameplayEntrance from '../crazyPoker/gameplayMisc/entrance/AGameplayEntrance';
 import { AGameplayEntranceProvider } from '../crazyPoker/gameplayMisc/entrance/AGamelayEntranceProvider';
+import { ProcedureReturnNavigateParam } from './ProcedureReturn';
 
 /**
  * 进入牌桌进程
@@ -109,7 +110,9 @@ export default class ProcedureEnterTexas extends ProcedureBase {
                 if (!result) {
                     console.warn('[ProcedureEnterTexas]', 'enterForegroundAsync false');
                     this._entrance = null;
-                    ProcedureManager.StartProcedure<PrefabUI>(ProcedureEnum.Return, PrefabUI.UIPreloading);
+                     ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
+                        needClosedUI: [PrefabUI.UIPreloading],
+                    });
                 }
             })
             .catch(e => {
@@ -117,13 +120,9 @@ export default class ProcedureEnterTexas extends ProcedureBase {
                 H5MsgMgr.Instance.off('wsError');
                 console.error('[ProcedureEnterTexas]', 'err', e);
                 this._entrance = null;
-                ProcedureManager.StartProcedure<PrefabUI>(ProcedureEnum.Return, PrefabUI.UIPreloading);
+                 ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
+                    needClosedUI: [PrefabUI.UIPreloading],
+                });
             });
-    }
-
-    errorHandler(error: any) {
-        UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
-        console.log('进入房间发生错误:', error);
-        // ProcedureManager.StartProcedure(ProcedureEnum.Idle, { mode: 1, game_enter_type: 0 });
     }
 }
