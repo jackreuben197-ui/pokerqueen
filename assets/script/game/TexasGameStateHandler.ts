@@ -17,7 +17,7 @@ import type { ProcedureReturnNavigateParam } from '../procedure/ProcedureReturn'
 
 interface TexasGameExitSourceData {
     response?: unknown;
-    h5NavigatePayload?: Record<string, unknown>;
+    h5Navigate?: ProcedureReturnNavigateParam;
 }
 
 export class TexasGameStateHandlerNetworkException extends StateHandler {

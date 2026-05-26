@@ -1,7 +1,7 @@
 import { match } from 'assert';
 import { LogStyle } from '../../config/GameConfig';
-import { ProcedureEnum } from '../../define/EIDefine';
 import MessageHandler from '../../crazyPoker/gameplay/messages/MessageHandler';
+import { ProcedureEnum } from '../../define/EIDefine';
 import GC from '../../frame/GameControl';
 import { GameCache } from '../../game/GameCache';
 import H5MsgMgr from '../../H5MsgMgr';

@@ -444,11 +444,16 @@ export async function registerH5Listeners(): Promise<void> {
                 return;
             }
             const enterPram = { game_enter_type: GameEnterType.MTT, isLookOn: false };
+            // === 4. 同步 token（CC 发 WS 包时写入包头，对齐 enterTable 流程）===
+            if (payload.token) {
+                LoginSession.Token = payload.token;
+            }
             // === 5. 填充 GameCache ===
             GameCache.Instance.match_id = matchInfo.match_id;
             GameCache.Instance.room_id = 0;
             GameCache.Instance.room_type = matchInfo.type;
             GameCache.Instance.enter_param = enterPram;
+            GameCache.Instance.serviceId = payload.websocketPort;
             // === 6. 启动进入牌桌流程，同时后台加载资源 ===
             ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enterPram);
             console.log('[H5Bridge] enterMtt 缓存完成, matchId', GameCache.Instance.match_id, ',开始进入mtt');
