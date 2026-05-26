@@ -6,7 +6,6 @@ import TexasGameRoomDataRoundState from './TexasGameRoomDataRoundState';
 import TexasGameRoomDataSeatsStateManager from './TexasGameRoomDataSeatsStateManager';
 
 export default class TexasGameRoomData extends RoomData {
-
     // 基础信息
     public readonly basicInfo = new TexasGameRoomDataBasic();
     // 底池信息

@@ -224,6 +224,7 @@ export function fillGameCache(payload: any): void {
 // ==================== H5 消息监听注册 ====================
 /** 注册 H5 桥接消息（enterTable / exitTable / syncUser） */
 export async function registerH5Listeners(): Promise<void> {
+
     // H5 桥接模式下，提前完成数据层初始化（含 i18n），避免跳过大厅导致懒初始化未执行
     // await initH5BridgeDependencies();
     // initH5BridgeDependencies();
@@ -292,7 +293,7 @@ export async function registerH5Listeners(): Promise<void> {
         // === 6. 启动进入牌桌流程 ===
         // EnterTexas → 加载资源 → Texas procedure → TexasGameUtils.EnterRoom()
         // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
-        await ProcedureManager.StartProcedure(ProcedureEnum.EnterRoom, gc.enter_param);
+        await ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
         console.log('[H5Bridge] enterTable 已启动进桌流程, room_id:', roomData.rid, 'room:', roomData.name);
     });
 
@@ -324,7 +325,6 @@ export async function registerH5Listeners(): Promise<void> {
         (GC.data.user.info as any)._msg = userInfo;
         console.log('[H5Bridge] syncUser 缓存完成, user_id:', userInfo.un_id, 'nickname:', userInfo.nickname);
         // 预加载声音和游戏资源（提前加载，避免 enterTable 时再加载影响进桌速度）
-
     });
 
     H5MsgMgr.Instance.on('syncLanguage', payload => {

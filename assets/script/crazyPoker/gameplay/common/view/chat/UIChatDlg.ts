@@ -81,6 +81,15 @@ export default class UIChatDlg extends UIBasePlus {
             if (this._editBox) {
                 // 监听回车提交
                 this._editBox.node.on('text-submit', this._onEditBoxSubmit, this);
+                // 修复 WebH5 构建后 EditBox 输入不可见（CC 2.4.8）
+                // 根因：原生 HTML <input> 在 Cocos 容器内（z-index 低），
+                // 被 H5 层 #app（z-index: 10）遮挡，导致输入内容看不到。
+                // 修复：聚焦时给原生 input 设置高 z-index 使其显示在 #app 之上。
+                this._editBox.node.on('editing-did-began', (editbox: cc.EditBox) => {
+                    if (cc.sys.isBrowser && (editbox as any)._impl && (editbox as any)._impl._elem) {
+                        ((editbox as any)._impl._elem as HTMLElement).style.zIndex = '20';
+                    }
+                });
             }
         }
         // 获取发送按钮（sendMsg 节点有 cc.Button 组件）

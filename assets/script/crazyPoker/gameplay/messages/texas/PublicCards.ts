@@ -4,12 +4,12 @@ import { AnimateDisplayTypePublicCards } from '../../texas/constants/AnimateDisp
 import TexasGameRoomData from '../../texas/data/TexasGameRoomData';
 
 // PublicCards 1104
-export default function PublicCards(data: ServerMessagePublicCards.AsObject, roomID: number, matchID: number) {
+export function PublicCards(data: ServerMessagePublicCards.AsObject, roomID: number, matchID: number) {
     const roomData = roomDataManager.getRoomData<TexasGameRoomData>(roomID, matchID);
     roomData.publicCards.addPublicCards(data.publicCardsArrayList, AnimateDisplayTypePublicCards.Deal);
     if (data.publicCardsArray2List.length > 0) {
         roomData.publicCards.addSecondPublicCards(data.publicCardsArray2List, AnimateDisplayTypePublicCards.Deal);
-    }else if (data.extPublicCardsArrayList.length > 0) {
+    } else if (data.extPublicCardsArrayList.length > 0) {
         roomData.publicCards.addSecondPublicCards(data.extPublicCardsArrayList, AnimateDisplayTypePublicCards.Deal);
     }
 }

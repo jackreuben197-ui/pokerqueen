@@ -24,20 +24,15 @@ export default class MTTGameMessageHandler extends TexasGameMessageHandler {
                 {
                     let isTriggerPartialBringIn: boolean = rec.storeChips > 0;
                     game.RemainRebuyCount = game.TotalRebuyCount - rec.rebuyTimes;
-
                     // 安全读取重购费用，MttInfo 在游戏内可能未初始化
                     let mttInfo = UIMTTModel.Instance?.MttInfo;
-                    let rebuyCost = mttInfo?.mtt
-                        ? (mttInfo.mtt.apply_fee_pool + mttInfo.mtt.apply_fee_service)
-                        : Number.MAX_SAFE_INTEGER;
-
+                    let rebuyCost = mttInfo?.mtt ? mttInfo.mtt.apply_fee_pool + mttInfo.mtt.apply_fee_service : Number.MAX_SAFE_INTEGER;
                     let isTriggerRebuy: boolean =
                         rec.storeChips == 0 &&
                         rec.accountChips >= rebuyCost &&
                         game.MaxRebuyBlindLevel > 0 &&
                         game.MaxRebuyBlindLevel > game.BlindLevel &&
                         game.RemainRebuyCount > 0;
-
                     if (isTriggerPartialBringIn) {
                         utils.HandlePartialBringIn(rec.storeChips, code => {
                             if (code == 0) {
@@ -82,11 +77,8 @@ export default class MTTGameMessageHandler extends TexasGameMessageHandler {
         let game = this.game as MTTGame;
         let matchId = GameCache.Instance.match_id;
         let matchName = GameCache.Instance.roomName;
-
         await TimeHelper.Sleep(2000);
-
         this.game.SMAgency.ChangeGameState(TexasGameState.Exit, null);
-
         H5MsgMgr.sendToH5('showPanel', 1, {
             panelType: 'mttSettlement',
             ensureVisible: true,
@@ -98,7 +90,7 @@ export default class MTTGameMessageHandler extends TexasGameMessageHandler {
                 startTime: UIMTTModel.Instance?.MttInfo?.mtt?.start_time ?? '',
                 currentBlindLevel: game.BlindLevel,
                 maxRebuyBlindLevel: game.MaxRebuyBlindLevel,
-                remainRebuyTimes: game.RemainRebuyCount,
+                remainRebuyTimes: game.RemainRebuyCount
             }
         });
     }

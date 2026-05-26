@@ -3359,14 +3359,12 @@ export default class TexasGame {
         normal.active = false;
         discount.active = false;
         free.active = false;
-
         // 先查免费次数，有免费次数则显示"VIP免费"
         if (this._viewPubFreeCount > 0) {
             free.active = true;
             this.uirc.setChildLabel(free, 'label', `VIP免费 ${this._viewPubFreeCount}`);
             return;
         }
-
         // 没有免费次数，走钻石价格逻辑
         let configType = this._publicViewType == 2 ? 31 : 8; // 全看=31, 分步=8
         let thousand = 0;
@@ -3456,14 +3454,11 @@ export default class TexasGame {
         if (!this.mainPlayer.isParticipateInTheGame) return;
         let public_card_count = this.GetPublicCardsCount(1);
         if (public_card_count == 5) return;
-
         // 安全屋检查：安全屋模式下，非房管+非白名单+旁观者不显示
         let isSafeLimit = this.isSafeRoom && !GameCache.Instance._isRoomManager && !GameCache.Instance._isWhiteList && !this.mainPlayer.isParticipateInTheGame;
         if (isSafeLimit) return;
-
         // 查询免费次数并刷新价格
         this.RefreshViewPubFreeCount();
-
         // 按钮文本：全看模式 vs 分步模式
         if (this._publicViewType == 2) {
             this.uirc.textSeeMorePublic.string = '全看';

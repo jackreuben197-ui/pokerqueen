@@ -1,8 +1,8 @@
-import { Def } from "../../../../protobuf/holdem/define_pb";
-import { AnimateDisplayTypeAction, AnimateDisplayTypeCards, AnimateDisplayTypePosition, AnimateDisplayTypeRoundBet } from "../constants/AnimateDisplayType";
-import TexasGameRoomData from "./TexasGameRoomData";
-import TexasGameRoomDataPlayerMine from "./TexasGameRoomDataPlayerMine";
-import { SeatPosition } from "./TexasGameRoomDataSeatsStateManager";
+import { Def } from '../../../../protobuf/holdem/define_pb';
+import { AnimateDisplayTypeAction, AnimateDisplayTypeCards, AnimateDisplayTypePosition, AnimateDisplayTypeRoundBet } from '../constants/AnimateDisplayType';
+import TexasGameRoomData from './TexasGameRoomData';
+import TexasGameRoomDataPlayerMine from './TexasGameRoomDataPlayerMine';
+import { SeatPosition } from './TexasGameRoomDataSeatsStateManager';
 
 export default class TexasGameRoomDataPlayer extends cc.EventTarget {
     private _parentRoomData: TexasGameRoomData;
@@ -14,26 +14,35 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
     public roundActioned: boolean;
     public deposit: number;
 
-    constructor(seatNo: number, position:SeatPosition, roomData: TexasGameRoomData) {
+    constructor(seatNo: number, position: SeatPosition, roomData: TexasGameRoomData) {
         super();
         this.seatNo = seatNo;
         this._position = position;
         this._parentRoomData = roomData;
     }
 
-    public get delayViewCard() { return this._parentRoomData.basicInfo.delaySeeCard};
-    public get directlyViewCard() { return this._parentRoomData.basicInfo.gameStatus >= Def.GameStatus.HAND_PREFLOP && this.roundActioned};
+    public get delayViewCard() {
+        return this._parentRoomData.basicInfo.delaySeeCard;
+    }
 
-    public get isMine(): boolean{
+    public get directlyViewCard() {
+        return this._parentRoomData.basicInfo.gameStatus >= Def.GameStatus.HAND_PREFLOP && this.roundActioned;
+    }
+
+    public get isMine(): boolean {
         return this.myInfo != null;
     }
 
     public static readonly ACTION_CHANGE = 'ACTION_CHANGE';
     public _action: Def.ActionMap[keyof Def.ActionMap];
-    public get action() { return this._action};
+
+    public get action() {
+        return this._action;
+    }
+
     public setAction(c: Def.ActionMap[keyof Def.ActionMap], aat: AnimateDisplayTypeAction) {
-        if (this._action == c ) return;
-        this._action = c; 
+        if (this._action == c) return;
+        this._action = c;
         this.emit(TexasGameRoomDataPlayer.ACTION_CHANGE, this._action, aat);
     }
 
@@ -41,10 +50,13 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
     public static readonly SEAT_POSITION_CHANGE = 'SEAT_POSITION_CHANGE';
     private _position: SeatPosition;
 
-    public get position() { return this._position};
-    public setPosition(c: SeatPosition, pat: AnimateDisplayTypePosition ) {
-        if (this._position == c ) return;
-        this._position = c; 
+    public get position() {
+        return this._position;
+    }
+
+    public setPosition(c: SeatPosition, pat: AnimateDisplayTypePosition) {
+        if (this._position == c) return;
+        this._position = c;
         this.emit(TexasGameRoomDataPlayer.SEAT_POSITION_CHANGE, this._position, pat);
     }
 
@@ -119,17 +131,14 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
 
     // public static readonly CHIP_CHANGE = 'CHIPS_CHANGE';
     // private _chip: number;
-
     // public get chip() {
     //     return this._chip;
     // }
-
     // public set chip(c: number) {
     //     if (this._chip == c) return;
     //     this._chip = c;
     //     this.emit(TexasGameRoomDataPlayer.CHIP_CHANGE, this._chip);
     // }
-
     public static readonly EMPTY_SEAT = 'EMPTY_SEAT';
 
     public emptySeat() {

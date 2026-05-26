@@ -7,6 +7,7 @@ import UIComponent, { PrefabUI } from '../ui/UIComponent';
 import ProcedureBase from './ProcedureBase';
 import AGameplayEntrance from '../crazyPoker/gameplayMisc/entrance/AGameplayEntrance';
 import { AGameplayEntranceProvider } from '../crazyPoker/gameplayMisc/entrance/AGamelayEntranceProvider';
+import { ProcedureReturnNavigateParam } from './ProcedureReturn';
 
 /**
  * 进入牌桌进程
@@ -41,13 +42,17 @@ export default class ProcedureEnterRoom extends ProcedureBase {
                 if (!result) {
                     console.warn('[ProcedureEnterRoom]', 'enterForegroundAsync false');
                     this._entrance = null;
-                    ProcedureManager.StartProcedure<PrefabUI>(ProcedureEnum.Return, PrefabUI.UIPreloading);
+                    ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
+                        needClosedUI: [PrefabUI.UIPreloading]
+                    });
                 }
             })
             .catch(e => {
                 console.error('[ProcedureEnterRoom]', 'err', e);
                 this._entrance = null;
-                ProcedureManager.StartProcedure<PrefabUI>(ProcedureEnum.Return, PrefabUI.UIPreloading);
+                ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
+                    needClosedUI: [PrefabUI.UIPreloading]
+                });
             });
     }
 }

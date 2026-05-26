@@ -871,9 +871,7 @@ export default class TexasGameProtocol {
                 StringHelper.Format(i18nMgr.Get('UITexas_payLookHandCardToast1'), [userName, String(roomId), String(handNum), String(amount)])
             );
         } else {
-            UIComponent.Instance.Toast(
-                StringHelper.Format(i18nMgr.Get('UITexas_payLookHandCardToast2'), [userName, String(roomId), String(handNum)])
-            );
+            UIComponent.Instance.Toast(StringHelper.Format(i18nMgr.Get('UITexas_payLookHandCardToast2'), [userName, String(roomId), String(handNum)]));
         }
     }
 

@@ -1,27 +1,20 @@
-
-import { AnimateDisplayTypeButton } from "../../../../texas/constants/AnimateDisplayType";
-import TexasGameRoomData from "../../../../texas/data/TexasGameRoomData";
-import TexasGameRoomDataSeatsStateManager from "../../../../texas/data/TexasGameRoomDataSeatsStateManager";
-import roomDataManager from "../../../core/RoomDataManager";
-import Seat from "./Seat";
-
-
+import { AnimateDisplayTypeButton } from '../../../../texas/constants/AnimateDisplayType';
+import TexasGameRoomData from '../../../../texas/data/TexasGameRoomData';
+import TexasGameRoomDataSeatsStateManager from '../../../../texas/data/TexasGameRoomDataSeatsStateManager';
+import roomDataManager from '../../../core/RoomDataManager';
+import Seat from './Seat';
 const LN = '[SeatManager]';
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
 @menu('CrazyPoker/Room/Texas/SeatManager')
 export default class SeatManager extends cc.Component {
-
     @property(cc.Prefab)
     private seatPrefab: cc.Prefab = null;
-
-    @property({type: cc.Node, tooltip: '发牌的起始节点'}) 
+    @property({ type: cc.Node, tooltip: '发牌的起始节点' })
     private dealNode: cc.Node = null;
-    
-    @property({type: cc.Node, tooltip: '底池的起始节点'}) 
+    @property({ type: cc.Node, tooltip: '底池的起始节点' })
     private potNot: cc.Node = null;
-
     private _seatManager: TexasGameRoomDataSeatsStateManager;
     private _seatNodes: cc.Node[] = [];
     private _seatNodesMap: Map<number, Seat> = new Map();
@@ -57,7 +50,7 @@ export default class SeatManager extends cc.Component {
         this.onUpdateButton(0, this._seatManager.buttonPosition, AnimateDisplayTypeButton.Static);
     }
 
-    private onUpdateButton(prevSeat:number, currentSeat: number, bat: AnimateDisplayTypeButton) {
+    private onUpdateButton(prevSeat: number, currentSeat: number, bat: AnimateDisplayTypeButton) {
         if (bat == AnimateDisplayTypeButton.Static) {
             if (prevSeat > 0) {
                 const ps = this._seatNodesMap.get(prevSeat);
@@ -81,11 +74,11 @@ export default class SeatManager extends cc.Component {
     private onUpdateSeats(count: number) {
         this._seatNodesMap.clear();
         if (this._seatNodes.length != count) {
-            for (let i = 0; i< count; i++) {
+            for (let i = 0; i < count; i++) {
                 let nd = cc.instantiate(this.seatPrefab);
                 nd.parent = this.node;
                 this._seatNodes.push(nd);
-                this._seatNodesMap.set(i+1, nd.getComponent(Seat));
+                this._seatNodesMap.set(i + 1, nd.getComponent(Seat));
             }
         }
         this._seatNodesMap.forEach((comp, seatNo) => {
@@ -93,5 +86,4 @@ export default class SeatManager extends cc.Component {
             comp.initData(seatData, this.potNot, this.dealNode);
         });
     }
-
 }

@@ -1,9 +1,10 @@
 import ProcedureBase from './ProcedureBase';
-import H5MsgMgr from '../H5MsgMgr';
+import H5MsgMgr, { H5RouteData } from '../H5MsgMgr';
 import UIComponent, { PrefabUI, isPrefabUI } from '../ui/UIComponent';
 
 export interface ProcedureReturnNavigateParam {
-    h5NavigatePayload?: Record<string, unknown>;
+    routeData?: H5RouteData;
+    needClosedUI?: PrefabUI[];
 }
 
 /**
@@ -14,13 +15,17 @@ export default class ProcedureReturn extends ProcedureBase {
 
     override lateEnter<T>(param?: T) {
         super.lateEnter<T>(param);
-        if (isPrefabUI(param)) {
-            UIComponent.Instance.HideUI(param);
-        }
-        const navigatePayload = (param as ProcedureReturnNavigateParam)?.h5NavigatePayload;
-        if (navigatePayload) {
-            H5MsgMgr.sendToH5('h5Navigate', 1, navigatePayload);
-            return;
+        if (param) {
+            const navigate = param as ProcedureReturnNavigateParam;
+            if (navigate && navigate.needClosedUI) {
+                navigate.needClosedUI.forEach(v => {
+                    UIComponent.Instance.HideUI(v);
+                });
+            }
+            if (navigate && navigate.needClosedUI) {
+                H5MsgMgr.sendToH5('h5Navigate', 1, navigate.routeData);
+                return;
+            }
         }
         // 通知 H5 层恢复显示
         H5MsgMgr.sendToH5('h5Show', 1);

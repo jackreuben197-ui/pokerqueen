@@ -151,10 +151,13 @@ export default class MttTexasGameplayEntrance extends AGameplayEntrance {
      */
     public async requestRoomInfoAsync(): Promise<number> {
         try {
-            const resp = await ProtocolAgency.SendAsync<ClientMessageMttDetail.AsObject, ServerMessageMttDetail.AsObject>(ProtocolCode.Protocol_Holdem_MttDetail, {
-                matchId: this.matchId,
-                rpcId: 1
-            });
+            const resp = await ProtocolAgency.SendAsync<ClientMessageMttDetail.AsObject, ServerMessageMttDetail.AsObject>(
+                ProtocolCode.Protocol_Holdem_MttDetail,
+                {
+                    matchId: this.matchId,
+                    rpcId: 1
+                }
+            );
             if (resp.status != 0) {
                 console.error(`${this.constructor.name}: requestRoomInfoAsync: ${resp.status}`);
                 return -1;
