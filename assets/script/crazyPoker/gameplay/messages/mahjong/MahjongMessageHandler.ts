@@ -1,193 +1,193 @@
 import { Code } from '../../../../protobuf/holdem/code_pb';
-import { EnterRoom } from './EnterRoom';
-import { Seated } from './Seated';
-import { BringIn } from './BringIn';
-import { ExchangeTiles } from './ExchangeTiles';
-import { VoidSuit } from './VoidSuit';
-import { Action } from './Action';
-import { AutoOpActive } from './AutoOpActive';
-import { StandupActive } from './StandupActive';
-import { Leave } from './Leave';
-import { KeepSeatActive } from './KeepSeatActive';
-import { AddTime } from './AddTime';
-import { BroadcastMsg } from './BroadcastMsg';
-import { PrivateMsg } from './PrivateMsg';
-import { Roomers } from './Roomers';
-import { SetAutoOnTable } from './SetAutoOnTable';
-import { Observers } from './Observers';
-import { SyncEnter } from './SyncEnter';
-import { Replay } from './Replay';
-import { ChatMembers } from './ChatMembers';
-import { Raise } from './Raise';
-import { RejectBringIn } from './RejectBringIn';
-import { SeatedOthers } from './SeatedOthers';
-import { StartInfo } from './StartInfo';
-import { ExchangeTilesComplete } from './ExchangeTilesComplete';
-import { VoidSuitComplete } from './VoidSuitComplete';
-import { ChipsChange } from './ChipsChange';
-import { ActionAll } from './ActionAll';
-import { AutoOp } from './AutoOp';
-import { Standup } from './Standup';
-import { KeepSeat } from './KeepSeat';
-import { Result } from './Result';
-import { AddTimeOthers } from './AddTimeOthers';
-import { LeaveNotification } from './LeaveNotification';
-import { BringInFail } from './BringInFail';
-import { HandClear } from './HandClear';
-import { GetMsg } from './GetMsg';
-import { WaitTurnAction } from './WaitTurnAction';
-import { ActionFail } from './ActionFail';
-import { Prepare } from './Prepare';
-import { RaiseComplete } from './RaiseComplete';
-import { FollowDealer } from './FollowDealer';
-import { NeedBringIn } from './NeedBringIn';
-import { NeedBringInComplete } from './NeedBringInComplete';
-import { VideoMaskChange } from './VideoMaskChange';
-import { UpBlind } from './UpBlind';
-import { SyncHand } from './SyncHand';
+import { MJEnterRoom } from './MJEnterRoom';
+import { MJSeated } from './MJSeated';
+import { MJBringIn } from './MJBringIn';
+import { MJExchangeTiles } from './MJExchangeTiles';
+import { MJVoidSuit } from './MJVoidSuit';
+import { MJAction } from './MJAction';
+import { MJAutoOpActive } from './MJAutoOpActive';
+import { MJStandupActive } from './MJStandupActive';
+import { MJLeave } from './MJLeave';
+import { MJKeepSeatActive } from './MJKeepSeatActive';
+import { MJAddTime } from './MJAddTime';
+import { MJBroadcastMsg } from './MJBroadcastMsg';
+import { MJPrivateMsg } from './MJPrivateMsg';
+import { MJRoomers } from './MJRoomers';
+import { MJSetAutoOnTable } from './MJSetAutoOnTable';
+import { MJObservers } from './MJObservers';
+import { MJSyncEnter } from './MJSyncEnter';
+import { MJReplay } from './MJReplay';
+import { MJChatMembers } from './MJChatMembers';
+import { MJRaise } from './MJRaise';
+import { MJRejectBringIn } from './MJRejectBringIn';
+import { MJSeatedOthers } from './MJSeatedOthers';
+import { MJStartInfo } from './MJStartInfo';
+import { MJExchangeTilesComplete } from './MJExchangeTilesComplete';
+import { MJVoidSuitComplete } from './MJVoidSuitComplete';
+import { MJChipsChange } from './MJChipsChange';
+import { MJActionAll } from './MJActionAll';
+import { MJAutoOp } from './MJAutoOp';
+import { MJStandup } from './MJStandup';
+import { MJKeepSeat } from './MJKeepSeat';
+import { MJResult } from './MJResult';
+import { MJAddTimeOthers } from './MJAddTimeOthers';
+import { MJLeaveNotification } from './MJLeaveNotification';
+import { MJBringInFail } from './MJBringInFail';
+import { MJHandClear } from './MJHandClear';
+import { MJGetMsg } from './MJGetMsg';
+import { MJWaitTurnAction } from './MJWaitTurnAction';
+import { MJActionFail } from './MJActionFail';
+import { MJPrepare } from './MJPrepare';
+import { MJRaiseComplete } from './MJRaiseComplete';
+import { MJFollowDealer } from './MJFollowDealer';
+import { MJNeedBringIn } from './MJNeedBringIn';
+import { MJNeedBringInComplete } from './MJNeedBringInComplete';
+import { MJVideoMaskChange } from './MJVideoMaskChange';
+import { MJUpBlind } from './MJUpBlind';
+import { MJSyncHand } from './MJSyncHand';
 
 export default class MahjongMessageHandler {
 
     public static handle(code: number, data: any, roomID: number, matchID: number) {
         switch (code) {
             case Code.MSG_D_MJ_ENTER_ROOM:
-                EnterRoom(data, roomID, matchID);
-                break; // EnterRoom 3001
+                MJEnterRoom(data, roomID, matchID);
+                break; // MJEnterRoom 3001
             case Code.MSG_D_MJ_SEATED:
-                Seated(data, roomID, matchID);
-                break; // Seated 3002
+                MJSeated(data, roomID, matchID);
+                break; // MJSeated 3002
             case Code.MSG_D_MJ_BRING_IN:
-                BringIn(data, roomID, matchID);
-                break; // BringIn 3003
+                MJBringIn(data, roomID, matchID);
+                break; // MJBringIn 3003
             case Code.MSG_D_MJ_EXCHANGE_TILES:
-                ExchangeTiles(data, roomID, matchID);
-                break; // ExchangeTiles 3004
+                MJExchangeTiles(data, roomID, matchID);
+                break; // MJExchangeTiles 3004
             case Code.MSG_D_MJ_VOID_SUIT:
-                VoidSuit(data, roomID, matchID);
-                break; // VoidSuit 3005
+                MJVoidSuit(data, roomID, matchID);
+                break; // MJVoidSuit 3005
             case Code.MSG_D_MJ_ACTION:
-                Action(data, roomID, matchID);
-                break; // Action 3006
+                MJAction(data, roomID, matchID);
+                break; // MJAction 3006
             case Code.MSG_D_MJ_AUTO_OP_ACTIVE:
-                AutoOpActive(data, roomID, matchID);
-                break; // AutoOpActive 3007
+                MJAutoOpActive(data, roomID, matchID);
+                break; // MJAutoOpActive 3007
             case Code.MSG_D_MJ_STANDUP_ACTIVE:
-                StandupActive(data, roomID, matchID);
-                break; // StandupActive 3008
+                MJStandupActive(data, roomID, matchID);
+                break; // MJStandupActive 3008
             case Code.MSG_D_MJ_LEAVE:
-                Leave(data, roomID, matchID);
-                break; // Leave 3009
+                MJLeave(data, roomID, matchID);
+                break; // MJLeave 3009
             case Code.MSG_D_MJ_KEEP_SEAT_ACTIVE:
-                KeepSeatActive(data, roomID, matchID);
-                break; // KeepSeatActive 3010
+                MJKeepSeatActive(data, roomID, matchID);
+                break; // MJKeepSeatActive 3010
             case Code.MSG_D_MJ_ADD_TIME:
-                AddTime(data, roomID, matchID);
-                break; // AddTime 3011
+                MJAddTime(data, roomID, matchID);
+                break; // MJAddTime 3011
             case Code.MSG_D_MJ_BROADCAST_MSG:
-                BroadcastMsg(data, roomID, matchID);
-                break; // BroadcastMsg 3012
+                MJBroadcastMsg(data, roomID, matchID);
+                break; // MJBroadcastMsg 3012
             case Code.MSG_D_MJ_PRIVATE_MSG:
-                PrivateMsg(data, roomID, matchID);
-                break; // PrivateMsg 3013
+                MJPrivateMsg(data, roomID, matchID);
+                break; // MJPrivateMsg 3013
             case Code.MSG_D_MJ_ROOMERS:
-                Roomers(data, roomID, matchID);
-                break; // Roomers 3014
+                MJRoomers(data, roomID, matchID);
+                break; // MJRoomers 3014
             case Code.MSG_D_MJ_SET_AUTO_ON_TABLE:
-                SetAutoOnTable(data, roomID, matchID);
-                break; // SetAutoOnTable 3015
+                MJSetAutoOnTable(data, roomID, matchID);
+                break; // MJSetAutoOnTable 3015
             case Code.MSG_D_MJ_OBSERVERS:
-                Observers(data, roomID, matchID);
-                break; // Observers 3016
+                MJObservers(data, roomID, matchID);
+                break; // MJObservers 3016
             case Code.MSG_D_MJ_SYNC_ENTER:
-                SyncEnter(data, roomID, matchID);
-                break; // SyncEnter 3017
+                MJSyncEnter(data, roomID, matchID);
+                break; // MJSyncEnter 3017
             case Code.MSG_D_MJ_REPLAY:
-                Replay(data, roomID, matchID);
-                break; // Replay 3018
+                MJReplay(data, roomID, matchID);
+                break; // MJReplay 3018
             case Code.MSG_D_MJ_CHAT_MEMBERS:
-                ChatMembers(data, roomID, matchID);
-                break; // ChatMembers 3019
+                MJChatMembers(data, roomID, matchID);
+                break; // MJChatMembers 3019
             case Code.MSG_D_MJ_RAISE:
-                Raise(data, roomID, matchID);
-                break; // Raise 3020
+                MJRaise(data, roomID, matchID);
+                break; // MJRaise 3020
             case Code.MSG_D_MJ_REJECT_BRING_IN:
-                RejectBringIn(data, roomID, matchID);
-                break; // RejectBringIn 3021
+                RejectMJBringIn(data, roomID, matchID);
+                break; // MJRejectBringIn 3021
             case Code.MSG_S_MJ_SEATED_OTHERS:
-                SeatedOthers(data, roomID, matchID);
-                break; // SeatedOthers 3051
+                MJSeatedOthers(data, roomID, matchID);
+                break; // MJSeatedOthers 3051
             case Code.MSG_S_MJ_START_INFO:
-                StartInfo(data, roomID, matchID);
-                break; // StartInfo 3052
+                MJStartInfo(data, roomID, matchID);
+                break; // MJStartInfo 3052
             case Code.MSG_S_MJ_EXCHANGE_TILES_COMPLETE:
-                ExchangeTilesComplete(data, roomID, matchID);
-                break; // ExchangeTilesComplete 3053
+                MJExchangeTilesComplete(data, roomID, matchID);
+                break; // MJExchangeTilesComplete 3053
             case Code.MSG_S_MJ_VOID_SUIT_COMPLETE:
-                VoidSuitComplete(data, roomID, matchID);
-                break; // VoidSuitComplete 3054
+                MJVoidSuitComplete(data, roomID, matchID);
+                break; // MJVoidSuitComplete 3054
             case Code.MSG_S_MJ_CHIPS_CHANGE:
-                ChipsChange(data, roomID, matchID);
-                break; // ChipsChange 3055
+                MJChipsChange(data, roomID, matchID);
+                break; // MJChipsChange 3055
             case Code.MSG_S_MJ_ACTION_ALL:
-                ActionAll(data, roomID, matchID);
-                break; // ActionAll 3056
+                MJActionAll(data, roomID, matchID);
+                break; // MJActionAll 3056
             case Code.MSG_S_MJ_AUTO_OP:
-                AutoOp(data, roomID, matchID);
-                break; // AutoOp 3057
+                MJAutoOp(data, roomID, matchID);
+                break; // MJAutoOp 3057
             case Code.MSG_S_MJ_STANDUP:
-                Standup(data, roomID, matchID);
-                break; // Standup 3058
+                MJStandup(data, roomID, matchID);
+                break; // MJStandup 3058
             case Code.MSG_S_MJ_KEEP_SEAT:
-                KeepSeat(data, roomID, matchID);
-                break; // KeepSeat 3059
+                MJKeepSeat(data, roomID, matchID);
+                break; // MJKeepSeat 3059
             case Code.MSG_S_MJ_RESULT:
-                Result(data, roomID, matchID);
-                break; // Result 3060
+                MJResult(data, roomID, matchID);
+                break; // MJResult 3060
             case Code.MSG_S_MJ_ADD_TIME_OTHERS:
-                AddTimeOthers(data, roomID, matchID);
-                break; // AddTimeOthers 3061
+                MJAddTimeOthers(data, roomID, matchID);
+                break; // MJAddTimeOthers 3061
             case Code.MSG_S_MJ_LEAVE_NOTIFICATION:
-                LeaveNotification(data, roomID, matchID);
-                break; // LeaveNotification 3062
+                MJLeaveNotification(data, roomID, matchID);
+                break; // MJLeaveNotification 3062
             case Code.MSG_S_MJ_BRING_IN_FAIL:
-                BringInFail(data, roomID, matchID);
-                break; // BringInFail 3063
+                MJBringInFail(data, roomID, matchID);
+                break; // MJBringInFail 3063
             case Code.MSG_S_MJ_HAND_CLEAR:
-                HandClear(data, roomID, matchID);
-                break; // HandClear 3064
+                MJHandClear(data, roomID, matchID);
+                break; // MJHandClear 3064
             case Code.MSG_S_MJ_GET_MSG:
-                GetMsg(data, roomID, matchID);
-                break; // GetMsg 3065
+                MJGetMsg(data, roomID, matchID);
+                break; // MJGetMsg 3065
             case Code.MSG_S_MJ_WAIT_TURN_ACTION:
-                WaitTurnAction(data, roomID, matchID);
-                break; // WaitTurnAction 3066
+                WaitTurnMJAction(data, roomID, matchID);
+                break; // MJWaitTurnAction 3066
             case Code.MSG_S_MJ_ACTION_FAIL:
-                ActionFail(data, roomID, matchID);
-                break; // ActionFail 3067
+                MJActionFail(data, roomID, matchID);
+                break; // MJActionFail 3067
             case Code.MSG_S_MJ_PREPARE:
-                Prepare(data, roomID, matchID);
-                break; // Prepare 3068
+                MJPrepare(data, roomID, matchID);
+                break; // MJPrepare 3068
             case Code.MSG_S_MJ_RAISE_COMPLETE:
-                RaiseComplete(data, roomID, matchID);
-                break; // RaiseComplete 3069
+                MJRaiseComplete(data, roomID, matchID);
+                break; // MJRaiseComplete 3069
             case Code.MSG_S_MJ_FOLLOW_DEALER:
-                FollowDealer(data, roomID, matchID);
-                break; // FollowDealer 3070
+                MJFollowDealer(data, roomID, matchID);
+                break; // MJFollowDealer 3070
             case Code.MSG_S_MJ_NEED_BRING_IN:
-                NeedBringIn(data, roomID, matchID);
-                break; // NeedBringIn 3071
+                NeedMJBringIn(data, roomID, matchID);
+                break; // MJNeedBringIn 3071
             case Code.MSG_S_MJ_NEED_BRING_IN_COMPLETE:
-                NeedBringInComplete(data, roomID, matchID);
-                break; // NeedBringInComplete 3072
+                MJNeedBringInComplete(data, roomID, matchID);
+                break; // MJNeedBringInComplete 3072
             case Code.MSG_S_MJ_VIDEO_MASK_CHANGE:
-                VideoMaskChange(data, roomID, matchID);
-                break; // VideoMaskChange 3073
+                MJVideoMaskChange(data, roomID, matchID);
+                break; // MJVideoMaskChange 3073
             case Code.MSG_S_MJ_UP_BLIND:
-                UpBlind(data, roomID, matchID);
-                break; // UpBlind 3074
+                MJUpBlind(data, roomID, matchID);
+                break; // MJUpBlind 3074
             case Code.MSG_S_MJ_SYNC_HAND:
-                SyncHand(data, roomID, matchID);
-                break; // SyncHand 3075
+                MJSyncHand(data, roomID, matchID);
+                break; // MJSyncHand 3075
         }
     }
 }
