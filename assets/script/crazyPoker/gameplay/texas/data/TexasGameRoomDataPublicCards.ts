@@ -1,9 +1,14 @@
-import { AnimateDisplayTypeCards, AnimateDisplayTypePublicCards } from "../constants/AnimateDisplayType";
+import { AnimateDisplayTypeCards, AnimateDisplayTypePublicCards } from '../constants/AnimateDisplayType';
 
 export default class TexasGameRoomDataPublicCards extends cc.EventTarget {
     private _publicCards: number[] = [];
-    public get publicCards() {return this._publicCards};
+
+    public get publicCards() {
+        return this._publicCards;
+    }
+
     public static PUBLICCARDS_CHANGE = 'PUBLICCARDS_CHANGE';
+
     public addPublicCards(cards: number[], pat: AnimateDisplayTypePublicCards) {
         if (cards.length == 0) return;
         const old = this._publicCards;
@@ -15,14 +20,20 @@ export default class TexasGameRoomDataPublicCards extends cc.EventTarget {
     }
 
     public static ALL_PUBLICCARDS_RESET = 'ALL_PUBLICCARDS_RESET';
+
     public resetAllPublicCard() {
         this._publicCards = [];
         this.emit(TexasGameRoomDataPublicCards.ALL_PUBLICCARDS_RESET, []);
     }
 
     private _secondPublicCards: number[] = [];
-    public get secondPublicCards() {return this._secondPublicCards};
+
+    public get secondPublicCards() {
+        return this._secondPublicCards;
+    }
+
     public static SECOND_PUBLICCARDS_CHANGE = 'SECOND_PUBLICCARDS_CHANGE';
+
     public addSecondPublicCards(cards: number[], pat: AnimateDisplayTypePublicCards) {
         const old = this._secondPublicCards;
         let newarray = [];

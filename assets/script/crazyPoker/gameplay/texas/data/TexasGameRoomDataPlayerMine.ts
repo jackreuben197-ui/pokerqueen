@@ -1,4 +1,4 @@
-import TexasGameRoomDataPlayer from "./TexasGameRoomDataPlayer";
+import TexasGameRoomDataPlayer from './TexasGameRoomDataPlayer';
 
 export default class TexasGameRoomDataPlayerMine extends cc.EventTarget {
     public seatedPlayer: TexasGameRoomDataPlayer;

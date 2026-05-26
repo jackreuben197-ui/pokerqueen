@@ -4,10 +4,10 @@ import { AnimateDisplayTypeCards } from '../../texas/constants/AnimateDisplayTyp
 import TexasGameRoomData from '../../texas/data/TexasGameRoomData';
 
 // Showcards 1101
-export default function Showcards(data: ServerMessageShowcards.AsObject, roomID: number, matchID: number) {
+export function Showcards(data: ServerMessageShowcards.AsObject, roomID: number, matchID: number) {
     const roomData = roomDataManager.getRoomData<TexasGameRoomData>(roomID, matchID);
-    data.playerCardsList.forEach( v => {
+    data.playerCardsList.forEach(v => {
         const seat = roomData.seatsStateManager.getSeatPlayer(v.seatId);
         seat.updateCards(v.cardsList, AnimateDisplayTypeCards.ShowCards);
-    })
+    });
 }

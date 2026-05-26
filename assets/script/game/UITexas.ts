@@ -1285,7 +1285,7 @@ export default class UITexas extends BaseScene {
             panelType: 'supportChat',
             props: {
                 tribeId: this.game.tribeId,
-                clubId: this.game.clubId,
+                clubId: this.game.clubId
             }
         });
     }

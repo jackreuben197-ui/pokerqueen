@@ -1,26 +1,26 @@
 import { Code } from '../../../../protobuf/holdem/code_pb';
-import EnterRoom from './EnterRoom';
-import Play from './Play';
-import CancelPlay from './CancelPlay';
-import Leave from './Leave';
-import Chat from './Chat';
-import Top from './Top';
-import Waymap from './Waymap';
-import LastGames from './LastGames';
-import BringIn from './BringIn';
-import WaymapSpec from './WaymapSpec';
-import Online from './Online';
-import SyncEnter from './SyncEnter';
-import GameStart from './GameStart';
-import GamePlayInfo from './GamePlayInfo';
-import GamePlayEnd from './GamePlayEnd';
-import GameResult from './GameResult';
-import WaymapUpdate from './WaymapUpdate';
-import RoomClose from './RoomClose';
-import ChatOthers from './ChatOthers';
-import LeaveNotification from './LeaveNotification';
-import StandupNotification from './StandupNotification';
-import EncryptCards from './EncryptCards';
+import { EnterRoom } from './EnterRoom';
+import { Play } from './Play';
+import { CancelPlay } from './CancelPlay';
+import { Leave } from './Leave';
+import { Chat } from './Chat';
+import { Top } from './Top';
+import { Waymap } from './Waymap';
+import { LastGames } from './LastGames';
+import { BringIn } from './BringIn';
+import { WaymapSpec } from './WaymapSpec';
+import { Online } from './Online';
+import { SyncEnter } from './SyncEnter';
+import { GameStart } from './GameStart';
+import { GamePlayInfo } from './GamePlayInfo';
+import { GamePlayEnd } from './GamePlayEnd';
+import { GameResult } from './GameResult';
+import { WaymapUpdate } from './WaymapUpdate';
+import { RoomClose } from './RoomClose';
+import { ChatOthers } from './ChatOthers';
+import { LeaveNotification } from './LeaveNotification';
+import { StandupNotification } from './StandupNotification';
+import { EncryptCards } from './EncryptCards';
 
 export default class CowboyMessageHandler {
 

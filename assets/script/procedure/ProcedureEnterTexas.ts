@@ -110,8 +110,8 @@ export default class ProcedureEnterTexas extends ProcedureBase {
                 if (!result) {
                     console.warn('[ProcedureEnterTexas]', 'enterForegroundAsync false');
                     this._entrance = null;
-                     ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
-                        needClosedUI: [PrefabUI.UIPreloading],
+                    ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
+                        needClosedUI: [PrefabUI.UIPreloading]
                     });
                 }
             })
@@ -120,8 +120,8 @@ export default class ProcedureEnterTexas extends ProcedureBase {
                 H5MsgMgr.Instance.off('wsError');
                 console.error('[ProcedureEnterTexas]', 'err', e);
                 this._entrance = null;
-                 ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
-                    needClosedUI: [PrefabUI.UIPreloading],
+                ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
+                    needClosedUI: [PrefabUI.UIPreloading]
                 });
             });
     }

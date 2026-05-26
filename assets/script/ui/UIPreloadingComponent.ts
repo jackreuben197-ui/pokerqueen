@@ -42,14 +42,14 @@ export default class UIPreloadingComponent extends UIBase {
         super.onShow(param);
         this.setProgress(0);
         const parts = param.preloadDefinition.length;
-        let part = Math.round(10000 / parts )/ 10000;
+        let part = Math.round(10000 / parts) / 10000;
         try {
-            for (let i= 0; i< parts; i++) {
+            for (let i = 0; i < parts; i++) {
                 const definition = param.preloadDefinition[i];
-                await this.loadResources(definition.bundle, definition.dir, param.stopProgress, i* part, part);
+                await this.loadResources(definition.bundle, definition.dir, param.stopProgress, i * part, part);
             }
             param.complete?.();
-        } catch(e) {
+        } catch (e) {
             param.error?.(e instanceof Error ? e : new Error(String(e)));
         }
     }
