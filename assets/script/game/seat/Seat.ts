@@ -265,20 +265,22 @@ export default class Seat {
                 cardInfo.imageCard.setScale(0.5);
                 cardInfo.imageCard.setPosition(this.listCardUIInfos[i].imageCard.parent.convertToNodeSpaceAR(targetPos));
                 cardInfo.imageCard.active = true;
-                cardInfo.imageBack.spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
-                cardInfo.imageBack.node.color = cc.Color.WHITE;
-                cardInfo.imageBack.node.active = true;
-                cardInfo.imageBack.node.opacity = 255;
+                if (cardInfo.imageBack) {
+                    cardInfo.imageBack.spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
+                    cardInfo.imageBack.node.color = cc.Color.WHITE;
+                    cardInfo.imageBack.node.active = true;
+                    cardInfo.imageBack.node.opacity = 255;
+                }
                 //listCardUIInfos[i].imageCard.rectTransform.localRotation = Quaternion.Euler(0, 0, 0);
                 let tween_card = cc.tween(cardInfo.imageCard);
-                let tween_back = cc.tween(cardInfo.imageBack.node);
                 tween.then(
                     cc.callFunc(() => {
                         tween_card.to(0.4, { scale: Seat.myCardsScale, position: Seat.myCardsPos[i] }, cc.easeQuadraticActionOut()).start();
                         //cc.easeSineOut()
                     })
                 );
-                if (!GameCache.Instance.CurlimitDelaySeeCard) {
+                if (!GameCache.Instance.CurlimitDelaySeeCard && cardInfo.imageBack) {
+                    const tween_back = cc.tween(cardInfo.imageBack.node);
                     tween.then(
                         cc.callFunc(() => {
                             tween_back
@@ -1201,10 +1203,9 @@ export default class Seat {
 
     public UpdateImageBackActive(istrue: boolean = false): void {
         for (let i = 0, n = this.Player.cards.length; i < n; i++) {
-            //if (listCardUIInfos[i].imageBack.gameObject.activeInHierarchy)
-            //{
-            this.listCardUIInfos[i].imageBack.node.active = istrue;
-            //}
+            if (this.listCardUIInfos[i].imageBack) {
+                this.listCardUIInfos[i].imageBack.node.active = istrue;
+            }
         }
     }
 
@@ -1378,6 +1379,19 @@ export default class Seat {
         // 首帧透明，跳过 skeletonData 赋值时的 setup pose 渲染
         spineNode.opacity = 0;
         skeleton.skeletonData = skeletonData;
+        // 定位在头像正上方
+        const headNode = this.uirc?.Head;
+        if (headNode) {
+            // Head 节点可能没有显式高度，改用 Frame_Head（有 Sprite，尺寸可靠）
+            let headHeight = headNode.height;
+            if (headHeight <= 0) {
+                const frameHead = this.uirc?.Frame_Head;
+                headHeight = frameHead ? (frameHead.height || frameHead.getContentSize().height || 120) : 120;
+            }
+            // 头像顶部在 this.ui 坐标系中的 Y 坐标
+            const headTopY = headNode.y + headHeight / 2;
+            spineNode.y = headTopY + 60 / 2 + 10;
+        }
         // 挂到座位节点下，与 Spine_Winner 同级
         this.ui.addChild(spineNode);
         // 播放 animation，不循环

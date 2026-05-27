@@ -160,6 +160,7 @@ export function fillGameCache(payload: FlatEnterTableData): void {
     gc.insurance = !!payload.insurance;
     gc.muck_switch = payload.muck_switch ?? 0;
     gc.ClubID = payload.club_id ?? 0;
+    gc.ClubRandomID = payload.club_random_id ?? 0;
     gc.origin_type = payload.origin_type ?? 0;
     gc.gold_type = payload.gold_type ?? 0;
     _ploger.info('[H5Bridge] GameCache 数据已写入, room_id:', gc.room_id, 'room_type:', gc.room_type);
@@ -307,6 +308,7 @@ export async function registerH5Listeners(): Promise<void> {
         gc.share_table = roomData.share_table || 0;
         gc.gold_type = roomData.gold_type || 0;
         gc.ClubID = roomData.club_id || 0;
+        gc.ClubRandomID = roomData.club_random_id || 0;
         gc.TribeId = roomData.tribe_id || 0;
         gc.match_id = 0;
         gc.carry_small = roomData.limit_bring_in || 0;
