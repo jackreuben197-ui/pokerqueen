@@ -12,7 +12,7 @@
  * export class SeatManager extends cc.Component {
  * @traceMethod() // 自动提取前缀 -> [onUpdateSeats]
  * private onUpdateSeats(count: number) {
- * this.tracelog.info("当前座位数:", count); // ❌ 顺从全局，被静音不输出
+ * this.tracelog.info("当前座位数:", count); // 顺从全局，被静音不输出
  * this.tracelog.error("物理节点树生成失败"); // 完美见光 -> [SeatManager][onUpdateSeats] 物理节点树生成失败
  * }
  * }
@@ -27,13 +27,13 @@
  * * 4. 【局部定向放行示例：方法级别重写】（全局和类都很高冷，只让这一个特殊方法疯狂输出）
  * @traceClass() // 顺从全局 error
  * export class ProtocolManager {
- * @traceMethod({ level: 'debug' }) // 🚀 最高优先级重写：单独放行此方法
+ * @traceMethod({ level: 'debug' }) // 最高优先级重写：单独放行此方法
  * public onReceiveServerPush(cmd: string, data: any) {
  * this.tracelog.debug("收到高频网络推送:", cmd); // 完美见光！-> [ProtocolManager][onReceiveServerPush] 收到高频网络推送: SC_JOIN
  * }
  * }
  * * 5. 【纯函数独立 Logger 示例】（写在类外面、文件头部的孤立模块）
- * const log = createLogger("CryptoUtils", "debug"); // 🚀 实例化时指定 debug，无视全局 error
+ * const log = createLogger("CryptoUtils", "debug"); // 实例化时指定 debug，无视全局 error
  * export function signPokerPacket(data: any) {
  * log.debug("开始物理计算签名..."); // 完美见光！-> [CryptoUtils] 开始物理计算签名...
  * }
@@ -83,19 +83,42 @@ const LOG_LEVEL_WEIGHTS: Record<LogLevel, number> = {
     'error': 4
 };
 
-// 全局静态总门禁线权重
+// 逆向权重查字符串映射表
+const WEIGHT_TO_LEVEL: Record<number, LogLevel> = {
+    1: 'debug',
+    2: 'info',
+    3: 'warn',
+    4: 'error'
+};
+
+// 全局静态总门禁线权重数值
 let currentGlobalLogLevel: number = LOG_LEVEL_WEIGHTS['debug'];
 
 /**
  * 【全局静态控制管理器】
  */
 export const ITraceLog = {
+    /**
+     * 设置全局日志等级
+     * @param level 日志等级
+     */
     setGlobalLevel(level: LogLevel): void {
         currentGlobalLogLevel = LOG_LEVEL_WEIGHTS[level] || 1;
         console.log(`[ITraceLog] 全局日志等级已切换为: [${level.toUpperCase()}]`);
     },
+
+    /**
+     * 获取全局日志等级权重数值
+     */
     getGlobalLevelWeight(): number {
         return currentGlobalLogLevel;
+    },
+
+    /**
+     * 直接获取当前全局日志等级的字符串标识
+     */
+    getGlobalLevel(): LogLevel {
+        return WEIGHT_TO_LEVEL[currentGlobalLogLevel] || 'debug';
     }
 };
 
@@ -192,49 +215,66 @@ export function traceClass(options?: TraceClassOptions) {
             ? options.prefix 
             : `[${constructor.name}]`;
 
+        // 为实例原型和类构造器静态空间同步注入类前缀标识
         proto._traceClassPrefix = finalClassPrefix;
+        constructor._traceClassPrefix = finalClassPrefix;
 
+        // 为实例原型和类构造器静态空间同步注入局部过滤门禁
         if (options && options.level) {
             proto._traceLocalLevelWeight = LOG_LEVEL_WEIGHTS[options.level];
+            constructor._traceLocalLevelWeight = LOG_LEVEL_WEIGHTS[options.level];
         }
 
-        Object.defineProperty(proto, 'tracelog', {
-            get: function () {
-                const methodPrefix = this._activeMethodPrefix || '';
-                const currentFullTag = `${finalClassPrefix}${methodPrefix}`;
+        // 统一属性劫持逻辑定义
+        const defineLogProperty = (target: any) => {
+            Object.defineProperty(target, 'tracelog', {
+                get: function () {
+                    // 兼容静态方法：静态调用时 this 指向类构造函数自身，无实例生命周期上的 _activeMethodPrefix 字段
+                    const methodPrefix = this._activeMethodPrefix || '';
+                    const currentFullTag = `${finalClassPrefix}${methodPrefix}`;
 
-                const createLogWrapper = (level: LogLevel, nativeLogMethod: Function) => {
-                    return (...args: any[]) => {
-                        const currentLineWeight = LOG_LEVEL_WEIGHTS[level];
-                        
-                        let targetThreshold = currentGlobalLogLevel;
-                        if (this._activeMethodLevelWeight !== undefined) {
-                            targetThreshold = this._activeMethodLevelWeight;
-                        } else if (this._traceLocalLevelWeight !== undefined) {
-                            targetThreshold = this._traceLocalLevelWeight;
-                        }
+                    const createLogWrapper = (level: LogLevel, nativeLogMethod: Function) => {
+                        return (...args: any[]) => {
+                            const currentLineWeight = LOG_LEVEL_WEIGHTS[level];
+                            
+                            let targetThreshold = currentGlobalLogLevel;
+                            if (this._activeMethodLevelWeight !== undefined) {
+                                targetThreshold = this._activeMethodLevelWeight;
+                            } else if (this._traceLocalLevelWeight !== undefined) {
+                                targetThreshold = this._traceLocalLevelWeight;
+                            }
 
-                        if (currentLineWeight >= targetThreshold) {
-                            nativeLogMethod.call(console, currentFullTag, ...args);
-                        }
+                            if (currentLineWeight >= targetThreshold) {
+                                nativeLogMethod.call(console, currentFullTag, ...args);
+                            }
+                        };
                     };
-                };
 
-                return {
-                    debug: createLogWrapper('debug', console.log),
-                    info:  createLogWrapper('info',  console.info),
-                    warn:  createLogWrapper('warn',  console.warn),
-                    error: createLogWrapper('error', console.error)
-                };
-            },
-            enumerable: false,
-            configurable: false
-        });
+                    return {
+                        debug: createLogWrapper('debug', console.log),
+                        info:  createLogWrapper('info',  console.info),
+                        warn:  createLogWrapper('warn',  console.warn),
+                        error: createLogWrapper('error', console.error)
+                    };
+                },
+                enumerable: false,
+                configurable: true
+            });
+        };
 
-        Object.defineProperty(proto, 'LN', {
-            get: function () { return finalClassPrefix; },
-            enumerable: false,
-            configurable: false
-        });
+        // 一箭双雕：同时完成实例方法与静态方法的物理注入
+        defineLogProperty(proto);
+        defineLogProperty(constructor);
+
+        // 统一类名/节点前缀获取器（LN）的物理定义
+        const defineLNProperty = (target: any) => {
+            Object.defineProperty(target, 'LN', {
+                get: function () { return finalClassPrefix; },
+                enumerable: false,
+                configurable: true
+            });
+        };
+        defineLNProperty(proto);
+        defineLNProperty(constructor);
     };
 }

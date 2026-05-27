@@ -17,7 +17,7 @@ import { traceClass } from "../../../core/LogTrace";
 const { ccclass, property, menu } = cc._decorator;
 
 const seatArrange: Record<SeatPosition, cc.Vec3> = {
-    [SeatPosition.Ddefault]: cc.v3(0, 0), 
+    [SeatPosition.Default]: cc.v3(0, 0), 
     [SeatPosition.BottomMiddle]: cc.v3(0, -2270),   // 0 下中
     [SeatPosition.BottomLeft]:   cc.v3(-480, -1585), // 1 左下
     [SeatPosition.MiddleLeft]:   cc.v3(-480, -1130), // 2 左中
@@ -125,6 +125,9 @@ export default class SeatPlayer extends cc.Component {
         // 统一激活绑定，注入强类型 tag 推导过滤机制
         autoBindEvents(this, { player: this._seatPlayer }, (evtName, tag, dataSource) => {
             if (tag === 'player') {
+                if (evtName === 'WINNER' || evtName == 'HIGHLIGHT_CARDS') {
+                    return false;
+                }
                 if (dataSource.userID > 0) {
                     if (evtName === 'EMPTY_SEAT') {
                         return false;
@@ -138,10 +141,6 @@ export default class SeatPlayer extends cc.Component {
             }
             return true;
         });
-
-        // 维持非代理的原生自定义模型大招监听
-        this._seatPlayer.on(TexasGameRoomDataPlayer.WINNER, this.onWin, this);
-        this._seatPlayer.on(TexasGameRoomDataPlayerMine.HIGHLIGHT_CARDS, this.onHighlightCards, this);
     }
 
     private _enableDisableUser(b: boolean) {
@@ -370,15 +369,20 @@ export default class SeatPlayer extends cc.Component {
             if (!this._seatPlayer.mine) {
                 // 转化为本地的
                 this._dealNode.active = false;
+                this._dealNode.active = false;
                 const startPos = UIViewUtil.caculatePostion(this.smallCardsContainer, this._dealNode);
                 const endPos = this.smallCardsContainer.position;
                 this.smallCardsContainer.setPosition(startPos);
-                this.bigCardsContainer.setScale(0.5, 0.5);
+                this.smallCardsContainer.setScale(0.5, 0.5);
                 cc.tween(this.smallCardsContainer)
                     .delay(currentOrder * 0.2)
                     .to(0.5, { x: endPos.x, y: endPos.y, opacity: 255, scaleX: 1, scaleY: 1 }, { easing: 'cubicOut' })
                     .call(() => { this._dealNode.active = false; })
+                    .delay(currentOrder * 0.2)
+                    .to(0.5, { x: endPos.x, y: endPos.y, opacity: 255, scaleX: 1, scaleY: 1 }, { easing: 'cubicOut' })
+                    .call(() => { this._dealNode.active = false; })
                     .start();
+                return;
             }
             // 先获取发牌点的世界坐标
             const startPos = UIViewUtil.caculatePostion(this.bigCardsContainer, this._dealNode);
@@ -479,7 +483,7 @@ export default class SeatPlayer extends cc.Component {
     // =========================================================================
     // 网络级非拦截、非代理的原生自定义大招事件触发区域
     // =========================================================================
-
+    @bindEvent('WINNER', 'player')
     private onWin() {
         this.animatingChips.active = true;
         const startPos = UIViewUtil.caculatePostion(this.animatingChips, this._potNode);
@@ -499,6 +503,7 @@ export default class SeatPlayer extends cc.Component {
         });
     }
 
+    @bindEvent('HIGHLIGHT_CARDS', 'player')
     private onHighlightCards(cardsNum: number[]) {
         const mp: Set<number> = new Set();
         cardsNum.forEach(v => mp.add(v));

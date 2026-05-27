@@ -10,7 +10,7 @@ import TexasGameRoomDataPlayerMine from './TexasGameRoomDataPlayerMine';
 // 1       9
 //     0
 export enum SeatPosition {
-    Ddefault = 99,
+    Default = 99,
     BottomMiddle = 0,
     BottomLeft,
     MiddleLeft,

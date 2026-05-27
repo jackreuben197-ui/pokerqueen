@@ -63,13 +63,15 @@ import { ForceVideo } from './ForceVideo';
 import { VideoMaskChange } from './VideoMaskChange';
 import { WaitCheckAutoAddTime } from './WaitCheckAutoAddTime';
 import roomDataManager from '../../common/core/RoomDataManager';
+import { traceClass } from '../../common/core/LogTrace';
 
+@traceClass()
 export default class TexasMessageHandler {
 
     public static handle(code: number, data: any, roomID: number, matchID: number) {
         if (code != Code.MSG_D_ENTER_ROOM) {
             if (!roomDataManager.existRoomData(roomID, matchID)) {
-                console.warn('[TexasMessageHandler]', 'no room data return', roomID, matchID);
+                this.tracelog.warn('no room data return', roomID, matchID);
                 return;
             }
         }

@@ -11,19 +11,17 @@ import AgoraManager from './net/agora/AgoraManager';
 import H5MsgMgr, { type SyncUserInfo } from './H5MsgMgr';
 import LobbyRoomListItem from './frame/data/lobby/LobbyRoomListItem';
 import ProcedureManager from './manager/ProcedureManager';
-import { ResManager, BUNDLE_RESOURCES } from './manager/ResManager';
-import CCTools from './tools/CCTools';
-import TelegramUtils from './tools/TelegramUtils';
 import { ProcedureEnum } from './define/EIDefine';
 import { ClubCache } from './frame/data/club/ClubCache';
 import LoginSession from './session/LoginSession';
-import PacketHead from './net/websocket/PacketHead';
 import ProtocolAgency from './net/websocket/ProtocolAgency';
-import { ProtocolCode } from './net/websocket/ProtocolCode';
-import { i18nMgr } from './i18n/i18nMgr';
 import { GameEnterType } from './game/util/GameUtil';
 import DiamondModel from './diamond/DiamondModel';
+import { createLogger } from './crazyPoker/gameplay/common/core/LogTrace';
+import DevConfig from './crazyPoker/DevConfig';
 
+
+const _ploger = createLogger('[MainUtils');
 // ==================== SDK 动态加载 ====================
 /**
  * 动态加载 Web 层第三方 SDK
@@ -31,26 +29,26 @@ import DiamondModel from './diamond/DiamondModel';
  */
 export function loadWebSDK(): void {
     if (!GameConfig.enableAgora) {
-        console.log('[WebSDK] 声网已禁用（enableAgora=false），跳过加载');
+        _ploger.info('[WebSDK] 声网已禁用（enableAgora=false），跳过加载');
         return;
     }
     const sdkList = [{ name: 'AgoraRTC', src: 'https://download.agora.io/sdk/release/AgoraRTC_N-4.24.3.js' }];
     sdkList.forEach(sdk => {
         if ((window as unknown as Record<string, unknown>)[sdk.name]) {
-            console.log(`[WebSDK] ${sdk.name} 已存在，跳过加载`);
+            _ploger.info(`[WebSDK] ${sdk.name} 已存在，跳过加载`);
             return;
         }
         const script = document.createElement('script');
         script.src = sdk.src;
         script.charset = 'utf-8';
         script.onload = () => {
-            console.log(`[WebSDK] ${sdk.name} 声网sdk加载完成`);
+            _ploger.info(`[WebSDK] ${sdk.name} 声网sdk加载完成`);
             if (sdk.name === 'AgoraRTC') {
                 AgoraManager.Instance.init();
             }
         };
         script.onerror = () => {
-            console.error(`[WebSDK] ${sdk.name} 声网sdk加载失败: ${sdk.src}`);
+            _ploger.error(`[WebSDK] ${sdk.name} 声网sdk加载失败: ${sdk.src}`);
         };
         document.head.appendChild(script);
     });
@@ -164,7 +162,7 @@ export function fillGameCache(payload: FlatEnterTableData): void {
     gc.ClubID = payload.club_id ?? 0;
     gc.origin_type = payload.origin_type ?? 0;
     gc.gold_type = payload.gold_type ?? 0;
-    console.log('[H5Bridge] GameCache 数据已写入, room_id:', gc.room_id, 'room_type:', gc.room_type);
+    _ploger.info('[H5Bridge] GameCache 数据已写入, room_id:', gc.room_id, 'room_type:', gc.room_type);
 }
 
 // ==================== H5 桥接模式初始化 ====================
@@ -186,9 +184,9 @@ export function fillGameCache(payload: FlatEnterTableData): void {
 //         await i18nMgr.loadAndRefreshConfig();
 //         // ATTENTION TO FIX: 强制使用中文，确保默认显示中文
 //         i18nMgr.setLanguage("cn");
-//         console.log('[H5Bridge] i18n 初始化完成, language:', i18nMgr.language);
+//         _ploger.info('[H5Bridge] i18n 初始化完成, language:', i18nMgr.language);
 //     }
-//     console.log('[H5Bridge] 数据层初始化完成 (PacketHead + i18n)');
+//     _ploger.info('[H5Bridge] 数据层初始化完成 (PacketHead + i18n)');
 // }
 /**
  * 预加载声音资源到 AssetContext.map。
@@ -203,14 +201,14 @@ export function fillGameCache(payload: FlatEnterTableData): void {
 //     _soundLoadingPromise = new Promise(resolve => {
 //         cc.resources.loadDir('sound', (err, assets) => {
 //             if (err) {
-//                 console.error('[H5Bridge] 声音资源加载失败:', err);
+//                 _ploger.error('[H5Bridge] 声音资源加载失败:', err);
 //                 _soundLoadingPromise = null;
 //                 resolve();
 //                 return;
 //             }
 //             _soundLoaded = true;
 //             ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
-//             console.log('[H5Bridge] 声音资源加载完成, 共', assets.length, '个资源');
+//             _ploger.info('[H5Bridge] 声音资源加载完成, 共', assets.length, '个资源');
 //             resolve();
 //         });
 //     });
@@ -229,14 +227,14 @@ export function fillGameCache(payload: FlatEnterTableData): void {
 //     _gameResLoadingPromise = new Promise(resolve => {
 //         cc.resources.loadDir('main/rc', (err, assets) => {
 //             if (err) {
-//                 console.error('[H5Bridge] 游戏资源加载失败:', err);
+//                 _ploger.error('[H5Bridge] 游戏资源加载失败:', err);
 //                 _gameResLoadingPromise = null;
 //                 resolve();
 //                 return;
 //             }
 //             _gameResLoaded = true;
 //             ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
-//             console.log('[H5Bridge] 游戏资源加载完成, 共', assets.length, '个资源');
+//             _ploger.info('[H5Bridge] 游戏资源加载完成, 共', assets.length, '个资源');
 //             resolve();
 //         });
 //     });
@@ -255,7 +253,7 @@ export async function registerH5Listeners(): Promise<void> {
     // await initH5BridgeDependencies();
     // initH5BridgeDependencies();
     H5MsgMgr.Instance.on('enterTable', async payload => {
-        console.log('[H5Bridge] 收到 enterTable:', payload);
+        _ploger.info('[H5Bridge] 收到 enterTable:', payload);
         const { token, websocketPort, roomId, roomInfo: roomData } = payload;
         // === 1. H5 消息基本字段校验 ===
         const missing: string[] = [];
@@ -263,7 +261,7 @@ export async function registerH5Listeners(): Promise<void> {
         if (!websocketPort) missing.push('websocketPort');
         if (!roomId) missing.push('roomId');
         if (missing.length > 0) {
-            console.error('[H5Bridge] enterTable 缺少必要字段:', missing.join(', '));
+            _ploger.error('[H5Bridge] enterTable 缺少必要字段:', missing.join(', '));
             return;
         }
         // === 2. 从缓存查找房间详情（syncRoomsList 缓存的数据） ===
@@ -272,7 +270,7 @@ export async function registerH5Listeners(): Promise<void> {
         // const cachedClubRooms = GC.data.lobby.roomList.getList(true);
         // const targetItem = [...cachedRooms, ...cachedClubRooms].find(r => r.rid === roomIdNum);
         // if (!targetItem) {
-        //     console.error('[H5Bridge] enterTable 未在缓存房间列表中找到房间:', roomId, '请确认 syncRoomsList 已送达');
+        //     _ploger.error('[H5Bridge] enterTable 未在缓存房间列表中找到房间:', roomId, '请确认 syncRoomsList 已送达');
         //     return;
         // }
         // 原始房间数据 TRoomListItem
@@ -287,7 +285,7 @@ export async function registerH5Listeners(): Promise<void> {
         ];
         const incomplete = requiredForEnter.filter(f => f.val === undefined || f.val === null);
         if (incomplete.length > 0) {
-            console.error('[H5Bridge] enterTable 房间缓存数据不完整，缺少:', incomplete.map(f => f.key).join(', '));
+            _ploger.error('[H5Bridge] enterTable 房间缓存数据不完整，缺少:', incomplete.map(f => f.key).join(', '));
             return;
         }
         // === 4. 设置 Token（WS 由 H5 层代理，CC 层不直接连接） ===
@@ -318,22 +316,26 @@ export async function registerH5Listeners(): Promise<void> {
         gc.jackPot_id = jackpotId;
         // === 6. 启动进入牌桌流程 ===
         // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
-        await ProcedureManager.StartProcedure(ProcedureEnum.EnterRoom, gc.enter_param);
-        console.log('[H5Bridge] enterTable 已启动进桌流程, room_id:', roomData.rid, 'room:', roomData.name);
+        if (DevConfig.IS_OLD) {
+            await ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, gc.enter_param);
+        }else{
+            await ProcedureManager.StartProcedure(ProcedureEnum.EnterRoom, gc.enter_param);
+        }
+        _ploger.info('[H5Bridge] enterTable 已启动进桌流程, room_id:', roomData.rid, 'room:', roomData.name);
     });
 
     registerTexasMtt();
 
     H5MsgMgr.Instance.on('exitTable', payload => {
-        console.log('[H5Bridge] 离开牌桌:', payload);
+        _ploger.info('[H5Bridge] 离开牌桌:', payload);
         // TODO: 调用离开牌桌的逻辑
     });
 
     H5MsgMgr.Instance.on('syncUser', payload => {
-        console.log('[H5Bridge] 同步用户信息:', payload);
+        _ploger.info('[H5Bridge] 同步用户信息:', payload);
         const userInfo = payload?.raw?.user;
         if (!userInfo) {
-            console.error('[H5Bridge] syncUser 数据异常：缺少 payload.raw.user');
+            _ploger.error('[H5Bridge] syncUser 数据异常：缺少 payload.raw.user');
             return;
         }
         // 仅写入本地缓存，不触发 UI 事件和网络请求
@@ -348,25 +350,25 @@ export async function registerH5Listeners(): Promise<void> {
         gc.isHadClub = userInfo.club_id > 0;
         // 直接写入 UserInfoModel 内部数据，绕过 setter（不触发 myGoldChange 事件）
         (GC.data.user.info as unknown as { _msg: SyncUserInfo })._msg = userInfo;
-        console.log('[H5Bridge] syncUser 缓存完成, user_id:', userInfo.un_id, 'nickname:', userInfo.nickname);
+        _ploger.info('[H5Bridge] syncUser 缓存完成, user_id:', userInfo.un_id, 'nickname:', userInfo.nickname);
         // 预加载声音和游戏资源（提前加载，避免 enterTable 时再加载影响进桌速度）
     });
 
     H5MsgMgr.Instance.on('syncLanguage', payload => {
         const locale = payload?.locale;
         if (!locale) {
-            console.warn('[H5Bridge] syncLanguage 缺少 locale 字段');
+            _ploger.warn('[H5Bridge] syncLanguage 缺少 locale 字段');
             return;
         }
-        console.log('[H5Bridge] syncLanguage:', locale, '忽略，CC 层固定简体中文');
+        _ploger.info('[H5Bridge] syncLanguage:', locale, '忽略，CC 层固定简体中文');
     });
 
     H5MsgMgr.Instance.on('syncUserClub', payload => {
-        console.log('[H5Bridge] 同步俱乐部信息:', payload);
+        _ploger.info('[H5Bridge] 同步俱乐部信息:', payload);
         // data 已类型化为 ClubInfo[]，无需 Array.isArray 校验
         const clubList = payload?.response?.data;
         if (!clubList) {
-            console.error('[H5Bridge] syncUserClub 数据异常：缺少 payload.response.data');
+            _ploger.error('[H5Bridge] syncUserClub 数据异常：缺少 payload.response.data');
             return;
         }
         // 仅写入本地缓存，不触发 UI 事件和网络请求
@@ -375,13 +377,13 @@ export async function registerH5Listeners(): Promise<void> {
         if (clubList.length > 0) {
             ClubCache.setClubData(clubList[0]);
         }
-        console.log('[H5Bridge] syncUserClub 缓存完成, 共', clubList.length, '个俱乐部');
+        _ploger.info('[H5Bridge] syncUserClub 缓存完成, 共', clubList.length, '个俱乐部');
     });
 
     H5MsgMgr.Instance.on('syncGlobalConfig', payload => {
         const config = payload?.raw;
         if (!config || typeof config !== 'object') {
-            console.warn('[H5Bridge] syncGlobalConfig 数据异常：缺少 payload.raw');
+            _ploger.warn('[H5Bridge] syncGlobalConfig 数据异常：缺少 payload.raw');
             return;
         }
         GameCache.Instance._globalConfig = config;
@@ -394,7 +396,7 @@ export async function registerH5Listeners(): Promise<void> {
     H5MsgMgr.Instance.on('syncDiamondConfig', payload => {
         const map = payload?.raw;
         if (!map || typeof map !== 'object') {
-            console.warn('[H5Bridge] syncDiamondConfig 数据异常：缺少 payload.raw');
+            _ploger.warn('[H5Bridge] syncDiamondConfig 数据异常：缺少 payload.raw');
             return;
         }
         for (const configType of DIAMOND_PRELOAD_TYPES) {
@@ -403,14 +405,14 @@ export async function registerH5Listeners(): Promise<void> {
                 DiamondModel.Instance.setFromH5Sync(configType, typeMap as Record<number, unknown>);
             }
         }
-        console.log('[H5Bridge] syncDiamondConfig 预填完成');
+        _ploger.info('[H5Bridge] syncDiamondConfig 预填完成');
     });
 
     // H5MsgMgr.Instance.on('syncRoomsList', (payload) => {
-    //     console.log('[H5Bridge] 同步房间列表:', payload);
+    //     _ploger.info('[H5Bridge] 同步房间列表:', payload);
     //     const records = payload?.response?.data?.records;
     //     if (!records || !Array.isArray(records)) {
-    //         console.error('[H5Bridge] syncRoomsList 数据异常：缺少 payload.response.data.records');
+    //         _ploger.error('[H5Bridge] syncRoomsList 数据异常：缺少 payload.response.data.records');
     //         return;
     //     }
     //     // 仅写入本地缓存，不触发 UI 事件和网络请求
@@ -421,7 +423,7 @@ export async function registerH5Listeners(): Promise<void> {
     //     (roomListModel as any)._offset = list.length;
     //     (roomListModel as any)._reqEnd = true;
     //     (roomListModel as any)._reqing = false;
-    //     console.log('[H5Bridge] syncRoomsList 缓存完成, 共', records.length, '个房间');
+    //     _ploger.info('[H5Bridge] syncRoomsList 缓存完成, 共', records.length, '个房间');
     // });
     // 监听服务器推送的房间变更通知（code 140），实时更新缓存
     // GC.notify.register(
@@ -437,7 +439,7 @@ export async function registerH5Listeners(): Promise<void> {
     //             // 新增房间
     //             if (existIndex === -1) {
     //                 list.push(new LobbyRoomListItem(rec.room));
-    //                 console.log('[H5Bridge] RoomChangeNotify 新增房间:', rid);
+    //                 _ploger.info('[H5Bridge] RoomChangeNotify 新增房间:', rid);
     //             }
     //         } else if (rec.changeType === 2) {
     //             // 更新房间
@@ -445,15 +447,15 @@ export async function registerH5Listeners(): Promise<void> {
     //                 // 房间已结束，从缓存中移除
     //                 if (existIndex !== -1) {
     //                     list.splice(existIndex, 1);
-    //                     console.log('[H5Bridge] RoomChangeNotify 房间已结束，移除:', rid);
+    //                     _ploger.info('[H5Bridge] RoomChangeNotify 房间已结束，移除:', rid);
     //                 }
     //             } else if (existIndex !== -1) {
     //                 list[existIndex] = new LobbyRoomListItem(rec.room);
-    //                 console.log('[H5Bridge] RoomChangeNotify 更新房间:', rid);
+    //                 _ploger.info('[H5Bridge] RoomChangeNotify 更新房间:', rid);
     //             } else {
     //                 // 缓存中不存在，按新增处理
     //                 list.push(new LobbyRoomListItem(rec.room));
-    //                 console.log('[H5Bridge] RoomChangeNotify 更新时缓存未命中，已补入:', rid);
+    //                 _ploger.info('[H5Bridge] RoomChangeNotify 更新时缓存未命中，已补入:', rid);
     //             }
     //         }
     //     },
@@ -464,10 +466,10 @@ export async function registerH5Listeners(): Promise<void> {
      */
     function registerTexasMtt(): void {
         H5MsgMgr.Instance.on('enterMtt', async payload => {
-            console.log('[H5Bridge] enterMtt:', payload);
+            _ploger.info('[H5Bridge] enterMtt:', payload);
             const matchInfo = payload?.matchInfo;
             if (!matchInfo) {
-                console.error('[H5Bridge] enterMtt 数据异常：缺少 payload.matchInfo');
+                _ploger.error('[H5Bridge] enterMtt 数据异常：缺少 payload.matchInfo');
                 return;
             }
             const enterPram = { game_enter_type: GameEnterType.MTT, isLookOn: false };
@@ -483,7 +485,7 @@ export async function registerH5Listeners(): Promise<void> {
             GameCache.Instance.serviceId = String(payload.websocketPort);
             // === 6. 启动进入牌桌流程，同时后台加载资源 ===
             ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enterPram);
-            console.log('[H5Bridge] enterMtt 缓存完成, matchId', GameCache.Instance.match_id, ',开始进入mtt');
+            _ploger.info('[H5Bridge] enterMtt 缓存完成, matchId', GameCache.Instance.match_id, ',开始进入mtt');
         });
     }
 
@@ -495,7 +497,7 @@ export async function registerH5Listeners(): Promise<void> {
      */
     H5MsgMgr.Instance.on('wsMessage', payload => {
         if (payload.dataType !== 'binary' || !payload.data) {
-            console.warn('[H5Bridge] wsMessage 数据格式异常:', payload);
+            _ploger.warn('[H5Bridge] wsMessage 数据格式异常:', payload);
             return;
         }
         // payload 已收窄为 WsMessageBinaryPayload，data 为 ArrayBuffer | Uint8Array
@@ -508,12 +510,12 @@ export async function registerH5Listeners(): Promise<void> {
                 // 在 Cocos 环境中实际总是 ArrayBuffer，安全断言。
                 buffer = payload.data.buffer as ArrayBuffer;
             } else {
-                console.warn('[H5Bridge] wsMessage data 类型异常:', typeof payload.data);
+                _ploger.warn('[H5Bridge] wsMessage data 类型异常:', typeof payload.data);
                 return;
             }
             ProtocolAgency.Receive(buffer);
         } catch (e) {
-            console.error('[H5Bridge] wsMessage 处理失败:', e);
+            _ploger.error('[H5Bridge] wsMessage 处理失败:', e);
         }
     });
 
@@ -522,7 +524,7 @@ export async function registerH5Listeners(): Promise<void> {
      * H5 桥接模式下：通知 H5 重连，而非 CC 自己连 WebSocket
      */
     H5MsgMgr.Instance.on('wsClosed', payload => {
-        console.warn('[H5Bridge] wsClosed:', payload);
+        _ploger.warn('[H5Bridge] wsClosed:', payload);
         // 通知 H5 层重新连接 WebSocket
         H5MsgMgr.sendToH5('wsConnect', 1, {
             port: Number(GameCache.Instance.serviceId),
@@ -535,6 +537,6 @@ export async function registerH5Listeners(): Promise<void> {
      * wsError: H5 层的 WebSocket 发生错误
      */
     H5MsgMgr.Instance.on('wsError', payload => {
-        console.warn('[H5Bridge] wsError:', payload);
+        _ploger.warn('[H5Bridge] wsError:', payload);
     });
 }

@@ -1,8 +1,10 @@
+import { traceClass } from '../crazyPoker/gameplay/common/core/LogTrace';
 import GC from '../frame/GameControl';
 import StorageKey from '../session/StorageKey';
 import AssetContext, { AssetFold } from '../ui/component/AssetContext';
 
 //声音
+@traceClass()
 export default class SoundComponent {
 
     static get Instance(): SoundComponent {
@@ -69,7 +71,7 @@ export default class SoundComponent {
         } else {
             cc.resources.load(path, cc.AudioClip, (err: Error, clip: cc.AudioClip) => {
                 if (err) {
-                    cc.log('[SoundComponent] load audio failed:', path, err);
+                    this.tracelog.error('load audio failed:', path, err);
                     return;
                 }
                 this._cache.set(path, clip);

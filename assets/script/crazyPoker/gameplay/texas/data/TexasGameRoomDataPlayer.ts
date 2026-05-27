@@ -1,13 +1,12 @@
 import { Def } from "../../../../protobuf/holdem/define_pb";
 import { VideoModel } from "../../common/constant/VideoModel";
 import { bindData, IObservableBindings, observable, pureEvent } from "../../common/core/DataBind";
+import { traceClass } from "../../common/core/LogTrace";
 import { AnimateDisplayTypeAction, AnimateDisplayTypeCards, AnimateDisplayTypePosition, AnimateDisplayTypeRoundBet } from "../constants/AnimateDisplayType";
 import { Operator } from "./model/Operator";
 import TexasGameRoomData from "./TexasGameRoomData";
 import TexasGameRoomDataPlayerMine from "./TexasGameRoomDataPlayerMine";
 import { SeatPosition } from "./TexasGameRoomDataSeatsStateManager";
-
-const LN = '[TexasGameRoomDataPlayer]';
 
 type PlayerAnimBindings = {
     action: [AnimateDisplayTypeAction];
@@ -23,6 +22,7 @@ type PlayerAnimBindings = {
 interface TexasGameRoomDataPlayer extends IObservableBindings<TexasGameRoomDataPlayer, PlayerAnimBindings> {}
 
 @bindData()
+@traceClass()
 class TexasGameRoomDataPlayer extends cc.EventTarget {
     private _parentRoomData: TexasGameRoomData;
     public readonly seatNo: number;
@@ -53,7 +53,7 @@ class TexasGameRoomDataPlayer extends cc.EventTarget {
     public action: Def.ActionMap[keyof Def.ActionMap] = Def.Action.NONE;
 
     @observable('SEAT_POSITION_CHANGE')
-    public position: SeatPosition = SeatPosition.Ddefault;
+    public position: SeatPosition = SeatPosition.Default;
     
     @observable('SHOW_CARDS_CHANGE')
     public cards: number[] = [];
@@ -91,9 +91,8 @@ class TexasGameRoomDataPlayer extends cc.EventTarget {
         // this.emit(TexasGameRoomDataPlayer.EMPTY_SEAT);
     }
 
-    public static readonly WINNER = 'WINNER';
+    @pureEvent('WINNER')
     public claimWin() {
-        this.emit(TexasGameRoomDataPlayer.WINNER);
     }
 
     public handClear() {

@@ -24,9 +24,8 @@
  *   H5MsgMgr.sendToH5(action, msgtype, payload);     // 向 H5 发消息（泛型，payload 类型自动推导）
  *   H5MsgMgr.Instance.on('xxx', fn);                 // 注册消息监听
  */
+import { traceClass } from './crazyPoker/gameplay/common/core/LogTrace';
 import PacketHead from './net/websocket/PacketHead';
-
-const TAG = '[H5Bridge]';
 /** 握手超时时间（毫秒） */
 const HANDSHAKE_TIMEOUT = 10000;
 
@@ -440,6 +439,7 @@ function isBinaryEnvelope(payload: OutgoingPayload): payload is WsSendBinaryEnve
 
 // ─── H5MsgMgr ────────────────────────────────────────────────────────────────
 
+@traceClass()
 export default class H5MsgMgr {
     private static _instance: H5MsgMgr = null;
 
@@ -459,7 +459,7 @@ export default class H5MsgMgr {
     /** 握手超时定时器 */
     private _handshakeTimer: number = null;
 
-    private constructor() {}
+    private constructor() { }
 
     // ─── 初始化 ──────────────────────────────────────
     /**
@@ -469,7 +469,7 @@ export default class H5MsgMgr {
      */
     init(): void {
         const self = this;
-        console.log(TAG, 'PackHead Init(encode/decode)');
+        this.tracelog.debug('PackHead Init(encode/decode)');
         PacketHead.Init();
 
         // 方式1：bridge.js 检测到 window.CocosBridge 后直接调用。
@@ -483,9 +483,9 @@ export default class H5MsgMgr {
                 }
             }
         };
-        console.log(TAG, 'window.CocosBridge 已注册');
-
-        // 方式2：监听 window.postMessage。
+        this.tracelog.debug
+        this.tracelog.debug('window.CocosBridge 已注册');
+        // 方式2：监听 window.postMessage
         window.addEventListener('message', (e: MessageEvent<unknown>) => {
             const data: unknown = e.data;
             if (!data) return;
@@ -503,7 +503,7 @@ export default class H5MsgMgr {
                 self._onMessage(data);
             }
         });
-        console.log(TAG, '消息监听已初始化');
+        this.tracelog.debug('消息监听已初始化');
     }
 
     // ─── 握手机制 ──────────────────────────────────────
@@ -516,32 +516,32 @@ export default class H5MsgMgr {
     startHandshake(): void {
         // H5 主动发来 h5Ready → CC 回复 ccAck
         this.on('h5Ready', () => {
-            console.log(TAG, '收到 h5Ready，回复 ccAck');
+            this.tracelog.debug('收到 h5Ready，回复 ccAck');
             H5MsgMgr.sendToH5('ccAck', 1);
             this._completeHandshake();
         });
         // H5 收到 ccReady 后回复的 h5Ack
         this.on('h5Ack', () => {
-            console.log(TAG, '收到 h5Ack');
+            this.tracelog.debug('收到 h5Ack');
             this._completeHandshake();
         });
         // 设置 CC 就绪标志
         window.__CC_READY__ = true;
-        console.log(TAG, '__CC_READY__ 已设置');
+        this.tracelog.debug('__CC_READY__ 已设置');
         // 如果握手尚未完成，发送 ccReady 通知 H5
         // （sendToH5 可能同步触发 H5 回调完成握手，所以 log 放在发送前）
         if (!this._handshakeDone) {
-            console.log(TAG, '发送 ccReady，等待 H5 回复 h5Ack 或 h5Ready');
+            this.tracelog.debug('发送 ccReady，等待 H5 回复 h5Ack 或 h5Ready');
             H5MsgMgr.sendToH5('ccReady', 1);
         } else {
-            console.log(TAG, '握手已通过 h5Ready 完成，跳过发送 ccReady');
+            this.tracelog.debug('握手已通过 h5Ready 完成，跳过发送 ccReady');
         }
         // 握手已完成则无需超时
         if (this._handshakeDone) return;
         // 超时保护
         this._handshakeTimer = window.setTimeout(() => {
             if (!this._handshakeDone) {
-                console.warn(TAG, '握手超时，强制放行');
+                this.tracelog.warn('握手超时，强制放行');
                 this._completeHandshake();
             }
         }, HANDSHAKE_TIMEOUT);
@@ -551,7 +551,7 @@ export default class H5MsgMgr {
     private _completeHandshake(): void {
         if (this._handshakeDone) return;
         this._handshakeDone = true;
-        console.log(TAG, '握手完成');
+        this.tracelog.debug('握手完成');
         // 清理定时器
         if (this._handshakeTimer) {
             clearTimeout(this._handshakeTimer);
@@ -565,7 +565,7 @@ export default class H5MsgMgr {
     private _flushPendingMessages(): void {
         const msgs = this._pendingMessages.splice(0);
         if (msgs.length === 0) return;
-        console.log(TAG, `发送 ${msgs.length} 条缓存消息`);
+        this.tracelog.debug(`发送 ${msgs.length} 条缓存消息`);
         for (const msg of msgs) {
             H5MsgMgr._post(msg);
         }
@@ -596,15 +596,16 @@ export default class H5MsgMgr {
             // 忽略自己发出的回声（postMessage 同 window 自己也会收到）
             if (msg.source === 'cc') return;
             const msgtype = msg.msgtype;
-            console.log(TAG, '收到消息:', msg.action, 'msgtype:', msgtype, 'msgContent:' + rawData);
+            this.tracelog.debug('收到消息:', msg.action, 'msgtype:', msgtype, 'msgContent:' + rawData);
+            // 分发给注册的监听器
             const fn = this._listeners[msg.action];
             if (fn) {
                 fn(msg.payload, msgtype);
             } else {
-                console.log(TAG, '未处理的消息:', msg.action, 'msgtype:', msgtype);
+                this.tracelog.debug('未处理的消息:', msg.action, 'msgtype:', msgtype);
             }
         } catch (e) {
-            console.warn(TAG, '消息解析失败:', rawData, e);
+            this.tracelog.warn('消息解析失败:', rawData, e);
         }
     }
 
@@ -631,15 +632,15 @@ export default class H5MsgMgr {
             }
             // binary 类型：payload.data 就是 ArrayBuffer，直接传递给监听器
             // （dataType === 'binary' 时不做任何转换，监听器自行处理 .data）
-            console.log(TAG, '收到消息(obj):', msg.action, 'msgtype:', msgtype);
+            this.tracelog.debug('收到消息(obj):', msg.action, 'msgtype:', msgtype);
             const fn = this._listeners[msg.action];
             if (fn) {
                 fn(payload, msgtype);
             } else {
-                console.log(TAG, '未处理的消息:', msg.action, 'msgtype:', msgtype);
+                this.tracelog.debug('未处理的消息:', msg.action, 'msgtype:', msgtype);
             }
         } catch (e) {
-            console.warn(TAG, '消息对象处理失败:', e);
+            this.tracelog.warn('消息对象处理失败:', e);
         }
     }
 
@@ -691,13 +692,13 @@ export default class H5MsgMgr {
         // 握手未完成 → 业务消息进队列
         if (!H5MsgMgr.Instance._handshakeDone) {
             H5MsgMgr.Instance._pendingMessages.push(msg);
-            console.log(TAG, '握手未完成，消息进队列:', action);
+            this.tracelog.debug('握手未完成，消息进队列:', action);
             return;
         }
         // 正常发送
         H5MsgMgr._post(msg);
         if (msgtype === 0) {
-            console.log(TAG, '发送 H5 层转发消息:', action);
+            this.tracelog.debug('发送 H5 层转发消息:', action);
         }
     }
 
