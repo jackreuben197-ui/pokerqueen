@@ -1,10 +1,12 @@
+import { traceClass } from './LogTrace';
 import RoomData from './RoomData';
 
+@traceClass()
 class RoomDataManager {
     private _roomCache: Map<string, RoomData> = new Map();
 
     constructor() {
-        cc.log('[RoomDataManager] 数据总管单例初始化');
+        this.tracelog.debug('[RoomDataManager] 数据总管单例初始化');
     }
 
     public existRoomData(roomID: number, matchID: number): boolean {
@@ -16,7 +18,7 @@ class RoomDataManager {
     public getRoomData<T extends RoomData>(roomID: number, matchID: number): T {
         const key = roomID + '-' + matchID;
         if (!this._roomCache.has(key)) {
-            console.warn('[RoomDataManager] no room data', roomID, matchID);
+            this.tracelog.warn('no room data', roomID, matchID);
             return null;
         }
         return this._roomCache.get(key) as T;
