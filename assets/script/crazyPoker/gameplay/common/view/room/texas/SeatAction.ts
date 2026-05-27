@@ -8,9 +8,10 @@ export default class SeatAction extends cc.Component {
     @property(cc.Label)
     private actionFoldLabel: cc.Label = null;
 
-    public showAction(c: string) {
+    public showAction(c: string, color: cc.Color) {
         this.actionLabel.string = c;
         this.actionLabel.node.parent.active = true;
+        this.actionLabel.node.parent.color = color;
         this.actionFoldLabel.node.parent.active = false;
     }
 

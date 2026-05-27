@@ -151,7 +151,6 @@ export default class UITexas extends BaseScene {
     RemainingSquidCount: cc.Node = null;
     RemainingSquidLabelCount: cc.Label = null;
     SquidSwitch: cc.Node = null;
-    private SquidSwitchClickNode: cc.Node = null;
     SquidStandUp: cc.Node = null;
     SquidJoinLabel: cc.Label = null;
     SquidStart: cc.Node = null;
@@ -333,7 +332,6 @@ export default class UITexas extends BaseScene {
             this._remainingSquidCountOrigY = this.RemainingSquidCount.y;
         }
         this.SquidSwitch = this.main?.getChildByName('SquidSwitch');
-        this.SquidSwitchClickNode = this.SquidSwitch?.getChildByName('content')?.getChildByName('GGSwitch2') || this.SquidSwitch;
         this.SquidJoinLabel = this.SquidSwitch?.getChildByName('content')?.getChildByName('$joinLabel')?.getComponent(cc.Label);
         if (this.SquidJoinLabel) {
             this.SquidJoinLabel.string = i18nMgr.Get('UIClub_RoomJoin');
@@ -525,7 +523,7 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.StartGameButton, this.onClickStartGame);
         this.setButtonClick(this._buttonShare, this.OnButtonShareClick);
         this.setButtonClick(this.JackpotButton, this.onClickJackpot);
-        this.setButtonClick(this.SquidSwitchClickNode, this.onClickJoinGame);
+        this.setButtonClick(this.SquidSwitch, this.onClickJoinGame);
         this.setButtonClick(this.SquidStandUp, this.onClickSquidStandUp);
         this.setButtonClick(this.Button_AddOn, this.onClickAddOn);
         //this.setButtonClick(this.Button_BringIn, this.onClickBringIn);

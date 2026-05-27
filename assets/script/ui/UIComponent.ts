@@ -1,3 +1,5 @@
+import { traceClass } from '../crazyPoker/gameplay/common/core/LogTrace';
+import { UIPrefabType } from '../crazyPoker/gameplay/common/core/UIPrefabDefinition';
 import { IUIDefine, UIType } from '../define/EIDefine';
 import { i18nMgr } from '../i18n/i18nMgr';
 import Main from '../Main';
@@ -51,6 +53,7 @@ export interface Close_Obj {
 }
 
 @ccclass
+@traceClass()
 export default class UIComponent {
     [key: string]: any;
     prefab_node_map = new Map();
@@ -107,9 +110,9 @@ export default class UIComponent {
             node.active = true;
             let ui_component: UIBase = node.getComponent(UIBase);
             ui_component?.onShow(param);
-            console.log('[ShowUI] PrefabUI_node', node.name);
+            this.tracelog.debug('PrefabUI_node', node.name);
         } else {
-            console.log('[ShowUI] > 缺少相关的节点', com);
+            this.tracelog.debug('> 缺少相关的节点', com);
         }
     }
 

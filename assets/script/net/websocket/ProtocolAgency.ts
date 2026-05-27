@@ -15,14 +15,15 @@ import PacketHead from './PacketHead';
 import { ProtocolCode } from './ProtocolCode';
 import { ProtocolCommon, ProtocolMap } from './ProtocolHoldemMessages';
 import WebSocketClient from './WebSocketClient';
+import { traceClass } from '../../crazyPoker/gameplay/common/core/LogTrace';
+import DevConfig from '../../crazyPoker/DevConfig';
 const { ccclass, property } = cc._decorator;
-const LN = '[ProtocolAgency]';
-
 export interface IProtocolRpc {
     rpcId: number;
 }
 
 @ccclass
+@traceClass()
 export default class ProtocolAgency extends cc.Component {
     public static gTimeStamp: number = 0;
     private static _rpcIdSeed: number = 0;
@@ -48,10 +49,10 @@ export default class ProtocolAgency extends cc.Component {
             // 重置 rpcid
             param.rpcId = this._getAvailableRpcId();
             this._pendingRequests.set(param.rpcId, (data: V) => {
-                console.log(LN, 'RPCID(complete):', param.rpcId);
+                this.tracelog.debug('RPCID(complete):', param.rpcId);
                 resolve(data);
             });
-            console.log(LN, 'RPCID:', param.rpcId);
+            this.tracelog.debug('RPCID:', param.rpcId);
             this.Send<T>({
                 Code: code,
                 RoomID: roomID,
@@ -73,16 +74,16 @@ export default class ProtocolAgency extends cc.Component {
         if (H5MsgMgr.Instance.handshakeDone) {
             let protocol_name = ProtocolCode[param.Code];
             if (!protocol_name) {
-                console.log(LN, 'code not in ProtocolCode', protocol_name, JSON.stringify(param));
+                this.tracelog.debug('code not in ProtocolCode', protocol_name, JSON.stringify(param));
                 return;
             }
             let client = ProtocolMap[param.Code]?.Client;
             if (!client) {
-                console.log(LN, 'protocol unregistered in ProtocolMap', protocol_name, JSON.stringify(param));
+                this.tracelog.debug('protocol unregistered in ProtocolMap', protocol_name, JSON.stringify(param));
                 return;
             }
             if (OpCodeHelper.NeedLog(param.Code)) {
-                console.log(LN, `>>>>> protocol send (H5): ${protocol_name}`, `RoomID:${param.RoomID},MatchID:${param.MatchID},body:`, param.Body);
+                this.tracelog.debug(`>>>>> protocol send (H5): ${protocol_name}`, `RoomID:${param.RoomID},MatchID:${param.MatchID},body:`, param.Body);
             }
             let bodyBA = ProtocolCommon.Instance.Request(param.Code, param.Body);
             let bodyLength: number = bodyBA.byteLength;
@@ -106,16 +107,16 @@ export default class ProtocolAgency extends cc.Component {
         if (WebSocketClient.CheckOpen()) {
             let protocol_name = ProtocolCode[param.Code];
             if (!protocol_name) {
-                console.log(LN, 'code not in ProtocolCode', protocol_name, JSON.stringify(param));
+                this.tracelog.debug('code not in ProtocolCode', protocol_name, JSON.stringify(param));
                 return;
             }
             let client = ProtocolMap[param.Code]?.Client;
             if (!client) {
-                console.log(LN, 'protocol unregistered in ProtocolMap', protocol_name, JSON.stringify(param));
+                this.tracelog.debug('protocol unregistered in ProtocolMap', protocol_name, JSON.stringify(param));
                 return;
             }
             if (OpCodeHelper.NeedLog(param.Code)) {
-                console.log(LN, `>>>>> protocol send : ${protocol_name}`, `RoomID:${param.RoomID},MatchID:${param.MatchID},body:`, param.Body);
+                this.tracelog.debug(`>>>>> protocol send : ${protocol_name}`, `RoomID:${param.RoomID},MatchID:${param.MatchID},body:`, param.Body);
             }
             let bodyBA = ProtocolCommon.Instance.Request(param.Code, param.Body);
             let bodyLength: number = bodyBA.byteLength;
@@ -218,7 +219,7 @@ export default class ProtocolAgency extends cc.Component {
         let ua = new Uint8Array(data);
         for (let i = 0; i < PacketHead.CharsFlag.length; i++) {
             if (ua[i] != PacketHead.CharsFlag[i]) {
-                console.log(LN, 'charsflag is no match');
+                this.tracelog.debug('charsflag is no match');
                 return;
             }
         }
@@ -226,7 +227,7 @@ export default class ProtocolAgency extends cc.Component {
         let code: number = this._readNumber(ua, code_offset, PacketHead.FieldSize.Code);
         let protocol_name = this._getProtocolNameByCode(code);
         if (!protocol_name) {
-            console.log(LN, 'code is undefined ' + code);
+            this.tracelog.debug('code is undefined ' + code);
             return;
         }
         if (
@@ -236,7 +237,7 @@ export default class ProtocolAgency extends cc.Component {
             code != ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo &&
             code != ProtocolCode.Protocol_Holdem_NotificationRoomReady
         ) {
-            console.log(LN, 'drop code:', code);
+            this.tracelog.debug('drop code:', code);
             return;
         }
         let roomid_offset = PacketHead.FieldOffset.RoomID - PacketHead.FieldSize.DataLength;
@@ -247,16 +248,14 @@ export default class ProtocolAgency extends cc.Component {
         if (code != ProtocolCode.Protocol_Holdem_Leave && code != ProtocolCode.Protocol_Holdem_EnterRoom) {
             let isRubbish = (roomid != 0 && roomid != GameCache.Instance.room_id) || (matchid != 0 && matchid != GameCache.Instance.match_id);
             if (isRubbish) {
-                console.log(
-                    LN,
+                this.tracelog.info(
                     `roomid or matchid is no match cache:{RoomID:${GameCache.Instance.room_id},MatchID:${GameCache.Instance.match_id}},receive:{RoomID:${roomid},MatchID:${matchid}}`
                 );
                 // H5 桥接模式（CC 不直接连 WebSocket）：仅丢弃，不发 Leave。
                 // 原因：H5 的 WebSocket 可能收到多个房间的推送（观战、大厅等），
                 // 自动 Leave 会误退当前正在进行的牌桌。
                 // if (!WebSocketClient.CheckOpen(true)) {
-                //     console.log(LN,
-                //         `[H5Bridge] 丢弃不匹配房间的消息，不发送 Leave`,
+                //     this.tracelog.debug(                //         `[H5Bridge] 丢弃不匹配房间的消息，不发送 Leave`,
                 //     );
                 //     return;
                 // }
@@ -278,12 +277,12 @@ export default class ProtocolAgency extends cc.Component {
         let body_ua: Uint8Array = new Uint8Array(data.slice(PacketHead.FixHeadLength));
         let server = ProtocolMap[code]?.Server;
         if (!server) {
-            console.log(LN, 'protocol unregistered in ProtocolMap ' + protocol_name);
+            this.tracelog.debug('protocol unregistered in ProtocolMap ' + protocol_name);
             return;
         }
         let body = ProtocolCommon.Instance.Response(body_ua, server);
         if (OpCodeHelper.NeedLog(code)) {
-            console.log(LN, `>>>>> protocol receive : ${protocol_name}`, `RoomID:${roomid},MatchID:${matchid},body:`, body);
+            this.tracelog.debug(`>>>>> protocol receive : ${protocol_name}`, `RoomID:${roomid},MatchID:${matchid},body:`, body);
         }
         const rpcId = this._getRpcId(body);
         // 检查是否有 SendAsync 在等这个 code
@@ -312,7 +311,10 @@ export default class ProtocolAgency extends cc.Component {
             return;
         }
         GC.notify.post(code, body, roomid, matchid);
-        // MessageHandler.handle(code, body, roomid, matchid);
+        if (!DevConfig.IS_OLD) {
+            // 新的消息处理，只针对新的模式
+            MessageHandler.handle(code, body, roomid, matchid);
+        }
         body = null;
         body_ua = null;
     }

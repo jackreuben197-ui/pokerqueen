@@ -13,6 +13,9 @@ import { GameCache } from '../../../../../game/GameCache';
 import GC from '../../../../../frame/GameControl';
 import TimeHelper from '../../../../../helper/TimeHelper';
 import WebImageHelper from '../../../../../helper/WebImageHelper';
+import HttpRequest from '../../../../../net/https/HttpRequest';
+import { WebOrgClubSearchById } from '../../../../../net/https/web_request/WebRequestOrg';
+import { ClubCache } from '../../../../../frame/data/club/ClubCache';
 const { ccclass, property } = cc._decorator;
 /** 聊天模式：chatOnly = 只发聊天（默认），danmuAndChat = 同时发弹幕+聊天 */
 type ChatMode = 'chatOnly' | 'danmuAndChat';
@@ -40,6 +43,9 @@ export default class UIChatDlg extends UIBasePlus {
     private _danmuAndChatNode: cc.Node = null;
     /** 当前选中的聊天模式，默认只发聊天 */
     private _chatMode: ChatMode = 'chatOnly';
+    /** 欢迎语节点（开场白） */
+    private _welcomeNode: cc.Node = null;
+    private _welcomeLabel: cc.Label = null;
 
     protected override lateLoad(): void {
         super.lateLoad();
@@ -97,6 +103,16 @@ export default class UIChatDlg extends UIBasePlus {
         if (this._sendBtn) {
             this.setButtonClick(this._sendBtn, this.click_sendMsg);
         }
+        // 开场白（欢迎语）
+        this._welcomeNode = this.node.getChildByName('welcomeNode');
+        console.log('[UIChatDlg] welcomeNode found:', !!this._welcomeNode, 'node.name:', this._welcomeNode?.name);
+        if (this._welcomeNode) {
+            // welcomeNode 已改为 ScrollView，welcome 在 view/content/welcome 路径下
+            const welcomeChild = cc.find('view/content/welcome', this._welcomeNode);
+            if (welcomeChild) {
+                this._welcomeLabel = welcomeChild.getComponent(cc.Label);
+            }
+        }
         // 聊天模式切换（chatOnly / danmuAndChat）
         this._danmakuNode = this.node.getChildByName('DanmakuNode');
         if (this._danmakuNode) {
@@ -135,6 +151,13 @@ export default class UIChatDlg extends UIBasePlus {
         }
         // 只监听 1019（自己发送成功确认），1121 由 ChatManager 统一处理
         GC.notify.register(ProtocolCode.Protocol_Holdem_BroadcastMsg, this._onSendChatResponse, this);
+        // 先重置开场白状态，避免切换房间后残留上一个房间的开场白
+        this._hideWelcomeNode();
+        if (this._welcomeLabel) {
+            this._welcomeLabel.string = '';
+        }
+        // 获取俱乐部开场白
+        this._fetchAndDisplayPrologue();
     }
 
     protected override lateClose(param?: any): void {
@@ -209,7 +232,7 @@ export default class UIChatDlg extends UIBasePlus {
         }
         // 显示：已有消息直接显示，新消息 0.8 秒淡入
         if (isNewMsg) {
-            item.runAction(cc.fadeIn(0.8));
+            item.runAction(cc.fadeIn(0.4));
         } else {
             item.opacity = 255;
         }
@@ -380,6 +403,73 @@ export default class UIChatDlg extends UIBasePlus {
             if (sprite) {
                 sprite.spriteFrame = selected ? this.checkedFrame : this.uncheckedFrame;
             }
+        }
+    }
+
+    /** 获取俱乐部开场白并显示 */
+    private _fetchAndDisplayPrologue(): void {
+        // 根据当前房间的 ClubID，从已缓存的俱乐部列表中查找对应的 random_id
+        const currentClubId = GameCache.Instance.ClubID;
+        let clubRandomId = 0;
+        if (currentClubId > 0 && ClubCache._allCubData && Array.isArray(ClubCache._allCubData)) {
+            const matched = ClubCache._allCubData.find((c: any) => c.club_id === currentClubId);
+            if (matched) {
+                clubRandomId = matched.random_id || 0;
+            }
+        }
+        // 回退：如果列表没匹配到，尝试 GameCache 或 ClubCache 当前值
+        if (clubRandomId <= 0) {
+            clubRandomId = GameCache.Instance.ClubRandomID || ClubCache.random_id || 0;
+        }
+        if (!clubRandomId || clubRandomId <= 0) {
+            console.log('[UIChatDlg] ClubRandomID is 0 or invalid, hide welcomeNode');
+            this._hideWelcomeNode();
+            return;
+        }
+        const params = { club_random_id: clubRandomId };
+        console.log('[UIChatDlg] requesting /api/org/club/info with params:', JSON.stringify(params));
+        HttpRequest.Send({
+            request: WebOrgClubSearchById,
+            body: WebOrgClubSearchById.Request(params),
+            onSuccess: () => {
+                const resp = WebOrgClubSearchById.Response;
+                console.log('[UIChatDlg] /api/org/club/info response:', JSON.stringify(resp));
+                const data = resp?.data;
+                if (data) {
+                    console.log('[UIChatDlg] prologue_switch:', data.prologue_switch, 'prologue:', data.prologue);
+                }
+                if (data && data.prologue) {
+                    this._showPrologue(data.prologue);
+                } else {
+                    console.log('[UIChatDlg] prologue not enabled or empty, hide welcomeNode');
+                    this._hideWelcomeNode();
+                }
+            },
+            onFailure: (err: any) => {
+                console.log('[UIChatDlg] /api/org/club/info failed:', err);
+                this._hideWelcomeNode();
+            }
+        });
+    }
+
+    /** 显示开场白 */
+    private _showPrologue(text: string): void {
+        console.log('[UIChatDlg] _showPrologue text:', text);
+        console.log('[UIChatDlg] _welcomeLabel:', !!this._welcomeLabel, '_welcomeNode:', !!this._welcomeNode);
+        if (this._welcomeLabel) {
+            this._welcomeLabel.string = text;
+            console.log('[UIChatDlg] welcomeLabel.string set to:', this._welcomeLabel.string);
+        }
+        if (this._welcomeNode) {
+            this._welcomeNode.active = true;
+            console.log('[UIChatDlg] welcomeNode.active set to true');
+        }
+    }
+
+    /** 隐藏欢迎语节点 */
+    private _hideWelcomeNode(): void {
+        if (this._welcomeNode) {
+            this._welcomeNode.active = false;
         }
     }
 

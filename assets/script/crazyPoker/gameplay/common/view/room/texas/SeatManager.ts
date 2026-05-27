@@ -1,13 +1,15 @@
 import { AnimateDisplayTypeButton } from '../../../../texas/constants/AnimateDisplayType';
 import TexasGameRoomData from '../../../../texas/data/TexasGameRoomData';
 import TexasGameRoomDataSeatsStateManager from '../../../../texas/data/TexasGameRoomDataSeatsStateManager';
+import { traceClass, traceMethod } from '../../../core/LogTrace';
 import roomDataManager from '../../../core/RoomDataManager';
-import Seat from './Seat';
+import SeatPlayer from './SeatPlayer';
 const LN = '[SeatManager]';
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
 @menu('CrazyPoker/Room/Texas/SeatManager')
+@traceClass()
 export default class SeatManager extends cc.Component {
     @property(cc.Prefab)
     private seatPrefab: cc.Prefab = null;
@@ -17,7 +19,7 @@ export default class SeatManager extends cc.Component {
     private potNot: cc.Node = null;
     private _seatManager: TexasGameRoomDataSeatsStateManager;
     private _seatNodes: cc.Node[] = [];
-    private _seatNodesMap: Map<number, Seat> = new Map();
+    private _seatNodesMap: Map<number, SeatPlayer> = new Map();
 
     public initData(roomID: number, matchID: number) {
         const roomData = roomDataManager.getRoomData<TexasGameRoomData>(roomID, matchID);
@@ -78,12 +80,13 @@ export default class SeatManager extends cc.Component {
                 let nd = cc.instantiate(this.seatPrefab);
                 nd.parent = this.node;
                 this._seatNodes.push(nd);
-                this._seatNodesMap.set(i + 1, nd.getComponent(Seat));
+                this._seatNodesMap.set(i + 1, nd.getComponent(SeatPlayer));
             }
         }
         this._seatNodesMap.forEach((comp, seatNo) => {
             const seatData = this._seatManager.getSeatPlayer(seatNo);
             comp.initData(seatData, this.potNot, this.dealNode);
         });
+        this.tracelog.info(this._seatNodesMap.size);
     }
 }

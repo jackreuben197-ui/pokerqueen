@@ -1,5 +1,6 @@
 import GameplayUtil from '../../common/util/GameplayUtil';
-import { Def } from '../../../../protobuf/holdem/define_pb';
+import {Def} from '../../../../protobuf/holdem/define_pb';
+import { observable, StaticProperty } from '../../common/core/DataBind';
 
 export interface tableBetInfo {
     sb: number;
@@ -13,8 +14,11 @@ export default class TexasGameRoomDataBasic extends cc.EventTarget {
     public gameType: number;
     public pokerType: number;
     public betType: number;
+    public opDuration: number;
     public isMtt: boolean;
     public delaySeeCard: boolean;
+    private _handCardNum: number;
+    public get handCardNum() {return this._handCardNum};
     public _gameStatus: Def.GameStatusMap[keyof typeof Def.GameStatus];
 
     public get gameStatus() {
@@ -37,40 +41,35 @@ export default class TexasGameRoomDataBasic extends cc.EventTarget {
         this.pokerType = pokerType;
         this.betType = betType;
         this.isMtt = isMTT;
+        switch(this.gameType) {
+        case 1:
+            this._handCardNum = 4;
+        case 2:
+            this._handCardNum = 5;
+        case 3:
+            this._handCardNum = 6;
+        default:
+            this._handCardNum = 2;
+        }
     }
 
     // 朋友卓信息
     public invitationCode: string;
     //@TODO 鱿鱼,蘑菇,暴击,bombpt 待补
     // 下注信息会变
-    public static readonly TABLE_BET_INFO_CHANGE = 'TABLE_BET_INFO_CHANGE';
-    private _sbante: tableBetInfo;
+    @observable('TABLE_BET_INFO_CHANGE')
+    public sbante: StaticProperty<tableBetInfo>;
 
-    public get sbante() {
-        return this._sbante;
-    }
-
-    public set sbante(data: tableBetInfo) {
-        if (this._sbante && this._sbante.ante == data.ante && this._sbante.sb == data.sb) return;
-        this._sbante = data;
-        this.emit(TexasGameRoomDataBasic.TABLE_BET_INFO_CHANGE, this._sbante);
-    }
-
-    // 手数变动
-    public static readonly TABLE_HANDINFO_CHANGE = 'TABLE_HANDINFO_CHANGE';
-    private _handNum: number;
-
-    public get handNum() {
-        return this._handNum;
-    }
-
-    public set handNum(n: number) {
-        if (n == this._handNum) return;
-        this._handNum = n;
-        this.emit(TexasGameRoomDataBasic.TABLE_HANDINFO_CHANGE, this._handNum);
-    }
+    @observable('TABLE_HANDINFO_CHANGE')
+    public handNum: StaticProperty<number>;
 
     public handClear() {
         this.gameStatus = Def.GameStatus.WAIT_HAND_START;
     }
+
+    public squidEnabled:boolean;
+
+    public mushroomEnabled: boolean;
+
+    public videoModel: number;
 }

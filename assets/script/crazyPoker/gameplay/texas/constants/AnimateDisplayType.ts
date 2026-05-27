@@ -31,5 +31,5 @@ export enum AnimateDisplayTypePosition {
 
 export enum AnimateDisplayTypeAction {
     Static = 0, // 纯静态变化
-    ShowAction = 1
+    Done = 1,  // 完成状态
 }

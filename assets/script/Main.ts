@@ -24,11 +24,15 @@ import * as MainUtils from './MainUtils';
 import UpdateComponent from './funcomponent/UpdateComponent';
 import DataManager from './frame/manager/DataManager';
 import ProcedureInit from './procedure/ProcedureInit';
+import { ITraceLog, traceClass } from './crazyPoker/gameplay/common/core/LogTrace';
+import DevConfig from './crazyPoker/DevConfig';
+
 ///////////////////////////////////////////////
 cc.macro.ENABLE_TRANSPARENT_CANVAS = false;
 const { ccclass, property } = cc._decorator;
 
 @ccclass
+@traceClass()
 export default class Main extends cc.Component {
     static instance: Main = null;
     static CacheUI: cc.Node = null;
@@ -54,6 +58,9 @@ export default class Main extends cc.Component {
     private _resizeTimer: number = 0;
 
     override async onLoad() {
+        // 一键将全局日志级别锁定为 'error'
+        // 此时：debug, info, warn 全都自动静音，只有 error 能打出来
+        ITraceLog.setGlobalLevel(DevConfig.LOG_LEVEL);
         // 关闭左下角 FPS / DrawCall 统计信息
         cc.debug.setDisplayStats(false);
         // 初始化 Telegram WebApp SDK（必须在最开始）
@@ -62,10 +69,10 @@ export default class Main extends cc.Component {
         // if (TelegramUtils.Instance.isInTelegram) {
         //     TelegramUtils.Instance.printDebugInfo();
         // }
-        if (!CCTools.getQueryString('log') && GameConfig.IS_PUBLISHED) {
-            console.log = function () {};
-        }
-        console.log('游戏启动', cc.sys.os);
+        // if (!CCTools.getQueryString('log') && GameConfig.IS_PUBLISHED) {
+        //     this.tracelog.info = function () {};
+        // }
+        this.tracelog.info('游戏启动', cc.sys.os);
         DataManager.instance.init();
         // GC.localStore.keyPre = CCTools.getQueryString("player") || "";
         Main.instance = this;
@@ -93,8 +100,8 @@ export default class Main extends cc.Component {
         Main.Diss = this.node.parent.getChildByName('Diss - 出界遮挡');
         UIComponent.Instance.SetPrefabNode(PrefabUI.UIPreloading, Main.UIPreloading);
         this.scheduleOnce(() => {
-            console.log('[Main]屏幕分辨率:', cc.view.getFrameSize().toString());
-            console.log('[Main]逻辑分辨率:', cc.view.getVisibleSize().toString());
+            this.tracelog.debug('[Main]屏幕分辨率:', cc.view.getFrameSize().toString());
+            this.tracelog.debug('[Main]逻辑分辨率:', cc.view.getVisibleSize().toString());
             MainUtils.refreshDiss(Main.Diss);
         }, 1);
         UpdateComponent.Instance.AddComponent(new OrientationComponent());
@@ -120,7 +127,7 @@ export default class Main extends cc.Component {
         this._resizeTimer = window.setTimeout(() => {
             const w = window.innerWidth;
             const h = window.innerHeight;
-            console.log('[Main] 窗口 resize，重新适配', w, h);
+            this.tracelog.info('[Main] 窗口 resize，重新适配', w, h);
             // 更新容器 DOM（预览模式下容器不会自动跟随窗口）
             const content = document.getElementById('content');
             if (content) {

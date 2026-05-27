@@ -9,6 +9,7 @@
 /**
  * 全局流程管理器
  */
+import { traceClass } from '../crazyPoker/gameplay/common/core/LogTrace';
 import { ProcedureEnum } from '../define/EIDefine';
 import ProcedureBase from '../procedure/ProcedureBase';
 import ProcedureEnterRoom from '../procedure/ProcedureEnterRoom';
@@ -18,6 +19,7 @@ import ProcedureInit from '../procedure/ProcedureInit';
 import ProcedureReturn from '../procedure/ProcedureReturn';
 import ProcedureTexas from '../procedure/ProcedureTexas';
 
+@traceClass()
 export default class ProcedureManager {
     private static procedureDic: { [key: number]: ProcedureBase } = {};
     public static prevProcedure: ProcedureBase = null;
@@ -43,18 +45,18 @@ export default class ProcedureManager {
         }
         ProcedureManager.currProcedure = procedure;
         let prevProcedure = ProcedureManager.prevProcedure;
-        // console.log('[Procedure]',"DEBUG_LOG: 被调用了", new Error().stack);
+        // this.tracelog.debug(DEBUG_LOG: 被调用了", new Error().stack);
         if (prevProcedure) {
             if (prevProcedure.id == procedure.id) return;
             if (this._isSwitching) {
-                console.warn('[Procedure]', '流程切换中,忽略此次切换流程');
+                this.tracelog.warn('流程切换中,忽略此次切换流程');
                 return;
             }
             this._isSwitching = true;
             //保护性流程切换
             try {
                 // 这里需要等待(完善流程)
-                console.log('[Procedure]', prevProcedure.Name, '开始 Leave');
+                this.tracelog.debug(prevProcedure.Name, '开始 Leave');
                 await Promise.resolve(prevProcedure.Leave());
             } catch (e) {
                 console.error('[Procedure]', `${prevProcedure.Name} leave error, continue switch`, e);
@@ -62,7 +64,7 @@ export default class ProcedureManager {
                 this._isSwitching = false; // 无论成功失败，最后解锁
             }
         }
-        console.log('[Procedure]', '[上个流程:', prevProcedure && prevProcedure.Name, '切换到==>当前流程:', ProcedureEnum[procedure.id]);
+        this.tracelog.debug('[上个流程:', prevProcedure && prevProcedure.Name, '切换到==>当前流程:', ProcedureEnum[procedure.id]);
         ProcedureManager.prevProcedure = procedure;
         // 这里可以不等待
         procedure.Enter<T>(param);
