@@ -27,6 +27,7 @@ import MTTGameUtils from '../util/MTTGameUtils';
 import { GM } from '../../gm/GMAPI';
 import { WebOrgClubUserInfo, WebRoomCenterMttUserWallet, WebUserRoom, WWW } from '../../net/https/WebRequest';
 import UITexasMenu from '../ui/UITexasMenu';
+import H5MsgMgr from '../../H5MsgMgr';
 
 enum MTTMatchStatus {
     // mtt比赛状态
@@ -482,10 +483,13 @@ export default class MTTGame extends TexasGame {
     // 实时战况
     public override onClickReport() {
         if (!this.hadRequestEnterRoom) return;
-        UIComponent.open(UIDefine.MttRealTime, null, {
-            parentUI: this.uirc.Common_Con
+        H5MsgMgr.sendToH5('showPanel', 1, {
+            panelType: 'mttRecord',
+            props: {
+                matchId: GameCache.Instance.match_id,
+                tournamentName: GameCache.Instance.roomName,
+            }
         });
-        // UIComponent.Instance.ShowNoAnimation(UIType.UITexasReportMTT, new object[1] { true });
     }
 
     public override onClickCurSituation() {
