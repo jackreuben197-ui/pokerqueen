@@ -8,7 +8,8 @@ import { GameConfig } from './config/GameConfig';
 import GC from './frame/GameControl';
 import { GameCache } from './game/GameCache';
 import AgoraManager from './net/agora/AgoraManager';
-import H5MsgMgr from './H5MsgMgr';
+import H5MsgMgr, { type SyncUserInfo } from './H5MsgMgr';
+import LobbyRoomListItem from './frame/data/lobby/LobbyRoomListItem';
 import ProcedureManager from './manager/ProcedureManager';
 import { ProcedureEnum } from './define/EIDefine';
 import { ClubCache } from './frame/data/club/ClubCache';
@@ -33,7 +34,7 @@ export function loadWebSDK(): void {
     }
     const sdkList = [{ name: 'AgoraRTC', src: 'https://download.agora.io/sdk/release/AgoraRTC_N-4.24.3.js' }];
     sdkList.forEach(sdk => {
-        if ((window as any)[sdk.name]) {
+        if ((window as unknown as Record<string, unknown>)[sdk.name]) {
             _ploger.info(`[WebSDK] ${sdk.name} 已存在，跳过加载`);
             return;
         }
@@ -88,13 +89,14 @@ const ENTER_TABLE_REQUIRED: { key: string; label: string; type: string }[] = [
  * 校验 enterTable 数据完整性
  * 返回缺失/类型不匹配的字段列表
  */
-export function validateEnterTableData(payload: any): { key: string; label: string; type: string; actual: string }[] {
+export function validateEnterTableData(payload: unknown): { key: string; label: string; type: string; actual: string }[] {
     if (!payload || typeof payload !== 'object') {
         return ENTER_TABLE_REQUIRED.map(f => ({ ...f, actual: 'undefined' }));
     }
+    const obj = payload as Record<string, unknown>;
     const missing: { key: string; label: string; type: string; actual: string }[] = [];
     for (const field of ENTER_TABLE_REQUIRED) {
-        const val = payload[field.key];
+        const val = obj[field.key];
         if (val === undefined || val === null) {
             missing.push({ ...field, actual: 'undefined' });
         } else if (field.type === 'number' && typeof val !== 'number') {
@@ -108,8 +110,33 @@ export function validateEnterTableData(payload: any): { key: string; label: stri
     return missing;
 }
 
-/** 将 H5 传入的数据写入 GameCache */
-export function fillGameCache(payload: any): void {
+/** 旧版平铺格式 enterTable 数据（兼容存量接口，字段直接平铺在 payload 上）。*/
+interface FlatEnterTableData {
+    nUserId: number;
+    nick: string;
+    headPic: string;
+    sex: number;
+    gold: number;
+    room_type: number;
+    room_id: number;
+    roomName: string;
+    game_type: number;
+    poker_type: number;
+    bet_type: number;
+    seat_count: number;
+    match_id: number;
+    service_id: string;
+    carry_small: number;
+    straddle?: number;
+    insurance?: number;
+    muck_switch?: number;
+    club_id?: number;
+    origin_type?: number;
+    gold_type?: number;
+}
+
+/** 将旧版平铺格式的 H5 数据写入 GameCache */
+export function fillGameCache(payload: FlatEnterTableData): void {
     const gc = GameCache.Instance;
     // 用户信息
     gc.nUserId = payload.nUserId;
@@ -249,7 +276,7 @@ export async function registerH5Listeners(): Promise<void> {
         // 原始房间数据 TRoomListItem
         // const roomData = (targetItem as any)._data;
         // === 3. 进入牌桌所需数据完整性校验 ===
-        const requiredForEnter: { key: string; val: any }[] = [
+        const requiredForEnter: { key: string; val: unknown }[] = [
             { key: 'room_type', val: roomData.room_type },
             { key: 'game_type', val: roomData.game_type },
             { key: 'poker_type', val: roomData.poker_type },
@@ -272,7 +299,7 @@ export async function registerH5Listeners(): Promise<void> {
         gc.poker_type = roomData.poker_type;
         gc.bet_type = roomData.limit_bet_type;
         gc.seat_count = roomData.seat_count;
-        gc.serviceId = roomData.service_id;
+        gc.serviceId = roomData.service_id != null ? String(roomData.service_id) : null;
         gc.straddle = roomData.straddle_on || 0;
         gc.insurance = (roomData.insurance_on || 0) > 0;
         gc.muck_switch = roomData.muck_on || 0;
@@ -313,8 +340,8 @@ export async function registerH5Listeners(): Promise<void> {
         }
         // 仅写入本地缓存，不触发 UI 事件和网络请求
         const gc = GameCache.Instance;
-        gc.nUserId = userInfo.un_id;
-        gc.userId = userInfo.p_u_id;
+        gc.nUserId = Number(userInfo.un_id);
+        gc.userId = Number(userInfo.p_u_id ?? 0);
         gc.strPhone = userInfo.phone;
         gc.sex = userInfo.sex;
         gc.nick = userInfo.nickname;
@@ -322,7 +349,7 @@ export async function registerH5Listeners(): Promise<void> {
         gc.userType = userInfo.ut;
         gc.isHadClub = userInfo.club_id > 0;
         // 直接写入 UserInfoModel 内部数据，绕过 setter（不触发 myGoldChange 事件）
-        (GC.data.user.info as any)._msg = userInfo;
+        (GC.data.user.info as unknown as { _msg: SyncUserInfo })._msg = userInfo;
         _ploger.info('[H5Bridge] syncUser 缓存完成, user_id:', userInfo.un_id, 'nickname:', userInfo.nickname);
         // 预加载声音和游戏资源（提前加载，避免 enterTable 时再加载影响进桌速度）
     });
@@ -338,8 +365,9 @@ export async function registerH5Listeners(): Promise<void> {
 
     H5MsgMgr.Instance.on('syncUserClub', payload => {
         _ploger.info('[H5Bridge] 同步俱乐部信息:', payload);
+        // data 已类型化为 ClubInfo[]，无需 Array.isArray 校验
         const clubList = payload?.response?.data;
-        if (!clubList || !Array.isArray(clubList)) {
+        if (!clubList) {
             _ploger.error('[H5Bridge] syncUserClub 数据异常：缺少 payload.response.data');
             return;
         }
@@ -372,9 +400,9 @@ export async function registerH5Listeners(): Promise<void> {
             return;
         }
         for (const configType of DIAMOND_PRELOAD_TYPES) {
-            const typeMap = (map as any)[configType];
+            const typeMap = map[configType];
             if (typeMap && typeof typeMap === 'object') {
-                DiamondModel.Instance.setFromH5Sync(configType, typeMap);
+                DiamondModel.Instance.setFromH5Sync(configType, typeMap as Record<number, unknown>);
             }
         }
         _ploger.info('[H5Bridge] syncDiamondConfig 预填完成');
@@ -454,7 +482,7 @@ export async function registerH5Listeners(): Promise<void> {
             GameCache.Instance.room_id = 0;
             GameCache.Instance.room_type = matchInfo.type;
             GameCache.Instance.enter_param = enterPram;
-            GameCache.Instance.serviceId = payload.websocketPort;
+            GameCache.Instance.serviceId = String(payload.websocketPort);
             // === 6. 启动进入牌桌流程，同时后台加载资源 ===
             ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enterPram);
             _ploger.info('[H5Bridge] enterMtt 缓存完成, matchId', GameCache.Instance.match_id, ',开始进入mtt');
@@ -468,16 +496,19 @@ export async function registerH5Listeners(): Promise<void> {
      * structured clone 传递，data 已经是 ArrayBuffer，无需 base64 解码
      */
     H5MsgMgr.Instance.on('wsMessage', payload => {
-        if (!payload || payload.dataType !== 'binary' || !payload.data) {
+        if (payload.dataType !== 'binary' || !payload.data) {
             _ploger.warn('[H5Bridge] wsMessage 数据格式异常:', payload);
             return;
         }
+        // payload 已收窄为 WsMessageBinaryPayload，data 为 ArrayBuffer | Uint8Array
         try {
             let buffer: ArrayBuffer;
             if (payload.data instanceof ArrayBuffer) {
                 buffer = payload.data;
             } else if (payload.data instanceof Uint8Array) {
-                buffer = payload.data.buffer;
+                // Uint8Array.buffer 是 ArrayBufferLike（含 SharedArrayBuffer），
+                // 在 Cocos 环境中实际总是 ArrayBuffer，安全断言。
+                buffer = payload.data.buffer as ArrayBuffer;
             } else {
                 _ploger.warn('[H5Bridge] wsMessage data 类型异常:', typeof payload.data);
                 return;
@@ -496,7 +527,7 @@ export async function registerH5Listeners(): Promise<void> {
         _ploger.warn('[H5Bridge] wsClosed:', payload);
         // 通知 H5 层重新连接 WebSocket
         H5MsgMgr.sendToH5('wsConnect', 1, {
-            port: GameCache.Instance.serviceId,
+            port: Number(GameCache.Instance.serviceId),
             roomId: GameCache.Instance.room_id,
             matchId: GameCache.Instance.match_id
         });
