@@ -334,17 +334,6 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
 
     onShow(obj?: any): void {
         super.onShow(obj);
-        // // 初始化参数
-        // if (GameCache.Instance.game_type == GameType.MAHJONG) {
-        //     this.rate = 10; // TODO: MahjongConstant.BRING_IN_RATE(GameCache.Instance.room_type)
-        //     this.sliderSpace = this.rate;
-        // } else if (GameCache.Instance._originType == RoomOriginType.UNION) {
-        //     this.sliderSpace = 10;
-        //     this.rate = 10;
-        // } else {
-        //     this.sliderSpace = 50; // TODO: CreateRoomConstant.TEXAS_MIN_BRING_RATE
-        //     this.rate = 50;
-        // }
         this.addChipsData = obj as AddChipsData;
         this._updateDisplay();
     }

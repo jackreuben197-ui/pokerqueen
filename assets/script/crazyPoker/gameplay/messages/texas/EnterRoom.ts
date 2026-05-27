@@ -14,7 +14,8 @@ import {
 } from '../../texas/constants/AnimateDisplayType';
 import TexasGameRoomDataPlayer from '../../texas/data/TexasGameRoomDataPlayer';
 import TexasGameRoomDataPlayerMine from '../../texas/data/TexasGameRoomDataPlayerMine';
-import { Def } from '../../../../protobuf/holdem/define_pb';
+import { Def, SidePot } from '../../../../protobuf/holdem/define_pb';
+import { Operator, OperatorMine } from '../../texas/data/model/Operator';
 const LN = '[EnterRoom]';
 
 // EnterRoom 1002
@@ -37,6 +38,7 @@ export async function EnterRoom(data: ServerMessageEnterRoom.AsObject, roomID: n
     if (data.status == 0) {
         roomData.basicInfo.sbante = { sb: data.roomInfo.smallBlind, ante: data.roomInfo.ante };
         roomData.basicInfo.gameStatus = data.gameStatus;
+        roomData.basicInfo.opDuration = data.roomInfo.opDuration;
         if (data.handInfo) {
             roomData.basicInfo.handNum = data.handInfo.handNum;
             roomData.potInfo.allPot = data.handInfo.allBet;
@@ -55,36 +57,55 @@ export async function EnterRoom(data: ServerMessageEnterRoom.AsObject, roomID: n
             seatData.setRoundBet(player.roundBet, AnimateDisplayTypeRoundBet.Static);
             seatData.handBet = player.handBet;
             seatData.roundActioned = player.roundActioned;
-            seatData.updateCards(player.cardsList, AnimateDisplayTypeCards.Static);
+            seatData.setCards(player.cardsList, AnimateDisplayTypeCards.Static);
             seatData.setAction(player.action, AnimateDisplayTypeAction.Static);
             seatData.deposit = player.deposit;
-        });
-        // setTimeout( () => {
-        //     let seatData = roomData.seatsStateManager.getSeatPlayer(3);
-        //     seatData.setAction(Def.Action.RAISE, AnimateDisplayTypeAction.ShowAction);
-        // }, 3000);
-        let mine: TexasGameRoomDataPlayerMine = null;
+        })
         if (data.myInfo) {
             if (data.myInfo.seatId > 0) {
                 roomData.seatsStateManager.setMySeat(data.myInfo.seatId);
-                mine = roomData.seatsStateManager.getMine();
-                mine.storeChips = mine.storeChips;
+                let mine = roomData.seatsStateManager.getSeatPlayer(data.myInfo.seatId).mine;
+                mine.storeChips = data.myInfo.storeChips;
             }
         }
         data.operatorList.forEach(operator => {
-            if (mine && operator.seatId == mine.seatedPlayer.seatNo) {
+            let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
+            if (seatData.mine) {
                 //@TODO 本人操作的准备
-                //mine.prepareAction(operator.ActionLimit, AnimateDisplayType)
-                //mine.prepareInsurance();
-                //mine.prepareAgreeSecondPubcards();
-            } else {
+                let op = new OperatorMine();
+                op.alreadyDelayTImes = operator.delayTimes;
+                op.deadlineTImestamp = operator.opDeadline;
+                op.leftOpDuration = operator.leftOpTime;
+                op.totalOpDuration = roomData.basicInfo.opDuration;
+                op.actionLimitList = operator.actionsList;
+                op.insurancePotInvalidList = operator.invalidInsurancePotsList;
+                op.insurancePotLimitList = operator.insuranceLimitList;
+                op.playerCardsList = operator.playerCardsList;
+                if (operator.isInsurance) {
+                    op.opType = 2;
+                }else if (operator.isAgreeSecondPc) {
+                    op.opType = 3;
+                }else {
+                    op.opType = 1;
+                }
+                seatData.mine.prepareOperation(op);
+            }else{
                 let seatData = roomData.seatsStateManager.getSeatPlayer(operator.seatId);
-                //@TODO 非本人操作
-                //seatData.prepareAction();
-                //seatData.prepareInsurance();
-                //seatData.prepareAgreeSecondPubliccards();
+                let op = new Operator();
+                op.alreadyDelayTImes = operator.delayTimes;
+                op.deadlineTImestamp = operator.opDeadline;
+                op.leftOpDuration = operator.leftOpTime;
+                op.totalOpDuration = roomData.basicInfo.opDuration;
+                if (operator.isInsurance) {
+                    op.opType = 2;
+                }else if (operator.isAgreeSecondPc) {
+                    op.opType = 3;
+                }else {
+                    op.opType = 1;
+                }
+                seatData.operator = op;
             }
-        });
+        })
         await SceneManager.Instance.switchScene<UIRoomTexasEnterParam>(UIDefine.UIRoomTexas, null, {
             roomID: roomID,
             matchID: matchID,

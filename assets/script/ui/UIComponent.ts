@@ -1,3 +1,4 @@
+import { UIPrefabType } from '../crazyPoker/gameplay/common/core/UIPrefabDefinition';
 import { IUIDefine, UIType } from '../define/EIDefine';
 import { i18nMgr } from '../i18n/i18nMgr';
 import Main from '../Main';

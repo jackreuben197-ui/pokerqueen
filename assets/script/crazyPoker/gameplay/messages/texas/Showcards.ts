@@ -8,6 +8,6 @@ export function Showcards(data: ServerMessageShowcards.AsObject, roomID: number,
     const roomData = roomDataManager.getRoomData<TexasGameRoomData>(roomID, matchID);
     data.playerCardsList.forEach(v => {
         const seat = roomData.seatsStateManager.getSeatPlayer(v.seatId);
-        seat.updateCards(v.cardsList, AnimateDisplayTypeCards.ShowCards);
+        seat.setCards(v.cardsList, AnimateDisplayTypeCards.ShowCards);
     });
 }
