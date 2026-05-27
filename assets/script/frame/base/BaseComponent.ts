@@ -1,8 +1,10 @@
+import { traceClass } from '../../crazyPoker/gameplay/common/core/LogTrace';
 import { IUIDefine } from '../../define/EIDefine';
 import AdapterComponent from '../../funcomponent/AdapterComponent';
 import UIComponent from '../../ui/UIComponent';
 import { Base } from './Base';
 
+@traceClass()
 export default class BaseComponent extends Base {
     protected _param: any = null;
     private _path: string = '';
@@ -20,7 +22,7 @@ export default class BaseComponent extends Base {
 
     onShow(...param: any) {
         this._param = param && param[0];
-        this.UIDefine && console.log('[UI][BaseComponent]', this.UIDefine.Name, 'onShow()');
+        this.UIDefine && this.tracelog.debug(this.UIDefine.Name, 'onShow()');
         // this.regiterDispatchEvent();
     }
 

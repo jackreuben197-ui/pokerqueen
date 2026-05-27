@@ -1,10 +1,12 @@
+import { traceClass } from '../crazyPoker/gameplay/common/core/LogTrace';
 import { BUNDLE_RESOURCES, PreloadParams, ResManager } from '../manager/ResManager';
 import UIBase from './UIBase';
 import UIComponent, { PrefabUI } from './UIComponent';
 const { ccclass, property } = cc._decorator;
-const LN = '[UIPreloadingComponent]';
+
 
 @ccclass
+@traceClass()
 export default class UIPreloadingComponent extends UIBase {
     /**
      * 节点|组件 定义
@@ -66,16 +68,16 @@ export default class UIPreloadingComponent extends UIBase {
                         //纠错，保证当前进度不会小于上次进度
                         percent = Math.max(percent, this.prevPercent);
                         this.setProgress(percent);
-                        //console.log(LN, "=====>", BUNDLE_RESOURCES, item.url);
+                        //this.tracelog.info("=====>", BUNDLE_RESOURCES, item.url);
                     },
                     (error: Error, assets: cc.Asset[]) => {
                         if (error) {
-                            console.warn(LN, `资源加载失败:${bundleName}/${dir}`);
+                            this.tracelog.warn(`资源加载失败:${bundleName}/${dir}`);
                             UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
                             reject(error as Error);
                             return;
                         }
-                        console.log(LN, `资源加载完成:${bundleName}/${dir}`, assets.length);
+                        this.tracelog.info(`资源加载完成:${bundleName}/${dir}`, assets.length);
                         ResManager.AssetForeach(assets, BUNDLE_RESOURCES);
                         resovle();
                     }
@@ -86,7 +88,7 @@ export default class UIPreloadingComponent extends UIBase {
                 if (err) {
                     cc.log('load bundle error:', bundleName);
                     if (err) {
-                        console.warn(LN, `资源加载失败:${bundleName}/${dir}`);
+                        this.tracelog.warn(`资源加载失败:${bundleName}/${dir}`);
                         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
                         reject(err);
                         return;
@@ -101,17 +103,17 @@ export default class UIPreloadingComponent extends UIBase {
                         //纠错，保证当前进度不会小于上次进度
                         percent = Math.max(percent, this.prevPercent);
                         this.setProgress(percent);
-                        // console.log(LN, "=====>", bundleName, item.url);
+                        // this.tracelog.info("=====>", bundleName, item.url);
                     },
                     (error: Error, assets: cc.Asset[]) => {
                         if (error) {
-                            console.warn(LN, `资源加载失败:${bundleName}/${dir}`);
+                            this.tracelog.warn(`资源加载失败:${bundleName}/${dir}`);
                             UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
                             reject(error);
                             return;
                         }
                         this.setProgress(1);
-                        console.log(LN, `资源加载完成:${bundleName}/${dir}`, assets.length);
+                        this.tracelog.info(`资源加载完成:${bundleName}/${dir}`, assets.length);
                         ResManager.AssetForeach(assets, bundleName);
                         resovle();
                     }

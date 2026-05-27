@@ -7,7 +7,6 @@ import TexasGameRoomDataPlayer from "../../../../texas/data/TexasGameRoomDataPla
 import TexasGameRoomDataPlayerMine from "../../../../texas/data/TexasGameRoomDataPlayerMine";
 import { SeatPosition } from "../../../../texas/data/TexasGameRoomDataSeatsStateManager";
 import { bindEvent, autoBindEvents } from "../../../../common/core/DataBind"; 
-import { bindEvent, autoBindEvents } from "../../../../common/core/DataBind"; 
 import UIViewUtil from "../../../util/UIViewUtil";
 import CardView from "../../common/CardView";
 import RemoteSprite from "../../common/RemoteSprite";
@@ -126,6 +125,9 @@ export default class SeatPlayer extends cc.Component {
         // 统一激活绑定，注入强类型 tag 推导过滤机制
         autoBindEvents(this, { player: this._seatPlayer }, (evtName, tag, dataSource) => {
             if (tag === 'player') {
+                if (evtName === 'WINNER' || evtName == 'HIGHLIGHT_CARDS') {
+                    return false;
+                }
                 if (dataSource.userID > 0) {
                     if (evtName === 'EMPTY_SEAT') {
                         return false;
@@ -139,10 +141,6 @@ export default class SeatPlayer extends cc.Component {
             }
             return true;
         });
-
-        // 维持非代理的原生自定义模型大招监听
-        this._seatPlayer.on(TexasGameRoomDataPlayer.WINNER, this.onWin, this);
-        this._seatPlayer.on(TexasGameRoomDataPlayerMine.HIGHLIGHT_CARDS, this.onHighlightCards, this);
     }
 
     private _enableDisableUser(b: boolean) {
@@ -384,6 +382,7 @@ export default class SeatPlayer extends cc.Component {
                     .to(0.5, { x: endPos.x, y: endPos.y, opacity: 255, scaleX: 1, scaleY: 1 }, { easing: 'cubicOut' })
                     .call(() => { this._dealNode.active = false; })
                     .start();
+                return;
             }
             // 先获取发牌点的世界坐标
             const startPos = UIViewUtil.caculatePostion(this.bigCardsContainer, this._dealNode);
@@ -484,7 +483,7 @@ export default class SeatPlayer extends cc.Component {
     // =========================================================================
     // 网络级非拦截、非代理的原生自定义大招事件触发区域
     // =========================================================================
-
+    @bindEvent('WINNER', 'player')
     private onWin() {
         this.animatingChips.active = true;
         const startPos = UIViewUtil.caculatePostion(this.animatingChips, this._potNode);
@@ -504,6 +503,7 @@ export default class SeatPlayer extends cc.Component {
         });
     }
 
+    @bindEvent('HIGHLIGHT_CARDS', 'player')
     private onHighlightCards(cardsNum: number[]) {
         const mp: Set<number> = new Set();
         cardsNum.forEach(v => mp.add(v));

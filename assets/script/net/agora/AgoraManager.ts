@@ -2,9 +2,12 @@
  * 声网 Agora RTC 管理器
  * 封装 Agora Web SDK，提供音视频通话能力
  */
+import { ITraceLog, traceClass } from '../../crazyPoker/gameplay/common/core/LogTrace';
 import { WebMiscAgoraToken } from '../https/web_request/WebRequestMisc';
 import { WWW } from '../https/WebRequestBase';
 
+
+@traceClass()
 export default class AgoraManager {
     private static _instance: AgoraManager = null;
     // ==================== 连接状态追踪 ====================
@@ -128,17 +131,30 @@ export default class AgoraManager {
      */
     public init(): void {
         if (!this.isSDKReady) {
-            console.error('[AgoraManager] SDK 未加载，无法初始化');
+            this.tracelog.error('SDK 未加载，无法初始化');
             return;
         }
         if (this._client) {
-            console.log('[AgoraManager] 已初始化，跳过');
+            this.tracelog.info('已初始化，跳过');
             return;
         }
         const AgoraRTC = (window as any).AgoraRTC;
+        const globalLevel = ITraceLog.getGlobalLevel();
+        if (globalLevel == 'debug') {
+            AgoraRTC.setLogLevel(0);
+        }else if (globalLevel == 'info') {
+            AgoraRTC.setLogLevel(1);
+        }else if (globalLevel == 'warn') {
+            AgoraRTC.setLogLevel(2);
+        }else if (globalLevel == 'error') {
+            AgoraRTC.setLogLevel(3);
+        }else {
+            // 默认是error
+            AgoraRTC.setLogLevel(3);
+        }
         this._client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
         this._registerEvents();
-        console.log('[AgoraManager] Client 初始化完成, 安全上下文:', this.isSecureContext, '媒体设备支持:', this.isMediaDevicesSupported);
+        this.tracelog.info('Client 初始化完成, 安全上下文:', this.isSecureContext, '媒体设备支持:', this.isMediaDevicesSupported);
     }
 
     /**
@@ -148,7 +164,7 @@ export default class AgoraManager {
      */
     private async fetchToken(channel: string, uid: number = 0): Promise<string | null> {
         try {
-            const response = await WWW.Instance.CommonAPI({
+            const response: any = await WWW.Instance.CommonAPI({
                 web_class: WebMiscAgoraToken,
                 body: {
                     channel_name: channel,
@@ -158,13 +174,13 @@ export default class AgoraManager {
             });
             const token = response?.data;
             if (!token) {
-                console.error('[AgoraManager] Token 响应数据为空:', response);
+                this.tracelog.error('Token 响应数据为空:', response);
                 return null;
             }
-            console.log('[AgoraManager] Token 获取成功, channel:', channel, 'uid:', uid);
+            this.tracelog.info('Token 获取成功, channel:', channel, 'uid:', uid);
             return token;
         } catch (e: any) {
-            console.error('[AgoraManager] Token 获取失败:', e?.message || e);
+            this.tracelog.error('Token 获取失败:', e?.message || e);
             return null;
         }
     }
@@ -172,19 +188,19 @@ export default class AgoraManager {
     /** 注册客户端事件 */
     private _registerEvents(): void {
         this._client.on('user-joined', (user: any) => {
-            console.log('[AgoraManager] 远端用户加入:', user.uid);
+            this.tracelog.info('远端用户加入:', user.uid);
             this.onUserJoined?.(user.uid);
         });
         this._client.on('user-left', (user: any, reason: string) => {
-            console.log('[AgoraManager] 远端用户离开:', user.uid, reason);
+            this.tracelog.info('远端用户离开:', user.uid, reason);
             this.onUserLeft?.(user.uid);
         });
         this._client.on('user-published', async (user: any, mediaType: string) => {
-            console.log('[AgoraManager] 远端用户发布:', user.uid, mediaType);
+            this.tracelog.info('远端用户发布:', user.uid, mediaType);
             try {
                 // 全局远端视频已隐藏时，跳过视频订阅
                 if (mediaType === 'video' && this._allRemoteVideoMuted) {
-                    console.log('[AgoraManager] 远端视频已全局隐藏，跳过订阅 uid:', user.uid);
+                    this.tracelog.info('远端视频已全局隐藏，跳过订阅 uid:', user.uid);
                     return;
                 }
                 await this._client.subscribe(user, mediaType);
@@ -202,11 +218,11 @@ export default class AgoraManager {
                     this.onRemoteVideo?.(user.uid, videoTrack);
                 }
             } catch (e) {
-                console.error('[AgoraManager] 订阅远端流失败:', e);
+                this.tracelog.error('订阅远端流失败:', e);
             }
         });
         this._client.on('user-unpublished', (user: any, mediaType: string) => {
-            console.log('[AgoraManager] 远端用户取消发布:', user.uid, mediaType);
+            this.tracelog.info('远端用户取消发布:', user.uid, mediaType);
             if (mediaType === 'video') {
                 this.onRemoteVideoUnsubscribed?.(user.uid);
             }
@@ -215,7 +231,7 @@ export default class AgoraManager {
             }
         });
         this._client.on('connection-state-change', (curState: string, revState: string) => {
-            console.log('[AgoraManager] 连接状态变化:', revState, '->', curState);
+            this.tracelog.info('连接状态变化:', revState, '->', curState);
             this._handleConnectionStateChange(curState, revState);
         });
         this._client.on('exception', (e: any) => {
@@ -223,15 +239,15 @@ export default class AgoraManager {
         });
         // Token 过期前 30 秒自动续期
         this._client.on('token-privilege-will-expire', async () => {
-            console.log('[AgoraManager] Token 即将过期，自动续期...');
+            this.tracelog.info('Token 即将过期，自动续期...');
             if (!this._channelName) return;
             const token = await this.fetchToken(this._channelName, this._uid);
             if (token) {
                 try {
                     await this._client.renewToken(token);
-                    console.log('[AgoraManager] Token 续期成功');
+                    this.tracelog.info('Token 续期成功');
                 } catch (e) {
-                    console.error('[AgoraManager] Token 续期失败:', e);
+                    this.tracelog.error('Token 续期失败:', e);
                 }
             }
         });
@@ -245,7 +261,7 @@ export default class AgoraManager {
      */
     public async join(channel: string, token?: string, uid?: number): Promise<boolean> {
         if (!this._client) {
-            console.error('[AgoraManager] 未初始化，请先调用 init()');
+            this.tracelog.error('未初始化，请先调用 init()');
             return false;
         }
         if (this._joined) {
@@ -257,7 +273,7 @@ export default class AgoraManager {
             return false;
         }
         if (!this.appId) {
-            console.error('[AgoraManager] appId 未配置');
+            this.tracelog.error('appId 未配置');
             return false;
         }
         this._joining = true;
@@ -286,10 +302,10 @@ export default class AgoraManager {
             this._uid = await this._client.join(this.appId, channel, actualToken, uid || 0);
             this._channelName = channel;
             this._joined = true;
-            console.log('[AgoraManager] 加入频道成功:', channel, 'uid:', this._uid);
+            this.tracelog.info('加入频道成功:', channel, 'uid:', this._uid);
             return true;
         } catch (e) {
-            console.error('[AgoraManager] 加入频道失败:', e);
+            this.tracelog.error('加入频道失败:', e);
             this.onError?.(e);
             return false;
         } finally {
@@ -308,7 +324,7 @@ export default class AgoraManager {
             case 'CONNECTED':
                 // 从 RECONNECTING 恢复 → SDK 内部重连成功，恢复视频渲染
                 if (this._prevConnState === 'RECONNECTING') {
-                    console.log('[AgoraManager] SDK 自动重连成功，恢复视频渲染');
+                    this.tracelog.info('SDK 自动重连成功，恢复视频渲染');
                     this.onReconnected?.();
                 }
                 break;
@@ -317,7 +333,7 @@ export default class AgoraManager {
                 break;
             case 'DISCONNECTED':
                 if (this._joined) {
-                    console.error('[AgoraManager] 连接已断开（SDK 重连失败）');
+                    this.tracelog.error('连接已断开（SDK 重连失败）');
                     // 重置 joined 状态，允许后续重新 join
                     this._joined = false;
                     this._channelName = '';
@@ -369,9 +385,9 @@ export default class AgoraManager {
         try {
             await this._client?.leave();
         } catch (e) {
-            console.error('[AgoraManager] 离开频道失败:', e);
+            this.tracelog.error('离开频道失败:', e);
         }
-        console.log('[AgoraManager] 已离开频道');
+        this.tracelog.info('已离开频道');
     }
 
     /**
@@ -380,7 +396,7 @@ export default class AgoraManager {
     public async enableMic(): Promise<boolean> {
         if (!this._joined) return false;
         if (!this.isMediaDevicesSupported) {
-            console.error('[AgoraManager] 浏览器不支持麦克风，请使用 HTTPS 访问');
+            this.tracelog.error('浏览器不支持麦克风，请使用 HTTPS 访问');
             return false;
         }
         try {
@@ -388,10 +404,10 @@ export default class AgoraManager {
                 this._localAudioTrack = await (window as any).AgoraRTC.createMicrophoneAudioTrack();
             }
             await this._client.publish([this._localAudioTrack]);
-            console.log('[AgoraManager] 麦克风已开启');
+            this.tracelog.info('麦克风已开启');
             return true;
         } catch (e) {
-            console.error('[AgoraManager] 开启麦克风失败:', e);
+            this.tracelog.error('开启麦克风失败:', e);
             return false;
         }
     }
@@ -402,7 +418,7 @@ export default class AgoraManager {
     public disableMic(): void {
         this._localAudioTrack?.close();
         this._localAudioTrack = null;
-        console.log('[AgoraManager] 麦克风已关闭');
+        this.tracelog.info('麦克风已关闭');
     }
 
     /**
@@ -437,7 +453,7 @@ export default class AgoraManager {
             if (!this._localVideoTrack._isPublished) {
                 await this._client.publish([this._localVideoTrack]);
             }
-            console.log('[AgoraManager] 摄像头已开启');
+            this.tracelog.info('摄像头已开启');
             return true;
         } catch (e: any) {
             const code = e?.code || '';
@@ -445,7 +461,7 @@ export default class AgoraManager {
             if (code === 'NOT_ALLOWED' || msg.includes('NotAllowedError') || msg.includes('Permission')) {
                 console.warn('[AgoraManager] 摄像头权限被拒绝，请手动点击摄像头按钮开启');
             } else {
-                console.error('[AgoraManager] 开启摄像头失败:', e);
+                this.tracelog.error('开启摄像头失败:', e);
             }
             return false;
         }
@@ -464,7 +480,7 @@ export default class AgoraManager {
         }
         this._localVideoTrack?.close();
         this._localVideoTrack = null;
-        console.log('[AgoraManager] 摄像头已关闭');
+        this.tracelog.info('摄像头已关闭');
     }
 
     /**
@@ -483,7 +499,7 @@ export default class AgoraManager {
                 user.audioTrack.setVolume(enabled ? 100 : 0);
             }
         });
-        console.log('[AgoraManager] 远端音频', enabled ? '已恢复' : '已静音', uid !== undefined ? 'uid:' + uid : '全部');
+        this.tracelog.info('远端音频', enabled ? '已恢复' : '已静音', uid !== undefined ? 'uid:' + uid : '全部');
     }
 
     /**
@@ -510,7 +526,7 @@ export default class AgoraManager {
                 console.warn('[AgoraManager] 切换远端视频失败, uid:', user.uid, e);
             }
         }
-        console.log('[AgoraManager] 远端视频', enabled ? '已恢复' : '已隐藏', uid !== undefined ? 'uid:' + uid : '全部');
+        this.tracelog.info('远端视频', enabled ? '已恢复' : '已隐藏', uid !== undefined ? 'uid:' + uid : '全部');
     }
 
     // ==================== 说话者检测（音量监控） ====================
@@ -528,7 +544,7 @@ export default class AgoraManager {
             this._speakingThreshold = threshold;
         }
         this._volumeMonitorTimer = window.setInterval(() => this._checkVolumeLevels(), this._volumeMonitorInterval);
-        console.log('[AgoraManager] 音量监控已启动, 间隔:', this._volumeMonitorInterval, 'ms, 阈值:', this._speakingThreshold);
+        this.tracelog.info('音量监控已启动, 间隔:', this._volumeMonitorInterval, 'ms, 阈值:', this._speakingThreshold);
     }
 
     /**
@@ -642,6 +658,6 @@ export default class AgoraManager {
         this.onRemoteVideoUnsubscribed = null;
         this.onError = null;
         this.onActiveSpeaker = null;
-        console.log('[AgoraManager] 已销毁');
+        this.tracelog.info('已销毁');
     }
 }

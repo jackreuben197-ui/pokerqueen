@@ -1,6 +1,8 @@
+import { bindData, pureEvent } from "../../common/core/DataBind";
 import { OperatorMine } from "./model/Operator";
 import TexasGameRoomDataPlayer from "./TexasGameRoomDataPlayer";
 
+@bindData()
 export default class TexasGameRoomDataPlayerMine extends cc.EventTarget {
     public static readonly STORECHIPS_CHANGE = 'STORECHIPS_CHANGE';
     private _storeChips: number;
@@ -26,8 +28,8 @@ export default class TexasGameRoomDataPlayerMine extends cc.EventTarget {
         this.emit(TexasGameRoomDataPlayerMine.PREPARE_OPERATION_MINE, this._operator);
     }
 
-    public static readonly HIGHLIGHT_CARDS = 'HIGHLIGHT_CARDS';
+    @pureEvent('HIGHLIGHT_CARDS')
     public highlightCards(cards: number[]){
-        this.emit(TexasGameRoomDataPlayerMine.HIGHLIGHT_CARDS, cards);
+        //this.emit(TexasGameRoomDataPlayerMine.HIGHLIGHT_CARDS, cards);
     } 
 }
