@@ -7,6 +7,7 @@ import TexasGameRoomDataPlayer from "../../../../texas/data/TexasGameRoomDataPla
 import TexasGameRoomDataPlayerMine from "../../../../texas/data/TexasGameRoomDataPlayerMine";
 import { SeatPosition } from "../../../../texas/data/TexasGameRoomDataSeatsStateManager";
 import { bindEvent, autoBindEvents } from "../../../../common/core/DataBind"; 
+import { bindEvent, autoBindEvents } from "../../../../common/core/DataBind"; 
 import UIViewUtil from "../../../util/UIViewUtil";
 import CardView from "../../common/CardView";
 import RemoteSprite from "../../common/RemoteSprite";
@@ -370,11 +371,15 @@ export default class SeatPlayer extends cc.Component {
             if (!this._seatPlayer.mine) {
                 // 转化为本地的
                 this._dealNode.active = false;
+                this._dealNode.active = false;
                 const startPos = UIViewUtil.caculatePostion(this.smallCardsContainer, this._dealNode);
                 const endPos = this.smallCardsContainer.position;
                 this.smallCardsContainer.setPosition(startPos);
                 this.smallCardsContainer.setScale(0.5, 0.5);
                 cc.tween(this.smallCardsContainer)
+                    .delay(currentOrder * 0.2)
+                    .to(0.5, { x: endPos.x, y: endPos.y, opacity: 255, scaleX: 1, scaleY: 1 }, { easing: 'cubicOut' })
+                    .call(() => { this._dealNode.active = false; })
                     .delay(currentOrder * 0.2)
                     .to(0.5, { x: endPos.x, y: endPos.y, opacity: 255, scaleX: 1, scaleY: 1 }, { easing: 'cubicOut' })
                     .call(() => { this._dealNode.active = false; })
