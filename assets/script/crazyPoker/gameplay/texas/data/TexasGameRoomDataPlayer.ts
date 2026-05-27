@@ -1,5 +1,6 @@
 import { Def } from "../../../../protobuf/holdem/define_pb";
 import { VideoModel } from "../../common/constant/VideoModel";
+import { bindData, IObservableBindings, observable, pureEvent } from "../../common/core/DataBind";
 import { AnimateDisplayTypeAction, AnimateDisplayTypeCards, AnimateDisplayTypePosition, AnimateDisplayTypeRoundBet } from "../constants/AnimateDisplayType";
 import { Operator } from "./model/Operator";
 import TexasGameRoomData from "./TexasGameRoomData";
@@ -7,7 +8,22 @@ import TexasGameRoomDataPlayerMine from "./TexasGameRoomDataPlayerMine";
 import { SeatPosition } from "./TexasGameRoomDataSeatsStateManager";
 
 const LN = '[TexasGameRoomDataPlayer]';
-export default class TexasGameRoomDataPlayer extends cc.EventTarget {
+
+type PlayerAnimBindings = {
+    action: [AnimateDisplayTypeAction];
+    roundBet: [AnimateDisplayTypeRoundBet];
+    cards: [AnimateDisplayTypeCards, number?];
+    position: [AnimateDisplayTypePosition];
+};
+
+/**
+ * 核心修正：利用同名接口和类的特性，两边都不要加单独的 export。
+ * 这样它们在当前文件内无缝合并。
+ */
+interface TexasGameRoomDataPlayer extends IObservableBindings<TexasGameRoomDataPlayer, PlayerAnimBindings> {}
+
+@bindData()
+class TexasGameRoomDataPlayer extends cc.EventTarget {
     private _parentRoomData: TexasGameRoomData;
     public readonly seatNo: number;
     public userID: number;
@@ -20,131 +36,59 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
     constructor(seatNo: number, position: SeatPosition, roomData: TexasGameRoomData) {
         super();
         this.seatNo = seatNo;
-        this._position = position;
+        this.position = position; 
         this._parentRoomData = roomData;
     }
 
-    public get delayViewCard() { return this._parentRoomData.basicInfo.delaySeeCard};
-    public get directlyViewCard() { return this._parentRoomData.basicInfo.gameStatus >= Def.GameStatus.HAND_PREFLOP && this.roundActioned};
-    public get needVideoPermision() { return this._parentRoomData.basicInfo.videoModel !== VideoModel.NONE};
+    public get delayViewCard() { return this._parentRoomData.basicInfo.delaySeeCard; }
+    public get directlyViewCard() { return this._parentRoomData.basicInfo.gameStatus >= Def.GameStatus.HAND_PREFLOP && this.roundActioned; }
+    public get needVideoPermision() { return this._parentRoomData.basicInfo.videoModel !== VideoModel.NONE; }
 
-    public static readonly ACTION_CHANGE = 'ACTION_CHANGE';
-    public _action: Def.ActionMap[keyof Def.ActionMap];
 
-    public get action() {
-        return this._action;
-    }
+    // =========================================================================
+    // 响应式核心字段拦截配置区域
+    // =========================================================================
 
-    public setAction(c: Def.ActionMap[keyof Def.ActionMap], aat: AnimateDisplayTypeAction) {
-        if (this._action == c) return;
-        this._action = c;
-        this.emit(TexasGameRoomDataPlayer.ACTION_CHANGE, this._action, aat);
-    }
+    @observable('ACTION_CHANGE')
+    public action: Def.ActionMap[keyof Def.ActionMap] = Def.Action.NONE;
 
-    // 座位位置变动
-    public static readonly SEAT_POSITION_CHANGE = 'SEAT_POSITION_CHANGE';
-    private _position: SeatPosition;
+    @observable('SEAT_POSITION_CHANGE')
+    public position: SeatPosition = SeatPosition.Ddefault;
+    
+    @observable('SHOW_CARDS_CHANGE')
+    public cards: number[] = [];
+    
+    @observable('NICKNAME_CHANGE')
+    public name: string = '';
 
-    public get position() { return this._position};
-    public setPosition(c: SeatPosition, pat: AnimateDisplayTypePosition ) {
-        if (this._position == c) return;
-        this._position = c; 
-        this.emit(TexasGameRoomDataPlayer.SEAT_POSITION_CHANGE, this._position, pat);
-    }
+    @observable('AVATAR_CHANGE')
+    public avatar: string = '';
+   
+    @observable('CHIPS_CHANGE')
+    public chip: number = 0;
 
-    public static readonly CARDS_CHANGE = 'SHOW_CARDS_CHANGE';
-    private _cards: number[] = []; //要显示的卡牌
+    @observable('ROUND_BET_CHANGE')
+    public roundBet: number = 0;
 
-    public get cards() {
-        return this._cards;
-    }
+    @observable('PREPARE_OPERATION')
+    public operator: Operator = null!;
 
-    public updateCards(c: number[], cte: AnimateDisplayTypeCards = AnimateDisplayTypeCards.Static, order?:number) {
-        if (this._cards.length == c.length) {
-            if (this._cards.filter((v, i) => v != c[i]).length == 0) {
-                return;
-            }
-        }
-        this._cards = c;
-        if (!order) order = 0;
-        this.emit(TexasGameRoomDataPlayer.CARDS_CHANGE, this._cards, cte, order);
-    }
 
-    public static readonly NICKNAME_CHANGE = 'NICKNAME_CHANGE';
-    private _name: string;
-
-    public get name() {
-        return this._name;
-    }
-
-    public set name(c: string) {
-        if (this._name == c) return;
-        this._name = c;
-        this.emit(TexasGameRoomDataPlayer.NICKNAME_CHANGE, this._name);
-    }
-
-    public static readonly AVATAR_CHANGE = 'AVATAR_CHANGE';
-    private _avatar: string;
-
-    public get avatar() {
-        return this._avatar;
-    }
-
-    public set avatar(c: string) {
-        if (this._avatar == c) return;
-        this._avatar = c;
-        this.emit(TexasGameRoomDataPlayer.AVATAR_CHANGE, this._avatar);
-    }
-
-    public static readonly CHIP_CHANGE = 'CHIPS_CHANGE';
-    private _chip: number;
-
-    public get chip() {
-        return this._chip;
-    }
-
-    public set chip(c: number) {
-        if (this._chip == c) return;
-        this._chip = c;
-        this.emit(TexasGameRoomDataPlayer.CHIP_CHANGE, this._chip);
-    }
-
-    public static readonly ROUND_BET_CHANGE = 'ROUND_BET_CHANGE';
-    private _roundBet: number;
-
-    public get roundBet() {
-        return this._roundBet;
-    }
-
-    public setRoundBet(c: number, aat: AnimateDisplayTypeRoundBet) {
-        if (this._roundBet == c) return;
-        this._roundBet = c;
-        this.emit(TexasGameRoomDataPlayer.ROUND_BET_CHANGE, this._roundBet, aat);
-    }
-
-    public static readonly PREPARE_OPERATION = 'PREPARE_OPERATION';
-    private _operator:Operator;
-    public get operator() {
-        return this._operator;
-    }
-
-    public prepareOperation(c: Operator) {
-        this._operator = c;
-        this.emit(TexasGameRoomDataPlayer.PREPARE_OPERATION, this._operator);
-    }
-
-    public static readonly EMPTY_SEAT = 'EMPTY_SEAT';
-
+    // =========================================================================
+    // 扑克核心桌面业务方法层实现
+    // =========================================================================
+    @pureEvent('EMPTY_SEAT')
     public emptySeat() {
+        this.muteEvents();
         this.userID = 0;
         this.clubID = 0;
-        this._chip = 0;
-        this._avatar = '';
-        this._name = '';
+        this.chip = 0;
+        this.avatar = '';
+        this.name = '';
         this.mine = null;
-        //this._chipsWithStore = null;
-        this._cards = [];
-        this.emit(TexasGameRoomDataPlayer.EMPTY_SEAT);
+        this.cards = [];
+        this.unmuteEvents();
+        // this.emit(TexasGameRoomDataPlayer.EMPTY_SEAT);
     }
 
     public static readonly WINNER = 'WINNER';
@@ -157,7 +101,7 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
             this.setAction(Def.Action.NONE, AnimateDisplayTypeAction.Done);
             this.handBet = 0;
             this.setRoundBet(0, AnimateDisplayTypeRoundBet.Static);
-            this.updateCards([], AnimateDisplayTypeCards.Static);
+            this.setCards([], AnimateDisplayTypeCards.Static, 0);
             this.roundActioned = false;
         }
     }
@@ -169,6 +113,14 @@ export default class TexasGameRoomDataPlayer extends cc.EventTarget {
             }
             this.setRoundBet(0, AnimateDisplayTypeRoundBet.Static);
             this.roundActioned = false;
+            this.operator = null;
         }
     }
 }
+
+/**
+ * 终极导出方式：
+ * 直接使用 export default 导出这个合并完 interface 的纯净 class。
+ * 这保证了外界既能直接将它当做实例类型声明，也能纽结 new 构造函数实例化。
+ */
+export default TexasGameRoomDataPlayer;

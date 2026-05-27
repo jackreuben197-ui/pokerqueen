@@ -9,7 +9,7 @@ import TexasGameRoomData from '../../texas/data/TexasGameRoomData';
 
 const LN = 'LeaveNotification';
 // LeaveNotification 1114
-export default function LeaveNotification(data: ServerMessageLeaveNotification.AsObject, roomID: number, matchID: number) {
+export function LeaveNotification(data: ServerMessageLeaveNotification.AsObject, roomID: number, matchID: number) {
     const roomData = roomDataManager.getRoomData<TexasGameRoomData>(roomID, matchID);
     console.log(LN, 'leave', data.reason);
     switch (data.reason) {

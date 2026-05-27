@@ -6,7 +6,7 @@ import { Operator, OperatorMine } from '../../texas/data/model/Operator';
 import TexasGameRoomData from '../../texas/data/TexasGameRoomData';
 
 // StartInfo 1103
-export default function StartInfo(data: ServerMessageStartInfo.AsObject, roomID: number, matchID: number) {
+export function StartInfo(data: ServerMessageStartInfo.AsObject, roomID: number, matchID: number) {
     let roomData = roomDataManager.getRoomData<TexasGameRoomData>(roomID, matchID);
     const defaultHandCards = new Array(roomData.basicInfo.handCardNum).fill(0);
     if (data.handInfo) {
@@ -30,9 +30,9 @@ export default function StartInfo(data: ServerMessageStartInfo.AsObject, roomID:
         seatData.handBet = 0;
         seatData.roundActioned = false;
         if (player.cardsList.length == 0) {
-            seatData.updateCards([...defaultHandCards], AnimateDisplayTypeCards.Deal, i);
+            seatData.setCards([...defaultHandCards], AnimateDisplayTypeCards.Deal, i);
         }else{
-            seatData.updateCards(player.cardsList, AnimateDisplayTypeCards.Deal, i);
+            seatData.setCards(player.cardsList, AnimateDisplayTypeCards.Deal, i);
         }
         seatData.setAction(player.action, AnimateDisplayTypeAction.Static);
         seatData.deposit = player.deposit;
@@ -74,7 +74,7 @@ export default function StartInfo(data: ServerMessageStartInfo.AsObject, roomID:
             }else {
                 op.opType = 1;
             }
-            seatData.prepareOperation(op);
+            seatData.operator = op;
         }
     }
 }

@@ -4,7 +4,7 @@ import { AnimateDisplayTypeCards } from '../../texas/constants/AnimateDisplayTyp
 import TexasGameRoomData from '../../texas/data/TexasGameRoomData';
 
 // Winner 1112
-export default function Winner(data: ServerMessageWinner.AsObject, roomID: number, matchID: number) {
+export function Winner(data: ServerMessageWinner.AsObject, roomID: number, matchID: number) {
     const roomData = roomDataManager.getRoomData<TexasGameRoomData>(roomID, matchID);
     data.resultsList.forEach(result => {
         const seatData = roomData.seatsStateManager.getSeatPlayer(result.seatId);
@@ -13,12 +13,12 @@ export default function Winner(data: ServerMessageWinner.AsObject, roomID: numbe
         // 更新筹码
         seatData.chip = result.chip;
         seatData.deposit = result.deposit;
-        seatData.updateCards(result.myCardsList, AnimateDisplayTypeCards.ShowCards);
+        seatData.setCards(result.myCardsList, AnimateDisplayTypeCards.ShowCards);
         if (result.win - result.handBet > 0) {
             seatData.claimWin();
         }
-        if (seatData.isMine) {
-            let mine = seatData.getMine();
+        if (seatData.mine) {
+            let mine = seatData.mine;
             let pubH: number[] = [];
             let pub2H: number[]= [];
             let myCardsH: number[] = [];
