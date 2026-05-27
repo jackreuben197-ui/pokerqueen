@@ -30,9 +30,11 @@ import Seat from './seat/Seat';
 import ToastManager from '../manager/ToastManager';
 import AgoraManager from '../net/agora/AgoraManager';
 import AgoraVideoRender from '../net/agora/AgoraVideoRender';
+import { WebUserRoomBringin, WWW } from '../net/https/WebRequest';
 import { VideoModel } from '../crazyPoker/gameplay/common/constant/VideoModel';
 import GameplayUtil from '../crazyPoker/gameplay/common/util/GameplayUtil';
 import { TableType } from '../crazyPoker/gameplay/common/constant/TableType';
+import { HttpRoomBringInByIDProtocol } from '../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringInByIDProtocol';
 import H5MsgMgr from '../H5MsgMgr';
 import ProtocolAgency from '../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../net/websocket/ProtocolCode';
@@ -1280,12 +1282,27 @@ export default class UITexas extends BaseScene {
         UIComponent.open(UIDefine.UIChatDlg);
     }
 
-    private click_btn_im() {
+    private async click_btn_im() {
+        // 如果是UC桌且钱包的俱乐部ID未缓存，先请求接口获取带入俱乐部ID（如果有），再打开支持聊天面板
+        if (this.game?.bringInClubId <= 0 && GameCache.Instance.gold_type == 1) {
+            try {
+                const res = await WWW.Instance.CommonAPI<HttpRoomBringInByIDProtocol.ResponseData>({
+                    web_class: WebUserRoomBringin,
+                    api_id: GameCache.Instance.room_id
+                });
+                const clubId = Number(res?.data?.club_id || 0);
+                if (clubId > 0) {
+                    this.game.bringInClubId = clubId;
+                }
+            } catch (e) {
+                console.warn(LN, '[supportChat] bringInClubId query failed', e);
+            }
+        }
         H5MsgMgr.sendToH5('showPanel', 1, {
             panelType: 'supportChat',
             props: {
                 tribeId: this.game.tribeId,
-                clubId: this.game.clubId
+                clubId: this.game.bringInClubId || this.game.clubId
             }
         });
     }
