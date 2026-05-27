@@ -1,6 +1,6 @@
 import GameplayUtil from '../../common/util/GameplayUtil';
 import {Def} from '../../../../protobuf/holdem/define_pb';
-import { observable } from '../../common/core/DataBind';
+import { observable, StaticProperty } from '../../common/core/DataBind';
 
 export interface tableBetInfo {
     sb: number;
@@ -58,10 +58,10 @@ export default class TexasGameRoomDataBasic extends cc.EventTarget {
     //@TODO 鱿鱼,蘑菇,暴击,bombpt 待补
     // 下注信息会变
     @observable('TABLE_BET_INFO_CHANGE')
-    public sbante: tableBetInfo;
+    public sbante: StaticProperty<tableBetInfo>;
 
     @observable('TABLE_HANDINFO_CHANGE')
-    public handNum: number;
+    public handNum: StaticProperty<number>;
 
     public handClear() {
         this.gameStatus = Def.GameStatus.WAIT_HAND_START;

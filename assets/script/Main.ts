@@ -24,6 +24,8 @@ import * as MainUtils from './MainUtils';
 import UpdateComponent from './funcomponent/UpdateComponent';
 import DataManager from './frame/manager/DataManager';
 import ProcedureInit from './procedure/ProcedureInit';
+import { ITraceLog } from './crazyPoker/gameplay/common/core/LogTrace';
+
 ///////////////////////////////////////////////
 cc.macro.ENABLE_TRANSPARENT_CANVAS = false;
 const { ccclass, property } = cc._decorator;
@@ -54,6 +56,9 @@ export default class Main extends cc.Component {
     private _resizeTimer: number = 0;
 
     override async onLoad() {
+        // 一键将全局日志级别锁定为 'error'
+        // 此时：debug, info, warn 全都自动静音，只有 error 能打出来
+        ITraceLog.setGlobalLevel('debug');
         // 关闭左下角 FPS / DrawCall 统计信息
         cc.debug.setDisplayStats(false);
         // 初始化 Telegram WebApp SDK（必须在最开始）

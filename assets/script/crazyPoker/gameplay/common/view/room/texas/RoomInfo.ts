@@ -2,9 +2,11 @@ import { StringHelper } from '../../../../../../helper/StringHelper';
 import { i18nMgr } from '../../../../../../i18n/i18nMgr';
 import TexasGameRoomData from '../../../../texas/data/TexasGameRoomData';
 import TexasGameRoomDataBasic from '../../../../texas/data/TexasGameRoomDataBasic';
+import { autoBindEvents, bindEvent } from '../../../core/DataBind';
 import roomDataManager from '../../../core/RoomDataManager';
 const { ccclass, property, menu } = cc._decorator;
 
+const LN = "[RoomInfo]";
 @ccclass
 @menu('CrazyPoker/Room/Texas/RoomInfo')
 export default class RoomInfo extends cc.Component {
@@ -41,13 +43,17 @@ export default class RoomInfo extends cc.Component {
     }
 
     private _bindEventsAndRefresh() {
-        this._roomBaseInfo.on(TexasGameRoomDataBasic.TABLE_BET_INFO_CHANGE, this.onUpdateText, this);
-        this._roomBaseInfo.on(TexasGameRoomDataBasic.TABLE_HANDINFO_CHANGE, this.onUpdateText, this);
-        // 初始化
-        this.onUpdateText();
+        // this._roomBaseInfo.on(TexasGameRoomDataBasic.TABLE_BET_INFO_CHANGE, this.onUpdateText, this);
+        // this._roomBaseInfo.on(TexasGameRoomDataBasic.TABLE_HANDINFO_CHANGE, this.onUpdateText, this);
+
+        autoBindEvents(this, {
+            basic: this._roomBaseInfo,
+        });
     }
 
+    @bindEvent(['TABLE_BET_INFO_CHANGE', 'TABLE_HANDINFO_CHANGE'], 'basic')
     private onUpdateText() {
+        console.log(LN, this._roomBaseInfo.handNum);
         let info: string = ``;
         if (this._roomBaseInfo.invitationCode != '') {
             info += `${this._roomBaseInfo.invitationCode}\n`;

@@ -48,7 +48,7 @@ export function PublicCards(data: ServerMessagePublicCards.AsObject, roomID: num
             }else {
                 op.opType = 1;
             }
-            seatData.prepareOperation(op);
+            seatData.operator = op;
         }
     }
 }

@@ -57,7 +57,7 @@ export async function EnterRoom(data: ServerMessageEnterRoom.AsObject, roomID: n
             seatData.setRoundBet(player.roundBet, AnimateDisplayTypeRoundBet.Static);
             seatData.handBet = player.handBet;
             seatData.roundActioned = player.roundActioned;
-            seatData.updateCards(player.cardsList, AnimateDisplayTypeCards.Static);
+            seatData.setCards(player.cardsList, AnimateDisplayTypeCards.Static);
             seatData.setAction(player.action, AnimateDisplayTypeAction.Static);
             seatData.deposit = player.deposit;
         })
@@ -103,7 +103,7 @@ export async function EnterRoom(data: ServerMessageEnterRoom.AsObject, roomID: n
                 }else {
                     op.opType = 1;
                 }
-                seatData.prepareOperation(op);
+                seatData.operator = op;
             }
         })
         await SceneManager.Instance.switchScene<UIRoomTexasEnterParam>(UIDefine.UIRoomTexas, null, {

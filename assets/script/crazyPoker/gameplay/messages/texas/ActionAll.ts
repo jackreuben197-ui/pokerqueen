@@ -11,6 +11,7 @@ export function ActionAll(data: ServerMessageActionAll.AsObject, roomID: number,
     seatPlayer.setAction(data.action, AnimateDisplayTypeAction.Done);
     seatPlayer.chip = data.leftChips;
     seatPlayer.setRoundBet(seatPlayer.roundBet+data.amount, AnimateDisplayTypeRoundBet.PutNear);
+    seatPlayer.operator = null;
     //所有下注
     roomData.potInfo.allPot = data.allBet;
     //当前轮的最大投注
@@ -49,7 +50,7 @@ export function ActionAll(data: ServerMessageActionAll.AsObject, roomID: number,
             }else {
                 op.opType = 1;
             }
-            seatData.prepareOperation(op);
+            seatData.operator = op;
         }
     }
 }
