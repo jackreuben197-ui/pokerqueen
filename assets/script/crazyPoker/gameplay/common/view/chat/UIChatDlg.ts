@@ -107,11 +107,10 @@ export default class UIChatDlg extends UIBasePlus {
         this._welcomeNode = this.node.getChildByName('welcomeNode');
         console.log('[UIChatDlg] welcomeNode found:', !!this._welcomeNode, 'node.name:', this._welcomeNode?.name);
         if (this._welcomeNode) {
-            const welcomeChild = this._welcomeNode.getChildByName('welcome');
-            console.log('[UIChatDlg] welcome child found:', !!welcomeChild, 'child.name:', welcomeChild?.name);
+            // welcomeNode 已改为 ScrollView，welcome 在 view/content/welcome 路径下
+            const welcomeChild = cc.find('view/content/welcome', this._welcomeNode);
             if (welcomeChild) {
                 this._welcomeLabel = welcomeChild.getComponent(cc.Label);
-                console.log('[UIChatDlg] welcomeLabel found:', !!this._welcomeLabel, 'current string:', this._welcomeLabel?.string);
             }
         }
         // 聊天模式切换（chatOnly / danmuAndChat）
@@ -152,6 +151,11 @@ export default class UIChatDlg extends UIBasePlus {
         }
         // 只监听 1019（自己发送成功确认），1121 由 ChatManager 统一处理
         GC.notify.register(ProtocolCode.Protocol_Holdem_BroadcastMsg, this._onSendChatResponse, this);
+        // 先重置开场白状态，避免切换房间后残留上一个房间的开场白
+        this._hideWelcomeNode();
+        if (this._welcomeLabel) {
+            this._welcomeLabel.string = '';
+        }
         // 获取俱乐部开场白
         this._fetchAndDisplayPrologue();
     }
@@ -404,15 +408,25 @@ export default class UIChatDlg extends UIBasePlus {
 
     /** 获取俱乐部开场白并显示 */
     private _fetchAndDisplayPrologue(): void {
-        // TRoomListItem 不包含 club_random_id，改用 ClubCache（syncUserClub 时已缓存）
-        const clubId = GameCache.Instance.ClubRandomID || ClubCache.random_id || 0;
-        console.log('[UIChatDlg] _fetchAndDisplayPrologue, ClubRandomID:', clubId);
-        if (!clubId || clubId <= 0) {
+        // 根据当前房间的 ClubID，从已缓存的俱乐部列表中查找对应的 random_id
+        const currentClubId = GameCache.Instance.ClubID;
+        let clubRandomId = 0;
+        if (currentClubId > 0 && ClubCache._allCubData && Array.isArray(ClubCache._allCubData)) {
+            const matched = ClubCache._allCubData.find((c: any) => c.club_id === currentClubId);
+            if (matched) {
+                clubRandomId = matched.random_id || 0;
+            }
+        }
+        // 回退：如果列表没匹配到，尝试 GameCache 或 ClubCache 当前值
+        if (clubRandomId <= 0) {
+            clubRandomId = GameCache.Instance.ClubRandomID || ClubCache.random_id || 0;
+        }
+        if (!clubRandomId || clubRandomId <= 0) {
             console.log('[UIChatDlg] ClubRandomID is 0 or invalid, hide welcomeNode');
             this._hideWelcomeNode();
             return;
         }
-        const params = { club_random_id: clubId };
+        const params = { club_random_id: clubRandomId };
         console.log('[UIChatDlg] requesting /api/org/club/info with params:', JSON.stringify(params));
         HttpRequest.Send({
             request: WebOrgClubSearchById,

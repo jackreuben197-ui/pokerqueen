@@ -6,7 +6,7 @@ import { ServerMessageEnterRoom } from '../../protobuf/holdem/req_th_enter_room_
 import { ServerMessageWinner } from '../../protobuf/holdem/recv_th_winner_pb';
 import { UIDefine } from '../../define/UIDefine';
 import UIDialogSquid from '../../ui/dialog/UIDialogSquid';
-import { UISuperDialogType } from '../../ui/dialog/UISuperDialog';
+import { UIConfirmDialogParam } from '../../crazyPoker/gameplay/common/view/common/UIConfirmDialog';
 import UIComponent from '../../ui/UIComponent';
 import { CPlayer } from '../CPlayer';
 import { GameCache } from '../GameCache';
@@ -117,7 +117,7 @@ export default class TexasGameSquid {
 
     public OnClickJoinSwitch(): void {
         if (!this.CanShowJoinSwitch()) return;
-        UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+        UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
             content: this.GetJoinDialogContent(),
             commit: i18nMgr.Get('UIClub_RoomJoin'),
             cancel: i18nMgr.Get('UITexas_Holding'),
@@ -140,7 +140,7 @@ export default class TexasGameSquid {
             }
             if (this.host.squidMode === 1) {
                 if ((p.squidCount || 0) <= 0) {
-                    UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+                    UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
                         title: i18nMgr.Get('UIGuild_TipsTitle'),
                         content: i18nMgr.Get('UISquid_Tips3'),
                         commit: i18nMgr.Get('adaptation10012'),
@@ -148,7 +148,7 @@ export default class TexasGameSquid {
                         commit_click: () => this.host.Standup()
                     });
                 } else {
-                    UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+                    UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
                         title: '',
                         content: i18nMgr.Get('UIDelayLeaveTips'),
                         commit: i18nMgr.Get('UILeave'),
