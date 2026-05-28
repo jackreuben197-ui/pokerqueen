@@ -40,10 +40,10 @@ export default class MainTest extends UIBase {
                         confirm: 'Sure',
                         cancel: 'Cancel',
                         confirmCallback: () => {
-                            ToastManager.Instance.createToast('面板 确认 回调');
+                            ToastManager.Instance.showToast('面板 确认 回调');
                         },
                         cancelCallback: () => {
-                            ToastManager.Instance.createToast('面板 取消 回调');
+                            ToastManager.Instance.showToast('面板 取消 回调');
                         }
                     }
                 });
@@ -65,7 +65,7 @@ export default class MainTest extends UIBase {
                     let b = str.substring((str.length / 2) ^ 0, str.length - 1);
                     str = a + '\n' + b;
                 }
-                ToastManager.Instance.createToast(str);
+                ToastManager.Instance.showToast(str);
                 break;
             case '下入面板':
                 //UIComponent.open(UIDefine.BottomTouchBoard);

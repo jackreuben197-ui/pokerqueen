@@ -400,7 +400,7 @@ export default class LoginScene extends BaseScene {
             return true;
         }
         if (!this._vcodeBtnCanClick) {
-            ToastManager.Instance.createToast(i18nMgr.Get('UILogin_1005')); //("请稍等再发");
+            ToastManager.Instance.showToast(i18nMgr.Get('UILogin_1005')); //("请稍等再发");
             return;
         }
         await this.checkGetVCode(account, area);
@@ -418,7 +418,7 @@ export default class LoginScene extends BaseScene {
                 }).catch(e => {});
                 if (result == undefined) return;
                 if (result?.data) {
-                    ToastManager.Instance.createToast(i18nMgr.Get('UILogin_1006')); //("此号码已注册");
+                    ToastManager.Instance.showToast(i18nMgr.Get('UILogin_1006')); //("此号码已注册");
                     return;
                 }
             }
@@ -438,7 +438,7 @@ export default class LoginScene extends BaseScene {
                 }).catch(e => {});
                 if (result == undefined) return;
                 if (result?.data) {
-                    ToastManager.Instance.createToast(i18nMgr.Get('UILogin_1006')); //("此号码已注册");
+                    ToastManager.Instance.showToast(i18nMgr.Get('UILogin_1006')); //("此号码已注册");
                     return;
                 }
             }
@@ -450,7 +450,7 @@ export default class LoginScene extends BaseScene {
             }).catch(() => {});
             if (result == undefined) return;
             this.startVCodeTime();
-            // ToastManager.Instance.createToast("获取邮箱验证码  还没有！！！");
+            // ToastManager.Instance.showToast("获取邮箱验证码  还没有！！！");
         }
     }
 
@@ -463,7 +463,7 @@ export default class LoginScene extends BaseScene {
     startVCodeTime() {
         //("验证码已发送");
         this._vcodeBtnCanClick = false;
-        ToastManager.Instance.createToast(i18nMgr.Get('UILogin_1007'));
+        ToastManager.Instance.showToast(i18nMgr.Get('UILogin_1007'));
         this.getVCDTime.show(60, this.resetVCodeTime);
         let NowTimeS = TimeHelper.NowS;
         GC.localStore.setItem(this.codeTimeKey, NowTimeS.toString());
@@ -520,7 +520,7 @@ export default class LoginScene extends BaseScene {
             }).catch(() => {});
             if (result) {
                 this.resetVCodeTime();
-                ToastManager.Instance.createToast(i18nMgr.Get('UILogin_1009')); //("更改密码成功");
+                ToastManager.Instance.showToast(i18nMgr.Get('UILogin_1009')); //("更改密码成功");
                 this.clickBackLoginBtn();
             }
         } else {
@@ -533,10 +533,10 @@ export default class LoginScene extends BaseScene {
             }).catch(() => {});
             if (result) {
                 this.resetVCodeTime();
-                ToastManager.Instance.createToast(i18nMgr.Get('UILogin_1009')); //("更改密码成功");
+                ToastManager.Instance.showToast(i18nMgr.Get('UILogin_1009')); //("更改密码成功");
                 this.clickBackLoginBtn();
             }
-            // ToastManager.Instance.createToast("找回邮箱密码  还没有！！！");
+            // ToastManager.Instance.showToast("找回邮箱密码  还没有！！！");
         }
     }
 
@@ -547,24 +547,24 @@ export default class LoginScene extends BaseScene {
         }
         // 没有勾选用户须知提示
         if (this.btnAgreeNode.active && !agree_checked) {
-            ToastManager.Instance.createToast(i18nMgr.Get('UILogin_ReadOK')); //("阅读并同意用户协议");
+            ToastManager.Instance.showToast(i18nMgr.Get('UILogin_ReadOK')); //("阅读并同意用户协议");
             return true;
         }
         //验证码不对提示
         if (this.vcodeNode.active) {
             if (vcode == '') {
-                ToastManager.Instance.createToast(i18nMgr.Get('UILogin_1008')); //("请输入验证码");
+                ToastManager.Instance.showToast(i18nMgr.Get('UILogin_1008')); //("请输入验证码");
                 return true;
             }
             if (vcode.length != 4) {
-                ToastManager.Instance.createToast('UILogin_vcode_len_limit_tip'); //验证码只能是4位数
+                ToastManager.Instance.showToast('UILogin_vcode_len_limit_tip'); //验证码只能是4位数
                 return true;
             }
         }
         if (!this._isQuiklyLogin) {
             //密码不对提示
             if (this.passwordNode.active && password.length < 6) {
-                ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10330));
+                ToastManager.Instance.showToast(CPErrorCode.LanguageDescription(10330));
                 return true;
             }
         }
@@ -574,21 +574,21 @@ export default class LoginScene extends BaseScene {
         //账号为空提示
         if (account == '') {
             if (this._loginType == ELoginType.phone) {
-                ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10329));
+                ToastManager.Instance.showToast(CPErrorCode.LanguageDescription(10329));
             } else {
-                ToastManager.Instance.createToast('UILogin_InputEmail');
+                ToastManager.Instance.showToast('UILogin_InputEmail');
             }
             return true;
         }
         if (this._loginType == ELoginType.phone) {
             if (account.length < 6 || account.length > 20) {
-                ToastManager.Instance.createToast('UILogin_phone_len_limit_tip'); //请输入手机号
+                ToastManager.Instance.showToast('UILogin_phone_len_limit_tip'); //请输入手机号
                 return true;
             }
         } else {
             let reg = new RegExp(/^[A-Za-z0-9]+([_\.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$/g);
             if (!reg.test(account)) {
-                ToastManager.Instance.createToast('邮箱格式不正确'); //请输入手机号
+                ToastManager.Instance.showToast('邮箱格式不正确'); //请输入手机号
                 return true;
             }
         }
@@ -610,7 +610,7 @@ export default class LoginScene extends BaseScene {
         if (this._isQuiklyLogin) {
             //手机号 快速登录
             this.tryEnterGame(area, account, vcode);
-            // ToastManager.Instance.createToast("手机号 快速登录  还没有！！！");
+            // ToastManager.Instance.showToast("手机号 快速登录  还没有！！！");
         } else {
             //手机号普通登录
             this.tryEnterGame(area, account, password);
@@ -621,7 +621,7 @@ export default class LoginScene extends BaseScene {
     checkMailLogin(account, password, area) {
         //邮件 密码登录
         this.tryEnterGame(area, account, password);
-        // ToastManager.Instance.createToast("邮件 密码登录  还没有！！！");
+        // ToastManager.Instance.showToast("邮件 密码登录  还没有！！！");
     }
 
     /*** Register ***/

@@ -1010,7 +1010,7 @@ export default class UITexas extends BaseScene {
     private OnButtonShareClick() {
         console.log(`==>onButtonShareClick`);
         // TODO: 实现分享逻辑
-        ToastManager.Instance.createToast('还未开发');
+        ToastManager.Instance.showToast('还未开发');
     }
 
     public async ShowInsuranceTipJieSuan(paynum: number) {
@@ -1058,24 +1058,24 @@ export default class UITexas extends BaseScene {
     private async click_btn_effect() {
         // 非视频房间
         if (GameCache.Instance._videoModel === VideoModel.NONE) {
-            ToastManager.Instance.createToast(i18nMgr.Get('UIEffectNoVideo'));
+            ToastManager.Instance.showToast(i18nMgr.Get('UIEffectNoVideo'));
             return;
         }
         // 节能模式未开启
         if (GameCache.Instance._videoPowerSaving !== 1) {
-            ToastManager.Instance.createToast(i18nMgr.Get('UIEffectNoPowerSaving'));
+            ToastManager.Instance.showToast(i18nMgr.Get('UIEffectNoPowerSaving'));
             return;
         }
         // 摄像头未开启
         const headNode = this.game?.listSeat?.find((s: Seat) => s.IsMySeat)?.uirc?.Raw_Head?.node;
         const vr = headNode?.getComponent(AgoraVideoRender);
         if (!vr?.isRendering) {
-            ToastManager.Instance.createToast(i18nMgr.Get('UIEffectNoCamera'));
+            ToastManager.Instance.showToast(i18nMgr.Get('UIEffectNoCamera'));
             return;
         }
         const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
         if (!mySeat) {
-            ToastManager.Instance.createToast('请先入座');
+            ToastManager.Instance.showToast('请先入座');
             return;
         }
         // videoMaskId 循环 +1，大于4回到1
@@ -1100,12 +1100,12 @@ export default class UITexas extends BaseScene {
 
     private async click_btn_audio() {
         if (GameCache.Instance._videoModel === VideoModel.NONE) {
-            ToastManager.Instance.createToast('当前房间未开启语音');
+            ToastManager.Instance.showToast('当前房间未开启语音');
             return;
         }
         const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
         if (!mySeat) {
-            ToastManager.Instance.createToast('请先入座');
+            ToastManager.Instance.showToast('请先入座');
             return;
         }
         const agora = AgoraManager.Instance;
@@ -1129,26 +1129,26 @@ export default class UITexas extends BaseScene {
 
     private async click_btn_camera() {
         if (GameCache.Instance._videoModel === VideoModel.NONE) {
-            ToastManager.Instance.createToast('当前房间未开启视频');
+            ToastManager.Instance.showToast('当前房间未开启视频');
             return;
         }
         if (GameCache.Instance._videoModel === VideoModel.FULL_TIME) {
-            ToastManager.Instance.createToast(i18nMgr.Get('UIVideoModelverifyFullTime02'));
+            ToastManager.Instance.showToast(i18nMgr.Get('UIVideoModelverifyFullTime02'));
             return;
         }
         // 麦序模式：无论是否在操作，都不允许手动切换摄像头
         if (GameCache.Instance._videoModel === VideoModel.SEQUENCE) {
-            ToastManager.Instance.createToast(i18nMgr.Get('UICantOpenVideoOnMicSeq'));
+            ToastManager.Instance.showToast(i18nMgr.Get('UICantOpenVideoOnMicSeq'));
             return;
         }
         if (GameCache.Instance._randomVideoActive) {
             const remainSec = Math.max(0, Math.ceil((GameCache.Instance._randomVideoEndTime - Date.now()) / 1000));
-            ToastManager.Instance.createToast(i18nMgr.Get('UIVideoModelverifyRandom02').replace('{0}', String(remainSec)));
+            ToastManager.Instance.showToast(i18nMgr.Get('UIVideoModelverifyRandom02').replace('{0}', String(remainSec)));
             return;
         }
         const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
         if (!mySeat) {
-            ToastManager.Instance.createToast('请先入座');
+            ToastManager.Instance.showToast('请先入座');
             return;
         }
         const agora = AgoraManager.Instance;

@@ -322,7 +322,7 @@ export default class TexasGameProtocol {
                 // 频道已加入，直接渲染
                 this.renderLocalVideoOnMySeat().then(ok => {
                     if (!ok) {
-                        ToastManager.Instance.createToast('无法开启摄像头，请检查浏览器权限后重新入座');
+                        ToastManager.Instance.showToast('无法开启摄像头，请检查浏览器权限后重新入座');
                         setTimeout(() => {
                             this.game.TexasGameUtils.LeaveRoom();
                         }, 3000);
@@ -2361,7 +2361,7 @@ export default class TexasGameProtocol {
             console.log('[VideoRoom] 频道就绪时自己已坐下，补渲染本地视频');
             this.renderLocalVideoOnMySeat().then(ok => {
                 if (!ok) {
-                    ToastManager.Instance.createToast('无法开启摄像头，请检查浏览器权限后重新入座');
+                    ToastManager.Instance.showToast('无法开启摄像头，请检查浏览器权限后重新入座');
                     setTimeout(() => {
                         this.game.TexasGameUtils.LeaveRoom();
                     }, 3000);
@@ -2848,7 +2848,7 @@ export default class TexasGameProtocol {
         console.log('[RandomVideo] 将在', countdown, '秒后开始验证，持续', overtime, '秒');
         // 立即 toast 提示：{countdown}秒后开启视频验证
         const toastText = i18nMgr.Get('UIVideoModelverifyRandomCountDown').replace('{0}', String(countdown));
-        ToastManager.Instance.createToast(toastText);
+        ToastManager.Instance.showToast(toastText);
         // 等待 countdown 秒后再开始验证
         await new Promise<void>(resolve => {
             this._randomVideoCountdownTimer = window.setTimeout(() => {
@@ -2868,7 +2868,7 @@ export default class TexasGameProtocol {
         console.log('[RandomVideo] 开始随机验证，持续', overtime, '秒');
         // Toast 提示验证开始
         const startToast = i18nMgr.Get('UIVideoModelverifyRandom02').replace('{0}', String(overtime));
-        ToastManager.Instance.createToast(startToast);
+        ToastManager.Instance.showToast(startToast);
         // 强制开启摄像头并渲染到自己的头像
         await this.renderLocalVideoOnMySeat();
         // 同步按钮状态（禁用关闭按钮）

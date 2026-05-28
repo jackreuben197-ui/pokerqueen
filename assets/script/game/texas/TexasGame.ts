@@ -1834,7 +1834,7 @@ export default class TexasGame {
             } catch (e) {
                 // 权限被拒绝
                 console.error('[Sitdown] 摄像头权限被拒绝:', e);
-                ToastManager.Instance.createToast('必须同意浏览器的视频权限才能成功坐在视频桌');
+                ToastManager.Instance.showToast('必须同意浏览器的视频权限才能成功坐在视频桌');
                 setTimeout(() => {
                     this.TexasGameUtils.LeaveRoom();
                 }, 3000);

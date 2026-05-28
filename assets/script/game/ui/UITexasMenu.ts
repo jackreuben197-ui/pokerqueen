@@ -277,7 +277,7 @@ export default class UITexasMenu extends UIBasePlus {
     //         //UIComponent.open(UIDefine.MyWalletForm);
     //         console.log("跳转充值");
     //     } else {
-    //         ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
+    //         ToastManager.Instance.showToast(i18nMgr.Get("error2005"));
     //     }
     // }
     // click_coin() {
@@ -330,7 +330,7 @@ export default class UITexasMenu extends UIBasePlus {
     click_stand_up() {
         this.click_black();
         if (null == this.game.mainPlayer) {
-            ToastManager.Instance.createToast(i18nMgr.Get('Good_luck'));
+            ToastManager.Instance.showToast(i18nMgr.Get('Good_luck'));
             //需要进行错误重连
             //Game.EventSystem.Run(EventIdType.GameErrorReconnect);
             return;

@@ -33,7 +33,7 @@ export class UIMineModel {
                 GC.notify.post(EventName.myGoldChange);
                 if (pAct != null) pAct(tDto.data);
             } else {
-                ToastManager.Instance.createToast('' + tDto.code);
+                ToastManager.Instance.showToast('' + tDto.code);
             }
         });
     }

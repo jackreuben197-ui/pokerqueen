@@ -236,9 +236,9 @@ export class UIMTTModel {
                                 onSuccess: function () {
                                     var responseData = WebRoomCenterMttRebuy.Response;
                                     if (responseData.code == 0) {
-                                        ToastManager.Instance.createToast(i18nMgr.Get('Repurchase_successful'));
+                                        ToastManager.Instance.showToast(i18nMgr.Get('Repurchase_successful'));
                                     } else {
-                                        ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(responseData.code));
+                                        ToastManager.Instance.showToast(CPErrorCode.ServerErrorDescription(responseData.code));
                                     }
                                     if (resultCallback) {
                                         resultCallback(responseData.code);
@@ -275,7 +275,7 @@ export class UIMTTModel {
                         // UIComponent.open(UIDefine.MttAgainBuy, dialogData)
                     }
                 } else {
-                    ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(code));
+                    ToastManager.Instance.showToast(CPErrorCode.ServerErrorDescription(code));
                 }
             },
             null
