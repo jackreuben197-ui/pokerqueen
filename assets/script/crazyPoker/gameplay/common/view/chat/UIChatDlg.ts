@@ -15,6 +15,7 @@ import TimeHelper from '../../../../../helper/TimeHelper';
 import WebImageHelper from '../../../../../helper/WebImageHelper';
 import HttpRequest from '../../../../../net/https/HttpRequest';
 import { WebOrgClubSearchById } from '../../../../../net/https/web_request/WebRequestOrg';
+import { WebUserRoom, WWW } from '../../../../../net/https/WebRequest';
 import { ClubCache } from '../../../../../frame/data/club/ClubCache';
 const { ccclass, property } = cc._decorator;
 /** 聊天模式：chatOnly = 只发聊天（默认），danmuAndChat = 同时发弹幕+聊天 */
@@ -408,45 +409,67 @@ export default class UIChatDlg extends UIBasePlus {
 
     /** 获取俱乐部开场白并显示 */
     private _fetchAndDisplayPrologue(): void {
-        // 根据当前房间的 ClubID，从已缓存的俱乐部列表中查找对应的 random_id
-        const currentClubId = GameCache.Instance.ClubID;
-        let clubRandomId = 0;
-        if (currentClubId > 0 && ClubCache._allCubData && Array.isArray(ClubCache._allCubData)) {
-            const matched = ClubCache._allCubData.find((c: any) => c.club_id === currentClubId);
-            if (matched) {
-                clubRandomId = matched.random_id || 0;
-            }
+        const gc = GameCache.Instance;
+        let clubRandomId = gc.ClubRandomID || 0;
+        if (clubRandomId > 0) {
+            // ClubRandomID 已有值（进桌时写入），直接用
+            this._requestPrologue(clubRandomId);
+            return;
         }
-        // 回退：如果列表没匹配到，尝试 GameCache 或 ClubCache 当前值
-        if (clubRandomId <= 0) {
-            clubRandomId = GameCache.Instance.ClubRandomID || ClubCache.random_id || 0;
-        }
-        if (!clubRandomId || clubRandomId <= 0) {
-            console.log('[UIChatDlg] ClubRandomID is 0 or invalid, hide welcomeNode');
+        // ClubRandomID 为 0，用 room_id 反查 club_id / club_random_id 并缓存
+        const roomId = gc.room_id;
+        if (!roomId || roomId <= 0) {
             this._hideWelcomeNode();
             return;
         }
+        console.log('[UIChatDlg] ClubRandomID 为 0，用 room_id', roomId, '反查 club 信息');
+        WWW.Instance.CommonAPI({
+            web_class: WebUserRoom,
+            api_id: roomId
+        }).then((res: any) => {
+            if (!cc.isValid(this.node)) return;
+            // 从 wallet 数组中找到第一个有效的 club 钱包
+            const wallets = res?.data?.wallet;
+            let found = false;
+            if (Array.isArray(wallets)) {
+                for (const w of wallets) {
+                    if (w.club_random_id > 0) {
+                        gc.ClubID = w.club_id || 0;
+                        gc.ClubRandomID = w.club_random_id;
+                        console.log('[UIChatDlg] 反查成功 ClubID:', gc.ClubID, 'ClubRandomID:', gc.ClubRandomID, 'club_name:', w.club_name);
+                        this._requestPrologue(gc.ClubRandomID);
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                console.log('[UIChatDlg] 反查未找到 club 信息，隐藏开场白');
+                this._hideWelcomeNode();
+            }
+        }).catch(() => {
+            if (!cc.isValid(this.node)) return;
+            this._hideWelcomeNode();
+        });
+    }
+
+    /** 用 club_random_id 请求俱乐部开场白 */
+    private _requestPrologue(clubRandomId: number): void {
         const params = { club_random_id: clubRandomId };
-        console.log('[UIChatDlg] requesting /api/org/club/info with params:', JSON.stringify(params));
         HttpRequest.Send({
             request: WebOrgClubSearchById,
             body: WebOrgClubSearchById.Request(params),
             onSuccess: () => {
+                if (!cc.isValid(this.node)) return;
                 const resp = WebOrgClubSearchById.Response;
-                console.log('[UIChatDlg] /api/org/club/info response:', JSON.stringify(resp));
                 const data = resp?.data;
-                if (data) {
-                    console.log('[UIChatDlg] prologue_switch:', data.prologue_switch, 'prologue:', data.prologue);
-                }
                 if (data && data.prologue) {
                     this._showPrologue(data.prologue);
                 } else {
-                    console.log('[UIChatDlg] prologue not enabled or empty, hide welcomeNode');
                     this._hideWelcomeNode();
                 }
             },
-            onFailure: (err: any) => {
-                console.log('[UIChatDlg] /api/org/club/info failed:', err);
+            onFailure: () => {
                 this._hideWelcomeNode();
             }
         });
