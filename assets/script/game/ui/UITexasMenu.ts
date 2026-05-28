@@ -197,6 +197,7 @@ export default class UITexasMenu extends UIBasePlus {
     }
 
     private _updateDisplay() {
+        if (!this.game) return;
         this.btnInsure.node.active = this.game.insurance;
         if (this.game.UserSitdown()) {
             this.btnBet.node.active = true;
