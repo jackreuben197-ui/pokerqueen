@@ -352,6 +352,10 @@ export default class TexasGame {
     /// 同步到俱乐部的id 未同步时为0
     /// </summary>
     public clubId: number = 0;
+    /// <summary>
+    /// 带入钱包的俱乐部ID
+    /// </summary>
+    public bringInClubId: number = 0;
     /// APP的最新版本，如果当前app版本较小，则在牌桌中间显示升级提示
     /// </summary>
     public ServerVersion: string = null;
@@ -2010,6 +2014,9 @@ export default class TexasGame {
             return (amount, store, autoOnTable, clubID) => {
                 seatedData.bringIn = amount;
                 seatedData.clubId = clubID;
+                if (clubID > 0) {
+                    this.bringInClubId = clubID;
+                }
                 // 如果用钱包自动充值
                 if (autoOnTable > 0) {
                     seatedData.autoOnTableNoStore = true;
@@ -3928,6 +3935,7 @@ export default class TexasGame {
         }
         this.tribeId = 0;
         this.clubId = 0;
+        this.bringInClubId = 0;
         this.ServerVersion = '';
         this.autoFold = false;
         this.autoCall = false;
