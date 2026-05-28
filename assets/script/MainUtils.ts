@@ -131,6 +131,7 @@ interface FlatEnterTableData {
     insurance?: number;
     muck_switch?: number;
     club_id?: number;
+    club_random_id?: number;
     origin_type?: number;
     gold_type?: number;
 }
@@ -255,7 +256,7 @@ export async function registerH5Listeners(): Promise<void> {
     // initH5BridgeDependencies();
     H5MsgMgr.Instance.on('enterTable', async payload => {
         _ploger.info('[H5Bridge] 收到 enterTable:', payload);
-        const { token, websocketPort, roomId, roomInfo: roomData } = payload;
+        const { token, websocketPort, roomId, clubId, clubRandomId, roomInfo: roomData } = payload;
         // === 1. H5 消息基本字段校验 ===
         const missing: string[] = [];
         if (!token) missing.push('token');
@@ -307,8 +308,8 @@ export async function registerH5Listeners(): Promise<void> {
         gc.origin_type = roomData.origin_type || 0;
         gc.share_table = roomData.share_table || 0;
         gc.gold_type = roomData.gold_type || 0;
-        gc.ClubID = roomData.club_id || 0;
-        gc.ClubRandomID = roomData.club_random_id || 0;
+        gc.ClubID = clubId || roomData.club_id || 0;
+        gc.ClubRandomID = clubRandomId || roomData.club_random_id || 0;
         gc.TribeId = roomData.tribe_id || 0;
         gc.match_id = 0;
         gc.carry_small = roomData.limit_bring_in || 0;

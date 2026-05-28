@@ -209,6 +209,7 @@ export interface EnterTableRoomInfo {
     share_table?: number;
     gold_type?: number;
     club_id?: number;
+    club_random_id?: number;
     tribe_id?: number;
     limit_bring_in?: number;
     anti_cheat_type?: number;
@@ -220,6 +221,8 @@ export interface EnterTablePayload {
     token: string;
     websocketPort: number;
     from?: string;
+    clubId?: number;
+    clubRandomId?: number;
     roomId?: string;
     roomName?: string;
     roomInfo: EnterTableRoomInfo;
