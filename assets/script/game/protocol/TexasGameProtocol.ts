@@ -884,6 +884,10 @@ export default class TexasGameProtocol {
             return;
         }
         this.game.isAllinGetPlayerCards = true;
+        // 记录是否全部玩家已秀牌（用于控制偷偷看按钮显隐）
+        if (rec.isAll) {
+            this.game.allCardsShown = true;
+        }
         // 保险模式，allin后要收筹码，不用等收到公共牌再收。
         if (this.game.insurance && this.game.GetPublicCardsCount(1) > 0) {
             this.game.PlayRecyclingChipAnimation(null);
@@ -1619,7 +1623,10 @@ export default class TexasGameProtocol {
                 );
                 if (!rec.resultsList[i].standUp) {
                     this.game.ShowSeeMorePublic();
-                    this.game.ShowLookHandCard();
+                    // 全部玩家已秀牌时不显示偷偷看按钮
+                    if (!this.game.allCardsShown) {
+                        this.game.ShowLookHandCard();
+                    }
                     this.game.SendViewPlayerCardsNum();
                 }
             }

@@ -428,6 +428,10 @@ export default class TexasGame {
     /// </summary>
     public isAllinGetPlayerCards: boolean = false;
     /// <summary>
+    /// 本局是否所有玩家都已秀牌（showcards 的 isAll=true），此时不需要显示偷偷看按钮
+    /// </summary>
+    public allCardsShown: boolean = false;
+    /// <summary>
     /// 保险模式，三张公共牌后，没有保险可买，马上来了第四张公共牌 0默认 1首次收筹码并位移
     /// </summary>
     public fuck4thPCardByInsuranceState: number = 0;
@@ -4489,6 +4493,7 @@ export default class TexasGame {
         this.HideSeeMorePublic();
         this.HideSeeMorePublicTips();
         this.HideLookHandCard();
+        this.allCardsShown = false;
         this.HideOperationPanel();
         this.HideAutoOperationPanel();
         this.uirc.CleanUI();
