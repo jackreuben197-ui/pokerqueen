@@ -103,6 +103,9 @@ export default class Seat {
     private _allinSpineNode: cc.Node = null;
     // 自己赢的 YouWin Spine 动画节点
     private _youwinSpineNode: cc.Node = null;
+    private _bubbleInsuranceCountDownHomeParent: cc.Node = null;
+    private _bubbleInsuranceCountDownHomeSiblingIndex: number = -1;
+    private _bubbleInsuranceCountDownHomeZIndex: number = 0;
     // 静态缓存 SkeletonData（所有座位共享）
     private static _allinSelfSkeletonData: sp.SkeletonData = null;
     private static _allinOtherSkeletonData: sp.SkeletonData = null;
@@ -219,7 +222,7 @@ export default class Seat {
         //let mRectTransform = this.uirc.Image_Bubble;
         //mRectTransform.SetParent(transBubble);
         this.uirc.Image_Bubble.setPosition(info.bubble_pos);
-        this.uirc.Image_BubbleInsuranceCountDown.setPosition(info.insurance_pos);
+        this.SetBubbleInsuranceCountDownPosition(info.insurance_pos);
         if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
             // mRectTransform.localPosition = info.AoMaHaInsurancetoubaoPos;
         } else {
@@ -1197,8 +1200,73 @@ export default class Seat {
         }
         // textBubbleInsuranceCountDown.text = $"购买剩余{Player.timeLeft_insurance}秒";
         this.uirc.Image_BubbleInsuranceCountDown.active = true;
+        this.MoveBubbleInsuranceCountDownToTop();
         this.uirc.Text_BubbleInsuranceCountDown.string = `${CPErrorCode.LanguageDescription(10298)} ${this.Player.timeLeft_insurance < 0 ? 0 : this.Player.timeLeft_insurance}s`;
         this.HideBubbleInsurance();
+    }
+
+    private CacheBubbleInsuranceCountDownHierarchy(): void {
+        const node = this.uirc?.Image_BubbleInsuranceCountDown;
+        if (!node?.parent || this._bubbleInsuranceCountDownHomeParent) {
+            return;
+        }
+        this._bubbleInsuranceCountDownHomeParent = node.parent;
+        this._bubbleInsuranceCountDownHomeSiblingIndex = node.getSiblingIndex();
+        this._bubbleInsuranceCountDownHomeZIndex = node.zIndex;
+    }
+
+    private SetBubbleInsuranceCountDownPosition(pos: cc.Vec3): void {
+        const node = this.uirc?.Image_BubbleInsuranceCountDown;
+        if (!node) {
+            return;
+        }
+        this.CacheBubbleInsuranceCountDownHierarchy();
+        const homeParent = this._bubbleInsuranceCountDownHomeParent;
+        if (homeParent && node.parent && node.parent !== homeParent) {
+            const worldPos = homeParent.convertToWorldSpaceAR(pos);
+            node.setPosition(node.parent.convertToNodeSpaceAR(worldPos));
+            return;
+        }
+        node.setPosition(pos);
+    }
+
+    private MoveBubbleInsuranceCountDownToTop(): void {
+        const node = this.uirc?.Image_BubbleInsuranceCountDown;
+        const topParent = this.GetBubbleInsuranceCountDownTopParent();
+        if (!node?.parent || !topParent) {
+            return;
+        }
+        this.CacheBubbleInsuranceCountDownHierarchy();
+        const worldPos = node.parent.convertToWorldSpaceAR(node.position);
+        if (node.parent !== topParent) {
+            node.parent = topParent;
+            node.setPosition(topParent.convertToNodeSpaceAR(worldPos));
+        }
+        node.zIndex = cc.macro.MAX_ZINDEX;
+        node.setSiblingIndex(topParent.childrenCount - 1);
+    }
+
+    private GetBubbleInsuranceCountDownTopParent(): cc.Node {
+        return GameCache.Instance.CurGame?.uirc?.node || GameCache.Instance.CurGame?.uirc?.main || this.ui?.parent?.parent || this.ui?.parent;
+    }
+
+    private RestoreBubbleInsuranceCountDownHierarchy(): void {
+        const node = this.uirc?.Image_BubbleInsuranceCountDown;
+        const homeParent = this._bubbleInsuranceCountDownHomeParent;
+        if (!node || !homeParent || !cc.isValid(homeParent)) {
+            return;
+        }
+        if (node.parent && node.parent !== homeParent) {
+            const worldPos = node.parent.convertToWorldSpaceAR(node.position);
+            node.parent = homeParent;
+            node.setPosition(homeParent.convertToNodeSpaceAR(worldPos));
+        } else if (!node.parent) {
+            node.parent = homeParent;
+        }
+        node.zIndex = this._bubbleInsuranceCountDownHomeZIndex;
+        if (this._bubbleInsuranceCountDownHomeSiblingIndex >= 0) {
+            node.setSiblingIndex(Math.min(this._bubbleInsuranceCountDownHomeSiblingIndex, homeParent.childrenCount - 1));
+        }
     }
 
     public UpdateImageBackActive(istrue: boolean = false): void {
@@ -1684,6 +1752,7 @@ export default class Seat {
     /// </summary>
     public HideBubbleInsuranceCountDown(): void {
         this.uirc.Image_BubbleInsuranceCountDown.active = false;
+        this.RestoreBubbleInsuranceCountDownHierarchy();
     }
 
     public HideBubbleInsurance(): void {
@@ -1747,6 +1816,7 @@ export default class Seat {
         this.voiceprintTime = 0;
         this.UpdateVoiceprintState(VoiceprintState.None);
         this.HideReturnGame();
+        this.HideBubbleInsuranceCountDown();
         this.HideCardBack();
         this.HideHeadCD();
         this.RefreshNickCoinVisible(false);
