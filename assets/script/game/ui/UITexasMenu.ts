@@ -8,6 +8,9 @@ import { OutClipsData } from '../new_ui/UIBringOut';
 import TexasGame from '../texas/TexasGame';
 import { GameCache } from '../GameCache';
 import H5MsgMgr from '../../H5MsgMgr';
+import UIDialogComponent, { UIDialogParam } from '../../ui/dialog/UIDialogComponent';
+import { CPErrorCode } from '../../i18n/CPErrorCode';
+import { WebRoomCenterRoomDisbAnd, WWW } from '../../net/https/WebRequest';
 const { ccclass, property } = cc._decorator;
 const LN = '[UI][UITexasMenu]';
 
@@ -37,6 +40,8 @@ export default class UITexasMenu extends UIBasePlus {
     public btnStand: cc.Button = null;
     @property(cc.Button)
     public btnLeaveGame: cc.Button = null;
+    @property(cc.Button)
+    public btnDissolve: cc.Button = null;
     // BB 开关图片
     @property(cc.SpriteFrame)
     public sfUnchecked: cc.SpriteFrame = null;
@@ -199,15 +204,19 @@ export default class UITexasMenu extends UIBasePlus {
     private _updateDisplay() {
         if (!this.game) return;
         this.btnInsure.node.active = this.game.insurance;
+        const gc = GameCache.Instance;
+        const isDissolve = gc._isRoomManager && gc._isHasDisbandRoomPrivileges;
         if (this.game.UserSitdown()) {
             this.btnBet.node.active = true;
             this.btnHalfLeave.node.active = true;
             this.btnStand.node.active = true;
+            if (this.btnDissolve) this.btnDissolve.node.active = isDissolve;
             return;
         }
         this.btnBet.node.active = false;
         this.btnHalfLeave.node.active = false;
         this.btnStand.node.active = false;
+        if (this.btnDissolve) this.btnDissolve.node.active = isDissolve;
     }
 
     // 菜单内容垂直居中适配
@@ -240,6 +249,7 @@ export default class UITexasMenu extends UIBasePlus {
         this.setButtonClick(this.btnInsure?.node, this.click_insurance);
         this.setButtonClick(this.btnLeaveGame?.node, this.click_leave);
         this.setButtonClick(this.btnShowBB?.node, this.click_bb);
+        this.setButtonClick(this.btnDissolve?.node, this.click_dissolve);
     }
 
     // protected regiterDispatchEvent(): void {
@@ -469,6 +479,32 @@ export default class UITexasMenu extends UIBasePlus {
     click_leave() {
         // this.post(EventName.updateFriendChessView)
         this.game.onClickExit();
+    }
+
+    /** 解散牌桌 */
+    click_dissolve() {
+        this.click_black();
+        UIComponent.open<UIDialogParam>(UIDefine.UIDialogComponent, {
+            type: UIDialogComponent.DialogType.CommitCancel,
+            title: CPErrorCode.LanguageDescription(10007),
+            content: i18nMgr.Get('UITexasRoomManagerOpTips2'),
+            contentCommit: i18nMgr.Get('UI_Recharge_confirm'),
+            contentCancel: CPErrorCode.LanguageDescription(10013),
+            actionCommit: () => {
+                WWW.Instance.CommonAPI({
+                    web_class: WebRoomCenterRoomDisbAnd,
+                    body: WebRoomCenterRoomDisbAnd.Request({
+                        room_id: GameCache.Instance.room_id
+                    })
+                }).then((res: any) => {
+                    if (res?.code === 0) {
+                        UIComponent.Instance.Toast(i18nMgr.Get('UITexasRoomManagerOpTips3'));
+                    } else {
+                        UIComponent.Instance.Toast(res?.message || CPErrorCode.ServerErrorDescription(res?.code));
+                    }
+                });
+            }
+        });
     }
 
     click_bb() {

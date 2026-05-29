@@ -43,12 +43,6 @@ import UITexasReportComponent from './UITexasReportComponent';
 import GGEvent from '../event/GGEvent';
 const LN = '[UI][UITexas]';
 
-export class PlayerBarrageRecord {
-    public name: string;
-    public time: number;
-    public msg: string;
-}
-
 export class PotInfo {
     public pot: number;
     public textPot: cc.Label;
@@ -252,22 +246,6 @@ export default class UITexas extends BaseScene {
     game: TexasGame = null;
     TransPot_Pool: SimpleNodePool = null;
     TransAllPot_Pool: SimpleNodePool = null;
-    //#region 弹幕界面
-    /// <summary>
-    /// 弹幕界面
-    /// </summary>
-    private barragePanel: cc.Node = null;
-    private barrageItemOrdinary: cc.Node = null;
-    private barrageItemCool: cc.Node = null;
-    private barrageItemColorful: cc.Node = null;
-    private barrageParenPos: cc.Node[] = null;
-    private barrageIndex: number = 0;
-    public barrageRecordList: PlayerBarrageRecord[] = [];
-    public barrageCountDown: number = 0;
-    private barrageAnimationSequence_obj = {};
-    private barrageAnimationSequence: Sequence<{}> = null;
-
-    //#endregion
     ///////////////////////////////////
     override update(dt: number) {
         this.game?.Update(dt);
@@ -954,12 +932,6 @@ export default class UITexas extends BaseScene {
         this.game.onClickCurSituation();
     }
 
-    public UpdateBarragePanelActive(): void {
-        //this.barrageAnimationSequence = DOTween.Sequence(this.barrageAnimationSequence_obj);
-        let OpenBarrage: number = +GC.localStore.getItem(StorageKey.OpenBarrage);
-        this.barragePanel && (this.barragePanel.active = OpenBarrage != 2);
-        this.barrageIndex = 0;
-    }
 
     // onClickBringIn() {
     //     UIComponent.open(UIDefine.UIApplyJoin);

@@ -989,7 +989,6 @@ export default class TexasGame {
         this.UpdateAlreadAnte();
         this.UpdateRoomDes();
         this.UpdatePublicCardsNoAnim();
-        this.uirc.UpdateBarragePanelActive();
         mSeat = this.GetSeatByLocalSeatID(this.mainPlayer.seatID);
         if (null != mSeat) {
             this.ResetSeatUIInfo(mSeat.ClientSeatId);
@@ -3971,10 +3970,6 @@ export default class TexasGame {
         this.waittingGPSCallback = false;
         this.stopUpdatePublicCardsAnimation = false;
         this.isAllinGetPlayerCards = false;
-        // this.barrageRecordList = []
-        // this.barrageCountDown = -1;
-        // this.barrageAnimationSequence = DOTween.Sequence();
-        // GameCache.Instance.IsAllowOpenDanmu = true;
         this.cacheBuyInsurancePotUserCount = 0;
         // this.VIPTipsStatus = TipsStatus.isStop;
         // this.VipTipslist.Clear();
