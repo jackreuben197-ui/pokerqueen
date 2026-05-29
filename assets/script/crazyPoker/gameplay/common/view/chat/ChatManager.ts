@@ -2,6 +2,7 @@ import { BroadcastMsg } from '../../../../../net/websocket/ProtocolHoldemMessage
 import { GameCache } from '../../../../../game/GameCache';
 import SceneManager from '../../../../../manager/SceneManager';
 import UIComponent from '../../../../../ui/UIComponent';
+import DanmuManager from './DanmuManager';
 
 export interface ChatMsgData {
     name: string;
@@ -86,10 +87,10 @@ export default class ChatManager {
         // 只处理文本聊天 (type=0) 和弹幕
         if (broadcastMsg.type !== 0 || !broadcastMsg.message) return;
         const gc = GameCache.Instance;
-        // 弹幕消息 → Toast 提示
+        // 弹幕消息 → 弹幕滚动播放
         const isDanmu = broadcastMsg.isDanmu === true;
         if (isDanmu) {
-            UIComponent.Instance.Toast(`[弹幕] ${broadcastMsg.name || ''}: ${broadcastMsg.message}`);
+            DanmuManager.Instance.playDanmu(`${broadcastMsg.name || ''}: ${broadcastMsg.message}`);
             return;
         }
         // 过滤自己发的（走 1019 路径由 UIChatDlg 处理）

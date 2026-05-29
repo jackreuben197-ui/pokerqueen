@@ -15,6 +15,7 @@ import TimeHelper from '../../../../../helper/TimeHelper';
 import WebImageHelper from '../../../../../helper/WebImageHelper';
 import HttpRequest from '../../../../../net/https/HttpRequest';
 import { WebChatRoomMessageSync } from '../../../../../net/https/web_request/WebRequestChat';
+import DanmuManager from './DanmuManager';
 
 const { ccclass, property } = cc._decorator;
 /** 聊天模式：chatOnly = 只发聊天（默认），danmuAndChat = 同时发弹幕+聊天 */
@@ -292,10 +293,10 @@ export default class UIChatDlg extends UIBasePlus {
             MatchID: matchId,
             Body: msg.toObject()
         });
-        // 6. 如果选中了 danmuAndChat，额外发一条弹幕协议
+        // 6. 如果选中了 danmuAndChat，额外发一条弹幕协议，并本地播放弹幕
         if (this._chatMode === 'danmuAndChat') {
             this._sendDanmaku(text, roomId, matchId, gc);
-            UIComponent.Instance.Toast(`[弹幕] ${nick}: ${text}`);
+            DanmuManager.Instance.playDanmu(`${nick}: ${text}`);
         }
         // 7. 清空输入框
         this._editBox.string = '';
