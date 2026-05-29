@@ -25,6 +25,7 @@ export default class SoundComponent {
         } else {
             this.soundOn = false;
         }
+        this.listenVisibility();
     }
 
     Play(name: string, loop: boolean = false) {
@@ -40,6 +41,15 @@ export default class SoundComponent {
         this._musicPath = path;
         if (!this.soundOn) return;
         this._playAudio(path, true);
+    }
+
+    /** 监听页面可见性变化，锁屏/切后台后恢复 BGM */
+    listenVisibility() {
+        cc.game.on(cc.game.EVENT_SHOW, () => {
+            if (this.soundOn && this._musicPath && this._musicId === -1) {
+                this._playAudio(this._musicPath, true);
+            }
+        });
     }
 
     /** 停止背景音乐 */

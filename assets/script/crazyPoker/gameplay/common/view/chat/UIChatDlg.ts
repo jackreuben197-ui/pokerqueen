@@ -448,11 +448,9 @@ export default class UIChatDlg extends UIBasePlus {
                     if (!chatData || !chatData.extra) continue;
                     try {
                         const extraObj = JSON.parse(chatData.extra);
-                        // extra 可能是 {code:1000, data:"<json>"} 格式或直接消息对象
-                        let msgData = extraObj;
-                        if (extraObj.code === 1000 && extraObj.data !== undefined) {
-                            msgData = typeof extraObj.data === 'string' ? JSON.parse(extraObj.data) : extraObj.data;
-                        }
+                        // 只处理文字聊天消息（code=1000），跳过表情/道具等（code=10001等）
+                        if (extraObj.code !== 1000) continue;
+                        let msgData = typeof extraObj.data === 'string' ? JSON.parse(extraObj.data) : extraObj.data;
                         // 记录第一条 is_prologue 为 true 的消息作为开场白，且不加入聊天列表
                         if (prologueContent === null && msgData.is_prologue === true) {
                             prologueContent = msgData.message || '';
@@ -475,9 +473,13 @@ export default class UIChatDlg extends UIBasePlus {
                 } else {
                     this._hideWelcomeNode();
                 }
-                // 所有消息都显示为 ChatMsgItem
+                // 历史消息只写入 UI 列表，不重复写入 ChatManager 缓存
+                // （缓存里可能已有这些消息，重复写入会导致每次打开聊天室消息翻倍）
                 for (const msg of chatMessages) {
-                    this._addChatMessage(msg.name, msg.content, msg.headUrl, msg.sex, msg.time);
+                    this._messages.push(msg);
+                }
+                if (this._chatList) {
+                    this._chatList.numItems = this._messages.length;
                 }
             },
             onFailure: () => {

@@ -211,9 +211,6 @@ export default class TexasGameMessageHandler {
         }
         UIComponent.Instance.Toast(
             i18nMgr.Get(`LeaveReason${Def.LeaveReason.LR_ACTIVE}`),
-            {
-                stayDuration: 1
-            },
             () => {
                 this.game.TexasGameUtils.ExitRoom();
             }
