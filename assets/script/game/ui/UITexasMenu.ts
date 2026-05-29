@@ -11,6 +11,8 @@ import H5MsgMgr from '../../H5MsgMgr';
 import UIDialogComponent, { UIDialogParam } from '../../ui/dialog/UIDialogComponent';
 import { CPErrorCode } from '../../i18n/CPErrorCode';
 import { WebRoomCenterRoomDisbAnd, WWW } from '../../net/https/WebRequest';
+import ProcedureManager from '../../manager/ProcedureManager';
+import { ProcedureEnum } from '../define/EIDefine';
 const { ccclass, property } = cc._decorator;
 const LN = '[UI][UITexasMenu]';
 
@@ -478,6 +480,16 @@ export default class UITexasMenu extends UIBasePlus {
 
     click_leave() {
         // this.post(EventName.updateFriendChessView)
+        if (!this.game) {
+            // 房间已关闭，直接退出回大厅
+            const utils = GameCache.Instance.CurGame?.TexasGameUtils;
+            if (utils) {
+                utils.ExitRoom();
+            } else {
+                ProcedureManager.StartProcedure(ProcedureEnum.Return);
+            }
+            return;
+        }
         this.game.onClickExit();
     }
 
