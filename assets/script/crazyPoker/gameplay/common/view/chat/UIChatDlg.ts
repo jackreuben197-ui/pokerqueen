@@ -33,6 +33,11 @@ export default class UIChatDlg extends UIBasePlus {
     private _dlgNode: cc.Node = null;
     private _dlgTitleLabel: cc.Label = null;
     private _chatList: List = null;
+    /** view 节点原始尺寸，用于开场白切换时绝对赋值 */
+    private _chatListOriginViewH: number = 0;
+    private _chatListOriginViewY: number = 0;
+    /** 缓存开场白内容，防止服务端后续不返回 */
+    private _cachedPrologue: string | null = null;
     private _messages: ChatMsgData[] = [];
     private _editBox: cc.EditBox = null;
     private _sendBtn: cc.Node = null;
@@ -80,6 +85,12 @@ export default class UIChatDlg extends UIBasePlus {
             // 且虚拟列表的 _calcViewPos 在 item 数量不足以填满 ScrollView 时
             // 与 ScrollView 的"置顶"位置不兼容，导致 render 回调不触发。
             this._chatList.virtual = false;
+            // 缓存 view 原始尺寸，用于开场白切换时绝对赋值
+            const view = chatListNode.getChildByName('view');
+            if (view) {
+                this._chatListOriginViewH = view.height;
+                this._chatListOriginViewY = view.y;
+            }
         }
         // 获取输入框
         const editBoxNode = this.node.getChildByName('chatEditBox');
@@ -139,6 +150,8 @@ export default class UIChatDlg extends UIBasePlus {
         // 从 ChatManager 恢复当前房间的全部聊天记录
         this._messages = mgr.getMessages(roomId).slice();
         this._pendingChatMsg = null;
+        // 切换房间时清掉上一局的开场白缓存
+        this._cachedPrologue = null;
         if (this._chatList) {
             this._chatList.numItems = this._messages.length;
         }
@@ -175,6 +188,7 @@ export default class UIChatDlg extends UIBasePlus {
         this._messages.push(msg);
         if (this._chatList) {
             this._chatList.numItems = this._messages.length;
+            this._scrollToBottom();
         }
     }
 
@@ -329,6 +343,7 @@ export default class UIChatDlg extends UIBasePlus {
         ChatManager.Instance.addMessage(GameCache.Instance.room_id, msg);
         if (this._chatList) {
             this._chatList.numItems = this._messages.length;
+            this._scrollToBottom();
         }
     }
 
@@ -468,19 +483,31 @@ export default class UIChatDlg extends UIBasePlus {
                         console.warn('[UIChatDlg] parse chat extra failed:', e);
                     }
                 }
-                // 显示或隐藏开场白
+                // 显示或隐藏开场白（优先用本次返回的，其次用缓存的）
                 if (prologueContent !== null) {
+                    this._cachedPrologue = prologueContent;
                     this._showPrologue(prologueContent);
+                } else if (this._cachedPrologue !== null) {
+                    this._showPrologue(this._cachedPrologue);
                 } else {
                     this._hideWelcomeNode();
                 }
-                // 历史消息只写入 UI 列表，不重复写入 ChatManager 缓存
-                // （缓存里可能已有这些消息，重复写入会导致每次打开聊天室消息翻倍）
+                // 历史消息写入 UI 列表，跳过与实时缓存重复的消息
+                // （_messages 已从 ChatManager 缓存加载，HTTP 历史可能包含相同的消息）
                 for (const msg of chatMessages) {
-                    this._messages.push(msg);
+                    const dup = this._messages.some(
+                        m => m.name === msg.name && m.content === msg.content && m.time === msg.time
+                    );
+                    if (!dup) {
+                        this._messages.push(msg);
+                    }
                 }
+                // 按时间排序：早 → 晚（上方最早，下方最新）
+                this._messages.sort((a, b) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0);
                 if (this._chatList) {
                     this._chatList.numItems = this._messages.length;
+                    // 滚动到底部，展示最新消息
+                    this._scrollToBottom();
                 }
             },
             onFailure: () => {
@@ -489,7 +516,21 @@ export default class UIChatDlg extends UIBasePlus {
         });
     }
 
-    /** 显示开场白 */
+    /** 隐藏欢迎语节点，ChatList view 增高 300 像素，向上扩展 */
+    private _hideWelcomeNode(): void {
+        if (this._welcomeNode) {
+            this._welcomeNode.active = false;
+        }
+        if (this._chatList) {
+            const view = this._chatList.node.getChildByName('view');
+            if (view && view.height === this._chatListOriginViewH) {
+                view.height = this._chatListOriginViewH + 300;
+                view.y = this._chatListOriginViewY + 150;
+            }
+        }
+    }
+
+    /** 显示欢迎语节点，恢复 ChatList view 原始高度 */
     private _showPrologue(text: string): void {
         if (this._welcomeLabel) {
             this._welcomeLabel.string = text;
@@ -497,12 +538,21 @@ export default class UIChatDlg extends UIBasePlus {
         if (this._welcomeNode) {
             this._welcomeNode.active = true;
         }
+        if (this._chatList) {
+            const view = this._chatList.node.getChildByName('view');
+            if (view && view.height !== this._chatListOriginViewH) {
+                view.height = this._chatListOriginViewH;
+                view.y = this._chatListOriginViewY;
+            }
+        }
     }
 
-    /** 隐藏欢迎语节点 */
-    private _hideWelcomeNode(): void {
-        if (this._welcomeNode) {
-            this._welcomeNode.active = false;
+    /** 滚动聊天列表到底部，展示最新消息 */
+    private _scrollToBottom(): void {
+        if (!this._chatList) return;
+        const sv = this._chatList.node.getComponent(cc.ScrollView);
+        if (sv) {
+            sv.scrollToBottom(0.1);
         }
     }
 
