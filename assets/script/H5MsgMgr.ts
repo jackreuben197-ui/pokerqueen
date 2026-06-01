@@ -41,6 +41,8 @@ export interface WsConnectPayload {
     /** 当前房间/比赛 ID（随连接请求一并下发，供 H5 日志参考）。*/
     roomId?: number;
     matchId?: number;
+    /** Cocos 主动要求强制重连：复位 attempt/timer，立即重连一次。*/
+    force?: boolean;
 }
 
 /** Cocos → H5：关闭 websocket 请求。*/
@@ -177,6 +179,29 @@ export interface WsClosedPayload {
     code?: number;
     reason?: string;
     wasClean?: boolean;
+}
+
+/** H5 → CC：已安排一次重连尝试。 */
+export interface WsReconnectingPayload {
+    attempt: number;
+    delayMs: number;
+    /** close=连接关闭, heartbeat=心跳超时, visibility=切回前台, online=网络恢复, force=Cocos 主动触发。*/
+    reason: 'close' | 'heartbeat' | 'visibility' | 'online' | 'force';
+}
+
+/** H5 → CC：重连成功（已 onopen 并完成 REGISTER 发送）。 */
+export interface WsReconnectedPayload {
+    url: string;
+    attempt: number;
+    /** 从首次失败到本次成功的总耗时（毫秒）。 */
+    durationMs: number;
+}
+
+/** H5 → CC：放弃重连（命中次数上限/整体超时/鉴权失败）。 */
+export interface WsReconnectFailedPayload {
+    reason: 'max-attempts' | 'overall-timeout' | 'auth-invalid';
+    attempts: number;
+    durationMs: number;
 }
 
 /** H5 → CC：对话框操作结果。*/
@@ -356,6 +381,10 @@ export interface H5ToCocosPayloadMap {
     wsMessage: WsMessagePayload;
     wsError: WsErrorPayload;
     wsClosed: WsClosedPayload;
+    // 重连流程（H5 代理后通知 Cocos 显示遮罩/恢复玩法）
+    wsReconnecting: WsReconnectingPayload;
+    wsReconnected: WsReconnectedPayload;
+    wsReconnectFailed: WsReconnectFailedPayload;
     // UI 回调
     dialogResult: DialogResultPayload;
     panelEvent: PanelEventPayload;

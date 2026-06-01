@@ -11,6 +11,7 @@
  */
 import { GameConfig } from './config/GameConfig';
 // import GC from "./frame/GameControl";
+import BridgeReconnectComponent from './funcomponent/BridgeReconnectComponent';
 import OrientationComponent from './funcomponent/OrientationComponent';
 import ReconnectComponent from './funcomponent/ReconnectComponent';
 // import { GM } from "./gm/GMAPI";
@@ -109,6 +110,8 @@ export default class Main extends cc.Component {
         ReconnectComponent.Instance.Start();
         // 监听 H5 层（Vue/Vite）通过 bridge.js 发来的消息
         H5MsgMgr.Instance.init();
+        // H5 桥接模式下的重连流程：监听 wsReconnecting/wsReconnected/wsReconnectFailed
+        BridgeReconnectComponent.Instance.Start();
         await MainUtils.registerH5Listeners();
         // 启动握手：设置 __CC_READY__，等待 H5 发来 h5Ready，回复 ccAck
         H5MsgMgr.Instance.startHandshake();
