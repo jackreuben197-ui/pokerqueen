@@ -22,6 +22,8 @@ export default class ProcedureTexas extends ProcedureBase {
         GameCache.Instance.InitTexasGame();
         GameCache.Instance.CurGame.Enter();
         GameCache.Instance.CurGame.SMAgency.ChangeGameState(TexasGameState.Launch);
+        // 通知 H5 切到牌桌内心跳频率（对齐 HeartbeatComponent.SendIntervalInGameplay = 1s）
+        H5MsgMgr.sendToH5('setHeartbeatMode', 1, { mode: 'in-gameplay' });
         // 标记牌桌资源已加载过，下次启动不再显示首次加载提示
         if (GC.localStore.getItem(StorageKey.TextureResourceLoaded) !== 1) {
             GC.localStore.setItem(StorageKey.TextureResourceLoaded, 1);
@@ -41,5 +43,7 @@ export default class ProcedureTexas extends ProcedureBase {
         // }
         GameCache.Instance.CurGame.Dispose();
         GameCache.Instance.CurGame = null;
+        // 通知 H5 切回牌桌外心跳频率（对齐 HeartbeatComponent.SendIntervalNormal = 5s）
+        H5MsgMgr.sendToH5('setHeartbeatMode', 1, { mode: 'normal' });
     }
 }

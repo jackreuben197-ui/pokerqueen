@@ -119,6 +119,15 @@ export interface H5NavigatePayload {
  */
 export type H5RouteData = H5NavigatePayload;
 
+/**
+ * Cocos → H5：通知 H5 切换 WebSocket 心跳频率，对齐 HeartbeatComponent 的 normal/in-gameplay 区分。
+ *   normal      —— 牌桌外，5s/次
+ *   in-gameplay —— 牌桌内，1s/次
+ */
+export interface SetHeartbeatModePayload {
+    mode: 'normal' | 'in-gameplay';
+}
+
 // ─── CC → H5 Payload 映射表 ────────────────────────────────────────────────
 // sendToH5<T>(action, msgtype, payload) 通过 T 自动推导 payload 的精确类型。
 // 如需新增 action，同步更新：h5-game/src/bridge/protocol/cocosToH5.ts → CocosToH5PayloadMap
@@ -144,6 +153,8 @@ export interface CocosToH5PayloadMap {
     h5Show: H5VisibilityPayload | undefined;
     // 路由跳转
     h5Navigate: H5NavigatePayload;
+    // 心跳频率切换（对齐 HeartbeatComponent.SendIntervalNormal/InGameplay）
+    setHeartbeatMode: SetHeartbeatModePayload;
 }
 
 // ─── H5 → CC Payload 类型定义 ──────────────────────────────────────────────
