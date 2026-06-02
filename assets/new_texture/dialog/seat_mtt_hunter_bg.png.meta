@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "60c1c5ad-df9b-4bc9-80a5-5726580cd8ca",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 379,
+  "height": 146,
+  "platformSettings": {},
+  "subMetas": {
+    "seat_mtt_hunter_bg": {
+      "ver": "1.0.6",
+      "uuid": "fb6b74d3-55da-4d1a-914e-137850aca66e",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "60c1c5ad-df9b-4bc9-80a5-5726580cd8ca",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 379,
+      "height": 146,
+      "rawWidth": 379,
+      "rawHeight": 146,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -1256,6 +1256,7 @@ export default class TexasGameProtocol {
             } else {
                 mSeat.Player.MttHunterKillAwardOtherPlus += result.mttHunterKillAwardOtherPlus;
             }
+            mSeat.UpdateHunterAward();
             if (!mSeat.IsMySeat) {
                 //自己的牌不用更新
                 mSeat.Player.SetCards(this.game.GetHandCardsByRecList(this.game.MessageWinnerData.resultsList[i].myCardsList));
@@ -1928,6 +1929,7 @@ export default class TexasGameProtocol {
                 mSeat.Player.KeepSeatLeftTime = -1;
             }
             mSeat.Player.MttHunterKillAwardOtherPlus += playerChipChange.mttHunterHeadPlus;
+            mSeat.UpdateHunterAward();
             if (this.game.mainPlayer.seatID == this.game.GetLocalSeatID(playerChipChange.seatId)) {
                 if (
                     playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON ||

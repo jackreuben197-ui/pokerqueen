@@ -1928,13 +1928,14 @@ export default class Seat {
 
     //刷新猎人头奖励
     public UpdateHunterAward() {
-        if (null == this.Player || this.IsMySeat) {
+        if (null == this.Player) {
             this.uirc.Image_CoinShadow.active = false;
             return;
         }
         let value = this.Player.HunterHeadValue + this.Player.HunterKillAwardOther + this.Player.MttHunterKillAwardOtherPlus;
         this.uirc.Image_CoinShadow.active = value > 0;
-        this.uirc.Image_CoinShadow.getChildByName('Text').getComponent(cc.Label).string = StringHelper.GetLongString(value);
+        this.uirc.Image_CoinShadow.getChildByName('Text').getComponent(cc.Label).string =
+            GameCache.Instance.gold_type == 4 ? value.toString() : StringHelper.GetLongString(value);
         // if (UIMTTModel.Instance.MttInfo.mtt != null) {
         //     this.uirc.Image_CoinShadow.getChildByName("uc").active = UIMTTModel.Instance.MttInfo.mtt.gold_type == 1;
         //     this.uirc.Image_CoinShadow.getChildByName("gc").active = UIMTTModel.Instance.MttInfo.mtt.gold_type == 2;
