@@ -41,6 +41,8 @@ export interface WsConnectPayload {
     /** 当前房间/比赛 ID（随连接请求一并下发，供 H5 日志参考）。*/
     roomId?: number;
     matchId?: number;
+    /** Cocos 主动要求强制重连：复位 attempt/timer，立即重连一次。*/
+    force?: boolean;
 }
 
 /** Cocos → H5：关闭 websocket 请求。*/
@@ -117,6 +119,15 @@ export interface H5NavigatePayload {
  */
 export type H5RouteData = H5NavigatePayload;
 
+/**
+ * Cocos → H5：通知 H5 切换 WebSocket 心跳频率，对齐 HeartbeatComponent 的 normal/in-gameplay 区分。
+ *   normal      —— 牌桌外，5s/次
+ *   in-gameplay —— 牌桌内，1s/次
+ */
+export interface SetHeartbeatModePayload {
+    mode: 'normal' | 'in-gameplay';
+}
+
 // ─── CC → H5 Payload 映射表 ────────────────────────────────────────────────
 // sendToH5<T>(action, msgtype, payload) 通过 T 自动推导 payload 的精确类型。
 // 如需新增 action，同步更新：h5-game/src/bridge/protocol/cocosToH5.ts → CocosToH5PayloadMap
@@ -142,6 +153,8 @@ export interface CocosToH5PayloadMap {
     h5Show: H5VisibilityPayload | undefined;
     // 路由跳转
     h5Navigate: H5NavigatePayload;
+    // 心跳频率切换（对齐 HeartbeatComponent.SendIntervalNormal/InGameplay）
+    setHeartbeatMode: SetHeartbeatModePayload;
 }
 
 // ─── H5 → CC Payload 类型定义 ──────────────────────────────────────────────
@@ -177,6 +190,29 @@ export interface WsClosedPayload {
     code?: number;
     reason?: string;
     wasClean?: boolean;
+}
+
+/** H5 → CC：已安排一次重连尝试。 */
+export interface WsReconnectingPayload {
+    attempt: number;
+    delayMs: number;
+    /** close=连接关闭, heartbeat=心跳超时, visibility=切回前台, online=网络恢复, force=Cocos 主动触发。*/
+    reason: 'close' | 'heartbeat' | 'visibility' | 'online' | 'force';
+}
+
+/** H5 → CC：重连成功（已 onopen 并完成 REGISTER 发送）。 */
+export interface WsReconnectedPayload {
+    url: string;
+    attempt: number;
+    /** 从首次失败到本次成功的总耗时（毫秒）。 */
+    durationMs: number;
+}
+
+/** H5 → CC：放弃重连（命中次数上限/整体超时/鉴权失败）。 */
+export interface WsReconnectFailedPayload {
+    reason: 'max-attempts' | 'overall-timeout' | 'auth-invalid';
+    attempts: number;
+    durationMs: number;
 }
 
 /** H5 → CC：对话框操作结果。*/
@@ -356,6 +392,10 @@ export interface H5ToCocosPayloadMap {
     wsMessage: WsMessagePayload;
     wsError: WsErrorPayload;
     wsClosed: WsClosedPayload;
+    // 重连流程（H5 代理后通知 Cocos 显示遮罩/恢复玩法）
+    wsReconnecting: WsReconnectingPayload;
+    wsReconnected: WsReconnectedPayload;
+    wsReconnectFailed: WsReconnectFailedPayload;
     // UI 回调
     dialogResult: DialogResultPayload;
     panelEvent: PanelEventPayload;

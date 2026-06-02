@@ -524,16 +524,11 @@ export async function registerH5Listeners(): Promise<void> {
 
     /**
      * wsClosed: H5 层的 WebSocket 连接断开
-     * H5 桥接模式下：通知 H5 重连，而非 CC 自己连 WebSocket
+     * H5 wsProxy 已经在 onclose 后自动 scheduleReconnect，并通过 wsReconnecting/wsReconnected
+     * 通知 Cocos 端（见 BridgeReconnectComponent），这里仅留日志，避免重复触发 wsConnect。
      */
     H5MsgMgr.Instance.on('wsClosed', payload => {
         _ploger.warn('[H5Bridge] wsClosed:', payload);
-        // 通知 H5 层重新连接 WebSocket
-        H5MsgMgr.sendToH5('wsConnect', 1, {
-            port: Number(GameCache.Instance.serviceId),
-            roomId: GameCache.Instance.room_id,
-            matchId: GameCache.Instance.match_id
-        });
     });
 
     /**

@@ -639,9 +639,23 @@ export default class TexasGame {
         return this.setting.deskType;
     }
 
+    /** 桌布贴图名称映射：索引对应 deskType，值为 texture_table prefab 中的节点名 */
+    private static readonly DESK_TEXTURE_MAP: string[] = [
+        'new_ui_top_table_0', // 0 - 默认桌布
+        'desk1',              // 1
+        'desk2',              // 2
+        'desk3',              // 3
+        'desk4',              // 4
+        'desk5',              // 5
+        'desk6',              // 6
+    ];
+
     SetDeskType(type: number) {
         this.setting.deskType = type;
-        this.uirc.sp_table_bg.spriteFrame = AssetContext.getAsset(`new_ui_top_table_0`, AssetFold.texture_table);
+        const textureName = TexasGame.DESK_TEXTURE_MAP[type] || TexasGame.DESK_TEXTURE_MAP[0];
+        const spriteFrame = AssetContext.getAsset(textureName, AssetFold.texture_table)
+            || AssetContext.getAsset(TexasGame.DESK_TEXTURE_MAP[0], AssetFold.texture_table);
+        this.uirc.sp_table_bg.spriteFrame = spriteFrame;
         if (this.isBombPot) {
             this.bombPotFeature?.PlayOpenScreen();
         }
@@ -1504,11 +1518,6 @@ export default class TexasGame {
     /** 点击加入鱿鱼轮开关 */
     public OnClickSquidJoinSwitch(): void {
         this.squidFeature.OnClickJoinSwitch();
-    }
-
-    /** 点击鱿鱼玩法快捷站起 */
-    public OnClickSquidStandUp(): void {
-        this.squidFeature.OnClickStandUp();
     }
 
     /** 统计本轮鱿鱼中仍未拿到标记的人数 */
