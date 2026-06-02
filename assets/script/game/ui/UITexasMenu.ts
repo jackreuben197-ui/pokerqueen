@@ -1,4 +1,5 @@
 import { UIDefine } from '../../define/UIDefine';
+import { UIConfirmDialogParam } from '../../crazyPoker/gameplay/common/view/common/UIConfirmDialog';
 import { i18nLabel } from '../../i18n/i18nLabel';
 import { i18nMgr } from '../../i18n/i18nMgr';
 import ToastManager from '../../manager/ToastManager';
@@ -344,9 +345,35 @@ export default class UITexasMenu extends UIBasePlus {
         this.click_black();
         if (null == this.game.mainPlayer) {
             ToastManager.Instance.showToast(i18nMgr.Get('Good_luck'));
-            //需要进行错误重连
-            //Game.EventSystem.Run(EventIdType.GameErrorReconnect);
             return;
+        }
+        // 鱿鱼模式下的站起需要额外确认逻辑
+        const p = this.game.mainPlayer;
+        if (this.game.squidEnabled && this.game.isGameInSquidRound && p.inSquid) {
+            if (this.game.squidMode === 0) {
+                this.game.Standup();
+                return;
+            }
+            if (this.game.squidMode === 1) {
+                if ((p.squidCount || 0) <= 0) {
+                    UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
+                        title: i18nMgr.Get('UIGuild_TipsTitle'),
+                        content: i18nMgr.Get('UISquid_Tips3'),
+                        commit: i18nMgr.Get('adaptation10012'),
+                        cancel: i18nMgr.Get('adaptation10013'),
+                        commit_click: () => this.game.Standup()
+                    });
+                } else {
+                    UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
+                        title: '',
+                        content: i18nMgr.Get('UIDelayLeaveTips'),
+                        commit: i18nMgr.Get('UILeave'),
+                        cancel: i18nMgr.Get('UIPause_sdXLZk7S'),
+                        commit_click: () => this.game.Standup()
+                    });
+                }
+                return;
+            }
         }
         this.game.Standup();
     }

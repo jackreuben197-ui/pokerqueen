@@ -145,7 +145,6 @@ export default class UITexas extends BaseScene {
     RemainingSquidCount: cc.Node = null;
     RemainingSquidLabelCount: cc.Label = null;
     SquidSwitch: cc.Node = null;
-    SquidStandUp: cc.Node = null;
     SquidJoinLabel: cc.Label = null;
     SquidStart: cc.Node = null;
     SquidStartAnim: cc.Animation = null;
@@ -316,10 +315,6 @@ export default class UITexas extends BaseScene {
         }
         if (this.SquidSwitch) {
             this.SquidSwitch.active = false;
-        }
-        this.SquidStandUp = this.main?.getChildByName('squidStandUp');
-        if (this.SquidStandUp) {
-            this.SquidStandUp.active = false;
         }
         this.SquidStart = this.getChildNodeOrComponent('squid_start');
         this.SquidStartAnim = this.SquidStart?.getComponent(cc.Animation);
@@ -502,7 +497,6 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this._buttonShare, this.OnButtonShareClick);
         this.setButtonClick(this.JackpotButton, this.onClickJackpot);
         this.setButtonClick(this.SquidSwitch, this.onClickJoinGame);
-        this.setButtonClick(this.SquidStandUp, this.onClickSquidStandUp);
         this.setButtonClick(this.Button_AddOn, this.onClickAddOn);
         //this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
         this.setButtonClick(this.Button_CancelTrust, this.onClickCancelTrust);
@@ -780,7 +774,6 @@ export default class UITexas extends BaseScene {
         //this.setActive(this.Button_BringIn, false);
         this.setActive(this.Button_AddOn, false);
         this.setActive(this.SquidSwitch, false);
-        this.setActive(this.SquidStandUp, false);
         this.setActive(this.StartGameButton, false);
         this.setActive(this.BombPotOpen, false);
         this.setActive(this.BombPotLogo, false);
@@ -826,7 +819,6 @@ export default class UITexas extends BaseScene {
             this.Image_ReserveSeatTips,
             this.Image_InsuranceTips,
             this.SquidSwitch,
-            this.SquidStandUp,
             this.StartGameButton,
             this.JackpotButton,
             this.JackpotAnimRoot,
@@ -969,10 +961,6 @@ export default class UITexas extends BaseScene {
     private onClickJoinGame() {
         console.log(`==>onClickJoinGame`);
         this.game?.OnClickSquidJoinSwitch();
-    }
-
-    private onClickSquidStandUp() {
-        this.game?.OnClickSquidStandUp();
     }
 
     /**
