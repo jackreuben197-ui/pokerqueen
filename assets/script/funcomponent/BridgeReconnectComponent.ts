@@ -6,7 +6,7 @@
  * - 桥接模式下 H5 接管 WebSocket，重连流程由 wsProxy 维护，Cocos 端只需要：
  *   1. 监听 wsReconnecting   → 显示重连遮罩
  *   2. 监听 wsReconnected    → 等服务端 Register 回包（LobbySession 已有 handler）即可清掉遮罩
- *   3. 监听 wsReconnectFailed → 关闭遮罩 + Toast + 让 H5 退回登录页
+ *   3. 监听 wsReconnectFailed → 关闭遮罩 + Toast + 让 H5 回到访客页/登录弹窗
  *
  * 对齐 Unity NetworkDetectionComponent 的整体行为，只是把网络层下放到 H5。
  */
@@ -60,12 +60,13 @@ export default class BridgeReconnectComponent {
             this._hideMask();
             this._inReconnectFlow = false;
             this._notifyFailure(payload.reason);
-            // 用户在牌桌上时，让 H5 替我们退回登录页，避免卡在不可用界面。
+            // 用户在牌桌上时，让 H5 回到访客首页并打开登录弹窗，避免卡在不可用界面。
             if (payload.reason !== 'auth-invalid') {
                 H5MsgMgr.sendToH5('h5Navigate', 1, {
-                    name: 'login',
+                    name: 'guest-home',
                     replace: true,
-                    ensureVisible: true
+                    ensureVisible: true,
+                    openLoginModal: true
                 });
             }
         });
@@ -119,7 +120,7 @@ export default class BridgeReconnectComponent {
     private _onProtocolRegister(body: { status?: number }): void {
         if (body?.status !== 0) {
             // 服务端拒绝注册（token 过期等）→ 让 wsReconnectFailed 流程兜底；
-            // 这里不强行 Logout，避免和 H5 的回登录页流程打架。
+            // 这里不强行 Logout，避免和 H5 的登录弹窗流程打架。
             console.warn('[BridgeReconnect] Protocol_Holdem_Register failed:', body);
             return;
         }
