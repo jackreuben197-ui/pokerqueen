@@ -382,8 +382,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -621,
-        0,
+        -622,
+        -73.72,
         0,
         0,
         0,
@@ -764,8 +764,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        515,
-        -215,
+        520,
+        -296,
         0,
         0,
         0,
@@ -1243,8 +1243,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        515,
-        -328,
+        520,
+        -403,
         0,
         0,
         0,
@@ -1346,7 +1346,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 180,
-      "height": 180
+      "height": 90
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1357,8 +1357,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        321.3,
-        -220,
+        333.292,
+        -282.328,
         0,
         0,
         0,
@@ -1718,8 +1718,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        517.519,
-        -464.36,
+        520.519,
+        -523.36,
         0,
         0,
         0,
@@ -11788,8 +11788,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        286.344,
-        -342.068,
+        306.344,
+        -377.068,
         0,
         0,
         0,
@@ -11841,7 +11841,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 182,
-      "height": 150
+      "height": 100
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -11853,7 +11853,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        -2,
         0,
         0,
         0,
@@ -28475,7 +28475,7 @@
       "ctor": "Float64Array",
       "array": [
         -620,
-        -390,
+        -412,
         0,
         0,
         0,
@@ -30888,7 +30888,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
+        5,
         0,
         0,
         0,
@@ -30924,8 +30924,8 @@
     "alignMode": 1,
     "_target": null,
     "_alignFlags": 45,
-    "_left": 0,
-    "_right": 0,
+    "_left": 5,
+    "_right": -5,
     "_top": 0,
     "_bottom": 0,
     "_verticalCenter": 0,
