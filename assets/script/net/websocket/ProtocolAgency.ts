@@ -92,8 +92,12 @@ export default class ProtocolAgency extends cc.Component {
             let arrayBuffer: ArrayBuffer = new ArrayBuffer(bufferLength);
             let dataView: DataView = new DataView(arrayBuffer);
             this._writeUint32(dataView, PacketHead.FieldOffset.DataLength, dataLength);
-            this._writeUint8Array(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
+            // old: CharsFlag before Code
+            // this._writeUint8Array(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
+            // this._writeUint16(dataView, PacketHead.FieldOffset.Code, param.Code);
+            // new: Code before CharsFlag (BQMN format)
             this._writeUint16(dataView, PacketHead.FieldOffset.Code, param.Code);
+            this._writeUint8Array(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
             this._writeString(dataView, PacketHead.FieldOffset.Token, LoginSession.Token);
             this._writeUint64(dataView, PacketHead.FieldOffset.RoomID, param.RoomID);
             this._writeUint64(dataView, PacketHead.FieldOffset.MatchID, param.MatchID);
@@ -125,8 +129,12 @@ export default class ProtocolAgency extends cc.Component {
             let arrayBuffer: ArrayBuffer = new ArrayBuffer(bufferLength);
             let dataView: DataView = new DataView(arrayBuffer);
             this._writeUint32(dataView, PacketHead.FieldOffset.DataLength, dataLength);
-            this._writeUint8Array(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
+            // old: CharsFlag before Code
+            // this._writeUint8Array(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
+            // this._writeUint16(dataView, PacketHead.FieldOffset.Code, param.Code);
+            // new: Code before CharsFlag (BQMN format)
             this._writeUint16(dataView, PacketHead.FieldOffset.Code, param.Code);
+            this._writeUint8Array(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
             this._writeString(dataView, PacketHead.FieldOffset.Token, LoginSession.Token);
             this._writeUint64(dataView, PacketHead.FieldOffset.RoomID, param.RoomID);
             this._writeUint64(dataView, PacketHead.FieldOffset.MatchID, param.MatchID);
@@ -158,8 +166,12 @@ export default class ProtocolAgency extends cc.Component {
         let arrayBuffer: ArrayBuffer = new ArrayBuffer(bufferLength);
         let dataView: DataView = new DataView(arrayBuffer);
         this._writeUint32(dataView, PacketHead.FieldOffset.DataLength, dataLength);
-        this._writeUint8Array(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
+        // old: CharsFlag before Code
+        // this._writeUint8Array(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
+        // this._writeUint16(dataView, PacketHead.FieldOffset.Code, param.Code);
+        // new: Code before CharsFlag (BQMN format)
         this._writeUint16(dataView, PacketHead.FieldOffset.Code, param.Code);
+        this._writeUint8Array(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
         this._writeString(dataView, PacketHead.FieldOffset.Token, LoginSession.Token);
         this._writeUint64(dataView, PacketHead.FieldOffset.RoomID, param.RoomID);
         this._writeUint64(dataView, PacketHead.FieldOffset.MatchID, param.MatchID);
@@ -217,8 +229,13 @@ export default class ProtocolAgency extends cc.Component {
     static Receive(data: ArrayBuffer) {
         if (!data) return;
         let ua = new Uint8Array(data);
+        // old: CharsFlag was at byte 0 in server response (YM at [0:2])
+        // for (let i = 0; i < PacketHead.CharsFlag.length; i++) {
+        //     if (ua[i] != PacketHead.CharsFlag[i]) {
+        // new: BQMN is at bytes 2-5 in server response (Code at [0:2], BQMN at [2:6])
+        let charsFlag_recv_offset = PacketHead.FieldOffset.CharsFlag - PacketHead.FieldSize.DataLength;
         for (let i = 0; i < PacketHead.CharsFlag.length; i++) {
-            if (ua[i] != PacketHead.CharsFlag[i]) {
+            if (ua[charsFlag_recv_offset + i] != PacketHead.CharsFlag[i]) {
                 this.tracelog.debug('charsflag is no match');
                 return;
             }

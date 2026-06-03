@@ -19,12 +19,15 @@ export class GameConfig {
     static Web_Host_Test1 = 'test2.awanptest.com';
     static Web_Host_Dev1 = 'dev1.awanptest.com';
     static Web_Host_Dev = 'dev.awanptest.com';
+    static Web_Host_Dev2 = 'preview.trackyourchoice.com';
     //0: http://dev.awanptest.com
     //1: http://test2.awanptest.com
     //2: http://dev1.awanptest.com
     //3: https://test2.awanptest.com
     //4: https://dev1.awanptest.com
-    static readonly BUILD_TYPE: number = 5;
+    //5: https://test2.awanptest.com (old)
+    //6: https://preview.trackyourchoice.com (OlaVamos)
+    static readonly BUILD_TYPE: number = 6;
     //版本号
     static readonly VERSION: string = '20230109_2130';
     static readonly DEFAULT_LANGUAGE: string = 'cn';

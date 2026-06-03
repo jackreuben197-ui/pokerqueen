@@ -17,7 +17,7 @@ const FILES = ['USER_ZH.txt', 'USER_EN.txt', 'USER_TW.txt', 'USER_PT.txt']
 
 // 输入目录
 const SRC_COCOS = path.join(ROOT, 'assets', 'resources', 'config')
-const SRC_H5 = path.join(ROOT, '..', 'h5-game', 'public', 'assets', 'resources', 'config')
+const SRC_H5 = path.join(ROOT, '..', '..', 'Ola_Vamos_H5-LittleFish', 'h5-game', 'public', 'assets', 'resources', 'config')
 
 // 输出目录（包括 cocos 源目录，使编辑器预览也能加载合并后的文件）
 const OUT_DIRS = [

@@ -12,7 +12,8 @@ export default class PacketHead {
 |   120(int32)   | YM(char[2]) | 1(uint16) | asdffdsaasdffdsa(string) |             |             |      2 (int8)      | 数据marshal后数据byte |
 */
     //固定标记
-    static CharsFlag: Uint8Array = new Uint8Array([0x59 /*Y*/, 0x4d /*M*/]);
+    // static CharsFlag: Uint8Array = new Uint8Array([0x59 /*Y*/, 0x4d /*M*/]); // old: "YM"
+    static CharsFlag: Uint8Array = new Uint8Array([0x42 /*B*/, 0x51 /*Q*/, 0x4d /*M*/, 0x4e /*N*/]); // "BQMN"
     static offset: number = 0;
     static _length: number = 0;
     static _fixlength: number = 0;
@@ -25,7 +26,8 @@ export default class PacketHead {
     };
     static FieldSize = {
         DataLength: 4,
-        CharsFlag: 2,
+        // CharsFlag: 2, // old: "YM"
+        CharsFlag: 4, // "BQMN"
         Code: 2,
         Token: 32,
         RoomID: 8,
@@ -54,9 +56,13 @@ export default class PacketHead {
     static Init() {
         if (!this._initOnce) {
             this._initOnce = true;
-            this.FieldOffset.CharsFlag = this.FieldOffset.DataLength + this.FieldSize.DataLength;
-            this.FieldOffset.Code = this.FieldOffset.CharsFlag + this.FieldSize.CharsFlag;
-            this.FieldOffset.Token = this.FieldOffset.Code + this.FieldSize.Code;
+            // old: CharsFlag before Code
+            // this.FieldOffset.CharsFlag = this.FieldOffset.DataLength + this.FieldSize.DataLength;
+            // this.FieldOffset.Code = this.FieldOffset.CharsFlag + this.FieldSize.CharsFlag;
+            // new: Code before CharsFlag (BQMN format)
+            this.FieldOffset.Code = this.FieldOffset.DataLength + this.FieldSize.DataLength;
+            this.FieldOffset.CharsFlag = this.FieldOffset.Code + this.FieldSize.Code;
+            this.FieldOffset.Token = this.FieldOffset.CharsFlag + this.FieldSize.CharsFlag;
             this.FieldOffset.RoomID = this.FieldOffset.Token + this.FieldSize.Token;
             this.FieldOffset.MatchID = this.FieldOffset.RoomID + this.FieldSize.RoomID;
             this.FieldOffset.ProtoVersion = this.FieldOffset.MatchID + this.FieldSize.MatchID;

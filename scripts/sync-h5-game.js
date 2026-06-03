@@ -2,8 +2,8 @@ const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-// 目录路径定义 (基于 __dirname，假设文件位于 /scripts/build.js)
-const h5GameDir = path.resolve(__dirname, '../deps/h5-game');
+// 目录路径定义 - 使用本地 h5-game 目录（跳过 git 子模块操作）
+const h5GameDir = path.resolve(__dirname, '../../../Ola_Vamos_H5-LittleFish/h5-game');
 const distDir = path.join(h5GameDir, 'dist');
 const targetDir = path.resolve(__dirname, '../build-templates/web-mobile');
 
@@ -27,19 +27,15 @@ if (!fs.existsSync(h5GameDir)) {
 }
 
 console.log('--- 开始自动化构建任务 ---');
+console.log(`\n[INFO] 使用本地 h5-game: ${h5GameDir}`);
 
-// [1/5] Git 操作
-console.log('\n[1/5] 更新子模块代码...');
-runCommand('git fetch --all', h5GameDir);
-runCommand('git reset --hard origin/master', h5GameDir);
-
-// [2/5] Build h5-game
-console.log('\n[2/5] 开始构建 h5-game...');
+// [1/4] Build h5-game
+console.log('\n[1/4] 开始构建 h5-game...');
 runCommand('pnpm install', h5GameDir);
 runCommand('pnpm build', h5GameDir);
 
-// [3/5] Copy dist
-console.log('\n[3/5] 复制 dist 文件...');
+// [2/4] Copy dist
+console.log('\n[2/4] 复制 dist 文件...');
 try {
     if (!fs.existsSync(targetDir)) {
         fs.mkdirSync(targetDir, { recursive: true });
@@ -51,12 +47,12 @@ try {
     process.exit(1);
 }
 
-// [4/5] Run sync:template
-console.log('\n[4/5] 执行 sync:template...');
+// [3/4] Run sync:template
+console.log('\n[3/4] 执行 sync:template...');
 runCommand('npm run sync:template');
 
-// [5/5] Merge i18n
-console.log('\n[5/5] 合并 i18n 文件...');
+// [4/4] Merge i18n
+console.log('\n[4/4] 合并 i18n 文件...');
 runCommand('npm run merge:i18n');
 
 console.log('\n--- 全部任务执行完毕 ---');

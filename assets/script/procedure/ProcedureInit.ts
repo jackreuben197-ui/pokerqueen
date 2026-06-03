@@ -131,6 +131,12 @@ export default class ProcedureInit extends ProcedureBase {
                     WSS: `wss://${GameConfig.Web_Host_Test1}{0}`
                 };
                 break;
+            case 6:
+                GameConfig.Network = {
+                    WebHost: `https://${GameConfig.Web_Host_Dev2}`,
+                    WSS: `wss://${GameConfig.Web_Host_Dev2}{0}`
+                };
+                break;
         }
     }
 }
