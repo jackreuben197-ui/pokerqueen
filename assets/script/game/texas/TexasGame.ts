@@ -1937,7 +1937,7 @@ export default class TexasGame {
                     // 钱包够,没输光(反桌)
                     if (bringToTable > 0) {
                         // 没有藏钱直接坐下
-                        if (retainDetail.RetainType == RoomInfo.RetainType.RT_DISABLE) {
+                        if (retainDetail.RetainType == RoomInfo.RetainType.RT_DISABLE || ( retainDetail.RetainType == RoomInfo.RetainType.RT_AUTO  && bringToTable >= seatedData.autoOnTable)) {
                             ProtocolAgency.Send<ClientMessageSeated.AsObject>({
                                 Code: ProtocolCode.Protocol_Holdem_Seated,
                                 RoomID: GameCache.Instance.room_id,
@@ -1946,8 +1946,8 @@ export default class TexasGame {
                             });
                         }
                         // 如果有藏钱的逻辑(还要保留最小上桌)
-                        if (retainDetail.RetainType > 0 && bringToTable >= retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2) {
-                            if (retainDetail.RetainType == RoomInfo.RetainType.RT_MANUAL) {
+                        if (retainDetail.RetainType ==  RoomInfo.RetainType.RT_MANUAL) {
+                            if (bringToTable >= retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2) {
                                 //手动逻辑自己管理Store
                                 seatedData.store = bringToTable - retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2;
                             }
@@ -1958,7 +1958,6 @@ export default class TexasGame {
                                 Body: seatedData
                             });
                         }
-                        return;
                     }
                     // 其他都需要弹窗口输入
                     UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
@@ -2067,7 +2066,7 @@ export default class TexasGame {
             // 用户想自动充值了使用协议设置自动化
             if (autoOnTable > 0) {
                 ProtocolAgency.Send<ClientMessageSetAutoOnTable.AsObject>({
-                    Code: ProtocolCode.Protocol_Holdem_BringIn,
+                    Code: ProtocolCode.Protocol_Holdem_SetAutoOnTable,
                     RoomID: GameCache.Instance.room_id,
                     MatchID: GameCache.Instance.match_id,
                     Body: {
