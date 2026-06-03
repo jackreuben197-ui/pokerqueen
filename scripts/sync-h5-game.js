@@ -2,8 +2,10 @@ const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-// 目录路径定义 - 使用本地 h5-game 目录（跳过 git 子模块操作）
-const h5GameDir = path.resolve(__dirname, '../../../Ola_Vamos_H5-LittleFish/h5-game');
+// 目录路径定义 - 优先使用 H5_GAME_DIR 环境变量，否则回退到约定的本地相对路径
+const h5GameDir = process.env.H5_GAME_DIR
+    ? path.resolve(process.env.H5_GAME_DIR)
+    : path.resolve(__dirname, '../../../Ola_Vamos_H5-LittleFish/h5-game');
 const distDir = path.join(h5GameDir, 'dist');
 const targetDir = path.resolve(__dirname, '../build-templates/web-mobile');
 
