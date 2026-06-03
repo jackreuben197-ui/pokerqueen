@@ -18,6 +18,7 @@ import { WebOrgClubUserRemaRks } from '../../../../../net/https/web_request/WebR
 import WebImageHelper from '../../../../../helper/WebImageHelper';
 import AgoraManager from '../../../../../net/agora/AgoraManager';
 import { GameCache } from '../../../../../game/GameCache';
+import { GameplayPlayerInfoCache } from '../../../../../game/GameplayPlayerInfoCache';
 import GC from '../../../../../frame/GameControl';
 import { i18nMgr } from '../../../../../i18n/i18nMgr';
 import { CPErrorCode } from '../../../../../i18n/CPErrorCode';
@@ -208,13 +209,34 @@ export default class UIPlayerInfo extends UIBasePlus {
         // 判断是否是自己
         let gc = GameCache.Instance;
         this._isSelf = gc.nUserId === this._player.userID || gc.userId === this._player.userID;
-        // 先用桌位数据即时显示
+        // 清除上一次面板残留的战绩数据，避免切换玩家时看到旧值
+        this.refreshDataDescriptions();
+        // 先用桌位数据即时显示基础信息
         this.refreshBasicInfo({
             nick_name: this._player.nick,
             avatar: this._player.headPic,
             sex: this._player.sex,
             random_num: this._player.userID
         });
+        // 缓存命中则立刻覆盖：公共信息 + 战绩（对齐 Unity 的 GetUserPublicData / CheckUserStatsItemData）
+        const cache = GameplayPlayerInfoCache.Instance;
+        const cachedInfo = cache.getPublicInfoSync(this._player.userID);
+        if (cachedInfo) {
+            this.refreshBasicInfo(cachedInfo as any);
+        }
+        const cachedStats = cache.getStatsSync(this._player.userID);
+        if (cachedStats) {
+            this.refreshDataPanel(cachedStats);
+        } else {
+            // 内存未命中时异步从 IndexedDB 拉一次，命中后再刷新
+            cache.warmFromDB(this._player.userID).then(() => {
+                if (!cc.isValid(this.node) || !this._player) return;
+                const info2 = cache.getPublicInfoSync(this._player.userID);
+                if (info2) this.refreshBasicInfo(info2 as any);
+                const stats2 = cache.getStatsSync(this._player.userID);
+                if (stats2) this.refreshDataPanel(stats2);
+            });
+        }
         // 根据是否自身调整 UI
         this.refreshSelfState();
         // 默认选中 Data tab
@@ -402,6 +424,7 @@ export default class UIPlayerInfo extends UIBasePlus {
             console.log('[UIPlayerInfo] reqUserInfo response data:', JSON.stringify(res?.data));
             if (res?.data) {
                 this.refreshBasicInfo(res.data);
+                GameplayPlayerInfoCache.Instance.updatePublicInfo(res.data);
                 this.reqUserStats(res.data.random_num);
             }
         });
@@ -733,6 +756,7 @@ export default class UIPlayerInfo extends UIBasePlus {
             if (!cc.isValid(this.node)) return;
             if (res?.data) {
                 this.refreshDataPanel(res.data);
+                GameplayPlayerInfoCache.Instance.updateStats(random_num, res.data);
             }
         });
     }

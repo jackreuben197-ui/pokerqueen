@@ -52,6 +52,7 @@ import UIComponent, { PrefabUI } from '../../ui/UIComponent';
 import { CardType } from '../CardTypeUtil';
 import { CPlayer } from '../CPlayer';
 import { GameCache } from '../GameCache';
+import { GameplayPlayerInfoCache } from '../GameplayPlayerInfoCache';
 import Seat from '../seat/Seat';
 import {
     SeatAddChips,
@@ -236,6 +237,10 @@ export default class TexasGameProtocol {
         this.TryRenderRemoteVideoForSeat(mSeat);
         // 刷新麦克风图标（新人坐下可能需要显示静音图标）
         this._refreshAllMicIcons();
+        // 新玩家入座 → 预取战绩 + 公共信息缓存（对齐 Unity CacheUserDataOnSitDown）
+        if (randomId) {
+            GameplayPlayerInfoCache.Instance.prefetch([randomId]);
+        }
     }
 
     /// <summary>
@@ -348,6 +353,11 @@ export default class TexasGameProtocol {
         this.game.UpdateStartGameState();
         // 刷新麦克风图标（自己坐下后更新静音/喇叭状态）
         this._refreshAllMicIcons();
+        // 自己坐下 → 预取自己的战绩 + 公共信息缓存（对齐 Unity CacheUserDataOnSitDown）
+        const selfId = GameCache.Instance.nUserId;
+        if (selfId) {
+            GameplayPlayerInfoCache.Instance.prefetch([selfId]);
+        }
     }
 
     /// <summary>

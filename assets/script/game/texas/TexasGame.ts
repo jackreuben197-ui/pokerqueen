@@ -28,6 +28,7 @@ import {
 import ProtocolAgency from '../../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../../net/websocket/ProtocolCode';
 import { Def, RoomInfo } from '../../protobuf/holdem/define_pb';
+import { GameplayPlayerInfoCache } from '../GameplayPlayerInfoCache';
 import { ServerMessageWinner } from '../../protobuf/holdem/recv_th_winner_pb';
 import { ClientMessageAction } from '../../protobuf/holdem/req_th_action_pb';
 import { ClientMessageAddTime } from '../../protobuf/holdem/req_th_add_time_pb';
@@ -994,6 +995,15 @@ export default class TexasGame {
             }
             //更新玩家离线状态
             mSeat.UpdateOnOrOffLine();
+        }
+        // 进入牌桌时批量预取所有玩家的公共信息 + 战绩缓存（对齐 Unity CacheUserDataByGameInner）
+        const prefetchIds: number[] = [];
+        for (let i = 0, n = rec.playersList.length; i < n; i++) {
+            const uid = rec.playersList[i].userRid;
+            if (uid && prefetchIds.indexOf(uid) === -1) prefetchIds.push(uid);
+        }
+        if (prefetchIds.length > 0) {
+            GameplayPlayerInfoCache.Instance.prefetch(prefetchIds);
         }
         if (this.gamestatus == GameState.NOT_START) {
             this.ShowWaitForStartTips();
