@@ -17,7 +17,11 @@ const PREVIEW_DIR = path.join(ROOT, 'preview-templates')
 const BUILD_HTML = path.join(BUILD_DIR, 'index.html')
 const PREVIEW_HTML = path.join(PREVIEW_DIR, 'index.html')
 
-const PROTOBUF_SRC = path.join(ROOT, 'deps', 'h5-game', 'node_modules', 'google-protobuf', 'google-protobuf.js')
+const PROTOBUF_SRC = [
+  path.join(ROOT, 'deps', 'h5-game', 'node_modules', 'google-protobuf', 'google-protobuf.js'),
+  path.join(ROOT, '..', 'h5-game', 'node_modules', 'google-protobuf', 'google-protobuf.js'),
+  path.join(ROOT, 'node_modules', 'google-protobuf', 'google-protobuf.js'),
+].find(p => fs.existsSync(p)) || null
 const PROTOBUF_PREVIEW_DEST = path.join(PREVIEW_DIR, 'assets', 'vendor', 'google-protobuf.js')
 
 // --- 工具函数 ---
@@ -88,12 +92,15 @@ if (fs.existsSync(buildAssets)) {
 }
 
 // --- 步骤 2.5：同步 protobuf runtime 到 preview-templates ---
-if (fs.existsSync(PROTOBUF_SRC)) {
+if (PROTOBUF_SRC) {
   copyFileSync(PROTOBUF_SRC, PROTOBUF_PREVIEW_DEST)
-  console.log('同步 protobuf runtime: deps/h5-game/node_modules/google-protobuf/google-protobuf.js → preview-templates/assets/vendor/google-protobuf.js')
+  console.log('同步 protobuf runtime:', PROTOBUF_SRC, '→ preview-templates/assets/vendor/google-protobuf.js')
   console.log('  ✓ protobuf runtime 已同步')
 } else {
-  console.warn('⚠ 未找到 protobuf runtime:', PROTOBUF_SRC)
+  console.warn('⚠ 未找到 protobuf runtime，已尝试路径:')
+  console.warn('    deps/h5-game/node_modules/google-protobuf/')
+  console.warn('    ../h5-game/node_modules/google-protobuf/')
+  console.warn('    node_modules/google-protobuf/')
 }
 
 // --- 步骤 3：读取并提取 build index.html 资源 ---
@@ -355,6 +362,9 @@ const PREVIEW_PROTOBUF_FALLBACK = `
 
         project.require = function (request, path) {
           if (request === 'google-protobuf') {
+            // Let __quick_compile__'s dep table resolve the bundled module first
+            var _r = originalRequire.call(this, request, path)
+            if (_r) return _r
             return ensureGoogCompat(window.jspb)
           }
 
