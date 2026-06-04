@@ -468,7 +468,7 @@ export class UIMTTModel {
         // }), null);
     }
 
-    RequestMTTDetails(matchID, resultCallback, exceptionCallback) {
+    RequestMTTDetails(matchID: number, resultCallback: ((code: number) => void) | null, exceptionCallback: ((content: any) => void) | null) {
         let requestData = {};
         let self = this;
         HttpRequest.Send({
@@ -495,7 +495,11 @@ export class UIMTTModel {
                     resultCallback(responseData.code);
                 }
             }.bind(this),
-            onFailure: function (content) {}.bind(this)
+            onFailure: function (content: any) {
+                if (exceptionCallback) {
+                    exceptionCallback(content);
+                }
+            }.bind(this)
         });
     }
 

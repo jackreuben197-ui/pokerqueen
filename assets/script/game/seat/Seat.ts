@@ -833,6 +833,48 @@ export default class Seat {
         this.uirc.transSmallCardBacks.active = false;
     }
 
+    public ResetCardsUI(): void {
+        const resetCard = (cardInfo: CardUIInfo) => {
+            if (!cardInfo) return;
+            if (cardInfo.imageCard) {
+                cc.Tween.stopAllByTarget(cardInfo.imageCard);
+                cardInfo.imageCard.stopAllActions();
+                cardInfo.imageCard.active = false;
+                cardInfo.imageCard.color = cc.Color.WHITE;
+                cardInfo.imageCard.scale = 1;
+            }
+            if (cardInfo.imageBack?.node) {
+                cc.Tween.stopAllByTarget(cardInfo.imageBack.node);
+                cardInfo.imageBack.node.stopAllActions();
+                cardInfo.imageBack.node.active = false;
+                cardInfo.imageBack.node.opacity = 255;
+                cardInfo.imageBack.node.color = cc.Color.WHITE;
+            }
+            if (cardInfo.imageSelect?.node) {
+                cardInfo.imageSelect.node.active = false;
+            }
+        };
+
+        this.uirc.imageCards?.forEach(resetCard);
+        this.uirc.imageSmallCards?.forEach(resetCard);
+        this.uirc.imageSmallCardBacks?.forEach(cardBack => {
+            const node = cardBack?.node;
+            if (!node) return;
+            cc.Tween.stopAllByTarget(node);
+            node.stopAllActions();
+            node.active = false;
+            node.opacity = 255;
+        });
+        if (this.uirc.transSmallCardBacks) {
+            cc.Tween.stopAllByTarget(this.uirc.transSmallCardBacks);
+            this.uirc.transSmallCardBacks.stopAllActions();
+            this.uirc.transSmallCardBacks.active = false;
+        }
+        cc.Tween.stopAllByTarget(this.deal_sequence_obj);
+        this.deal_sequence_obj = {};
+        this.ResetShowCardsId();
+    }
+
     /// <summary>
     /// 刷新庄家标识
     /// </summary>
@@ -1817,7 +1859,7 @@ export default class Seat {
         this.UpdateVoiceprintState(VoiceprintState.None);
         this.HideReturnGame();
         this.HideBubbleInsuranceCountDown();
-        this.HideCardBack();
+        this.ResetCardsUI();
         this.HideHeadCD();
         this.RefreshNickCoinVisible(false);
         this.ClearMushroomTag();

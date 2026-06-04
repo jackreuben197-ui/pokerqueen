@@ -305,10 +305,14 @@ export default class ProtocolAgency extends cc.Component {
                 this.gTimeStamp = (body as any).timestamp;
             }
         }
-        // 拆和卓进房间
+        // 拆并桌进房间
+        // - 玩家尚未进入牌桌（MTT 大厅等开赛 → 第一次分桌）：在此处直接启动 EnterTexas 进程
+        // - 玩家已在牌桌内（拆并桌换房）：交由 MTT 状态机 ExchangeRoom 状态注册的 handler 处理
+        //   对齐 Unity TexasMttGameMessageHandler.OnMsgNotificationRoomReady（复用同一 entrance/game 实例，仅换 roomId 后重跑 Launch）
         if (code == ProtocolCode.Protocol_Holdem_NotificationRoomReady) {
-            this._mttExchangeRoomReady(body);
-            return;
+            if (this._mttExchangeRoomReady(body)) {
+                return;
+            }
         }
         GC.notify.post(code, body, roomid, matchid);
         if (!DevConfig.IS_OLD) {
@@ -319,13 +323,23 @@ export default class ProtocolAgency extends cc.Component {
         body_ua = null;
     }
 
-    static _mttExchangeRoomReady(data: ServerMessageNotificationRoomReady.AsObject) {
+    /**
+     * 处理 NotificationRoomReady：仅在未进入牌桌时发起 EnterTexas 进程。
+     * @returns true 表示已处理（调用方应中断派发）；false 表示由游戏内状态机处理
+     */
+    static _mttExchangeRoomReady(data: ServerMessageNotificationRoomReady.AsObject): boolean {
         console.log('# MTT: _mttExchangeRoomReady');
-        if (data == null) return;
-        if (data.room.matchId == 0) return;
+        if (data == null) return true;
+        if (data.room.matchId == 0) return true;
+        // 玩家已在 MTT 牌桌内（拆并桌换房）：交给状态机里注册的 handler 处理
+        if (GameCache.Instance.CurGame != null) {
+            return false;
+        }
+        // 玩家尚未进入牌桌（第一次分桌）：进入 Texas 进程
         GameCache.Instance.match_id = data.room.matchId;
         GameCache.Instance.room_id = data.room.roomId;
         ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas);
+        return true;
     }
 
     static _readNumber(ua: Uint8Array, offset: number, size: number): number {

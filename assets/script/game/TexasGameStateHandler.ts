@@ -1,6 +1,8 @@
 /**
  * TexasGameStateHandler
  */
+import GC from '../frame/GameControl';
+import { ProtocolCode } from '../net/websocket/ProtocolCode';
 import { ServerMessageHandClear } from '../protobuf/holdem/recv_th_hand_clear_pb';
 import { ServerMessagePublicCards } from '../protobuf/holdem/recv_th_public_cards_pb';
 import { ServerMessageStartInfo } from '../protobuf/holdem/recv_th_start_info_pb';
@@ -10,10 +12,14 @@ import GlobalSession from '../session/GlobalSession';
 import { StateHandler } from '../statemachine/StateHandler';
 import UIComponent, { PrefabUI } from '../ui/UIComponent';
 import { i18nMgr } from '../i18n/i18nMgr';
+import { CPErrorCode } from '../i18n/CPErrorCode';
+import { UIMTTModel } from '../new_mtt/UIMTTModel';
 import { GameCache } from './GameCache';
+import MTTGameProtocol from './protocol/MTTGameProtocol';
 import TexasGame from './texas/TexasGame';
 import { TexasGameState } from './TexasGameState';
 import type { ProcedureReturnNavigateParam } from '../procedure/ProcedureReturn';
+import MTTGameUtils from './util/MTTGameUtils';
 
 interface TexasGameExitSourceData {
     response?: unknown;
@@ -120,15 +126,124 @@ export class TexasGameStateHandlerExit extends StateHandler {
 export class TexasGameStateHandlerExchangeRoom extends StateHandler {
     public Name: string = 'TexasGameStateHandlerExchangeRoom';
 
+    // MTT 拆并桌等待新房间分配的超时时间（秒），对齐 Unity TexasGameStateHandlerExchangeRoom.WAIT_TIMEOUT_THRESHOLD
+    private static readonly WAIT_TIMEOUT_MS: number = 10_000;
+
+    private _timeoutTimer: number = 0;
+    private _protocol: MTTGameProtocol = null;
+    private _isActive: boolean = false;
+    private _isHandlingTimeout: boolean = false;
+
     public Enter(entity?: any): void {
+        super.Enter(entity);
         let game: TexasGame = entity as TexasGame;
         if (!game) return;
+
+        this._isActive = true;
+        this._isHandlingTimeout = false;
+
+        // 1. 移除旧房间的玩法消息回调，避免拆桌过渡期收到旧房残留消息时误处理
+        game.RemoveMsgHandler();
+
+        // 2. 单独挂载 NotificationRoomReady 回调（仅本状态接收）
+        const protocol = game.TexasGameProtocol as MTTGameProtocol;
+        if (protocol) {
+            this._protocol = protocol;
+            GC.notify.remove(
+                ProtocolCode.Protocol_Holdem_NotificationRoomReady,
+                protocol.Protocol_Holdem_NotificationRoomReady_Handler,
+                protocol
+            );
+            GC.notify.register(
+                ProtocolCode.Protocol_Holdem_NotificationRoomReady,
+                protocol.Protocol_Holdem_NotificationRoomReady_Handler,
+                protocol
+            );
+        }
+
+        // 3. 提示玩家等待拆桌
+        UIComponent.Instance.Toast(i18nMgr.Get('Waiting_split _table'));
+
+        // 4. 超时兜底：10s 内未收到 NotificationRoomReady 则拉 MTT 详情恢复进桌，失败才退出
+        this._timeoutTimer = setTimeout(() => {
+            this._timeoutTimer = 0;
+            this.HandleWaitRoomReadyTimeout(game);
+        }, TexasGameStateHandlerExchangeRoom.WAIT_TIMEOUT_MS) as unknown as number;
     }
 
     public Execute(entity?: any): void {}
 
+    private HandleWaitRoomReadyTimeout(game: TexasGame): void {
+        if (this._isHandlingTimeout) {
+            return;
+        }
+
+        this._isHandlingTimeout = true;
+        const matchId = GameCache.Instance.match_id;
+
+        UIMTTModel.Instance.RequestMTTDetails(
+            matchId,
+            (code: number) => {
+                this._isHandlingTimeout = false;
+                if (!this._isActive) {
+                    return;
+                }
+
+                if (code != 0) {
+                    UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(code));
+                    game.SMAgency.ChangeGameState(TexasGameState.Exit, null);
+                    return;
+                }
+
+                const mttInfo = UIMTTModel.Instance.MttInfo;
+                const storeChips = Number(mttInfo?.state?.store ?? 0);
+
+                const utils = game.TexasGameUtils as MTTGameUtils;
+                if (!utils?.HandlePartialBringIn) {
+                    game.SMAgency.ChangeGameState(TexasGameState.Exit, null);
+                    return;
+                }
+
+                utils.HandlePartialBringIn(storeChips, bringInCode => {
+                    if (!this._isActive) {
+                        return;
+                    }
+
+                    if (bringInCode == 0) {
+                        game.SMAgency.ChangeGameState(TexasGameState.Launch, null);
+                    } else {
+                        UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(bringInCode));
+                        game.SMAgency.ChangeGameState(TexasGameState.Exit, null);
+                    }
+                });
+            },
+            (httpState: any) => {
+                this._isHandlingTimeout = false;
+                if (!this._isActive) {
+                    return;
+                }
+
+                UIComponent.Instance.Toast(`HTTPRequestStates: ${httpState}`);
+                game.SMAgency.ChangeGameState(TexasGameState.Exit, null);
+            }
+        );
+    }
+
     public Exit(entity?: any): void {
         super.Exit(entity);
+        this._isActive = false;
+        if (this._timeoutTimer) {
+            clearTimeout(this._timeoutTimer);
+            this._timeoutTimer = 0;
+        }
+        if (this._protocol) {
+            GC.notify.remove(
+                ProtocolCode.Protocol_Holdem_NotificationRoomReady,
+                this._protocol.Protocol_Holdem_NotificationRoomReady_Handler,
+                this._protocol
+            );
+            this._protocol = null;
+        }
     }
 }
 
