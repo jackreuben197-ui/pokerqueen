@@ -329,7 +329,7 @@
       "ctor": "Float64Array",
       "array": [
         -160,
-        -304,
+        -314,
         0,
         0,
         0,
@@ -514,7 +514,7 @@
       "ctor": "Float64Array",
       "array": [
         468,
-        1100,
+        1110,
         0,
         0,
         0,
@@ -626,8 +626,8 @@
     "_alignFlags": 4,
     "_left": 0,
     "_right": 0,
-    "_top": 0,
-    "_bottom": -160,
+    "_top": 448,
+    "_bottom": -170,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -637,7 +637,7 @@
     "_isAbsHorizontalCenter": true,
     "_isAbsVerticalCenter": true,
     "_originalWidth": 0,
-    "_originalHeight": 0,
+    "_originalHeight": 2400,
     "_id": ""
   },
   {
