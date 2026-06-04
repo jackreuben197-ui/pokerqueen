@@ -700,6 +700,10 @@ export default class UITexas extends BaseScene {
             this.adjustSeatYOffset();
             // 偏移量计算完后，刷新已有座位的实际位置
             this.applySeatOffset();
+            // 座位移动后重新计算操作面板位置，避免遮挡牌面
+            if (this.game) {
+                this.game.InitOperationPos();
+            }
         }, 0);
         // TODO: 测试用 — 绘制 safeArea.top 参考白线，上线前移除
         this.drawSafeAreaTopLine();
