@@ -28,6 +28,7 @@ import UITexasMenu from './ui/UITexasMenu';
 import GameUtil, { GameEnterType, some_pos } from './util/GameUtil';
 import Seat from './seat/Seat';
 import ToastManager from '../manager/ToastManager';
+import H5MsgMgr from '../H5MsgMgr';
 import AgoraManager from '../net/agora/AgoraManager';
 import AgoraVideoRender from '../net/agora/AgoraVideoRender';
 import { WebUserRoomBringin, WWW } from '../net/https/WebRequest';
@@ -688,32 +689,54 @@ export default class UITexas extends BaseScene {
         if (view_height <= limit_height) {
             this.main.height = 2688;
             let scale = view_height / 2688;
-            scale *= 1.09;
+            scale *= 1;
             this.main.setScale(scale, scale);
         } else {
             this.main.setScale(1, 1);
             this.main.height = view_height;
         }
-        // RemainingSquidCount 锚点 (0,1)，将其定位到距屏幕左侧 20px
-        this.adjustRemainingSquidX();
         // 延迟到下一帧计算座位偏移，确保 Widget 布局已完成
         this.scheduleOnce(() => {
             this.adjustSeatYOffset();
             // 偏移量计算完后，刷新已有座位的实际位置
             this.applySeatOffset();
         }, 0);
+        // TODO: 测试用 — 绘制 safeArea.top 参考白线，上线前移除
+        this.drawSafeAreaTopLine();
     }
 
     /**
-     * 将 RemainingSquidCount 的 x 定位到距屏幕左侧 20px
-     * main 缩放后，需将 Canvas 坐标反向换算回 main 局部坐标
+     * TODO: 测试用 — 在 safeArea.top 位置画一条 2px 白线，上线前移除
+     * 线从屏幕最左到最右，位于屏幕顶部往下 safeArea.top 像素处
      */
-    private adjustRemainingSquidX() {
-        if (!this.RemainingSquidCount || !this.main) return;
-        const scale = this.main.scaleX;
-        const visibleWidth = cc.view.getVisibleSize().width;
-        // Canvas 坐标系中屏幕左边缘 + 20px，换算到 main 局部坐标
-        this.RemainingSquidCount.x = (-visibleWidth / 2 + 20 - this.main.x) / scale;
+    private drawSafeAreaTopLine(): void {
+        const safeTopCss = H5MsgMgr.safeArea.top;
+        if (safeTopCss <= 0) return;
+        // 移除旧的测试线
+        const oldLine = this.node.getChildByName('__safeAreaTopLine');
+        if (oldLine) oldLine.destroy();
+        // 将 H5 逻辑像素转换为 CC 游戏像素
+        const frameHeight = cc.view.getFrameSize().height;
+        const visibleHeight = cc.view.getVisibleSize().height;
+        const ratio = frameHeight > 0 ? visibleHeight / frameHeight : 1;
+        const safeTop = safeTopCss * ratio;
+        const visibleSize = cc.view.getVisibleSize();
+        const canvas = this.node;
+        // 创建线条节点
+        const lineNode = new cc.Node('__safeAreaTopLine');
+        const g = lineNode.addComponent(cc.Graphics);
+        g.lineWidth = 4;
+        g.strokeColor = new cc.Color(255, 255, 255, 255);
+        // canvas 坐标系：原点在中心，y 向上为正
+        // 屏幕顶部 = visibleSize.height / 2，往下 safeTop 游戏像素
+        const y = visibleSize.height / 2 - safeTop;
+        const xLeft = -visibleSize.width / 2;
+        const xRight = visibleSize.width / 2;
+        g.moveTo(xLeft, y);
+        g.lineTo(xRight, y);
+        g.stroke();
+        lineNode.zIndex = 9999;
+        canvas.addChild(lineNode);
     }
 
     /**
@@ -759,13 +782,13 @@ export default class UITexas extends BaseScene {
         for (const seat of this.game.listSeat) {
             seat.UpdateSeatUIInfo(seat.ClientSeatId);
         }
-        // 按钮上移 seatYOffset / 2
-        const halfOffset = some_pos.seatYOffset / 2;
+        // 按钮上移 seatYOffset / 2（有 safeArea 时不移动，由 safeArea 适配接管）
+        const halfOffset = H5MsgMgr.safeArea.top > 0 ? 0 : some_pos.seatYOffset;
         if (this.btn_menu) this.btn_menu.y = this._btnMenuOrigY + halfOffset;
         if (this.btn_im) this.btn_im.y = this._btnImOrigY + halfOffset;
         if (this.btn_safety_guard) this.btn_safety_guard.y = this._btnSafetyGuardOrigY + halfOffset;
         if (this.table_add_chip) this.table_add_chip.y = this._tableAddChipOrigY + halfOffset;
-        if (this.RemainingSquidCount) this.RemainingSquidCount.y = this._remainingSquidCountOrigY + halfOffset;
+        if (this.RemainingSquidCount) this.RemainingSquidCount.y = this._remainingSquidCountOrigY;
     }
 
     //进入初始UI
