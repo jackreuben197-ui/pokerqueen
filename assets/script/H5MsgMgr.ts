@@ -182,6 +182,21 @@ export interface WsMessageTextPayload {
 
 export type WsMessagePayload = WsMessageBinaryPayload | WsMessageTextPayload;
 
+/** 安全区信息（H5 通过 h5Ready 携带，用于适配刘海屏/底部安全区等）。*/
+export interface SafeArea {
+    top: number;
+    left: number;
+    right: number;
+    bottom: number;
+    source?: string;
+}
+
+/** H5 → CC：H5/CC 握手完成通知；已有登录态时附带 token，同时携带安全区信息。*/
+export interface H5ReadyPayload {
+    token?: string;
+    safeArea?: SafeArea;
+}
+
 /** H5 → CC：websocket 发生错误。*/
 export interface WsErrorPayload {
     message: string;
@@ -387,7 +402,7 @@ export interface SyncDiamondConfigPayload {
 // 如需新增 action，同步更新：h5-game/src/bridge/protocol/h5ToCocos.ts
 export interface H5ToCocosPayloadMap {
     // 握手
-    h5Ready: undefined;
+    h5Ready: H5ReadyPayload;
     h5Ack: undefined;
     // WebSocket 生命周期（H5 代理后上报）
     wsOpen: WsOpenPayload;
@@ -488,6 +503,11 @@ function isBinaryEnvelope(payload: OutgoingPayload): payload is WsSendBinaryEnve
 export default class H5MsgMgr {
     private static _instance: H5MsgMgr = null;
 
+    /** H5 握手时上报的安全区信息，供全局读取。*/
+    static safeArea: SafeArea = { top: 0, left: 0, right: 0, bottom: 0, source: '' };
+    /** H5 握手时携带的 token（如有登录态）。*/
+    static handshakeToken: string = '';
+
     static get Instance(): H5MsgMgr {
         if (!H5MsgMgr._instance) {
             H5MsgMgr._instance = new H5MsgMgr();
@@ -560,8 +580,14 @@ export default class H5MsgMgr {
      */
     startHandshake(): void {
         // H5 主动发来 h5Ready → CC 回复 ccAck
-        this.on('h5Ready', () => {
-            this.tracelog.debug('收到 h5Ready，回复 ccAck');
+        this.on('h5Ready', (payload: H5ReadyPayload) => {
+            this.tracelog.debug('收到 h5Ready，回复 ccAck', JSON.stringify(payload));
+            if (payload?.safeArea) {
+                H5MsgMgr.safeArea = payload.safeArea;
+            }
+            if (payload?.token) {
+                H5MsgMgr.handshakeToken = payload.token;
+            }
             H5MsgMgr.sendToH5('ccAck', 1);
             this._completeHandshake();
         });
