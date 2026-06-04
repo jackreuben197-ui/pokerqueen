@@ -20,6 +20,9 @@ import UIComponent from '../ui/UIComponent';
 
 // 保险：即便 Register 回包没到，超过该时长也会强制隐藏遮罩，避免用户卡在黑屏上。
 const REGISTER_HIDE_FALLBACK_MS = 8000;
+const RECONNECTING_TEXT_KEY = 'UILogin_ReconnectText';
+const RECONNECTING_TEXT_FALLBACK = '重连中......';
+const RECONNECT_TEXT_SECONDS = 60;
 
 export default class BridgeReconnectComponent {
     public static get Instance(): BridgeReconnectComponent {
@@ -29,6 +32,8 @@ export default class BridgeReconnectComponent {
     private _started = false;
     private _maskShown = false;
     private _hideFallbackTimer: number = 0;
+    private _textCountdownTimer: number = 0;
+    private _reconnectSecondsLeft = RECONNECT_TEXT_SECONDS;
     // 重连流程开始 → EnterRoom 回包到达期间为 true，供牌桌业务（如 ReEnterClear）判断。
     private _inReconnectFlow = false;
 
@@ -132,14 +137,41 @@ export default class BridgeReconnectComponent {
     }
 
     private _showMask(): void {
-        if (this._maskShown) return;
         if (!Main.Reconnect || !Main.Reconnect.isValid) return;
+        if (this._maskShown) return;
+        this._startMaskTextCountdown();
         Main.Reconnect.active = true;
         this._maskShown = true;
     }
 
+    private _setMaskText(): void {
+        const warnLabel = Main.Reconnect.getChildByName('warn_label')?.getComponent(cc.Label);
+        if (!warnLabel) return;
+        const text = i18nMgr.Get(RECONNECTING_TEXT_KEY);
+        warnLabel.string =
+            text === RECONNECTING_TEXT_KEY ? RECONNECTING_TEXT_FALLBACK : text.replace('{0}', String(this._reconnectSecondsLeft));
+    }
+
+    private _startMaskTextCountdown(): void {
+        this._stopMaskTextCountdown();
+        this._reconnectSecondsLeft = RECONNECT_TEXT_SECONDS;
+        this._setMaskText();
+        this._textCountdownTimer = window.setInterval(() => {
+            this._reconnectSecondsLeft = Math.max(0, this._reconnectSecondsLeft - 1);
+            this._setMaskText();
+        }, 1000);
+    }
+
+    private _stopMaskTextCountdown(): void {
+        if (this._textCountdownTimer) {
+            clearInterval(this._textCountdownTimer);
+            this._textCountdownTimer = 0;
+        }
+    }
+
     private _hideMask(): void {
         if (!this._maskShown) return;
+        this._stopMaskTextCountdown();
         if (Main.Reconnect && Main.Reconnect.isValid) {
             Main.Reconnect.active = false;
         }
