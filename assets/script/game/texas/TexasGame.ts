@@ -652,6 +652,10 @@ export default class TexasGame {
         'desk7',              // 7
         'desk8',              // 8
         'desk9',              // 9
+        'desk10',             // 10
+        'desk11',             // 11
+        'desk12',             // 12
+        'desk13',             // 13
     ];
 
     SetDeskType(type: number) {
@@ -667,8 +671,8 @@ export default class TexasGame {
         }
     }
 
-    /** desk9 的 Spine SkeletonData 缓存 */
-    private static _deskSpineSkeletonData: sp.SkeletonData = null;
+    /** 各桌布类型的 Spine SkeletonData 缓存（按 deskType 索引） */
+    private static _deskSpineDataMap: { [type: number]: sp.SkeletonData } = {};
     /** 当前桌布 Spine 动画节点 */
     private _deskSpineNode: cc.Node = null;
 
@@ -677,7 +681,12 @@ export default class TexasGame {
      * key: deskType, value: cc.resources 下的 SkeletonData 路径（不含扩展名）
      */
     private static readonly DESK_SPINE_MAP: { [type: number]: string } = {
+        8: 'spine/desk8/33background',
         9: 'spine/desk9/44paizuo',
+        10: 'spine/desk10/skeleton',
+        11: 'spine/desk11/77Background',
+        12: 'spine/desk12/nature_japan88',
+        13: 'spine/desk13/backgroud99',
     };
 
     /**
@@ -697,21 +706,21 @@ export default class TexasGame {
             const spineNode = new cc.Node('DeskSpine');
             const skeleton = spineNode.addComponent(sp.Skeleton);
             skeleton.skeletonData = skeletonData;
-            // 放在 sp_table_bg 节点下，层级在其上方
             parentNode.addChild(spineNode);
             skeleton.setAnimation(0, 'animation', true);
             this._deskSpineNode = spineNode;
         };
 
-        if (TexasGame._deskSpineSkeletonData) {
-            createNode(TexasGame._deskSpineSkeletonData);
+        const cached = TexasGame._deskSpineDataMap[type];
+        if (cached) {
+            createNode(cached);
         } else {
             cc.resources.load(spinePath, sp.SkeletonData, (err, skeletonData: sp.SkeletonData) => {
                 if (err) {
                     console.error('[TexasGame] 加载桌布 Spine 失败:', spinePath, err.message);
                     return;
                 }
-                TexasGame._deskSpineSkeletonData = skeletonData;
+                TexasGame._deskSpineDataMap[type] = skeletonData;
                 createNode(skeletonData);
             });
         }
