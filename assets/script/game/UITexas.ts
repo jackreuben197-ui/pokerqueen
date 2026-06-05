@@ -705,43 +705,8 @@ export default class UITexas extends BaseScene {
                 this.game.InitOperationPos();
             }
         }, 0);
-        // TODO: 测试用 — 绘制 safeArea.top 参考白线，上线前移除
-        this.drawSafeAreaTopLine();
     }
 
-    /**
-     * TODO: 测试用 — 在 safeArea.top 位置画一条 2px 白线，上线前移除
-     * 线从屏幕最左到最右，位于屏幕顶部往下 safeArea.top 像素处
-     */
-    private drawSafeAreaTopLine(): void {
-        const safeTopCss = H5MsgMgr.safeArea.top;
-        if (safeTopCss <= 0) return;
-        // 移除旧的测试线
-        const oldLine = this.node.getChildByName('__safeAreaTopLine');
-        if (oldLine) oldLine.destroy();
-        // 将 H5 逻辑像素转换为 CC 游戏像素
-        const frameHeight = cc.view.getFrameSize().height;
-        const visibleHeight = cc.view.getVisibleSize().height;
-        const ratio = frameHeight > 0 ? visibleHeight / frameHeight : 1;
-        const safeTop = safeTopCss * ratio;
-        const visibleSize = cc.view.getVisibleSize();
-        const canvas = this.node;
-        // 创建线条节点
-        const lineNode = new cc.Node('__safeAreaTopLine');
-        const g = lineNode.addComponent(cc.Graphics);
-        g.lineWidth = 4;
-        g.strokeColor = new cc.Color(255, 255, 255, 255);
-        // canvas 坐标系：原点在中心，y 向上为正
-        // 屏幕顶部 = visibleSize.height / 2，往下 safeTop 游戏像素
-        const y = visibleSize.height / 2 - safeTop;
-        const xLeft = -visibleSize.width / 2;
-        const xRight = visibleSize.width / 2;
-        g.moveTo(xLeft, y);
-        g.lineTo(xRight, y);
-        g.stroke();
-        lineNode.zIndex = 9999;
-        canvas.addChild(lineNode);
-    }
 
     /**
      * 小屏适配：根据 main_menu 上边缘计算所有座位的 y 偏移量
