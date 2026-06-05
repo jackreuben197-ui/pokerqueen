@@ -649,6 +649,7 @@ export default class TexasGame {
         'desk4',              // 4
         'desk5',              // 5
         'desk6',              // 6
+        'desk7',              // 7
     ];
 
     SetDeskType(type: number) {
@@ -657,9 +658,53 @@ export default class TexasGame {
         const spriteFrame = AssetContext.getAsset(textureName, AssetFold.texture_table)
             || AssetContext.getAsset(TexasGame.DESK_TEXTURE_MAP[0], AssetFold.texture_table);
         this.uirc.sp_table_bg.spriteFrame = spriteFrame;
+        this._fitDeskCover();
         if (this.isBombPot) {
             this.bombPotFeature?.PlayOpenScreen();
         }
+    }
+
+    /**
+     * 桌布 Cover 适配：保持贴图原始比例铺满 1242×2688，居中裁切多余部分
+     *
+     * 原理：
+     * 1. 关闭 Widget（避免它强制拉伸节点尺寸导致 Sprite 拉伸变形）
+     * 2. 将节点尺寸设为贴图原始尺寸（Sprite 按 1:1 渲染，不变形）
+     * 3. 计算 cover 缩放 = max(目标宽/贴图宽, 目标高/贴图高)
+     * 4. 设置 scale，节点居中（锚点 0.5,0.5），溢出部分被屏幕裁切
+     */
+    private _fitDeskCover(): void {
+        const sprite = this.uirc.sp_table_bg;
+        if (!sprite || !sprite.spriteFrame) return;
+        const node = sprite.node;
+        const sf = sprite.spriteFrame;
+
+        // 贴图原始尺寸
+        const texW = sf.getOriginalSize().width;
+        const texH = sf.getOriginalSize().height;
+
+        // 目标尺寸（设计分辨率）
+        const targetW = 1242;
+        const targetH = 2688;
+
+        // 宽高比一致则无需 cover 处理
+        if (Math.abs(texW / texH - targetW / targetH) < 0.01) {
+            const widget = node.getComponent(cc.Widget);
+            if (widget) widget.enabled = true;
+            node.setScale(1, 1);
+            return;
+        }
+
+        // 关闭 Widget，避免它强制设置节点尺寸导致拉伸
+        const widget = node.getComponent(cc.Widget);
+        if (widget) widget.enabled = false;
+
+        // 节点尺寸设为贴图原始尺寸，Sprite 按 1:1 渲染不变形
+        node.setContentSize(texW, texH);
+
+        // Cover 缩放：取较大值，保证宽和高都 >= 目标
+        const scale = Math.max(targetW / texW, targetH / texH);
+        node.setScale(scale, scale);
     }
 
     //////////////////////////////////////////////////////////////////////////
