@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "db5de217-1724-475b-b496-2f576b9ae99b",
+  "uuid": "a4e78bc6-93a4-45a6-8f0d-60c55e519fdb",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -12,11 +12,11 @@
   "height": 2688,
   "platformSettings": {},
   "subMetas": {
-    "desk6": {
+    "desk10": {
       "ver": "1.0.6",
-      "uuid": "ef834fbc-d441-4cb3-8916-dbd3725ee459",
+      "uuid": "d4076c73-b508-40de-ae37-acd8ec68649b",
       "importer": "sprite-frame",
-      "rawTextureUuid": "db5de217-1724-475b-b496-2f576b9ae99b",
+      "rawTextureUuid": "a4e78bc6-93a4-45a6-8f0d-60c55e519fdb",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,

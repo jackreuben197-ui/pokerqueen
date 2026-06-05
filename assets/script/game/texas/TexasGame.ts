@@ -650,6 +650,8 @@ export default class TexasGame {
         'desk5',              // 5
         'desk6',              // 6
         'desk7',              // 7
+        'desk8',              // 8
+        'desk9',              // 9
     ];
 
     SetDeskType(type: number) {
@@ -659,8 +661,67 @@ export default class TexasGame {
             || AssetContext.getAsset(TexasGame.DESK_TEXTURE_MAP[0], AssetFold.texture_table);
         this.uirc.sp_table_bg.spriteFrame = spriteFrame;
         this._fitDeskCover();
+        this._playDeskSpine(type);
         if (this.isBombPot) {
             this.bombPotFeature?.PlayOpenScreen();
+        }
+    }
+
+    /** desk9 的 Spine SkeletonData 缓存 */
+    private static _deskSpineSkeletonData: sp.SkeletonData = null;
+    /** 当前桌布 Spine 动画节点 */
+    private _deskSpineNode: cc.Node = null;
+
+    /**
+     * 需要播放 Spine 桌布动画的 deskType 映射
+     * key: deskType, value: cc.resources 下的 SkeletonData 路径（不含扩展名）
+     */
+    private static readonly DESK_SPINE_MAP: { [type: number]: string } = {
+        9: 'spine/desk9/44paizuo',
+    };
+
+    /**
+     * 根据 deskType 播放对应的桌布 Spine 动画
+     * 非动画桌布类型会清理已有节点
+     */
+    private _playDeskSpine(type: number): void {
+        // 先清理已有的 Spine 节点
+        this._clearDeskSpine();
+
+        const spinePath = TexasGame.DESK_SPINE_MAP[type];
+        if (!spinePath) return;
+
+        const createNode = (skeletonData: sp.SkeletonData) => {
+            if (this.IsDispose || !this.uirc?.sp_table_bg) return;
+            const parentNode = this.uirc.sp_table_bg.node;
+            const spineNode = new cc.Node('DeskSpine');
+            const skeleton = spineNode.addComponent(sp.Skeleton);
+            skeleton.skeletonData = skeletonData;
+            // 放在 sp_table_bg 节点下，层级在其上方
+            parentNode.addChild(spineNode);
+            skeleton.setAnimation(0, 'animation', true);
+            this._deskSpineNode = spineNode;
+        };
+
+        if (TexasGame._deskSpineSkeletonData) {
+            createNode(TexasGame._deskSpineSkeletonData);
+        } else {
+            cc.resources.load(spinePath, sp.SkeletonData, (err, skeletonData: sp.SkeletonData) => {
+                if (err) {
+                    console.error('[TexasGame] 加载桌布 Spine 失败:', spinePath, err.message);
+                    return;
+                }
+                TexasGame._deskSpineSkeletonData = skeletonData;
+                createNode(skeletonData);
+            });
+        }
+    }
+
+    /** 清理桌布 Spine 动画节点 */
+    private _clearDeskSpine(): void {
+        if (this._deskSpineNode) {
+            this._deskSpineNode.destroy();
+            this._deskSpineNode = null;
         }
     }
 
@@ -4608,6 +4669,8 @@ export default class TexasGame {
         // 停止游戏背景音乐
         SoundComponent.Instance.stopMusic();
         this.IsDispose = true;
+        // 清理桌布 Spine 动画
+        this._clearDeskSpine();
         this.reportKeepOpen = false;
         this.ClearTableUI();
         this.ClearOther();
