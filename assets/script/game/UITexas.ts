@@ -54,9 +54,10 @@ export class PotInfo {
 
     constructor(public trans: cc.Node) {
         if (null != trans) {
-            this.imagePotFrame = trans.getChildByName('Image_PotFrame').getComponent(cc.Sprite);
-            this.imagePot = trans.getChildByName('Image_Pot').getComponent(cc.Sprite);
-            this.textPot = trans.getChildByName('Text_Pot').getComponent(cc.Label);
+            // Pot 节点自身的 Sprite 就是九宫格背景（原 Image_PotFrame 子节点已合并）
+            this.imagePotFrame = trans.getComponent(cc.Sprite);
+            this.imagePot = trans.getChildByName('Image_Pot')?.getComponent(cc.Sprite);
+            this.textPot = trans.getChildByName('Text_Pot')?.getComponent(cc.Label);
             this.imagePotText = trans.getChildByName('Image_PotText')?.getComponent(cc.Label);
         }
     }
