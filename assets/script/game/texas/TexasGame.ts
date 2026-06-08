@@ -1233,6 +1233,9 @@ export default class TexasGame {
         this.jackpotFeature?.EnterGame();
         this.ShowCriticalInfo();
         this.RefreshRoomManagerStateAndStartButton();
+        // 同步右上角"加筹码"按钮可见性：重连/刷新进房后 mainPlayer.seatID 才赋值，
+        // 而 EnterInitUI 的初次刷新发生在 Roomers 包到达之前；此处兜底刷新，避免按钮一直不显示。
+        this.uirc?.refreshViewOnSitAndStandup(this.UserSitdown());
         // 视频房间重入：如果自己已坐下，自动开启本地摄像头
         this._restoreVideoOnReenter();
     }
