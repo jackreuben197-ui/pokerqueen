@@ -41,6 +41,8 @@ export interface WsConnectPayload {
     /** 当前房间/比赛 ID（随连接请求一并下发，供 H5 日志参考）。*/
     roomId?: number;
     matchId?: number;
+    /** Cocos 主动要求强制重连：复位 attempt/timer，立即重连一次。*/
+    force?: boolean;
 }
 
 /** Cocos → H5：关闭 websocket 请求。*/
@@ -109,6 +111,8 @@ export interface H5NavigatePayload {
     replace?: boolean;
     /** 可选：跳转前先显示 H5 层。*/
     ensureVisible?: boolean;
+    /** 可选：跳转完成后打开登录弹窗；用于替代旧登录页。*/
+    openLoginModal?: boolean;
 }
 
 /**
@@ -116,6 +120,15 @@ export interface H5NavigatePayload {
  * 保留此别名以兼容存量 ProcedureReturn / LeaveNotification 引用。
  */
 export type H5RouteData = H5NavigatePayload;
+
+/**
+ * Cocos → H5：通知 H5 切换 WebSocket 心跳频率，对齐 HeartbeatComponent 的 normal/in-gameplay 区分。
+ *   normal      —— 牌桌外，5s/次
+ *   in-gameplay —— 牌桌内，1s/次
+ */
+export interface SetHeartbeatModePayload {
+    mode: 'normal' | 'in-gameplay';
+}
 
 // ─── CC → H5 Payload 映射表 ────────────────────────────────────────────────
 // sendToH5<T>(action, msgtype, payload) 通过 T 自动推导 payload 的精确类型。
@@ -142,6 +155,8 @@ export interface CocosToH5PayloadMap {
     h5Show: H5VisibilityPayload | undefined;
     // 路由跳转
     h5Navigate: H5NavigatePayload;
+    // 心跳频率切换（对齐 HeartbeatComponent.SendIntervalNormal/InGameplay）
+    setHeartbeatMode: SetHeartbeatModePayload;
 }
 
 // ─── H5 → CC Payload 类型定义 ──────────────────────────────────────────────
@@ -167,6 +182,21 @@ export interface WsMessageTextPayload {
 
 export type WsMessagePayload = WsMessageBinaryPayload | WsMessageTextPayload;
 
+/** 安全区信息（H5 通过 h5Ready 携带，用于适配刘海屏/底部安全区等）。*/
+export interface SafeArea {
+    top: number;
+    left: number;
+    right: number;
+    bottom: number;
+    source?: string;
+}
+
+/** H5 → CC：H5/CC 握手完成通知；已有登录态时附带 token，同时携带安全区信息。*/
+export interface H5ReadyPayload {
+    token?: string;
+    safeArea?: SafeArea;
+}
+
 /** H5 → CC：websocket 发生错误。*/
 export interface WsErrorPayload {
     message: string;
@@ -177,6 +207,29 @@ export interface WsClosedPayload {
     code?: number;
     reason?: string;
     wasClean?: boolean;
+}
+
+/** H5 → CC：已安排一次重连尝试。 */
+export interface WsReconnectingPayload {
+    attempt: number;
+    delayMs: number;
+    /** close=连接关闭, heartbeat=心跳超时, visibility=切回前台, online=网络恢复, force=Cocos 主动触发。*/
+    reason: 'close' | 'heartbeat' | 'visibility' | 'online' | 'force';
+}
+
+/** H5 → CC：重连成功（已 onopen 并完成 REGISTER 发送）。 */
+export interface WsReconnectedPayload {
+    url: string;
+    attempt: number;
+    /** 从首次失败到本次成功的总耗时（毫秒）。 */
+    durationMs: number;
+}
+
+/** H5 → CC：放弃重连（命中次数上限/整体超时/鉴权失败）。 */
+export interface WsReconnectFailedPayload {
+    reason: 'max-attempts' | 'overall-timeout' | 'auth-invalid';
+    attempts: number;
+    durationMs: number;
 }
 
 /** H5 → CC：对话框操作结果。*/
@@ -349,13 +402,17 @@ export interface SyncDiamondConfigPayload {
 // 如需新增 action，同步更新：h5-game/src/bridge/protocol/h5ToCocos.ts
 export interface H5ToCocosPayloadMap {
     // 握手
-    h5Ready: undefined;
+    h5Ready: H5ReadyPayload;
     h5Ack: undefined;
     // WebSocket 生命周期（H5 代理后上报）
     wsOpen: WsOpenPayload;
     wsMessage: WsMessagePayload;
     wsError: WsErrorPayload;
     wsClosed: WsClosedPayload;
+    // 重连流程（H5 代理后通知 Cocos 显示遮罩/恢复玩法）
+    wsReconnecting: WsReconnectingPayload;
+    wsReconnected: WsReconnectedPayload;
+    wsReconnectFailed: WsReconnectFailedPayload;
     // UI 回调
     dialogResult: DialogResultPayload;
     panelEvent: PanelEventPayload;
@@ -446,6 +503,11 @@ function isBinaryEnvelope(payload: OutgoingPayload): payload is WsSendBinaryEnve
 export default class H5MsgMgr {
     private static _instance: H5MsgMgr = null;
 
+    /** H5 握手时上报的安全区信息，供全局读取。*/
+    static safeArea: SafeArea = { top: 0, left: 0, right: 0, bottom: 0, source: '' };
+    /** H5 握手时携带的 token（如有登录态）。*/
+    static handshakeToken: string = '';
+
     static get Instance(): H5MsgMgr {
         if (!H5MsgMgr._instance) {
             H5MsgMgr._instance = new H5MsgMgr();
@@ -518,8 +580,14 @@ export default class H5MsgMgr {
      */
     startHandshake(): void {
         // H5 主动发来 h5Ready → CC 回复 ccAck
-        this.on('h5Ready', () => {
-            this.tracelog.debug('收到 h5Ready，回复 ccAck');
+        this.on('h5Ready', (payload: H5ReadyPayload) => {
+            this.tracelog.debug('收到 h5Ready，回复 ccAck', JSON.stringify(payload));
+            if (payload?.safeArea) {
+                H5MsgMgr.safeArea = payload.safeArea;
+            }
+            if (payload?.token) {
+                H5MsgMgr.handshakeToken = payload.token;
+            }
             H5MsgMgr.sendToH5('ccAck', 1);
             this._completeHandshake();
         });

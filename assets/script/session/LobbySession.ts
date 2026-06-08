@@ -3,6 +3,7 @@
  */
 import { GameConfig } from '../config/GameConfig';
 import GC from '../frame/GameControl';
+import BridgeReconnectComponent from '../funcomponent/BridgeReconnectComponent';
 import HeartbeatComponent from '../funcomponent/HeartbeatComponent';
 import ReconnectComponent from '../funcomponent/ReconnectComponent';
 import TokenRefreshComponent from '../funcomponent/TokenRefreshComponent';
@@ -60,6 +61,8 @@ export default class LobbySession {
         if (body?.status == 0) {
             this.heartbeatComponent.active = true;
             ReconnectComponent.Instance.ChangeStatus(1);
+            // H5 桥接模式：Register 成功即可清掉重连遮罩；CurGame 存在时由 ReEnterRoom 内部接管。
+            BridgeReconnectComponent.Instance.OnRegisterAck();
             if (GameCache.Instance.CurGame) {
                 GameCache.Instance.CurGame.ReEnterRoom();
             } else {

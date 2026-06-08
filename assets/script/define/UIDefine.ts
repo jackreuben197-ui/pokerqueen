@@ -1176,13 +1176,12 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Path: 'main/lobby/me/UILanguage',
         Title: 'tc_PpNL8LVJ'
     },
-    //问题反馈
+    //举报界面
     UIReport: {
-        UIType: UIType.Form,
-        Name: 'UILaUIReportnguage',
-        Bundle: null,
-        Path: 'main/lobby/me/UIReport',
-        Title: 'tc_wV5t3xsr'
+        UIType: UIType.CommonUI,
+        Name: 'UIReport',
+        Bundle: 'texas',
+        Path: 'prefab/widgetLayer/UIReport'
     },
     //webview通用面板
     UIWebCommon: {

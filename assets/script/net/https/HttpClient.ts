@@ -84,11 +84,11 @@ export default class HttpClient {
     static __response(response: string, onFailure: HttpCallback, onSuccess: HttpCallback, api: string) {
         switch (response) {
             case 'timeout':
-                ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10126));
+                ToastManager.Instance.showToast(CPErrorCode.LanguageDescription(10126));
                 onFailure && onFailure(response);
                 break;
             case 'error':
-                ToastManager.Instance.createToast(i18nMgr.Get('errorDefault'));
+                ToastManager.Instance.showToast(i18nMgr.Get('errorDefault'));
                 onFailure && onFailure(response);
                 break;
             default:
@@ -97,7 +97,7 @@ export default class HttpClient {
                     response_json = JSON.parse(response);
                 } catch (e) {
                     //json 解析异常
-                    ToastManager.Instance.createToast(i18nMgr.Get('json_exception'));
+                    ToastManager.Instance.showToast(i18nMgr.Get('json_exception'));
                     onFailure && onFailure(null);
                     return;
                 }
@@ -211,10 +211,10 @@ let HttpCodeHandler = (api: string, code: number, message: string = '') => {
         case 90001:
         case 90003:
         case 20038:
-            message?.length > 0 && ToastManager.Instance.createToast(message);
+            message?.length > 0 && ToastManager.Instance.showToast(message);
             break;
         default:
-            ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(code));
+            ToastManager.Instance.showToast(CPErrorCode.ServerErrorDescription(code));
             break;
     }
 };

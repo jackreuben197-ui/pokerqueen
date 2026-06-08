@@ -3,7 +3,7 @@ import { UIPrefabType } from '../crazyPoker/gameplay/common/core/UIPrefabDefinit
 import { IUIDefine, UIType } from '../define/EIDefine';
 import { i18nMgr } from '../i18n/i18nMgr';
 import Main from '../Main';
-import ToastManager, { IToastConfig } from '../manager/ToastManager';
+import ToastManager from '../manager/ToastManager';
 import UIBase from '../ui/UIBase';
 import { UIBoardMgr, UICommonMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from './UIMgr';
 const { ccclass } = cc._decorator;
@@ -85,22 +85,14 @@ export default class UIComponent {
         this.prefab_node_map.get(prefab_name)?.getComponent(prefab_name);
     }
 
-    Toast(content?: string, customConfig?: IToastConfig, cb?: () => void) {
-        if (content) {
-            ToastManager.Instance.createToast(content, customConfig, cb);
-        } else {
-            //提示暂未开放
-            ToastManager.Instance.createToast(i18nMgr.Get('adaptation10301'), customConfig, cb);
-        }
+    Toast(content?: string, cb?: () => void) {
+        const msg = content || i18nMgr.Get('adaptation10301');
+        ToastManager.Instance.showToast(msg, undefined, cb);
     }
 
     ToastLanguage(content?: string) {
-        if (content) {
-            ToastManager.Instance.createToast(i18nMgr.Get(content));
-        } else {
-            //提示暂未开放
-            ToastManager.Instance.createToast(i18nMgr.Get('adaptation10301'));
-        }
+        const msg = content ? i18nMgr.Get(content) : i18nMgr.Get('adaptation10301');
+        ToastManager.Instance.showToast(msg);
     }
 
     //显示节点

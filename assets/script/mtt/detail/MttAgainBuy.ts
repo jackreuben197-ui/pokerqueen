@@ -483,7 +483,7 @@ export default class MttAgainBuy extends BaseForm {
                     }
                     this.close();
                 } else {
-                    ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response.code));
+                    ToastManager.Instance.showToast(CPErrorCode.ServerErrorDescription(response.code));
                 }
             });
         }

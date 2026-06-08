@@ -136,7 +136,7 @@ export default class MttListItem extends ListItem {
                 UIComponent.open(UIDefine.MttDetailForm, this._data);
                 // UIComponent.open(UIDefine.MttRealTime, this._data);
             } else {
-                ToastManager.Instance.createToast('PleaseJoinAUnionFirs');
+                ToastManager.Instance.showToast('PleaseJoinAUnionFirs');
             }
         }
     }

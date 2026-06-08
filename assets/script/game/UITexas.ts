@@ -28,6 +28,7 @@ import UITexasMenu from './ui/UITexasMenu';
 import GameUtil, { GameEnterType, some_pos } from './util/GameUtil';
 import Seat from './seat/Seat';
 import ToastManager from '../manager/ToastManager';
+import H5MsgMgr from '../H5MsgMgr';
 import AgoraManager from '../net/agora/AgoraManager';
 import AgoraVideoRender from '../net/agora/AgoraVideoRender';
 import { WebUserRoomBringin, WWW } from '../net/https/WebRequest';
@@ -42,12 +43,6 @@ import { Def } from '../protobuf/holdem/define_pb';
 import UITexasReportComponent from './UITexasReportComponent';
 import GGEvent from '../event/GGEvent';
 const LN = '[UI][UITexas]';
-
-export class PlayerBarrageRecord {
-    public name: string;
-    public time: number;
-    public msg: string;
-}
 
 export class PotInfo {
     public pot: number;
@@ -151,7 +146,6 @@ export default class UITexas extends BaseScene {
     RemainingSquidCount: cc.Node = null;
     RemainingSquidLabelCount: cc.Label = null;
     SquidSwitch: cc.Node = null;
-    SquidStandUp: cc.Node = null;
     SquidJoinLabel: cc.Label = null;
     SquidStart: cc.Node = null;
     SquidStartAnim: cc.Animation = null;
@@ -252,22 +246,6 @@ export default class UITexas extends BaseScene {
     game: TexasGame = null;
     TransPot_Pool: SimpleNodePool = null;
     TransAllPot_Pool: SimpleNodePool = null;
-    //#region 弹幕界面
-    /// <summary>
-    /// 弹幕界面
-    /// </summary>
-    private barragePanel: cc.Node = null;
-    private barrageItemOrdinary: cc.Node = null;
-    private barrageItemCool: cc.Node = null;
-    private barrageItemColorful: cc.Node = null;
-    private barrageParenPos: cc.Node[] = null;
-    private barrageIndex: number = 0;
-    public barrageRecordList: PlayerBarrageRecord[] = [];
-    public barrageCountDown: number = 0;
-    private barrageAnimationSequence_obj = {};
-    private barrageAnimationSequence: Sequence<{}> = null;
-
-    //#endregion
     ///////////////////////////////////
     override update(dt: number) {
         this.game?.Update(dt);
@@ -338,10 +316,6 @@ export default class UITexas extends BaseScene {
         }
         if (this.SquidSwitch) {
             this.SquidSwitch.active = false;
-        }
-        this.SquidStandUp = this.main?.getChildByName('squidStandUp');
-        if (this.SquidStandUp) {
-            this.SquidStandUp.active = false;
         }
         this.SquidStart = this.getChildNodeOrComponent('squid_start');
         this.SquidStartAnim = this.SquidStart?.getComponent(cc.Animation);
@@ -524,7 +498,6 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this._buttonShare, this.OnButtonShareClick);
         this.setButtonClick(this.JackpotButton, this.onClickJackpot);
         this.setButtonClick(this.SquidSwitch, this.onClickJoinGame);
-        this.setButtonClick(this.SquidStandUp, this.onClickSquidStandUp);
         this.setButtonClick(this.Button_AddOn, this.onClickAddOn);
         //this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
         this.setButtonClick(this.Button_CancelTrust, this.onClickCancelTrust);
@@ -716,33 +689,24 @@ export default class UITexas extends BaseScene {
         if (view_height <= limit_height) {
             this.main.height = 2688;
             let scale = view_height / 2688;
-            scale *= 1.09;
+            scale *= 1;
             this.main.setScale(scale, scale);
         } else {
             this.main.setScale(1, 1);
             this.main.height = view_height;
         }
-        // RemainingSquidCount 锚点 (0,1)，将其定位到距屏幕左侧 20px
-        this.adjustRemainingSquidX();
         // 延迟到下一帧计算座位偏移，确保 Widget 布局已完成
         this.scheduleOnce(() => {
             this.adjustSeatYOffset();
             // 偏移量计算完后，刷新已有座位的实际位置
             this.applySeatOffset();
+            // 座位移动后重新计算操作面板位置，避免遮挡牌面
+            if (this.game) {
+                this.game.InitOperationPos();
+            }
         }, 0);
     }
 
-    /**
-     * 将 RemainingSquidCount 的 x 定位到距屏幕左侧 20px
-     * main 缩放后，需将 Canvas 坐标反向换算回 main 局部坐标
-     */
-    private adjustRemainingSquidX() {
-        if (!this.RemainingSquidCount || !this.main) return;
-        const scale = this.main.scaleX;
-        const visibleWidth = cc.view.getVisibleSize().width;
-        // Canvas 坐标系中屏幕左边缘 + 20px，换算到 main 局部坐标
-        this.RemainingSquidCount.x = (-visibleWidth / 2 + 20 - this.main.x) / scale;
-    }
 
     /**
      * 小屏适配：根据 main_menu 上边缘计算所有座位的 y 偏移量
@@ -787,13 +751,13 @@ export default class UITexas extends BaseScene {
         for (const seat of this.game.listSeat) {
             seat.UpdateSeatUIInfo(seat.ClientSeatId);
         }
-        // 按钮上移 seatYOffset / 2
-        const halfOffset = some_pos.seatYOffset / 2;
+        // 按钮上移 seatYOffset / 2（有 safeArea 时不移动，由 safeArea 适配接管）
+        const halfOffset = H5MsgMgr.safeArea.top > 0 ? 0 : some_pos.seatYOffset;
         if (this.btn_menu) this.btn_menu.y = this._btnMenuOrigY + halfOffset;
         if (this.btn_im) this.btn_im.y = this._btnImOrigY + halfOffset;
         if (this.btn_safety_guard) this.btn_safety_guard.y = this._btnSafetyGuardOrigY + halfOffset;
         if (this.table_add_chip) this.table_add_chip.y = this._tableAddChipOrigY + halfOffset;
-        if (this.RemainingSquidCount) this.RemainingSquidCount.y = this._remainingSquidCountOrigY + halfOffset;
+        if (this.RemainingSquidCount) this.RemainingSquidCount.y = this._remainingSquidCountOrigY;
     }
 
     //进入初始UI
@@ -802,7 +766,6 @@ export default class UITexas extends BaseScene {
         //this.setActive(this.Button_BringIn, false);
         this.setActive(this.Button_AddOn, false);
         this.setActive(this.SquidSwitch, false);
-        this.setActive(this.SquidStandUp, false);
         this.setActive(this.StartGameButton, false);
         this.setActive(this.BombPotOpen, false);
         this.setActive(this.BombPotLogo, false);
@@ -848,7 +811,6 @@ export default class UITexas extends BaseScene {
             this.Image_ReserveSeatTips,
             this.Image_InsuranceTips,
             this.SquidSwitch,
-            this.SquidStandUp,
             this.StartGameButton,
             this.JackpotButton,
             this.JackpotAnimRoot,
@@ -954,12 +916,6 @@ export default class UITexas extends BaseScene {
         this.game.onClickCurSituation();
     }
 
-    public UpdateBarragePanelActive(): void {
-        //this.barrageAnimationSequence = DOTween.Sequence(this.barrageAnimationSequence_obj);
-        let OpenBarrage: number = +GC.localStore.getItem(StorageKey.OpenBarrage);
-        this.barragePanel && (this.barragePanel.active = OpenBarrage != 2);
-        this.barrageIndex = 0;
-    }
 
     // onClickBringIn() {
     //     UIComponent.open(UIDefine.UIApplyJoin);
@@ -999,10 +955,6 @@ export default class UITexas extends BaseScene {
         this.game?.OnClickSquidJoinSwitch();
     }
 
-    private onClickSquidStandUp() {
-        this.game?.OnClickSquidStandUp();
-    }
-
     /**
      * 分享按钮点击回调
      * 点击分享按钮，分享牌局信息
@@ -1010,7 +962,7 @@ export default class UITexas extends BaseScene {
     private OnButtonShareClick() {
         console.log(`==>onButtonShareClick`);
         // TODO: 实现分享逻辑
-        ToastManager.Instance.createToast('还未开发');
+        ToastManager.Instance.showToast('还未开发');
     }
 
     public async ShowInsuranceTipJieSuan(paynum: number) {
@@ -1058,24 +1010,24 @@ export default class UITexas extends BaseScene {
     private async click_btn_effect() {
         // 非视频房间
         if (GameCache.Instance._videoModel === VideoModel.NONE) {
-            ToastManager.Instance.createToast(i18nMgr.Get('UIEffectNoVideo'));
+            ToastManager.Instance.showToast(i18nMgr.Get('UIEffectNoVideo'));
             return;
         }
         // 节能模式未开启
         if (GameCache.Instance._videoPowerSaving !== 1) {
-            ToastManager.Instance.createToast(i18nMgr.Get('UIEffectNoPowerSaving'));
+            ToastManager.Instance.showToast(i18nMgr.Get('UIEffectNoPowerSaving'));
             return;
         }
         // 摄像头未开启
         const headNode = this.game?.listSeat?.find((s: Seat) => s.IsMySeat)?.uirc?.Raw_Head?.node;
         const vr = headNode?.getComponent(AgoraVideoRender);
         if (!vr?.isRendering) {
-            ToastManager.Instance.createToast(i18nMgr.Get('UIEffectNoCamera'));
+            ToastManager.Instance.showToast(i18nMgr.Get('UIEffectNoCamera'));
             return;
         }
         const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
         if (!mySeat) {
-            ToastManager.Instance.createToast('请先入座');
+            ToastManager.Instance.showToast('请先入座');
             return;
         }
         // videoMaskId 循环 +1，大于4回到1
@@ -1100,12 +1052,12 @@ export default class UITexas extends BaseScene {
 
     private async click_btn_audio() {
         if (GameCache.Instance._videoModel === VideoModel.NONE) {
-            ToastManager.Instance.createToast('当前房间未开启语音');
+            ToastManager.Instance.showToast('当前房间未开启语音');
             return;
         }
         const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
         if (!mySeat) {
-            ToastManager.Instance.createToast('请先入座');
+            ToastManager.Instance.showToast('请先入座');
             return;
         }
         const agora = AgoraManager.Instance;
@@ -1129,26 +1081,26 @@ export default class UITexas extends BaseScene {
 
     private async click_btn_camera() {
         if (GameCache.Instance._videoModel === VideoModel.NONE) {
-            ToastManager.Instance.createToast('当前房间未开启视频');
+            ToastManager.Instance.showToast('当前房间未开启视频');
             return;
         }
         if (GameCache.Instance._videoModel === VideoModel.FULL_TIME) {
-            ToastManager.Instance.createToast(i18nMgr.Get('UIVideoModelverifyFullTime02'));
+            ToastManager.Instance.showToast(i18nMgr.Get('UIVideoModelverifyFullTime02'));
             return;
         }
         // 麦序模式：无论是否在操作，都不允许手动切换摄像头
         if (GameCache.Instance._videoModel === VideoModel.SEQUENCE) {
-            ToastManager.Instance.createToast(i18nMgr.Get('UICantOpenVideoOnMicSeq'));
+            ToastManager.Instance.showToast(i18nMgr.Get('UICantOpenVideoOnMicSeq'));
             return;
         }
         if (GameCache.Instance._randomVideoActive) {
             const remainSec = Math.max(0, Math.ceil((GameCache.Instance._randomVideoEndTime - Date.now()) / 1000));
-            ToastManager.Instance.createToast(i18nMgr.Get('UIVideoModelverifyRandom02').replace('{0}', String(remainSec)));
+            ToastManager.Instance.showToast(i18nMgr.Get('UIVideoModelverifyRandom02').replace('{0}', String(remainSec)));
             return;
         }
         const mySeat = this.game?.listSeat?.find((s: Seat) => s.IsMySeat);
         if (!mySeat) {
-            ToastManager.Instance.createToast('请先入座');
+            ToastManager.Instance.showToast('请先入座');
             return;
         }
         const agora = AgoraManager.Instance;

@@ -1,4 +1,5 @@
 import { UIDefine } from '../../define/UIDefine';
+import { UIConfirmDialogParam } from '../../crazyPoker/gameplay/common/view/common/UIConfirmDialog';
 import { i18nLabel } from '../../i18n/i18nLabel';
 import { i18nMgr } from '../../i18n/i18nMgr';
 import ToastManager from '../../manager/ToastManager';
@@ -8,6 +9,11 @@ import { OutClipsData } from '../new_ui/UIBringOut';
 import TexasGame from '../texas/TexasGame';
 import { GameCache } from '../GameCache';
 import H5MsgMgr from '../../H5MsgMgr';
+import UIDialogComponent, { UIDialogParam } from '../../ui/dialog/UIDialogComponent';
+import { CPErrorCode } from '../../i18n/CPErrorCode';
+import { WebRoomCenterRoomDisbAnd, WWW } from '../../net/https/WebRequest';
+import ProcedureManager from '../../manager/ProcedureManager';
+import { ProcedureEnum } from '../define/EIDefine';
 const { ccclass, property } = cc._decorator;
 const LN = '[UI][UITexasMenu]';
 
@@ -37,6 +43,8 @@ export default class UITexasMenu extends UIBasePlus {
     public btnStand: cc.Button = null;
     @property(cc.Button)
     public btnLeaveGame: cc.Button = null;
+    @property(cc.Button)
+    public btnDissolve: cc.Button = null;
     // BB 开关图片
     @property(cc.SpriteFrame)
     public sfUnchecked: cc.SpriteFrame = null;
@@ -197,16 +205,21 @@ export default class UITexasMenu extends UIBasePlus {
     }
 
     private _updateDisplay() {
+        if (!this.game) return;
         this.btnInsure.node.active = this.game.insurance;
+        const gc = GameCache.Instance;
+        const isDissolve = gc._isRoomManager && gc._isHasDisbandRoomPrivileges;
         if (this.game.UserSitdown()) {
             this.btnBet.node.active = true;
             this.btnHalfLeave.node.active = true;
             this.btnStand.node.active = true;
+            if (this.btnDissolve) this.btnDissolve.node.active = isDissolve;
             return;
         }
         this.btnBet.node.active = false;
         this.btnHalfLeave.node.active = false;
         this.btnStand.node.active = false;
+        if (this.btnDissolve) this.btnDissolve.node.active = isDissolve;
     }
 
     // 菜单内容垂直居中适配
@@ -239,6 +252,7 @@ export default class UITexasMenu extends UIBasePlus {
         this.setButtonClick(this.btnInsure?.node, this.click_insurance);
         this.setButtonClick(this.btnLeaveGame?.node, this.click_leave);
         this.setButtonClick(this.btnShowBB?.node, this.click_bb);
+        this.setButtonClick(this.btnDissolve?.node, this.click_dissolve);
     }
 
     // protected regiterDispatchEvent(): void {
@@ -277,7 +291,7 @@ export default class UITexasMenu extends UIBasePlus {
     //         //UIComponent.open(UIDefine.MyWalletForm);
     //         console.log("跳转充值");
     //     } else {
-    //         ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
+    //         ToastManager.Instance.showToast(i18nMgr.Get("error2005"));
     //     }
     // }
     // click_coin() {
@@ -330,10 +344,36 @@ export default class UITexasMenu extends UIBasePlus {
     click_stand_up() {
         this.click_black();
         if (null == this.game.mainPlayer) {
-            ToastManager.Instance.createToast(i18nMgr.Get('Good_luck'));
-            //需要进行错误重连
-            //Game.EventSystem.Run(EventIdType.GameErrorReconnect);
+            ToastManager.Instance.showToast(i18nMgr.Get('Good_luck'));
             return;
+        }
+        // 鱿鱼模式下的站起需要额外确认逻辑
+        const p = this.game.mainPlayer;
+        if (this.game.squidEnabled && this.game.isGameInSquidRound && p.inSquid) {
+            if (this.game.squidMode === 0) {
+                this.game.Standup();
+                return;
+            }
+            if (this.game.squidMode === 1) {
+                if ((p.squidCount || 0) <= 0) {
+                    UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
+                        title: i18nMgr.Get('UIGuild_TipsTitle'),
+                        content: i18nMgr.Get('UISquid_Tips3'),
+                        commit: i18nMgr.Get('adaptation10012'),
+                        cancel: i18nMgr.Get('adaptation10013'),
+                        commit_click: () => this.game.Standup()
+                    });
+                } else {
+                    UIComponent.open<UIConfirmDialogParam>(UIDefine.UIConfirmDialog, {
+                        title: '',
+                        content: i18nMgr.Get('UIDelayLeaveTips'),
+                        commit: i18nMgr.Get('UILeave'),
+                        cancel: i18nMgr.Get('UIPause_sdXLZk7S'),
+                        commit_click: () => this.game.Standup()
+                    });
+                }
+                return;
+            }
         }
         this.game.Standup();
     }
@@ -467,7 +507,43 @@ export default class UITexasMenu extends UIBasePlus {
 
     click_leave() {
         // this.post(EventName.updateFriendChessView)
+        if (!this.game) {
+            // 房间已关闭，直接退出回大厅
+            const utils = GameCache.Instance.CurGame?.TexasGameUtils;
+            if (utils) {
+                utils.ExitRoom();
+            } else {
+                ProcedureManager.StartProcedure(ProcedureEnum.Return);
+            }
+            return;
+        }
         this.game.onClickExit();
+    }
+
+    /** 解散牌桌 */
+    click_dissolve() {
+        this.click_black();
+        UIComponent.open<UIDialogParam>(UIDefine.UIDialogComponent, {
+            type: UIDialogComponent.DialogType.CommitCancel,
+            title: CPErrorCode.LanguageDescription(10007),
+            content: i18nMgr.Get('UITexasRoomManagerOpTips2'),
+            contentCommit: i18nMgr.Get('UI_Recharge_confirm'),
+            contentCancel: CPErrorCode.LanguageDescription(10013),
+            actionCommit: () => {
+                WWW.Instance.CommonAPI({
+                    web_class: WebRoomCenterRoomDisbAnd,
+                    body: WebRoomCenterRoomDisbAnd.Request({
+                        room_id: GameCache.Instance.room_id
+                    })
+                }).then((res: any) => {
+                    if (res?.code === 0) {
+                        UIComponent.Instance.Toast(i18nMgr.Get('UITexasRoomManagerOpTips3'));
+                    } else {
+                        UIComponent.Instance.Toast(res?.message || CPErrorCode.ServerErrorDescription(res?.code));
+                    }
+                });
+            }
+        });
     }
 
     click_bb() {

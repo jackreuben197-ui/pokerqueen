@@ -722,7 +722,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                     }
                     this.onCloseUI();
                 } else {
-                    ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response.code));
+                    ToastManager.Instance.showToast(CPErrorCode.ServerErrorDescription(response.code));
                 }
             });
         }

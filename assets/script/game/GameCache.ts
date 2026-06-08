@@ -323,7 +323,6 @@ export class GameCache {
     public serviceId: string = null;
     public ClubUserType: number = 0; //1管理员；2贵宾；3玩家
     public IsMTTbefor: number = 0; //MTT比赛开始前
-    public IsAllowOpenDanmu: boolean = true;
     public IsAllowOpenMatchApply: boolean = false; //报名申请开关
     public IsAllowOpenShieldWord: boolean = false; //屏蔽字开关
     public SimulatorName: string = null; //模拟器名称

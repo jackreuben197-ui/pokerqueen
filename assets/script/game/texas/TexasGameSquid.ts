@@ -77,7 +77,6 @@ export default class TexasGameSquid {
         this.host.isGameInSquidRound = (rec.handInfo as any).inSquid || false;
         this.host.squidEnabled = this.host.squidBase > 0 || this.host.isGameInSquidRound || (entryAny.room_squid_on || 0) > 0;
         this.RefreshJoinSwitch();
-        this.RefreshStandUpBtn();
     }
 
     public TryShowGuideDialog(): void {
@@ -111,7 +110,6 @@ export default class TexasGameSquid {
             seat?.UpdateSquidTag(this.host.squidEnabled, this.host.isGameInSquidRound);
         });
         this.RefreshJoinSwitch();
-        this.RefreshStandUpBtn();
         this.RefreshGlobalRemain();
     }
 
@@ -262,7 +260,6 @@ export default class TexasGameSquid {
             this.host.uirc.RemainingSquidCount.active = false;
         }
         this.RefreshJoinSwitch();
-        this.RefreshStandUpBtn();
         this.host.UpdateRoomDes();
     }
 
@@ -289,7 +286,6 @@ export default class TexasGameSquid {
             this.host.uirc.RemainingSquidCount.active = false;
         }
         this.RefreshJoinSwitch();
-        this.RefreshStandUpBtn();
     }
 
     private GetMarkedTotal(): number {
@@ -365,18 +361,6 @@ export default class TexasGameSquid {
         }
     }
 
-    private CanShowStandUpBtn(): boolean {
-        const p = this.host.mainPlayer;
-        if (!p) return false;
-        if (p.seatID < 0) return false;
-        return this.host.squidEnabled && this.host.isGameInSquidRound;
-    }
-
-    private RefreshStandUpBtn(): void {
-        const standUpNode = this.host.uirc?.SquidStandUp as cc.Node;
-        if (!standUpNode) return;
-        standUpNode.active = this.CanShowStandUpBtn();
-    }
 
     private BuildRoundEndRows(rec?: ServerMessageWinner.AsObject): SquidEndRowData[] {
         if (!rec?.resultsList?.length) {

@@ -60,15 +60,12 @@ export default class ProcedureInit extends ProcedureBase {
 
     /**
      * 根据当前窗口宽高比重新计算适配模式并直接应用
-     * 不依赖 getFrameSize()（它在 Canvas 组件和 resizeWithBrowserSize 互相覆盖时返回过时值），
-     * 而是直接读 window.innerWidth/Height，手动更新 _frameSize，再调用 setDesignResolutionSize。
      */
     static updateFitMode(): void {
         const w = window.innerWidth;
         const h = window.innerHeight;
         const w_h_r = w / h;
         this.tracelog.debug('窗口实际分辨率', w, h);
-        // 直接写入引擎的 _frameSize，避免被 Canvas.fitCanvasToWindow 用旧容器值覆盖
         const view = cc.view as any;
         view._frameSize.width = w;
         view._frameSize.height = h;
@@ -80,6 +77,10 @@ export default class ProcedureInit extends ProcedureBase {
         } else {
             cc.view.setDesignResolutionSize(designW, designH, cc.ResolutionPolicy.FIXED_WIDTH);
         }
+        // 触发 Widget 重新对齐：
+        // setDesignResolutionSize 只发出 "design-resolution-changed"，
+        // 而 CCWidgetManager 监听的是 "canvas-resize"，需要手动补发
+        cc.view.emit('canvas-resize');
     }
 
     /**
@@ -88,7 +89,16 @@ export default class ProcedureInit extends ProcedureBase {
     private setCCC() {
         this.tracelog.debug('set frame rate');
         cc.game.setFrameRate(GameConfig.FRAME_RATE); // FPS 设置
-        cc.macro.ENABLE_MULTI_TOUCH = GameConfig.ENABLE_MULTI_TOUCH; // 禁止多点触摸
+        cc.macro.ENABLE_MULTI_RATIO = GameConfig.ENABLE_MULTI_TOUCH; // 禁止多点触摸
+        // 禁用引擎内置 resize 监听
+        cc.view.resizeWithBrowserSize(false);
+        // 替换引擎内部的 _initFrameSize，确保始终读取窗口实际尺寸
+        const view = cc.view as any;
+        view._initFrameSize = function () {
+            this._frameSize.width = window.innerWidth;
+            this._frameSize.height = window.innerHeight;
+            this._isRotated = false;
+        };
     }
 
     //初始化网络配置（static 供其他 Procedure 在 H5 桥接模式下兜底调用）

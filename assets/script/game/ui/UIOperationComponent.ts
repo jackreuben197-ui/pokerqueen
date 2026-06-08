@@ -206,7 +206,6 @@ export default class UIOperationComponent extends UIBase {
         this.regiterDispatchEvent();
         this.hideAllOperationButton();
         this.SetCalibrationWeight();
-        GameCache.Instance.IsAllowOpenDanmu = false;
         this.operationData = obj;
         if (this.isShowingDialog) {
             //UIComponent.Instance.HideUI(UIType.UIDialog);

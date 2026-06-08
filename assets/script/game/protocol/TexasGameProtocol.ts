@@ -52,6 +52,7 @@ import UIComponent, { PrefabUI } from '../../ui/UIComponent';
 import { CardType } from '../CardTypeUtil';
 import { CPlayer } from '../CPlayer';
 import { GameCache } from '../GameCache';
+import { GameplayPlayerInfoCache } from '../GameplayPlayerInfoCache';
 import Seat from '../seat/Seat';
 import {
     SeatAddChips,
@@ -236,6 +237,10 @@ export default class TexasGameProtocol {
         this.TryRenderRemoteVideoForSeat(mSeat);
         // 刷新麦克风图标（新人坐下可能需要显示静音图标）
         this._refreshAllMicIcons();
+        // 新玩家入座 → 预取战绩 + 公共信息缓存（对齐 Unity CacheUserDataOnSitDown）
+        if (randomId) {
+            GameplayPlayerInfoCache.Instance.prefetch([randomId]);
+        }
     }
 
     /// <summary>
@@ -322,7 +327,7 @@ export default class TexasGameProtocol {
                 // 频道已加入，直接渲染
                 this.renderLocalVideoOnMySeat().then(ok => {
                     if (!ok) {
-                        ToastManager.Instance.createToast('无法开启摄像头，请检查浏览器权限后重新入座');
+                        ToastManager.Instance.showToast('无法开启摄像头，请检查浏览器权限后重新入座');
                         setTimeout(() => {
                             this.game.TexasGameUtils.LeaveRoom();
                         }, 3000);
@@ -348,6 +353,11 @@ export default class TexasGameProtocol {
         this.game.UpdateStartGameState();
         // 刷新麦克风图标（自己坐下后更新静音/喇叭状态）
         this._refreshAllMicIcons();
+        // 自己坐下 → 预取自己的战绩 + 公共信息缓存（对齐 Unity CacheUserDataOnSitDown）
+        const selfId = GameCache.Instance.nUserId;
+        if (selfId) {
+            GameplayPlayerInfoCache.Instance.prefetch([selfId]);
+        }
     }
 
     /// <summary>
@@ -884,6 +894,10 @@ export default class TexasGameProtocol {
             return;
         }
         this.game.isAllinGetPlayerCards = true;
+        // 记录是否全部玩家已秀牌（用于控制偷偷看按钮显隐）
+        if (rec.isAll) {
+            this.game.allCardsShown = true;
+        }
         // 保险模式，allin后要收筹码，不用等收到公共牌再收。
         if (this.game.insurance && this.game.GetPublicCardsCount(1) > 0) {
             this.game.PlayRecyclingChipAnimation(null);
@@ -1252,6 +1266,7 @@ export default class TexasGameProtocol {
             } else {
                 mSeat.Player.MttHunterKillAwardOtherPlus += result.mttHunterKillAwardOtherPlus;
             }
+            mSeat.UpdateHunterAward();
             if (!mSeat.IsMySeat) {
                 //自己的牌不用更新
                 mSeat.Player.SetCards(this.game.GetHandCardsByRecList(this.game.MessageWinnerData.resultsList[i].myCardsList));
@@ -1619,7 +1634,10 @@ export default class TexasGameProtocol {
                 );
                 if (!rec.resultsList[i].standUp) {
                     this.game.ShowSeeMorePublic();
-                    this.game.ShowLookHandCard();
+                    // 全部玩家已秀牌时不显示偷偷看按钮
+                    if (!this.game.allCardsShown) {
+                        this.game.ShowLookHandCard();
+                    }
                     this.game.SendViewPlayerCardsNum();
                 }
             }
@@ -1921,6 +1939,7 @@ export default class TexasGameProtocol {
                 mSeat.Player.KeepSeatLeftTime = -1;
             }
             mSeat.Player.MttHunterKillAwardOtherPlus += playerChipChange.mttHunterHeadPlus;
+            mSeat.UpdateHunterAward();
             if (this.game.mainPlayer.seatID == this.game.GetLocalSeatID(playerChipChange.seatId)) {
                 if (
                     playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON ||
@@ -2361,7 +2380,7 @@ export default class TexasGameProtocol {
             console.log('[VideoRoom] 频道就绪时自己已坐下，补渲染本地视频');
             this.renderLocalVideoOnMySeat().then(ok => {
                 if (!ok) {
-                    ToastManager.Instance.createToast('无法开启摄像头，请检查浏览器权限后重新入座');
+                    ToastManager.Instance.showToast('无法开启摄像头，请检查浏览器权限后重新入座');
                     setTimeout(() => {
                         this.game.TexasGameUtils.LeaveRoom();
                     }, 3000);
@@ -2848,7 +2867,7 @@ export default class TexasGameProtocol {
         console.log('[RandomVideo] 将在', countdown, '秒后开始验证，持续', overtime, '秒');
         // 立即 toast 提示：{countdown}秒后开启视频验证
         const toastText = i18nMgr.Get('UIVideoModelverifyRandomCountDown').replace('{0}', String(countdown));
-        ToastManager.Instance.createToast(toastText);
+        ToastManager.Instance.showToast(toastText);
         // 等待 countdown 秒后再开始验证
         await new Promise<void>(resolve => {
             this._randomVideoCountdownTimer = window.setTimeout(() => {
@@ -2868,7 +2887,7 @@ export default class TexasGameProtocol {
         console.log('[RandomVideo] 开始随机验证，持续', overtime, '秒');
         // Toast 提示验证开始
         const startToast = i18nMgr.Get('UIVideoModelverifyRandom02').replace('{0}', String(overtime));
-        ToastManager.Instance.createToast(startToast);
+        ToastManager.Instance.showToast(startToast);
         // 强制开启摄像头并渲染到自己的头像
         await this.renderLocalVideoOnMySeat();
         // 同步按钮状态（禁用关闭按钮）

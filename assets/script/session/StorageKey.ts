@@ -42,7 +42,6 @@ export default class StorageKey {
     // 热更新配置缓存
     static HOT_UPDATE_GLOBAL_CONFIG_CACHE = 'HOT_UPDATE_GLOBAL_CONFIG_CACHE';
     static HOT_UPDATE_ROOM_TEMPLATE_CACHE = 'HOT_UPDATE_ROOM_TEMPLATE_CACHE';
-    static OpenBarrage: string = 'OpenBarrage'; //是否打开弹幕 1 关闭，0 打开
     //=======================设置相关========================
     //桌布样式
     static SettingDeskType = 'SettingDeskType';

@@ -28,6 +28,7 @@ import {
 import ProtocolAgency from '../../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../../net/websocket/ProtocolCode';
 import { Def, RoomInfo } from '../../protobuf/holdem/define_pb';
+import { GameplayPlayerInfoCache } from '../GameplayPlayerInfoCache';
 import { ServerMessageWinner } from '../../protobuf/holdem/recv_th_winner_pb';
 import { ClientMessageAction } from '../../protobuf/holdem/req_th_action_pb';
 import { ClientMessageAddTime } from '../../protobuf/holdem/req_th_add_time_pb';
@@ -428,6 +429,10 @@ export default class TexasGame {
     /// </summary>
     public isAllinGetPlayerCards: boolean = false;
     /// <summary>
+    /// 本局是否所有玩家都已秀牌（showcards 的 isAll=true），此时不需要显示偷偷看按钮
+    /// </summary>
+    public allCardsShown: boolean = false;
+    /// <summary>
     /// 保险模式，三张公共牌后，没有保险可买，马上来了第四张公共牌 0默认 1首次收筹码并位移
     /// </summary>
     public fuck4thPCardByInsuranceState: number = 0;
@@ -635,12 +640,141 @@ export default class TexasGame {
         return this.setting.deskType;
     }
 
+    /** 桌布贴图名称映射：索引对应 deskType，值为 texture_table prefab 中的节点名 */
+    private static readonly DESK_TEXTURE_MAP: string[] = [
+        'new_ui_top_table_0', // 0 - 默认桌布
+        'desk1',              // 1
+        'desk2',              // 2
+        'desk3',              // 3
+        'desk4',              // 4
+        'desk5',              // 5
+        'desk6',              // 6
+        'desk7',              // 7
+        'desk8',              // 8
+        'desk9',              // 9
+        'desk10',             // 10
+        'desk11',             // 11
+        'desk12',             // 12
+        'desk13',             // 13
+    ];
+
     SetDeskType(type: number) {
         this.setting.deskType = type;
-        this.uirc.sp_table_bg.spriteFrame = AssetContext.getAsset(`new_ui_top_table_0`, AssetFold.texture_table);
+        const textureName = TexasGame.DESK_TEXTURE_MAP[type] || TexasGame.DESK_TEXTURE_MAP[0];
+        const spriteFrame = AssetContext.getAsset(textureName, AssetFold.texture_table)
+            || AssetContext.getAsset(TexasGame.DESK_TEXTURE_MAP[0], AssetFold.texture_table);
+        this.uirc.sp_table_bg.spriteFrame = spriteFrame;
+        this._fitDeskCover();
+        this._playDeskSpine(type);
         if (this.isBombPot) {
             this.bombPotFeature?.PlayOpenScreen();
         }
+    }
+
+    /** 各桌布类型的 Spine SkeletonData 缓存（按 deskType 索引） */
+    private static _deskSpineDataMap: { [type: number]: sp.SkeletonData } = {};
+    /** 当前桌布 Spine 动画节点 */
+    private _deskSpineNode: cc.Node = null;
+
+    /**
+     * 需要播放 Spine 桌布动画的 deskType 映射
+     * key: deskType, value: cc.resources 下的 SkeletonData 路径（不含扩展名）
+     */
+    private static readonly DESK_SPINE_MAP: { [type: number]: string } = {
+        8: 'spine/desk8/33background',
+        9: 'spine/desk9/44paizuo',
+        10: 'spine/desk10/skeleton',
+        11: 'spine/desk11/77Background',
+        12: 'spine/desk12/nature_japan88',
+        13: 'spine/desk13/backgroud99',
+    };
+
+    /**
+     * 根据 deskType 播放对应的桌布 Spine 动画
+     * 非动画桌布类型会清理已有节点
+     */
+    private _playDeskSpine(type: number): void {
+        // 先清理已有的 Spine 节点
+        this._clearDeskSpine();
+
+        const spinePath = TexasGame.DESK_SPINE_MAP[type];
+        if (!spinePath) return;
+
+        const createNode = (skeletonData: sp.SkeletonData) => {
+            if (this.IsDispose || !this.uirc?.sp_table_bg) return;
+            const parentNode = this.uirc.sp_table_bg.node;
+            const spineNode = new cc.Node('DeskSpine');
+            const skeleton = spineNode.addComponent(sp.Skeleton);
+            skeleton.skeletonData = skeletonData;
+            parentNode.addChild(spineNode);
+            skeleton.setAnimation(0, 'animation', true);
+            this._deskSpineNode = spineNode;
+        };
+
+        const cached = TexasGame._deskSpineDataMap[type];
+        if (cached) {
+            createNode(cached);
+        } else {
+            cc.resources.load(spinePath, sp.SkeletonData, (err, skeletonData: sp.SkeletonData) => {
+                if (err) {
+                    console.error('[TexasGame] 加载桌布 Spine 失败:', spinePath, err.message);
+                    return;
+                }
+                TexasGame._deskSpineDataMap[type] = skeletonData;
+                createNode(skeletonData);
+            });
+        }
+    }
+
+    /** 清理桌布 Spine 动画节点 */
+    private _clearDeskSpine(): void {
+        if (this._deskSpineNode) {
+            this._deskSpineNode.destroy();
+            this._deskSpineNode = null;
+        }
+    }
+
+    /**
+     * 桌布 Cover 适配：保持贴图原始比例铺满 1242×2688，居中裁切多余部分
+     *
+     * 原理：
+     * 1. 关闭 Widget（避免它强制拉伸节点尺寸导致 Sprite 拉伸变形）
+     * 2. 将节点尺寸设为贴图原始尺寸（Sprite 按 1:1 渲染，不变形）
+     * 3. 计算 cover 缩放 = max(目标宽/贴图宽, 目标高/贴图高)
+     * 4. 设置 scale，节点居中（锚点 0.5,0.5），溢出部分被屏幕裁切
+     */
+    private _fitDeskCover(): void {
+        const sprite = this.uirc.sp_table_bg;
+        if (!sprite || !sprite.spriteFrame) return;
+        const node = sprite.node;
+        const sf = sprite.spriteFrame;
+
+        // 贴图原始尺寸
+        const texW = sf.getOriginalSize().width;
+        const texH = sf.getOriginalSize().height;
+
+        // 目标尺寸（设计分辨率）
+        const targetW = 1242;
+        const targetH = 2688;
+
+        // 宽高比一致则无需 cover 处理
+        if (Math.abs(texW / texH - targetW / targetH) < 0.01) {
+            const widget = node.getComponent(cc.Widget);
+            if (widget) widget.enabled = true;
+            node.setScale(1, 1);
+            return;
+        }
+
+        // 关闭 Widget，避免它强制设置节点尺寸导致拉伸
+        const widget = node.getComponent(cc.Widget);
+        if (widget) widget.enabled = false;
+
+        // 节点尺寸设为贴图原始尺寸，Sprite 按 1:1 渲染不变形
+        node.setContentSize(texW, texH);
+
+        // Cover 缩放：取较大值，保证宽和高都 >= 目标
+        const scale = Math.max(targetW / texW, targetH / texH);
+        node.setScale(scale, scale);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -977,6 +1111,15 @@ export default class TexasGame {
             //更新玩家离线状态
             mSeat.UpdateOnOrOffLine();
         }
+        // 进入牌桌时批量预取所有玩家的公共信息 + 战绩缓存（对齐 Unity CacheUserDataByGameInner）
+        const prefetchIds: number[] = [];
+        for (let i = 0, n = rec.playersList.length; i < n; i++) {
+            const uid = rec.playersList[i].userRid;
+            if (uid && prefetchIds.indexOf(uid) === -1) prefetchIds.push(uid);
+        }
+        if (prefetchIds.length > 0) {
+            GameplayPlayerInfoCache.Instance.prefetch(prefetchIds);
+        }
         if (this.gamestatus == GameState.NOT_START) {
             this.ShowWaitForStartTips();
         } else {
@@ -985,7 +1128,6 @@ export default class TexasGame {
         this.UpdateAlreadAnte();
         this.UpdateRoomDes();
         this.UpdatePublicCardsNoAnim();
-        this.uirc.UpdateBarragePanelActive();
         mSeat = this.GetSeatByLocalSeatID(this.mainPlayer.seatID);
         if (null != mSeat) {
             this.ResetSeatUIInfo(mSeat.ClientSeatId);
@@ -1503,11 +1645,6 @@ export default class TexasGame {
         this.squidFeature.OnClickJoinSwitch();
     }
 
-    /** 点击鱿鱼玩法快捷站起 */
-    public OnClickSquidStandUp(): void {
-        this.squidFeature.OnClickStandUp();
-    }
-
     /** 统计本轮鱿鱼中仍未拿到标记的人数 */
     public CountSquidNoMarkPlayers(): number {
         return this.squidFeature.CountNoMarkPlayers();
@@ -1834,7 +1971,7 @@ export default class TexasGame {
             } catch (e) {
                 // 权限被拒绝
                 console.error('[Sitdown] 摄像头权限被拒绝:', e);
-                ToastManager.Instance.createToast('必须同意浏览器的视频权限才能成功坐在视频桌');
+                ToastManager.Instance.showToast('必须同意浏览器的视频权限才能成功坐在视频桌');
                 setTimeout(() => {
                     this.TexasGameUtils.LeaveRoom();
                 }, 3000);
@@ -1925,7 +2062,7 @@ export default class TexasGame {
                     // 钱包够,没输光(反桌)
                     if (bringToTable > 0) {
                         // 没有藏钱直接坐下
-                        if (retainDetail.RetainType == RoomInfo.RetainType.RT_DISABLE) {
+                        if (retainDetail.RetainType == RoomInfo.RetainType.RT_DISABLE || ( retainDetail.RetainType == RoomInfo.RetainType.RT_AUTO  && bringToTable >= seatedData.autoOnTable)) {
                             ProtocolAgency.Send<ClientMessageSeated.AsObject>({
                                 Code: ProtocolCode.Protocol_Holdem_Seated,
                                 RoomID: GameCache.Instance.room_id,
@@ -1934,8 +2071,8 @@ export default class TexasGame {
                             });
                         }
                         // 如果有藏钱的逻辑(还要保留最小上桌)
-                        if (retainDetail.RetainType > 0 && bringToTable >= retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2) {
-                            if (retainDetail.RetainType == RoomInfo.RetainType.RT_MANUAL) {
+                        if (retainDetail.RetainType ==  RoomInfo.RetainType.RT_MANUAL) {
+                            if (bringToTable >= retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2) {
                                 //手动逻辑自己管理Store
                                 seatedData.store = bringToTable - retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2;
                             }
@@ -1946,7 +2083,6 @@ export default class TexasGame {
                                 Body: seatedData
                             });
                         }
-                        return;
                     }
                     // 其他都需要弹窗口输入
                     UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
@@ -2055,7 +2191,7 @@ export default class TexasGame {
             // 用户想自动充值了使用协议设置自动化
             if (autoOnTable > 0) {
                 ProtocolAgency.Send<ClientMessageSetAutoOnTable.AsObject>({
-                    Code: ProtocolCode.Protocol_Holdem_BringIn,
+                    Code: ProtocolCode.Protocol_Holdem_SetAutoOnTable,
                     RoomID: GameCache.Instance.room_id,
                     MatchID: GameCache.Instance.match_id,
                     Body: {
@@ -3967,10 +4103,6 @@ export default class TexasGame {
         this.waittingGPSCallback = false;
         this.stopUpdatePublicCardsAnimation = false;
         this.isAllinGetPlayerCards = false;
-        // this.barrageRecordList = []
-        // this.barrageCountDown = -1;
-        // this.barrageAnimationSequence = DOTween.Sequence();
-        // GameCache.Instance.IsAllowOpenDanmu = true;
         this.cacheBuyInsurancePotUserCount = 0;
         // this.VIPTipsStatus = TipsStatus.isStop;
         // this.VipTipslist.Clear();
@@ -4489,6 +4621,7 @@ export default class TexasGame {
         this.HideSeeMorePublic();
         this.HideSeeMorePublicTips();
         this.HideLookHandCard();
+        this.allCardsShown = false;
         this.HideOperationPanel();
         this.HideAutoOperationPanel();
         this.uirc.CleanUI();
@@ -4545,6 +4678,8 @@ export default class TexasGame {
         // 停止游戏背景音乐
         SoundComponent.Instance.stopMusic();
         this.IsDispose = true;
+        // 清理桌布 Spine 动画
+        this._clearDeskSpine();
         this.reportKeepOpen = false;
         this.ClearTableUI();
         this.ClearOther();

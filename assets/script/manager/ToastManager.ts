@@ -3,6 +3,7 @@
  */
 import Main from '../Main';
 import Toast from '../ui/toast/Toast';
+import H5MsgMgr from '../H5MsgMgr';
 
 export interface IToastConfig {
     /** 容器起始位置 */
@@ -20,6 +21,14 @@ export interface IToastConfig {
     /** 消失时间*/
     fadeOutDuration?: number;
 }
+
+export interface IH5ToastConfig {
+    /** success: 成功提示（默认）；danger: 失败/警告提示 */
+    type?: 'success' | 'danger';
+    /** 显示时长（毫秒），默认 2000 */
+    duration?: number;
+}
+
 const { ccclass } = cc._decorator;
 
 @ccclass
@@ -117,6 +126,18 @@ export default class ToastManager {
             }
             this.prevToast = toast_script;
             this.sequenceToasts.push(toast_script);
+        }
+    }
+
+    /**
+     * 通过 H5 展示 toast（委托 H5 层渲染，不使用 Cocos 节点）
+     */
+    showToast(content: string, config?: IH5ToastConfig, cb?: () => void) {
+        const type = config?.type ?? 'success';
+        const duration = config?.duration ?? 2000;
+        H5MsgMgr.sendToH5('showToast', 1, { type, message: content, duration });
+        if (cb) {
+            setTimeout(cb, duration);
         }
     }
 

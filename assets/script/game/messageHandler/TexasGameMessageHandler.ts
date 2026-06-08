@@ -1,6 +1,7 @@
 import { ProcedureEnum } from '../../define/EIDefine';
 import { UIDefine } from '../../define/UIDefine';
 import GC from '../../frame/GameControl';
+import BridgeReconnectComponent from '../../funcomponent/BridgeReconnectComponent';
 import ReconnectComponent from '../../funcomponent/ReconnectComponent';
 import { CPErrorCode } from '../../i18n/CPErrorCode';
 import { i18nMgr } from '../../i18n/i18nMgr';
@@ -137,10 +138,16 @@ export default class TexasGameMessageHandler {
         let isMTT: boolean = this.game.isMTT;
         console.log(LN, '当前游戏是比赛:', isMTT);
         ReconnectComponent.Instance.ChangeStatus(2);
-        //判断重连进行牌桌场景清理
-        if (ReconnectComponent.Instance.CheckMask()) {
+        // 判断重连进行牌桌场景清理：
+        // - 老链路：ReconnectComponent.CheckMask()（旧 WebSocketClient 直连时使用，桥接模式下永远 false）
+        // - 桥接链路：BridgeReconnectComponent.ConsumeReconnectFlag() 在 H5 wsReconnecting → EnterRoom 回包闭环期间返回 true
+        const isOldReconnect = ReconnectComponent.Instance.CheckMask();
+        const isBridgeReconnect = BridgeReconnectComponent.Instance.ConsumeReconnectFlag();
+        if (isOldReconnect || isBridgeReconnect) {
             GC.game?.ReEnterClear();
-            ReconnectComponent.Instance.HideMask();
+            if (isOldReconnect) {
+                ReconnectComponent.Instance.HideMask();
+            }
         }
         if (response.status == 0) {
             // 进房时初始化偷偷看次数（对齐 Unity: _lookCardsPlayTimes = msgData.PayTimes）
@@ -211,9 +218,6 @@ export default class TexasGameMessageHandler {
         }
         UIComponent.Instance.Toast(
             i18nMgr.Get(`LeaveReason${Def.LeaveReason.LR_ACTIVE}`),
-            {
-                stayDuration: 1
-            },
             () => {
                 this.game.TexasGameUtils.ExitRoom();
             }
