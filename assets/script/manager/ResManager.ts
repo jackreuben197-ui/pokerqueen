@@ -4,7 +4,7 @@ export const BUNDLE_RESOURCES: string = 'resources';
 
 export const BUNDLE_TEXAS: string = 'texas';
 
-export type PreloadDefinition = { bundle: string; dir: string };
+export type PreloadDefinition = { bundle: string; dir: string; single?: boolean };
 
 export type PreloadParams = { preloadDefinition: PreloadDefinition[]; complete?: () => void; stopProgress?: boolean; error?: (err: Error) => void };
 
@@ -27,7 +27,8 @@ export const PreloadDefinitionGame: PreloadDefinition = {
 
 export const PreloadDefinitionSound: PreloadDefinition = {
     bundle: BUNDLE_RESOURCES,
-    dir: 'sound'
+    dir: 'sound/Sound',
+    single: true
 };
 
 export const PreloadDefinitionTexas: PreloadDefinition = {

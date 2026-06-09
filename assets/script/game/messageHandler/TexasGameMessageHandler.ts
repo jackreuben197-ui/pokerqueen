@@ -295,11 +295,6 @@ export default class TexasGameMessageHandler {
             this.game.ShowCallTime();
             this.game.TexasGameUtils.doStandUp(localSeatID);
         } else {
-            //     UI uiTexasPlayerInfo = UIComponent.Instance.Get(UIType.UITexasPlayerInfo);
-            // if (uiTexasPlayerInfo != null && uiTexasPlayerInfo.GameObject.activeInHierarchy) {
-            //         UITexasPlayerInfoComponent uiComponent = uiTexasPlayerInfo.GetComponent<UITexasPlayerInfoComponent>();
-            //     uiComponent.PlayerStandUp((int)seat.Player.userID);
-            // }
             // 站起消息到达时先清理扩展玩法角标，避免动画期间残留
             seat.ClearMushroomTag();
             seat.ClearSquidTag();

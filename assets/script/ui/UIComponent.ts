@@ -28,7 +28,6 @@ export enum PrefabUI {
     UIBringIn = 'UIBringIn', //带入记分牌
     UIAutoBringIn = 'UIAutoBringIn', //自动记分牌
     UIBringOut = 'UIBringOut', //带出记分牌
-    UIInsurancePanel = 'UIInsurancePanel', //旧保险面板
     UIInsuranceNewPanel = 'UIInsuranceNewPanel' //新版保险面板
 }
 
