@@ -147,6 +147,13 @@ export default class UIEmojiDlg extends UIBasePlus {
             if (err || !spriteFrame) return;
             const itemNode = cc.instantiate(this.itemPrefab);
             itemNode.parent = this.scrollContent;
+            // 异步加载完成顺序不固定，按 emoji 序号插入到正确位置，保证网格顺序与设计一致
+            (itemNode as any).emojiIndex = index;
+            let siblingIdx = 0;
+            for (const child of this.scrollContent.children) {
+                if (child !== itemNode && ((child as any).emojiIndex || 0) < index) siblingIdx++;
+            }
+            itemNode.setSiblingIndex(siblingIdx);
             const item = itemNode.getComponent('UIEmojiItem');
             if (item) {
                 item.onShow({
