@@ -138,18 +138,32 @@ export default class BridgeReconnectComponent {
 
     private _showMask(): void {
         if (!Main.Reconnect || !Main.Reconnect.isValid) return;
-        if (this._maskShown) return;
-        this._startMaskTextCountdown();
         Main.Reconnect.active = true;
         this._maskShown = true;
+        this._startMaskTextCountdown();
     }
 
     private _setMaskText(): void {
-        const warnLabel = Main.Reconnect.getChildByName('warn_label')?.getComponent(cc.Label);
-        if (!warnLabel) return;
+        const warnNode = this._findChild(Main.Reconnect, 'warn_label');
+        const warnLabel = warnNode?.getComponent(cc.Label);
+        if (!warnLabel) {
+            console.warn('[BridgeReconnect] warn_label not found');
+            return;
+        }
+        warnNode.active = true;
         const text = i18nMgr.Get(RECONNECTING_TEXT_KEY);
         warnLabel.string =
             text === RECONNECTING_TEXT_KEY ? RECONNECTING_TEXT_FALLBACK : text.replace('{0}', String(this._reconnectSecondsLeft));
+    }
+
+    private _findChild(root: cc.Node, name: string): cc.Node | null {
+        const direct = root.getChildByName(name);
+        if (direct) return direct;
+        for (const child of root.children) {
+            const target = this._findChild(child, name);
+            if (target) return target;
+        }
+        return null;
     }
 
     private _startMaskTextCountdown(): void {
