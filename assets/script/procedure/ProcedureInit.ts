@@ -104,6 +104,27 @@ export default class ProcedureInit extends ProcedureBase {
     //初始化网络配置（static 供其他 Procedure 在 H5 桥接模式下兜底调用）
     private setNetwork() {
         this.tracelog.debug('set network');
+        // 生产环境：页面非已知测试域名时，与当前页面同域（反向代理）。
+        // 一次构建多环境通用，无需为每个环境改 BUILD_TYPE 重新打包。
+        // WSS 仍保留 {0} 占位符，运行时由 WebSocketClient.SetPort 替换为 :端口。
+        const knownTestHosts = [
+            GameConfig.Web_Host_Dev,
+            GameConfig.Web_Host_Dev1,
+            GameConfig.Web_Host_Dev2,
+            GameConfig.Web_Host_Test1,
+            'localhost',
+            '127.0.0.1'
+        ];
+        const pageHost = typeof location !== 'undefined' ? location.hostname : '';
+        if (pageHost && knownTestHosts.indexOf(pageHost) === -1) {
+            const isHttps = location.protocol === 'https:';
+            GameConfig.Network = {
+                WebHost: location.origin,
+                WSS: `${isHttps ? 'wss' : 'ws'}://${location.hostname}{0}`
+            };
+            this.tracelog.debug('set network (prod same-origin):', GameConfig.Network);
+            return;
+        }
         switch (GameConfig.BUILD_TYPE) {
             case 0:
                 GameConfig.Network = {
