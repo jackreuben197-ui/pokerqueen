@@ -1,3 +1,4 @@
+import { BridgeStorage } from '../../frame/BridgeStorage';
 import { i18nMgr } from '../../i18n/i18nMgr';
 import BaseTouchBoard from '../board/BaseTouchBoard';
 import UIComponent from '../UIComponent';
@@ -19,7 +20,7 @@ export default class UIDialogSquid extends BaseTouchBoard {
     public static readonly SQUID_DIALOG_STRING = 'LastSquidDialogTime';
 
     public static IsOverDayLastUpload(): boolean {
-        const lastUploadTimeStr = cc.sys.localStorage.getItem(UIDialogSquid.SQUID_DIALOG_STRING) || '';
+        const lastUploadTimeStr = BridgeStorage.localStorageGet(UIDialogSquid.SQUID_DIALOG_STRING) || '';
         if (!lastUploadTimeStr) {
             return true;
         }
@@ -136,9 +137,9 @@ export default class UIDialogSquid extends BaseTouchBoard {
 
     private OnClickCommit(): void {
         if (this.NoToggle?.isChecked) {
-            cc.sys.localStorage.setItem(UIDialogSquid.SQUID_DIALOG_STRING, new Date().toISOString());
+            BridgeStorage.localStorageSet(UIDialogSquid.SQUID_DIALOG_STRING, new Date().toISOString());
         } else {
-            cc.sys.localStorage.setItem(UIDialogSquid.SQUID_DIALOG_STRING, '');
+            BridgeStorage.localStorageSet(UIDialogSquid.SQUID_DIALOG_STRING, '');
         }
         UIComponent.close(this.UIDefine);
     }

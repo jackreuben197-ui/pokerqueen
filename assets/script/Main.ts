@@ -21,6 +21,7 @@ import CCTools from './tools/CCTools';
 // import TelegramUtils from "./tools/TelegramUtils";
 import UIComponent, { PrefabUI } from './ui/UIComponent';
 import H5MsgMgr from './H5MsgMgr';
+import { BridgeStorage } from './frame/BridgeStorage';
 import * as MainUtils from './MainUtils';
 import UpdateComponent from './funcomponent/UpdateComponent';
 import DataManager from './frame/manager/DataManager';
@@ -110,6 +111,9 @@ export default class Main extends cc.Component {
         ReconnectComponent.Instance.Start();
         // 监听 H5 层（Vue/Vite）通过 bridge.js 发来的消息
         H5MsgMgr.Instance.init();
+        // 注册持久化代理：cocos 不再开自己的 indexedDB / localStorage，
+        // 所有 put/get 经 ccStorageOp 委托给 H5 落到 user_cache_${userId}（详见 BridgeStorage 注释）。
+        BridgeStorage.install();
         // H5 桥接模式下的重连流程：监听 wsReconnecting/wsReconnected/wsReconnectFailed
         BridgeReconnectComponent.Instance.Start();
         await MainUtils.registerH5Listeners();

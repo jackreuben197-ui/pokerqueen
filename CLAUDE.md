@@ -104,6 +104,18 @@ Player data:
 - `rate/`: Exchange rate data
 - `languageTemplate/`: i18n translations
 
+### Persistent Storage (Bridge Delegated)
+
+Cocos no longer opens its own IndexedDB or calls `cc.sys.localStorage` directly. All persistence goes through the **storage bridge** delegated to H5:
+
+- `frame/BridgeStorage.ts` — unified entry point; sends `ccStorageOp` and awaits `ccStorageResult` (IndexedDB) or fire-and-forget for localStorage writes; primes an in-memory mirror from H5's `ccStorageSnapshot` so `localStorageGet` stays sync.
+- `tools/CocosIndexedDB.ts` — thin wrapper exposing the legacy `cocosCache()` API; all ops forward to `BridgeStorage`. Allowed stores: `table_user_base_info` / `table_user_data_info` / `game_replays`.
+- `frame/manager/LocalStoreManager.ts` — thin wrapper preserving the original sync API (keyPre + JSON encrypt); reads from mirror, writes go to bridge.
+
+Both projects share a single IndexedDB `user_cache_${userId}` (H5 owns `club_list`; Cocos owns the three above). Cocos localStorage entries land under H5's `dzpk_cc_*` namespace, separate from H5's own `dzpk_h5_*`.
+
+Full protocol and white-list semantics: see `h5-game/src/bridge/README.md §10`.
+
 ### Resource Management
 - `ResManager`: Asset loading and bundle management
 - Prefab-based UI loading from bundles

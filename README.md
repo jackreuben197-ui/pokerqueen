@@ -202,3 +202,57 @@ if (isOldReconnect || isBridgeReconnect) {
 - 单次重连退避 1s → 10s（指数）；整体放弃阈值 10 次或 60s，命中即 `wsReconnectFailed`
 - 触发来源 `reason`：`close | heartbeat | visibility | online | force`
 - 鉴权失败的 reason 为 `auth-invalid`，此时不再二次 `h5Navigate`（H5 端 `forceToLoginFromWs` 已经接手跳转）
+
+## 持久化代理（Storage Bridge）
+
+Cocos 端不再开自己的 `cc_cache_user_*` IndexedDB，也不再直接调 `cc.sys.localStorage`：所有持久化操作经 bridge 委托给 H5 进程，落到统一的 `user_cache_${userId}`（IndexedDB）和 `dzpk_cc_*` 命名空间（localStorage）。完整协议见 `h5-game/src/bridge/README.md §10`，Cocos 侧契约如下。
+
+### 入口文件
+
+| 文件 | 作用 |
+|------|------|
+| `assets/script/frame/BridgeStorage.ts` | 统一出口；维护 `ccStorageResult` 回包队列与 `ccStorageSnapshot` 内存镜像 |
+| `assets/script/tools/CocosIndexedDB.ts` | thin wrapper：`cocosCache().get/put/...` → `BridgeStorage.indexedDB*` |
+| `assets/script/frame/manager/LocalStoreManager.ts` | thin wrapper：`LocalStoreManager.setItem/getItem/...` → `BridgeStorage.localStorage*` |
+| `assets/script/H5MsgMgr.ts` | 声明 `CcIndexedDBOpPayload` / `CcLocalStorageOpPayload` / `CcStorageResultPayload` / `CcStorageSnapshotPayload` 类型 |
+| `assets/script/Main.ts` | `BridgeStorage.install()` 在 `H5MsgMgr.Instance.init()` 之后注册回包/快照监听 |
+
+### IndexedDB
+
+```ts
+import { BridgeStorage, STORE_TABLE_USER_BASE_INFO } from '../frame/BridgeStorage';
+
+// 异步 request/reply
+await BridgeStorage.indexedDBPut(STORE_TABLE_USER_BASE_INFO, key, data);
+const value = await BridgeStorage.indexedDBGet<MyType>(STORE_TABLE_USER_BASE_INFO, key);
+```
+
+允许的 store 与 H5 白名单严格对齐：
+
+| 常量                          | 表名                    | 业务                            |
+|------------------------------|------------------------|--------------------------------|
+| `STORE_TABLE_USER_BASE_INFO` | `table_user_base_info` | 牌桌内玩家公共信息（24h TTL）    |
+| `STORE_TABLE_USER_DATA_INFO` | `table_user_data_info` | 牌桌内玩家战绩（30 分钟 TTL）    |
+| `STORE_GAME_REPLAYS`         | `game_replays`         | 局内牌谱                         |
+
+写到其它 store 时 H5 直接返回 `ok=false, error='store_not_allowed'`，不会落盘也不会污染 H5 自己的 `club_list`。
+
+### localStorage
+
+```ts
+import { BridgeStorage } from '../frame/BridgeStorage';
+
+// 同步 API（来自内存镜像；握手完成后 H5 自动推 ccStorageSnapshot 回灌）
+BridgeStorage.localStorageSet('SomeKey', 'value');
+const v = BridgeStorage.localStorageGet('SomeKey');
+```
+
+- key 不做白名单；H5 实际落地时统一加 `dzpk_cc_` 前缀，与 H5 自己的 `dzpk_h5_` 隔离。
+- 写操作 fire-and-forget：先更新镜像，再发到 H5，不等回包。
+- 握手前的 `localStorageGet` 只能返回 `null`（镜像尚未回灌），目前所有调用点都在登录后或 UI 触发，影响面小。
+
+### 注意事项
+
+- `cocosCache()` / `LocalStoreManager` 保留原有 API 与 JSON/加密语义，业务层无需改动。
+- 直接使用过 `cc.sys.localStorage.*` / `localStorage.*` 的旧代码（`UIDialogSquid` / `UIDialogContentSizeLimit` / `GameCache.SecuritySettingRooms` / `MttPayforHome` / `TexasGameBombPot.JoinedRooms` 等）已全部迁移到 `BridgeStorage`，新代码不要再绕过。
+- 新增 IndexedDB store 必须同步更新 H5 白名单：`h5-game/src/utils/indexedDB.ts` 的 `CC_CACHE_STORES`、`USER_CACHE_DB_VERSION`，以及 `frame/BridgeStorage.ts` 的 `STORE_*` 常量与 `BridgeIndexedDBStore` union。

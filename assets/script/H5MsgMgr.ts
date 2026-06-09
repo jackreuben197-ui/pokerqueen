@@ -130,6 +130,38 @@ export interface SetHeartbeatModePayload {
     mode: 'normal' | 'in-gameplay';
 }
 
+/**
+ * Cocos → H5：indexedDB 持久化操作请求。
+ *   - store 必须命中 H5 白名单（table_user_base_info / table_user_data_info / game_replays），
+ *     未命中时 H5 直接以 ok=false / error='store_not_allowed' 回包，不会落盘。
+ *   - requestId 必填，H5 用 ccStorageResult 按 requestId 回包；写操作也会回 ok。
+ */
+export interface CcIndexedDBOpPayload {
+    requestId: string;
+    storage: 'indexeddb';
+    store: string;
+    op: 'get' | 'getAll' | 'put' | 'delete' | 'clear';
+    key?: IDBValidKey;
+    value?: unknown;
+}
+
+/**
+ * Cocos → H5：localStorage 持久化操作请求。
+ *   - H5 实际写入时统一加 'dzpk_cc_' 前缀，与 H5 自己的 'dzpk_h5_' 隔离。
+ *   - 握手完成后 H5 会通过 ccStorageSnapshot 把 cocos 命名空间下的全部键值一次性回灌，
+ *     LocalStoreManager 据此维护内存镜像，保持 getItem 同步返回；
+ *     这里的 get op 仅在显式需要刷新单 key 时使用。
+ */
+export interface CcLocalStorageOpPayload {
+    requestId?: string;
+    storage: 'localstorage';
+    op: 'get' | 'set' | 'remove' | 'clear';
+    key?: string;
+    value?: string;
+}
+
+export type CcStorageOpPayload = CcIndexedDBOpPayload | CcLocalStorageOpPayload;
+
 // ─── CC → H5 Payload 映射表 ────────────────────────────────────────────────
 // sendToH5<T>(action, msgtype, payload) 通过 T 自动推导 payload 的精确类型。
 // 如需新增 action，同步更新：h5-game/src/bridge/protocol/cocosToH5.ts → CocosToH5PayloadMap
@@ -157,6 +189,8 @@ export interface CocosToH5PayloadMap {
     h5Navigate: H5NavigatePayload;
     // 心跳频率切换（对齐 HeartbeatComponent.SendIntervalNormal/InGameplay）
     setHeartbeatMode: SetHeartbeatModePayload;
+    // 持久化代理：indexedDB / localStorage 同走 ccStorageOp，按 payload.storage 区分。
+    ccStorageOp: CcStorageOpPayload;
 }
 
 // ─── H5 → CC Payload 类型定义 ──────────────────────────────────────────────
@@ -236,6 +270,19 @@ export interface WsReconnectFailedPayload {
 export interface DialogResultPayload {
     dialogRequestId: string;
     action: 'confirm' | 'cancel' | 'close';
+}
+
+/** H5 → CC：ccStorageOp 的回包。读 op 命中时 value 为存储值，未命中 value=null；写 op 仅看 ok。*/
+export interface CcStorageResultPayload {
+    requestId: string;
+    ok: boolean;
+    value?: unknown;
+    error?: string;
+}
+
+/** H5 → CC：握手完成后把 cocos 命名空间下的 localStorage 一次性回灌。entries 已去掉 dzpk_cc_ 前缀。*/
+export interface CcStorageSnapshotPayload {
+    entries: Record<string, string>;
 }
 
 /** H5 → CC：面板内部事件。*/
@@ -427,6 +474,9 @@ export interface H5ToCocosPayloadMap {
     syncLanguage: SyncLanguagePayload;
     syncGlobalConfig: SyncGlobalConfigPayload;
     syncDiamondConfig: SyncDiamondConfigPayload;
+    // 持久化代理回执
+    ccStorageResult: CcStorageResultPayload;
+    ccStorageSnapshot: CcStorageSnapshotPayload;
 }
 
 // ─── 内部类型 ───────────────────────────────────────────────────────────────

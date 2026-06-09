@@ -1,3 +1,4 @@
+import { BridgeStorage } from '../../frame/BridgeStorage';
 import GlobalSession from '../../session/GlobalSession';
 import BaseTouchBoard from '../board/BaseTouchBoard';
 import UIComponent from '../UIComponent';
@@ -253,9 +254,9 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
         console.log('noPrompt', noPrompt);
         if (promptKey) {
             if (noPrompt) {
-                cc.sys.localStorage.setItem(promptKey, new Date().toISOString());
+                BridgeStorage.localStorageSet(promptKey, new Date().toISOString());
             } else {
-                cc.sys.localStorage.setItem(promptKey, '');
+                BridgeStorage.localStorageSet(promptKey, '');
             }
         }
         this._actionCommit?.(noPrompt);
@@ -267,7 +268,7 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
     }
 
     public static IsOverDayLastUpload(key: string): boolean {
-        const lastUploadTimeStr = cc.sys.localStorage.getItem(key) || '';
+        const lastUploadTimeStr = BridgeStorage.localStorageGet(key) || '';
         if (!lastUploadTimeStr) {
             return true;
         }
