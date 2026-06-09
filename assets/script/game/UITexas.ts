@@ -44,6 +44,9 @@ import UITexasReportComponent from './UITexasReportComponent';
 import GGEvent from '../event/GGEvent';
 const LN = '[UI][UITexas]';
 
+/** 用于非telegram状态下，屏幕上方设置与客服按钮组的位置调整 */
+const g_iSettingBtnAdj = 265;
+
 export class PotInfo {
     public pot: number;
     public textPot: cc.Label;
@@ -687,17 +690,21 @@ export default class UITexas extends BaseScene {
         //高度小于目标进行缩放
         let view_height = cc.view.getVisibleSize().height;
         let limit_height = 2400;
+        console.log(`[AdaptiveMain] view_height=${view_height}, limit_height=${limit_height}, main.anchor=(${this.main.anchorX},${this.main.anchorY}), main.pos=(${this.main.x},${this.main.y}), main.size=(${this.main.width},${this.main.height})`);
         if (view_height <= limit_height) {
             this.main.height = 2688;
             let scale = view_height / 2688;
             scale *= 1;
             this.main.setScale(scale, scale);
+            console.log(`[AdaptiveMain] 小屏缩放: scale=${scale}`);
         } else {
             this.main.setScale(1, 1);
             this.main.height = view_height;
+            console.log(`[AdaptiveMain] 大屏不缩放: main.height=${this.main.height}`);
         }
         // 延迟到下一帧计算座位偏移，确保 Widget 布局已完成
         this.scheduleOnce(() => {
+            console.log(`[AdaptiveMain] scheduleOnce回调: game=${!!this.game}, listSeat=${!!this.game?.listSeat}, listSeat.length=${this.game?.listSeat?.length}`);
             this.adjustSeatYOffset();
             // 偏移量计算完后，刷新已有座位的实际位置
             this.applySeatOffset();
@@ -717,7 +724,10 @@ export default class UITexas extends BaseScene {
     private adjustSeatYOffset() {
         some_pos.seatYOffset = 0;
         const mainMenu = this.getChildNodeOrComponent('main_menu') as cc.Node;
-        if (!mainMenu || !this.seats_content) return;
+        if (!mainMenu || !this.seats_content) {
+            console.log(`[adjustSeatYOffset] early return: mainMenu=${!!mainMenu}, seats_content=${!!this.seats_content}`);
+            return;
+        }
         // 用 getBoundingBoxToWorld 获取 main_menu 在世界坐标系中的实际包围盒
         const menuBox = mainMenu.getBoundingBoxToWorld();
         const menuTopWorldY = menuBox.y + menuBox.height;
@@ -727,6 +737,7 @@ export default class UITexas extends BaseScene {
         const seat0WorldY = seat0WorldPos.y;
         // 世界坐标中 main_menu 上边缘与 seat 0 中心的重叠量
         const overlapWorld = menuTopWorldY - seat0WorldY;
+        console.log(`[adjustSeatYOffset] menuTopWorldY=${menuTopWorldY}, seat0WorldY=${seat0WorldY}, overlapWorld=${overlapWorld}`);
         if (overlapWorld <= 0) return; // 无重叠
         // 将世界坐标的重叠量转换为 seats_content 本地坐标
         const mainScale = this.main.scaleY;
@@ -741,6 +752,7 @@ export default class UITexas extends BaseScene {
             offset = offset - topSeatNewY; // clamp 到刚好不超出
         }
         some_pos.seatYOffset = offset;
+        console.log(`[adjustSeatYOffset] seatYOffset=${offset}`);
     }
 
     /**
@@ -748,17 +760,58 @@ export default class UITexas extends BaseScene {
      * 同时将 btn_menu、btn_im、table_add_chip 上移 seatYOffset/2
      */
     private applySeatOffset() {
-        if (!this.game?.listSeat) return;
-        for (const seat of this.game.listSeat) {
-            seat.UpdateSeatUIInfo(seat.ClientSeatId);
-        }
-        // 按钮上移 seatYOffset / 2（有 safeArea 时不移动，由 safeArea 适配接管）
+        console.log(`[applySeatOffset] === START === safeArea.top=${H5MsgMgr.safeArea.top}, seatYOffset=${some_pos.seatYOffset}, main.scaleY=${this.main.scaleY}`);
+
+        // 图标偏移（不依赖座位数据，优先执行）
         const halfOffset = H5MsgMgr.safeArea.top > 0 ? 0 : some_pos.seatYOffset;
+        console.log(`[applySeatOffset] halfOffset=${halfOffset}, origY: menu=${this._btnMenuOrigY}, im=${this._btnImOrigY}, safety=${this._btnSafetyGuardOrigY}, addChip=${this._tableAddChipOrigY}`);
         if (this.btn_menu) this.btn_menu.y = this._btnMenuOrigY + halfOffset;
         if (this.btn_im) this.btn_im.y = this._btnImOrigY + halfOffset;
         if (this.btn_safety_guard) this.btn_safety_guard.y = this._btnSafetyGuardOrigY + halfOffset;
         if (this.table_add_chip) this.table_add_chip.y = this._tableAddChipOrigY + halfOffset;
         if (this.RemainingSquidCount) this.RemainingSquidCount.y = this._remainingSquidCountOrigY;
+
+        console.log(`[applySeatOffset] after halfOffset, icon.y: menu=${this.btn_menu?.y}, im=${this.btn_im?.y}, safety=${this.btn_safety_guard?.y}, addChip=${this.table_add_chip?.y}`);
+
+        // safeArea.top 为 0 时，以 btn_im 为基准确保图标距屏幕顶部不超过 280 像素
+        if (H5MsgMgr.safeArea.top <= 0 && this.btn_im && this.btn_im.active) {
+            // 用 main 节点的顶部作为屏幕顶部参考（main 填满屏幕）
+            const mainBox = this.main.getBoundingBoxToWorld();
+            const mainTopWorldY = mainBox.y + mainBox.height;
+            // btn_im 中心的世界坐标
+            const iconCenterWorld = this.btn_im.convertToWorldSpaceAR(cc.v2(0, -this.btn_im.height / 2));
+            const iconCenterWorldY = iconCenterWorld.y;
+            // 间距（世界坐标），转换为主容器本地坐标
+            const gapWorld = mainTopWorldY - iconCenterWorldY;
+            const gapLocal = gapWorld / this.main.scaleY;
+
+            console.log(`[applySeatOffset] gapCheck by btn_im: mainTop=${mainTopWorldY}, iconCenter=${iconCenterWorldY}, gapLocal=${gapLocal}`);
+
+            if (gapLocal > g_iSettingBtnAdj) {
+                const extraLocal = gapLocal - g_iSettingBtnAdj;
+                console.log(`[applySeatOffset] APPLYING extraLocal=${extraLocal}`);
+                if (this.btn_menu) this.btn_menu.y += extraLocal;
+                if (this.btn_im) this.btn_im.y += extraLocal;
+                if (this.btn_safety_guard) this.btn_safety_guard.y += extraLocal;
+                if (this.table_add_chip) this.table_add_chip.y += extraLocal;
+            } else {
+                console.log(`[applySeatOffset] gapLocal=${gapLocal} <= 280, no extra movement`);
+            }
+        } else {
+            console.log(`[applySeatOffset] skip gapCheck: safeArea.top=${H5MsgMgr.safeArea.top}, btn_im=${!!this.btn_im}, active=${this.btn_im?.active}`);
+        }
+
+        console.log(`[applySeatOffset] after all, icon.y: menu=${this.btn_menu?.y}, im=${this.btn_im?.y}, safety=${this.btn_safety_guard?.y}, addChip=${this.table_add_chip?.y}`);
+
+        // 座位更新（依赖座位数据）
+        if (!this.game?.listSeat) {
+            console.log(`[applySeatOffset] no game/listSeat, skip seat update`);
+            return;
+        }
+        for (const seat of this.game.listSeat) {
+            seat.UpdateSeatUIInfo(seat.ClientSeatId);
+        }
+        console.log(`[applySeatOffset] === END ===`);
     }
 
     //进入初始UI
