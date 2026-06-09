@@ -211,17 +211,7 @@ export default class TexasGameMessageHandler {
         if (!GameCache.Instance.isActiveLeaving && roomID == GameCache.Instance.room_id && matchID == GameCache.Instance.match_id) {
             return;
         }
-        if (response.status != 0) {
-            console.warn(`Protocol_Holdem_Leave: status = ${response.status}`);
-            this.game.TexasGameUtils.ExitRoom();
-            return;
-        }
-        UIComponent.Instance.Toast(
-            i18nMgr.Get(`LeaveReason${Def.LeaveReason.LR_ACTIVE}`),
-            () => {
-                this.game.TexasGameUtils.ExitRoom();
-            }
-        );
+        this.game.TexasGameUtils.ExitRoom();
     }
 
     /**
