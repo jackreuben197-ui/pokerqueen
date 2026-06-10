@@ -650,8 +650,6 @@ export default class UITexasReportComponent extends UIBase {
         }
         this.unscheduleAllCallbacks();
         this.clearView();
-        // this.btnShowProblem = this.getChildNodeOrComponent('BtnShowProblem');
-        // this.btnShowProblem.on('click', this.btnShowProblemClick, this)
         this.room_id.string = GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum;
         if (this.remainTimeLabel) this.remainTimeLabel.string = '--:--:--';
         this.reportSubType = this.resolveReportSubType();
@@ -959,13 +957,6 @@ export default class UITexasReportComponent extends UIBase {
             this.applyMushSquidInfo(ele, subType, pDto);
         }
         ele.getChildByName('own').active = pDto.userId == GameCache.Instance.nUserId;
-    }
-
-    btnShowProblemClick() {
-        this.manualClose = true;
-        GameCache.Instance.CurGame?.SetReportKeepOpen?.(false);
-        UIComponent.close(this.UIDefine);
-        UIComponent.open(UIDefine.UITexasRule, null, { parentUI: this.node.parent });
     }
 
     imageMaskCloseClick() {

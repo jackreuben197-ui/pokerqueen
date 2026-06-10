@@ -879,8 +879,6 @@ export default class UITexas extends BaseScene {
         UIComponent.close(UIDefine.UIPlayerInfo);
         //关闭设置
         UIComponent.close(UIDefine.UITexasSettingComponent);
-        //关闭规则
-        UIComponent.close(UIDefine.UITexasRule);
         //关闭牌谱
         UIComponent.close(UIDefine.UITexasHistory);
     }

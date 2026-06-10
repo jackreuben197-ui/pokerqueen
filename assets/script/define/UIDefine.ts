@@ -45,7 +45,6 @@ type UIDefineKey =
     | 'UIPromptComponent'
     | 'TexasPreLoad'
     | 'UITexasSettingComponent'
-    | 'UITexasRule'
     | 'UITexasReportComponent'
     | 'UITexasGameEnd'
     | 'UISquidEnd'
@@ -527,12 +526,6 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Name: 'UITexasSetting',
         Bundle: 'texas',
         Path: 'prefab/widgetLayer/UITexasSetting'
-    },
-    UITexasRule: {
-        UIType: UIType.CommonUI,
-        Name: 'UITexasRule',
-        Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UITexasRule'
     },
     UITexasReportComponent: {
         UIType: UIType.CommonUI,

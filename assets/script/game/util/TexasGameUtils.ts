@@ -256,7 +256,6 @@ export default class TexasGameUtils {
         // UIComponent.Instance.Remove(UIType.UITexasHistory);
         // UIComponent.Instance.Remove(UIType.UITexasDanMuAndExpression);
         // UIComponent.Instance.Remove(UIType.UITexasReport);
-        // UIComponent.Instance.Remove(UIType.UITexasRule);
         // UIComponent.Instance.Remove(UIType.UITexasSetting);
         // UIComponent.Instance.Remove(UIType.UITexasReportMTT);
         // UIComponent.Instance.Remove(UIType.UITexasHumanVerification);
