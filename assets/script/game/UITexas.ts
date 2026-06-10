@@ -259,6 +259,11 @@ export default class UITexas extends BaseScene {
         this.name = 'UITexas';
         super.lateLoad();
         this.sp_table_bg = this.getChildNodeOrComponent('sp_table_bg', cc.Sprite);
+        // 预热当前桌布纹理（fire-and-forget），减少进桌时的默认桌布闪烁
+        {
+            const deskType = +(GC.localStore.getItem(StorageKey.SettingDeskType) || 0);
+            TexasGame.PreloadDeskTexture(deskType);
+        }
         this.sp_table_face = this.getChildNodeOrComponent('sp_table_face', cc.Sprite);
         this.main = this.getChildNodeOrComponent('main');
         this.btn_menu = this.getChildNodeOrComponent('btn_menu');

@@ -48,6 +48,7 @@ import * as protobuf_holdem_define_pb from '../../protobuf/holdem/define_pb';
 import GlobalSession from '../../session/GlobalSession';
 import StorageKey from '../../session/StorageKey';
 import AssetContext, { AssetFold } from '../../ui/component/AssetContext';
+import { BUNDLE_TEXAS } from '../../manager/ResManager';
 import UIDialogContentSizeLimit from '../../ui/dialog/UIDialogContentSizeLimit';
 import { UIConfirmDialogParam } from '../../crazyPoker/gameplay/common/view/common/UIConfirmDialog';
 import UIComponent, { PrefabUI } from '../../ui/UIComponent';
@@ -640,35 +641,64 @@ export default class TexasGame {
         return this.setting.deskType;
     }
 
-    /** 桌布贴图名称映射：索引对应 deskType，值为 texture_table prefab 中的节点名 */
-    private static readonly DESK_TEXTURE_MAP: string[] = [
-        'new_ui_top_table_0', // 0 - 默认桌布
-        'desk1',              // 1
-        'desk2',              // 2
-        'desk3',              // 3
-        'desk4',              // 4
-        'desk5',              // 5
-        'desk6',              // 6
-        'desk7',              // 7
-        'desk8',              // 8
-        'desk9',              // 9
-        'desk10',             // 10
-        'desk11',             // 11
-        'desk12',             // 12
-        'desk13',             // 13
-    ];
+    /** 桌布纹理在 resources 下的路径前缀，完整路径 = 前缀 + deskType */
+    private static readonly DESK_TEXTURE_PATH_PREFIX = 'desk_textures/desk';
+
+    /** 桌布 SpriteFrame 缓存（deskType → SpriteFrame），非默认桌布加载后缓存 */
+    private static _deskSpriteFrameCache: Map<number, cc.SpriteFrame> = new Map();
+
+    /** 预热桌布纹理（fire-and-forget），供 lateLoad 提前触发加载减少进桌闪烁 */
+    public static PreloadDeskTexture(type: number): void {
+        if (type <= 0 || TexasGame._deskSpriteFrameCache.has(type)) return;
+        cc.resources.load(
+            `${TexasGame.DESK_TEXTURE_PATH_PREFIX}${type}`,
+            cc.SpriteFrame,
+            (err, spriteFrame: cc.SpriteFrame) => {
+                if (!err) TexasGame._deskSpriteFrameCache.set(type, spriteFrame);
+            }
+        );
+    }
+    /** 竞态保护：记录最新请求的 deskType，旧加载完成时丢弃 */
+    private _pendingDeskType: number = -1;
 
     SetDeskType(type: number) {
         this.setting.deskType = type;
-        const textureName = TexasGame.DESK_TEXTURE_MAP[type] || TexasGame.DESK_TEXTURE_MAP[0];
-        const spriteFrame = AssetContext.getAsset(textureName, AssetFold.texture_table)
-            || AssetContext.getAsset(TexasGame.DESK_TEXTURE_MAP[0], AssetFold.texture_table);
-        this.uirc.sp_table_bg.spriteFrame = spriteFrame;
-        this._fitDeskCover();
+        this._pendingDeskType = type;
         this._playDeskSpine(type);
-        if (this.isBombPot) {
-            this.bombPotFeature?.PlayOpenScreen();
+
+        // type 0（默认桌布）：已嵌入 UITexas.prefab，无需加载
+        if (type === 0) {
+            this._fitDeskCover();
+            if (this.isBombPot) this.bombPotFeature?.PlayOpenScreen();
+            return;
         }
+
+        // 命中缓存：同步设回
+        const cached = TexasGame._deskSpriteFrameCache.get(type);
+        if (cached) {
+            if (this.uirc?.sp_table_bg) this.uirc.sp_table_bg.spriteFrame = cached;
+            this._fitDeskCover();
+            if (this.isBombPot) this.bombPotFeature?.PlayOpenScreen();
+            return;
+        }
+
+        // 未缓存：异步从 resources 加载（不依赖 bundle 预加载）
+        cc.resources.load(
+            `${TexasGame.DESK_TEXTURE_PATH_PREFIX}${type}`,
+            cc.SpriteFrame,
+            (err, spriteFrame: cc.SpriteFrame) => {
+                if (err) {
+                    console.error('[TexasGame] 桌布加载失败:', type, err.message);
+                    return;
+                }
+                if (this._pendingDeskType !== type) return;
+                if (this.IsDispose || !this.uirc?.sp_table_bg) return;
+                TexasGame._deskSpriteFrameCache.set(type, spriteFrame);
+                this.uirc.sp_table_bg.spriteFrame = spriteFrame;
+                this._fitDeskCover();
+                if (this.isBombPot) this.bombPotFeature?.PlayOpenScreen();
+            }
+        );
     }
 
     /** 各桌布类型的 Spine SkeletonData 缓存（按 deskType 索引） */
