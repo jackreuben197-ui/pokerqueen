@@ -88,16 +88,17 @@ export default class ProcedureEnterTexas extends ProcedureBase {
     }
 
     /**
-     * WS 断开回调：进房过程中如果 WS 断开，直接退回 H5
+     * WS 断开回调：进房过程中如果 WS 断开，直接退回 H5。
+     * 用箭头属性绑定 this，避免作为方法引用传入 H5MsgMgr.on 时丢失上下文。
      */
-    private _onWsError(payload: any): void {
+    private _onWsError = (payload: any): void => {
         if (!this._isEntering) return;
         console.warn('[ProcedureEnterTexas]', 'wsError during entering, return to H5', payload);
         this._isEntering = false;
         this._entrance = null;
         H5MsgMgr.Instance.off('wsError');
         ProcedureManager.StartProcedure(ProcedureEnum.Return);
-    }
+    };
 
     onComplete() {
         // this.RequestRoomInfo();

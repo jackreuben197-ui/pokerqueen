@@ -22,7 +22,7 @@ export default class ProcedureReturn extends ProcedureBase {
                     UIComponent.Instance.HideUI(v);
                 });
             }
-            if (navigate && navigate.needClosedUI) {
+            if (navigate && navigate.routeData) {
                 H5MsgMgr.sendToH5('h5Navigate', 1, navigate.routeData);
                 return;
             }
