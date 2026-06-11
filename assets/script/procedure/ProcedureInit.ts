@@ -21,7 +21,7 @@ export default class ProcedureInit extends ProcedureBase {
         this.setCCC();
         this.setFit();
         //解析 语言配置
-        this.setNetwork();
+        await this.setNetwork();
         i18nMgr.initLanguage();
         await i18nMgr.loadAndRefreshConfig();
         // 已加载过牌桌资源则隐藏首次加载提示
@@ -102,8 +102,14 @@ export default class ProcedureInit extends ProcedureBase {
     }
 
     //初始化网络配置（static 供其他 Procedure 在 H5 桥接模式下兜底调用）
-    private setNetwork() {
+    private async setNetwork() {
         this.tracelog.debug('set network');
+        // 优先读取运行时 config.json 的 baseApi（与 h5 项目共用同一份配置）：
+        // 改 config.json 的 baseApi 即可同时切换 Cocos 的 HTTP 与 WebSocket，
+        // 无需为每个环境改 BUILD_TYPE 重新打包。读取失败时回落到下方旧逻辑。
+        if (await this.setNetworkFromConfigJson()) {
+            return;
+        }
         // 生产环境：页面非已知测试域名时，与当前页面同域（反向代理）。
         // 一次构建多环境通用，无需为每个环境改 BUILD_TYPE 重新打包。
         // WSS 仍保留 {0} 占位符，运行时由 WebSocketClient.SetPort 替换为 :端口。
@@ -168,6 +174,44 @@ export default class ProcedureInit extends ProcedureBase {
                     WSS: `wss://${GameConfig.Web_Host_Dev2}{0}`
                 };
                 break;
+        }
+    }
+
+    /**
+     * 从运行时 config.json 的 baseApi 推导 WebHost 与 WSS。
+     * 成功（拿到合法的绝对地址 baseApi）返回 true，调用方据此跳过旧的 BUILD_TYPE 逻辑。
+     * - WebHost：baseApi 去掉结尾的 /api（接口常量已自带 /api 前缀），避免出现 //api/api。
+     * - WSS：取 baseApi 的 hostname，按协议拼 wss/ws，保留 {0} 占位符交给 WebSocketClient.SetPort。
+     */
+    private async setNetworkFromConfigJson(): Promise<boolean> {
+        try {
+            if (typeof fetch !== 'function' || typeof location === 'undefined') {
+                return false;
+            }
+            // config.json 与 index.html 同级部署，按当前文档地址解析为同源绝对路径。
+            const configUrl = new URL('config.json', location.href).href + `?_=${Date.now()}`;
+            const res = await fetch(configUrl, { cache: 'no-store' });
+            if (!res.ok) {
+                return false;
+            }
+            const data = await res.json();
+            const baseApi = (data && typeof data.baseApi === 'string' ? data.baseApi : '').trim();
+            if (!/^https?:\/\//i.test(baseApi)) {
+                return false;
+            }
+            const apiUrl = new URL(baseApi);
+            // 去掉结尾的 /api 或 /api/，得到纯域名前缀作为 WebHost。
+            const webHost = baseApi.replace(/\/+$/, '').replace(/\/api$/i, '');
+            const wsProtocol = apiUrl.protocol === 'https:' ? 'wss' : 'ws';
+            GameConfig.Network = {
+                WebHost: webHost,
+                WSS: `${wsProtocol}://${apiUrl.hostname}{0}`
+            };
+            this.tracelog.debug('set network (config.json baseApi):', GameConfig.Network);
+            return true;
+        } catch (e) {
+            this.tracelog.debug('set network from config.json failed, fallback:', e);
+            return false;
         }
     }
 }
