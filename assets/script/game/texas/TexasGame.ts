@@ -656,6 +656,8 @@ export default class TexasGame {
         'desk11',             // 11
         'desk12',             // 12
         'desk13',             // 13
+        'desk14',             // 14
+        'desk15',             // 15
     ];
 
     SetDeskType(type: number) {
@@ -681,12 +683,9 @@ export default class TexasGame {
      * key: deskType, value: cc.resources 下的 SkeletonData 路径（不含扩展名）
      */
     private static readonly DESK_SPINE_MAP: { [type: number]: string } = {
-        8: 'spine/desk8/33background',
-        9: 'spine/desk9/44paizuo',
-        10: 'spine/desk10/skeleton',
-        11: 'spine/desk11/77Background',
-        12: 'spine/desk12/nature_japan88',
-        13: 'spine/desk13/backgroud99',
+        // desk8~13 改用静态平面桌布（新设计），不再播放 Spine 动画
+        // （原 spine 映射保留备查：8 desk8/33background, 9 desk9/44paizuo,
+        //   10 desk10/skeleton, 11 desk11/77Background, 12 desk12/nature_japan88, 13 desk13/backgroud99）
     };
 
     /**

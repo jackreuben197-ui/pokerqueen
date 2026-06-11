@@ -108,6 +108,7 @@ export default class UITexasSettingComponent extends UIBase {
         //     openVoice.active = false;
         //     this.soundIsOpen = false;
         // }
+        this.initDeskNames();
         this.initDeskClickListen();
         this.initTableSwitch();
         this.initCardClickListen();
@@ -124,6 +125,26 @@ export default class UITexasSettingComponent extends UIBase {
      * @method  牌桌背景
      */
     private static readonly DESK_VISIBLE_COUNT = 4;
+
+    /**
+     * 牌桌背景名称多语言：按 deskType（DeskGroup 子节点顺序）从词表读取
+     * key：UITexasSetting_DeskName{index}，词表见 config/USER_*.txt
+     */
+    initDeskNames() {
+        if (!this.DeskGroup) return;
+        for (let index = 0; index < this.DeskGroup.childrenCount; index++) {
+            const element = this.DeskGroup.children[index];
+            const label = cc.find('tablenamebg/New Label', element)?.getComponent(cc.Label);
+            if (label) {
+                const key = `UITexasSetting_DeskName${index}`;
+                const text = i18nMgr.Get(key);
+                // 词表缺失时 Get 返回 key 本身，此时保留预制体内已有文案兜底
+                if (text && text !== key) {
+                    label.string = text;
+                }
+            }
+        }
+    }
 
     initDeskClickListen() {
         let selectedIndex = GameCache.Instance.CurGame.deskType;
