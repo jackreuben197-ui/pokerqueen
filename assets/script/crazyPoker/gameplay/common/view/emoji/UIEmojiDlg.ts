@@ -19,7 +19,36 @@ export default class UIEmojiDlg extends UIBasePlus {
     private itemPrefab: cc.Prefab = null;
     private targetY: number = 0;
     private startY: number = 0;
-    private firstLoad: boolean = true;
+
+    // ===== 表情分类（标签页，底部图标）=====
+    private tabBar: cc.Node = null;
+    private tabUnderline: cc.Node = null;
+    private curCategory: number = 0;
+    /** 标签栏 Y 坐标（面板底部，可在此微调位置；越大越靠上）*/
+    private static readonly TAB_Y = -255;
+    /** 标签图标尺寸 */
+    private static readonly TAB_ICON_SIZE = 72;
+    /** 选中标签下划线（红色）相对图标的 Y 偏移 */
+    private static readonly TAB_UNDERLINE_Y = -46;
+    /** 网格底部留白，给底部标签栏让位（可微调）*/
+    private static readonly GRID_PADDING_BOTTOM = 180;
+    /** 每个表情消耗的钻石数（底部显示的数值）*/
+    private static readonly EMOJI_COST = 10;
+    /**
+     * 表情分类配置：name = 内部标识，icon = 底部标签图标（emoji/emtabN），
+     * indices = 该分类包含的全局表情序号（对应 emoji/emN）。
+     * 替换素材：直接用 Figma 实际 png 覆盖同名文件即可（图标 emtab1-5，表情 em16-65）。
+     * 注意：表情是联网广播的，新增序号还需服务端支持对应的 emoji type。
+     */
+    private static readonly CATEGORIES: { name: string; icon: string; indices: number[] }[] = [
+        // 每个标签 1 个底部图标 + 10 个占位表情，后续手动用 Figma 实际素材覆盖同名 png 即可。
+        // 标签顺序：Dancing boy → Shinchan → Skull → Frog → Dog
+        { name: 'Dancing boy', icon: 'emtab2', indices: [26, 27, 28, 29, 30, 31, 32, 33, 34, 35] },
+        { name: 'Shinchan', icon: 'emtab3', indices: [36, 37, 38, 39, 40, 41, 42, 43, 44, 45] },
+        { name: 'Skull', icon: 'emtab1', indices: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25] },
+        { name: 'Frog', icon: 'emtab4', indices: [46, 47, 48, 49, 50, 51, 52, 53, 54, 55] },
+        { name: 'Dog', icon: 'emtab5', indices: [56, 57, 58, 59, 60, 61, 62, 63, 64, 65] }
+    ];
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -54,33 +83,86 @@ export default class UIEmojiDlg extends UIBasePlus {
             this.contentView.opacity = 0;
             cc.tween(this.contentView).to(0.4, { y: this.targetY, opacity: 255 }, { easing: 'sineOut' }).start();
         }
-        this.loadEmojiItems();
+        this.initEmojiPanel();
     }
 
-    private async loadEmojiItems(): Promise<void> {
+    private async initEmojiPanel(): Promise<void> {
         if (!this.itemPrefab) {
             this.itemPrefab = await ResManager.GetOrLoad<cc.Prefab>('texas', 'prefab/ui/UIEmojiItem');
         }
         if (!this.itemPrefab || !this.scrollContent) return;
+        // 网格底部留白，给底部标签栏让位
+        const layout = this.scrollContent.getComponent(cc.Layout);
+        if (layout) layout.paddingBottom = UIEmojiDlg.GRID_PADDING_BOTTOM;
+        this.buildCategoryTabs();
+        this.selectCategory(this.curCategory);
+    }
+
+    /** 构建底部分类标签栏（仅首次）。每个标签是一张 png 图标（emoji/emtabN），不是文字。 */
+    private buildCategoryTabs(): void {
+        if (this.tabBar || !this.contentView) return;
+        const cats = UIEmojiDlg.CATEGORIES;
+        const bar = new cc.Node('CategoryTabs');
+        bar.setParent(this.contentView);
+        bar.setPosition(0, UIEmojiDlg.TAB_Y);
+        this.tabBar = bar;
+        const size = UIEmojiDlg.TAB_ICON_SIZE;
+        const totalW = 900;
+        const step = totalW / cats.length;
+        cats.forEach((cat, i) => {
+            const tab = new cc.Node('tab' + i);
+            tab.setParent(bar);
+            tab.setPosition(-totalW / 2 + step * (i + 0.5), 0);
+            tab.setContentSize(size, size);
+            const sp = tab.addComponent(cc.Sprite);
+            sp.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+            cc.resources.load(`emoji/${cat.icon}`, cc.SpriteFrame, (err, sf: cc.SpriteFrame) => {
+                if (!err && sf && cc.isValid(tab)) {
+                    sp.spriteFrame = sf;
+                    tab.setContentSize(size, size);
+                }
+            });
+            tab.on(
+                cc.Node.EventType.TOUCH_END,
+                (e: cc.Event.EventTouch) => {
+                    e.stopPropagation();
+                    this.selectCategory(i);
+                },
+                this
+            );
+        });
+        // 选中标签下划线：使用 Figma 红色下划线贴图 emoji/emunderline（节点 93-58878）
+        const underline = new cc.Node('underline');
+        underline.setParent(bar);
+        underline.setContentSize(56, 5);
+        underline.y = UIEmojiDlg.TAB_UNDERLINE_Y;
+        const usp = underline.addComponent(cc.Sprite);
+        usp.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+        cc.resources.load('emoji/emunderline', cc.SpriteFrame, (err, sf: cc.SpriteFrame) => {
+            if (!err && sf && cc.isValid(underline)) {
+                usp.spriteFrame = sf;
+                underline.setContentSize(56, 5);
+            }
+        });
+        this.tabUnderline = underline;
+    }
+
+    /** 选择分类：高亮选中图标（放大+不透明），其余缩小变暗，并渲染该分类下的表情 */
+    private selectCategory(index: number): void {
+        if (!this.tabBar || !this.scrollContent) return;
+        this.curCategory = index;
+        const cats = UIEmojiDlg.CATEGORIES;
+        this.tabBar.children.forEach(tab => {
+            const idx = parseInt(tab.name.replace('tab', ''));
+            if (isNaN(idx)) return;
+            const selected = idx === index;
+            tab.scale = selected ? 1.15 : 0.9;
+            tab.opacity = selected ? 255 : 140;
+            if (selected && this.tabUnderline) this.tabUnderline.x = tab.x;
+        });
         this.scrollContent.removeAllChildren();
-        if (this.firstLoad) {
-            this.firstLoad = false;
-            for (let i = 1; i <= 10; i++) {
-                this.loadAndAddEmoji(i);
-            }
-            for (let i = 11; i <= 15; i++) {
-                this.scheduleOnce(
-                    () => {
-                        this.loadAndAddEmoji(i);
-                    },
-                    (i - 10) * 0.1
-                );
-            }
-        } else {
-            for (let i = 1; i <= 15; i++) {
-                this.loadAndAddEmoji(i);
-            }
-        }
+        const indices = cats[index] ? cats[index].indices : [];
+        for (const i of indices) this.loadAndAddEmoji(i);
     }
 
     private onEmojiClick(index: number): void {
@@ -158,7 +240,8 @@ export default class UIEmojiDlg extends UIBasePlus {
             if (item) {
                 item.onShow({
                     spriteFrame: spriteFrame,
-                    showDiamond: index < 11,
+                    showDiamond: true,
+                    diamond: UIEmojiDlg.EMOJI_COST,
                     index: index,
                     onClick: this.onEmojiClick.bind(this)
                 });
