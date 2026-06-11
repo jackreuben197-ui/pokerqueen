@@ -310,7 +310,11 @@ export default class UITexas extends BaseScene {
         this.seats_content = this.getChildNodeOrComponent('seats_content');
         this.Seat_Temp = this.getChildNodeOrComponent('Seat_Temp');
         // 鱿鱼
-        this.RemainingSquidCount = this.main?.getChildByName('RemainingSquidCount');
+        // 注意：RemainingSquidCount / SquidSwitch 实际挂在 UITexas 根节点下，不是 main 的直接子节点。
+        // 历史上误用 this.main?.getChildByName 导致永远取不到，初始隐藏失效，
+        // prefab 默认 _active=true，结果蘑菇/普通房左下角都显示了鱿鱼图标。
+        // 改用 getChildNodeOrComponent（基于 _view 全节点索引，按名字定位）。
+        this.RemainingSquidCount = this.getChildNodeOrComponent('RemainingSquidCount');
         this.RemainingSquidLabelCount = this.RemainingSquidCount?.getChildByName('RemainingSquidLabel')
             ?.getChildByName('RemainingSquidLabelCount')
             ?.getComponent(cc.Label);
@@ -318,7 +322,7 @@ export default class UITexas extends BaseScene {
             this.RemainingSquidCount.active = false;
             this._remainingSquidCountOrigY = this.RemainingSquidCount.y;
         }
-        this.SquidSwitch = this.main?.getChildByName('SquidSwitch');
+        this.SquidSwitch = this.getChildNodeOrComponent('SquidSwitch');
         this.SquidJoinLabel = this.SquidSwitch?.getChildByName('content')?.getChildByName('$joinLabel')?.getComponent(cc.Label);
         if (this.SquidJoinLabel) {
             this.SquidJoinLabel.string = i18nMgr.Get('UIClub_RoomJoin');
