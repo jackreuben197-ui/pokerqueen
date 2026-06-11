@@ -111,6 +111,11 @@ export default class ProcedureEnterTexas extends ProcedureBase {
                 if (!result) {
                     console.warn('[ProcedureEnterTexas]', 'enterForegroundAsync false');
                     this._entrance = null;
+                    H5MsgMgr.sendToH5('showDialog', 1, {
+                        message: '进入房间通信失败，即将返回大厅，请截图发给程序员',
+                        confirmButtonText: '我已截图',
+                        ensureVisible: true,
+                    });
                     ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
                         needClosedUI: [PrefabUI.UIPreloading]
                     });
@@ -121,6 +126,11 @@ export default class ProcedureEnterTexas extends ProcedureBase {
                 H5MsgMgr.Instance.off('wsError');
                 console.error('[ProcedureEnterTexas]', 'err', e);
                 this._entrance = null;
+                H5MsgMgr.sendToH5('showDialog', 1, {
+                    message: '进入房间流程异常，即将返回大厅，请截图发给程序员',
+                    confirmButtonText: '我已截图',
+                    ensureVisible: true,
+                });
                 ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
                     needClosedUI: [PrefabUI.UIPreloading]
                 });

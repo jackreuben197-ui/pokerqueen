@@ -10,6 +10,7 @@
  * 全局流程管理器
  */
 import { traceClass } from '../crazyPoker/gameplay/common/core/LogTrace';
+import H5MsgMgr from '../H5MsgMgr';
 import { ProcedureEnum } from '../define/EIDefine';
 import ProcedureBase from '../procedure/ProcedureBase';
 import ProcedureEnterRoom from '../procedure/ProcedureEnterRoom';
@@ -50,6 +51,11 @@ export default class ProcedureManager {
             if (prevProcedure.id == procedure.id) return;
             if (this._isSwitching) {
                 this.tracelog.warn('流程切换中,忽略此次切换流程');
+                H5MsgMgr.sendToH5('showDialog', 1, {
+                    message: '流程切换冲突导致卡死，即将出现黑屏，请截图发给程序员',
+                    confirmButtonText: '我已截图',
+                    ensureVisible: true,
+                });
                 return;
             }
             this._isSwitching = true;

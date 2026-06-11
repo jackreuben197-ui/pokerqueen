@@ -1,6 +1,7 @@
 import TexasConfig from '../../config/TexasConfig';
 import { UIDefine } from '../../define/UIDefine';
 import DiamondModel from '../../diamond/DiamondModel';
+import H5MsgMgr from '../../H5MsgMgr';
 import SoundComponent from '../../sound/SoundComponent';
 import { DOTween, Sequence } from '../../dotween/DOTween';
 import { ClubCache } from '../../frame/data/club/ClubCache';
@@ -863,12 +864,15 @@ export default class TexasGame {
     }
 
     public EnterRoom() {
-        // this.TexasGameUtils.EnterRoom();
-        // GC.notify.register(
-        //     ProtocolCode.Protocol_Holdem_EnterRoom,
-        //     this.TexasGameMessageHandler.Protocol_Holdem_EnterRoom_Handler,
-        //     this.TexasGameMessageHandler,
-        // );
+        // 检查网络通道是否就绪，防止协议被静默丢弃导致黑屏
+        if (!H5MsgMgr.Instance.handshakeDone) {
+            H5MsgMgr.sendToH5('showDialog', 1, {
+                message: 'H5桥接通道未就绪，进房协议发送失败，请截图发给程序员',
+                confirmButtonText: '我已截图',
+                ensureVisible: true,
+            });
+            return;
+        }
         const roomId = GameCache.Instance.room_id;
         const matchId = GameCache.Instance.match_id;
         const mttPartialBringIn = 0;

@@ -20,6 +20,14 @@ export default class ProcedureTexas extends ProcedureBase {
         super.lateEnter(param);
         // H5 桥接模式下可能跳过了 ProcedureConfig，确保 Network 已初始化
         GameCache.Instance.InitTexasGame();
+        if (!GameCache.Instance.CurGame) {
+            H5MsgMgr.sendToH5('showDialog', 1, {
+                message: '游戏实例创建失败，即将出现黑屏，请截图发给程序员',
+                confirmButtonText: '我已截图',
+                ensureVisible: true,
+            });
+            return;
+        }
         GameCache.Instance.CurGame.Enter();
         GameCache.Instance.CurGame.SMAgency.ChangeGameState(TexasGameState.Launch);
         // 通知 H5 切到牌桌内心跳频率（对齐 HeartbeatComponent.SendIntervalInGameplay = 1s）
