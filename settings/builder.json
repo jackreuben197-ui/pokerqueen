@@ -15,7 +15,7 @@
   "mainCompressionType": "merge_all_json",
   "mainIsRemote": false,
   "optimizeHotUpdate": false,
-  "md5Cache": false,
+  "md5Cache": true,
   "nativeMd5Cache": true,
   "encryptJs": true,
   "xxteaKey": "e60bdd3a-c4b9-48",

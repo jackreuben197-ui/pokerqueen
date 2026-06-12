@@ -742,9 +742,15 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
      */
     private _changeTitleType(titleType: E_TitleType): void {
         if (this.diamondArea) this.diamondArea.active = titleType == E_TitleType.Diamond;
-        if (this.diamondLine) this.diamondLine.active = titleType == E_TitleType.Diamond;
+        if (this.diamondLine) {
+            this.diamondLine.active = titleType == E_TitleType.Diamond;
+            this.diamondLine.color = cc.Color.fromHEX(new cc.Color(), '#fa2b4b');
+        }
         if (this.addChipsArea) this.addChipsArea.active = titleType == E_TitleType.Chips;
-        if (this.chipLine) this.chipLine.active = titleType == E_TitleType.Chips;
+        if (this.chipLine) {
+            this.chipLine.active = titleType == E_TitleType.Chips;
+            this.chipLine.color = cc.Color.fromHEX(new cc.Color(), '#fa2b4b');
+        }
     }
 
     private removeAddChipsUI(): void {
