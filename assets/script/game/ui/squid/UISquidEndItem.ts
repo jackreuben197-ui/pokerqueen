@@ -38,7 +38,8 @@ export default class UISquidEndItem extends UIBase {
             this.memberScoreTxt.string = `<color=${scoreColor}>${StringHelper.GetSignedLongString(data.money || 0)}</color>`;
         }
         if (this.squidLose) {
-            this.squidLose.active = (data.money || 0) < 0;
+            // 隐藏失败触手装饰（按需求：此部分直接隐藏）
+            this.squidLose.active = false;
         }
         const showRate = !data.isPunish && (data.rate || 0) > 0;
         console.log(666, showRate, data.rate, data.isPunish);

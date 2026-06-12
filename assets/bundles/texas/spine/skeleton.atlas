@@ -1,62 +1,173 @@
-
 skeleton.png
-size: 1815,494
+size: 1114,282
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-Ellipse 122
+images/Star
   rotate: false
-  xy: 1203, 2
-  size: 610, 196
-  orig: 703, 249
-  offset: 46, 27
+  xy: 933, 44
+  size: 40, 38
+  orig: 40, 38
+  offset: 0, 0
   index: -1
-Ellipse 123
+images/bg-glow
   rotate: false
-  xy: 2, 4
-  size: 47, 47
-  orig: 71, 70
-  offset: 11, 12
+  xy: 785, 84
+  size: 192, 196
+  orig: 193, 196
+  offset: 0, 0
   index: -1
-Ellipse 124
-  rotate: false
-  xy: 1003, 133
-  size: 65, 65
-  orig: 94, 94
-  offset: 14, 15
+images/bg-glow-b
+  rotate: true
+  xy: 2, 7
+  size: 273, 301
+  orig: 320, 327
+  offset: 28, 20
   index: -1
-Group 4016
+images/coin-1
   rotate: false
-  xy: 2, 53
-  size: 584, 439
-  orig: 692, 538
-  offset: 54, 50
+  xy: 785, 31
+  size: 50, 51
+  orig: 53, 53
+  offset: 1, 1
   index: -1
-Group 4020
+images/coin-2
   rotate: false
-  xy: 869, 66
-  size: 132, 132
-  orig: 223, 223
-  offset: 45, 46
+  xy: 886, 37
+  size: 45, 45
+  orig: 47, 47
+  offset: 1, 1
   index: -1
-Rectangle 1119
-  rotate: false
-  xy: 588, 200
-  size: 1210, 292
-  orig: 1242, 329
-  offset: 25, 19
+images/coin-3
+  rotate: true
+  xy: 1075, 55
+  size: 33, 34
+  orig: 35, 35
+  offset: 1, 1
   index: -1
-Rectangle 1120
+images/coin-4
   rotate: false
-  xy: 51, 29
-  size: 1150, 22
-  orig: 1226, 24
-  offset: 38, 1
+  xy: 933, 3
+  size: 39, 39
+  orig: 41, 41
+  offset: 1, 1
   index: -1
-WIN
+images/coin-12
   rotate: false
-  xy: 588, 59
-  size: 279, 139
-  orig: 289, 159
-  offset: 10, 0
+  xy: 933, 3
+  size: 39, 39
+  orig: 41, 41
+  offset: 1, 1
+  index: -1
+images/coin-13
+  rotate: false
+  xy: 933, 3
+  size: 39, 39
+  orig: 41, 41
+  offset: 1, 1
+  index: -1
+images/coin-14
+  rotate: false
+  xy: 933, 3
+  size: 39, 39
+  orig: 41, 41
+  offset: 1, 1
+  index: -1
+images/coin-9
+  rotate: false
+  xy: 933, 3
+  size: 39, 39
+  orig: 41, 41
+  offset: 1, 1
+  index: -1
+images/coin-5
+  rotate: false
+  xy: 1075, 90
+  size: 37, 38
+  orig: 39, 39
+  offset: 1, 1
+  index: -1
+images/coin-6
+  rotate: false
+  xy: 785, 2
+  size: 26, 27
+  orig: 27, 27
+  offset: 0, 0
+  index: -1
+images/coin-7
+  rotate: false
+  xy: 837, 34
+  size: 47, 48
+  orig: 50, 50
+  offset: 1, 1
+  index: -1
+images/coin-10
+  rotate: false
+  xy: 837, 34
+  size: 47, 48
+  orig: 50, 50
+  offset: 1, 1
+  index: -1
+images/coin-8
+  rotate: false
+  xy: 1075, 22
+  size: 31, 31
+  orig: 32, 32
+  offset: 0, 1
+  index: -1
+images/coin-11
+  rotate: false
+  xy: 1075, 22
+  size: 31, 31
+  orig: 32, 32
+  offset: 0, 1
+  index: -1
+images/i-win
+  rotate: true
+  xy: 979, 130
+  size: 34, 118
+  orig: 34, 119
+  offset: 0, 1
+  index: -1
+images/n-win
+  rotate: false
+  xy: 979, 14
+  size: 94, 114
+  orig: 94, 114
+  offset: 0, 0
+  index: -1
+images/w-win
+  rotate: false
+  xy: 979, 166
+  size: 130, 114
+  orig: 130, 114
+  offset: 0, 0
+  index: -1
+images/win-1
+  rotate: true
+  xy: 305, 13
+  size: 267, 118
+  orig: 267, 119
+  offset: 0, 1
+  index: -1
+images/win-2
+  rotate: true
+  xy: 425, 13
+  size: 267, 118
+  orig: 267, 119
+  offset: 0, 1
+  index: -1
+images/win-3
+  rotate: true
+  xy: 545, 13
+  size: 267, 118
+  orig: 267, 119
+  offset: 0, 1
+  index: -1
+images/win-4
+  rotate: true
+  xy: 665, 13
+  size: 267, 118
+  orig: 267, 119
+  offset: 0, 1
   index: -1
