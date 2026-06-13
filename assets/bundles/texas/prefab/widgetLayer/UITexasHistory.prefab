@@ -180,12 +180,12 @@
     "_prefab": {
       "__id__": 7
     },
-    "_opacity": 150,
+    "_opacity": 200,
     "_color": {
       "__type__": "cc.Color",
-      "r": 30,
-      "g": 30,
-      "b": 30,
+      "r": 10,
+      "g": 20,
+      "b": 16,
       "a": 255
     },
     "_contentSize": {
@@ -401,9 +401,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 18,
+      "g": 40,
+      "b": 33,
       "a": 255
     },
     "_contentSize": {
@@ -29235,7 +29235,7 @@
       "__id__": 789
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 791

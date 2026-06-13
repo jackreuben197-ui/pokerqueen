@@ -313,18 +313,18 @@ export default class playerCardNode extends UIBasePlus {
         // 第一套盈亏
         this.profit.string = StringHelper.GetSignedLongString(winAnte);
         if (winAnte > 0) {
-            this.profit.node.color = cc.color(255, 80, 80);
+            this.profit.node.color = cc.color(250, 43, 75);
         } else if (winAnte < 0) {
-            this.profit.node.color = cc.color(80, 160, 255);
+            this.profit.node.color = cc.color(120, 228, 144);
         }
         // 第二套盈亏
         if (isDualBoard && winAnte2 != null) {
             this.profit_b.node.active = true;
             this.profit_b.string = StringHelper.GetSignedLongString(winAnte2);
             if (winAnte2 > 0) {
-                this.profit_b.node.color = cc.color(255, 80, 80);
+                this.profit_b.node.color = cc.color(250, 43, 75);
             } else if (winAnte2 < 0) {
-                this.profit_b.node.color = cc.color(80, 160, 255);
+                this.profit_b.node.color = cc.color(120, 228, 144);
             }
         } else {
             this.profit_b.node.active = false;
