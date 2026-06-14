@@ -10,6 +10,7 @@ import { UIConfirmDialogParam } from '../../crazyPoker/gameplay/common/view/comm
 import UIComponent from '../../ui/UIComponent';
 import { CPlayer } from '../CPlayer';
 import { GameCache } from '../GameCache';
+import { sampleLiveBounds, getAnimDuration } from '../util/SpineBoundsUtil';
 
 interface TexasGameSquidHost {
     squidEnabled: boolean;
@@ -52,6 +53,11 @@ interface SquidEndRowData {
 
 export default class TexasGameSquid {
     private roundEndPopupToken: number = 0;
+    // 鱿鱼开局 Spine 动画：静态缓存 SkeletonData + 当前播放节点
+    private static _squidStartSkeletonData: sp.SkeletonData = null;
+    /** 鱿鱼开局动画目标尺寸（像素，包围盒较大边缩放到此值；与旧帧动画大小相近，按需微调）*/
+    private static readonly SQUID_START_TARGET_SIZE = 960;
+    private squidStartSpineNode: cc.Node = null;
 
     constructor(private host: TexasGameSquidHost) {}
 
@@ -203,26 +209,80 @@ export default class TexasGameSquid {
 
     public PlayRoundStartAnim(): void {
         const node = this.host?.uirc?.SquidStart as cc.Node;
-        const anim = this.host?.uirc?.SquidStartAnim as cc.Animation;
-        if (!node || !anim) {
+        if (!node) {
             UIComponent.Instance.Toast(i18nMgr.Get('UISquidOpen'));
             return;
         }
-        const clips = anim.getClips?.() || [];
-        if (!anim.defaultClip && clips.length > 0) {
-            anim.defaultClip = clips[0];
-        }
+        // 改用新的 Spine 动画：停掉旧帧动画、隐藏旧静态精灵
+        const anim = this.host?.uirc?.SquidStartAnim as cc.Animation;
+        anim?.stop();
+        const sprite = node.getComponent(cc.Sprite);
+        if (sprite) sprite.enabled = false;
+        // 旧帧动画把节点固定在 (0,-1200)（桌面正中），这里复刻其落点：居中、缩放归位、不透明
+        node.setPosition(0, -1200);
+        node.scale = 1;
+        node.opacity = 255;
         node.active = true;
-        anim.stop();
-        anim.off('finished', this.OnSquidStartAnimFinished, this);
-        anim.on('finished', this.OnSquidStartAnimFinished, this);
-        anim.play(anim.defaultClip?.name || 'squid_start');
+        this._playSquidStartSpine(node);
     }
 
-    private OnSquidStartAnimFinished(): void {
-        const node = this.host?.uirc?.SquidStart as cc.Node;
-        if (node && cc.isValid(node)) {
-            node.active = false;
+    /** 在 squid_start 节点上动态加载并播放新的 Spine 开局动画 */
+    private _playSquidStartSpine(parent: cc.Node): void {
+        this._stopSquidStartSpine();
+
+        const create = (skeletonData: sp.SkeletonData) => {
+            if (!cc.isValid(parent)) return;
+            const spineNode = new cc.Node('SquidStartSpine');
+            const skeleton = spineNode.addComponent(sp.Skeleton);
+            // 首帧透明，跳过 setup pose
+            spineNode.opacity = 0;
+            skeleton.skeletonData = skeletonData;
+            // 放慢播放速度，让开局动画停留更久（原速太短）
+            skeleton.timeScale = 0.6;
+            parent.addChild(spineNode);
+            skeleton.setAnimation(0, 'animation', false);
+            // 下一帧：按实际包围盒归一化到目标尺寸并居中（保持与旧动画相近大小、位置）
+            const dur = getAnimDuration(skeleton, 'animation');
+            skeleton.scheduleOnce(() => {
+                if (!spineNode.isValid) return;
+                // 注意：采样包围盒会把动画轨道推进到末尾，必须在“注册 complete 回调”之前采样，
+                // 采样后再从头重播并绑定结束回调，否则一上来就触发 complete 把节点隐藏掉。
+                const b = sampleLiveBounds(skeleton, dur);
+                if (b.max > 0) {
+                    const scale = TexasGameSquid.SQUID_START_TARGET_SIZE / b.max;
+                    spineNode.scale = scale;
+                    spineNode.x = -(b.offX + b.szX / 2) * scale;
+                    spineNode.y = -(b.offY + b.szY / 2) * scale;
+                }
+                skeleton.setAnimation(0, 'animation', false);
+                skeleton.setCompleteListener(() => {
+                    this._stopSquidStartSpine();
+                    if (cc.isValid(parent)) parent.active = false;
+                });
+                spineNode.opacity = 255;
+            }, 0);
+            this.squidStartSpineNode = spineNode;
+        };
+
+        if (TexasGameSquid._squidStartSkeletonData) {
+            create(TexasGameSquid._squidStartSkeletonData);
+        } else {
+            cc.resources.load('spine/SquidGame/SquidGame', sp.SkeletonData, (err, data: sp.SkeletonData) => {
+                if (err) {
+                    console.error('加载 SquidGame Spine 失败:', err.message);
+                    if (cc.isValid(parent)) parent.active = false;
+                    return;
+                }
+                TexasGameSquid._squidStartSkeletonData = data;
+                create(data);
+            });
+        }
+    }
+
+    private _stopSquidStartSpine(): void {
+        if (this.squidStartSpineNode) {
+            if (this.squidStartSpineNode.isValid) this.squidStartSpineNode.destroy();
+            this.squidStartSpineNode = null;
         }
     }
 

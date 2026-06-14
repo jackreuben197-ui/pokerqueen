@@ -1593,20 +1593,23 @@ export default class Seat {
         const dur = getAnimDuration(skeleton, 'animation');
         skeleton.scheduleOnce(() => {
             if (!spineNode.isValid) return;
+            // 采样包围盒会把动画轨道推进到末尾，故先采样、再从头重播并绑定结束回调，
+            // 否则 complete 会被提前触发，动画一闪而过/不显示。
             const b = sampleLiveBounds(skeleton, dur);
             if (b.max > 0) {
                 spineNode.scale = Seat.OTHERWIN_TARGET_SIZE / b.max;
             }
+            skeleton.setAnimation(0, 'animation', false);
+            skeleton.setCompleteListener(() => {
+                if (spineNode.isValid) {
+                    spineNode.destroy();
+                }
+                if (this._otherWinSpineNode === spineNode) {
+                    this._otherWinSpineNode = null;
+                }
+            });
             spineNode.opacity = 255;
         }, 0);
-        skeleton.setCompleteListener(() => {
-            if (spineNode.isValid) {
-                spineNode.destroy();
-            }
-            if (this._otherWinSpineNode === spineNode) {
-                this._otherWinSpineNode = null;
-            }
-        });
         this._otherWinSpineNode = spineNode;
     }
 
@@ -1661,20 +1664,23 @@ export default class Seat {
         const dur = getAnimDuration(skeleton, 'animation');
         skeleton.scheduleOnce(() => {
             if (!spineNode.isValid) return;
+            // 采样包围盒会把动画轨道推进到末尾，故先采样、再从头重播并绑定结束回调，
+            // 否则 complete 会被提前触发，动画被截断/不显示。
             const b = sampleLiveBounds(skeleton, dur);
             if (b.max > 0) {
                 spineNode.scale = Seat.YOUWIN_TARGET_SIZE / b.max;
             }
+            skeleton.setAnimation(0, 'animation', false);
+            skeleton.setCompleteListener(() => {
+                if (spineNode.isValid) {
+                    spineNode.destroy();
+                }
+                if (this._youwinSpineNode === spineNode) {
+                    this._youwinSpineNode = null;
+                }
+            });
             spineNode.opacity = 255;
         }, 0);
-        skeleton.setCompleteListener(() => {
-            if (spineNode.isValid) {
-                spineNode.destroy();
-            }
-            if (this._youwinSpineNode === spineNode) {
-                this._youwinSpineNode = null;
-            }
-        });
         this._youwinSpineNode = spineNode;
     }
 
