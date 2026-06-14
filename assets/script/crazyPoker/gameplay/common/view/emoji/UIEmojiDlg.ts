@@ -41,11 +41,11 @@ export default class UIEmojiDlg extends UIBasePlus {
      * 注意：表情是联网广播的，新增序号还需服务端支持对应的 emoji type。
      */
     private static readonly CATEGORIES: { name: string; icon: string; indices: number[] }[] = [
-        // 每个标签 1 个底部图标 + 10 个占位表情，后续手动用 Figma 实际素材覆盖同名 png 即可。
-        // 标签顺序：Dancing boy → Shinchan → Skull → Frog → Dog
+        // 每个标签 1 个底部图标 + 10 个表情。
+        // 标签顺序按 Figma：Teddy → Dancing boy → Shinchan → Frog → Dog
+        { name: 'Teddy', icon: 'emtab1', indices: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25] },
         { name: 'Dancing boy', icon: 'emtab2', indices: [26, 27, 28, 29, 30, 31, 32, 33, 34, 35] },
         { name: 'Shinchan', icon: 'emtab3', indices: [36, 37, 38, 39, 40, 41, 42, 43, 44, 45] },
-        { name: 'Skull', icon: 'emtab1', indices: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25] },
         { name: 'Frog', icon: 'emtab4', indices: [46, 47, 48, 49, 50, 51, 52, 53, 54, 55] },
         { name: 'Dog', icon: 'emtab5', indices: [56, 57, 58, 59, 60, 61, 62, 63, 64, 65] }
     ];

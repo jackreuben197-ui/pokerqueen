@@ -30,7 +30,9 @@ export default class UIEmojiItem extends UIBasePlus {
         super.onShow(param);
         if (param?.index !== undefined) this.emojiIndex = param.index;
         if (param?.onClick) this.onClickCallback = param.onClick;
+        // 网格图标使用 Figma 静态图（emoji/emN，按分类顺序）。点击后桌面再播放 Spine 动画。
         if (param?.spriteFrame && this.emojiSprite) {
+            this.emojiSprite.enabled = true;
             this.emojiSprite.spriteFrame = param.spriteFrame;
         }
         const showDiamond = param?.showDiamond !== false;

@@ -1,0 +1,13 @@
+
+skeleton.png
+size: 648,639
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+images/sweating
+  rotate: false
+  xy: 2, 2
+  size: 644, 635
+  orig: 644, 635
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,48 @@
+
+skeleton.png
+size: 2303,1538
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+images/呸 还要不要脸 1
+  rotate: false
+  xy: 2, 2
+  size: 765, 766
+  orig: 765, 766
+  offset: 0, 0
+  index: -1
+images/呸 还要不要脸 2
+  rotate: false
+  xy: 769, 770
+  size: 765, 766
+  orig: 765, 766
+  offset: 0, 0
+  index: -1
+images/呸 还要不要脸 3
+  rotate: false
+  xy: 769, 2
+  size: 765, 766
+  orig: 765, 766
+  offset: 0, 0
+  index: -1
+images/呸 还要不要脸 4
+  rotate: false
+  xy: 1536, 770
+  size: 765, 766
+  orig: 765, 766
+  offset: 0, 0
+  index: -1
+images/呸 还要不要脸 5
+  rotate: false
+  xy: 1536, 2
+  size: 765, 766
+  orig: 765, 766
+  offset: 0, 0
+  index: -1
+images/呸 还要不要脸 6
+  rotate: false
+  xy: 2, 770
+  size: 765, 766
+  orig: 765, 766
+  offset: 0, 0
+  index: -1

@@ -18,6 +18,7 @@ import { SeatFSM } from '../SeatFSM';
 import { SeatEmpty, SeatKeep, SeatSit, SeatWaitOther, SeatWaitStart } from '../SeatStateHandler';
 import SeatUIRC, { CardUIInfo } from '../SeatUIRC';
 import GameUtil, { RoomType, seat_info, some_pos } from '../util/GameUtil';
+import { sampleLiveBounds, getAnimDuration } from '../util/SpineBoundsUtil';
 
 /// </summary>
 export enum VoiceprintState {
@@ -103,6 +104,22 @@ export default class Seat {
     private _allinSpineNode: cc.Node = null;
     // 自己赢的 YouWin Spine 动画节点
     private _youwinSpineNode: cc.Node = null;
+    // 他人赢的 OtherWin Spine 动画节点
+    private _otherWinSpineNode: cc.Node = null;
+    // 表情动画节点（头像正上方）
+    private _emojiAnimNode: cc.Node = null;
+    /** 表情统一目标尺寸（像素，包围盒较大边缩放到此值，使所有表情高宽一致；按需微调）*/
+    private static readonly EMOJI_ANIM_TARGET_SIZE = 170;
+    /** 兜底缩放（无法取包围盒时使用）*/
+    private static readonly EMOJI_ANIM_SCALE = 0.6;
+    /** 表情动画底部相对头顶的间隙（越大越靠上，避免遮挡头像）*/
+    private static readonly EMOJI_ANIM_BOTTOM_GAP = 10;
+    /** 表情动画停留时长（秒），之后淡出 */
+    private static readonly EMOJI_ANIM_HOLD = 5.0;
+    /** YouWin 胜利动画目标尺寸（像素，包围盒较大边缩放到此值；新骨骼原始尺寸过大，按需微调）*/
+    private static readonly YOUWIN_TARGET_SIZE = 420;
+    /** OtherWin（他人赢）胜利动画目标尺寸（像素，对手头像较小，取值更小；按需微调）*/
+    private static readonly OTHERWIN_TARGET_SIZE = 200;
     private _bubbleInsuranceCountDownHomeParent: cc.Node = null;
     private _bubbleInsuranceCountDownHomeSiblingIndex: number = -1;
     private _bubbleInsuranceCountDownHomeZIndex: number = 0;
@@ -110,6 +127,7 @@ export default class Seat {
     private static _allinSelfSkeletonData: sp.SkeletonData = null;
     private static _allinOtherSkeletonData: sp.SkeletonData = null;
     private static _youwinSkeletonData: sp.SkeletonData = null;
+    private static _otherWinSkeletonData: sp.SkeletonData = null;
 
     constructor(
         public id: number,
@@ -1202,6 +1220,7 @@ export default class Seat {
     public StopWinArmature(): void {
         this.uirc.Spine_Winner.node.active = false;
         this._stopYouWinAnim();
+        this._stopOtherWinAnim();
     }
 
     /// <summary>
@@ -1489,18 +1508,11 @@ export default class Seat {
         // 首帧透明，跳过 skeletonData 赋值时的 setup pose 渲染
         spineNode.opacity = 0;
         skeleton.skeletonData = skeletonData;
-        // 定位在头像正上方
+        // 居中对齐头像：allin 是环形波纹特效，应以头像中心为圆心包围头像
         const headNode = this.uirc?.Head;
         if (headNode) {
-            // Head 节点可能没有显式高度，改用 Frame_Head（有 Sprite，尺寸可靠）
-            let headHeight = headNode.height;
-            if (headHeight <= 0) {
-                const frameHead = this.uirc?.Frame_Head;
-                headHeight = frameHead ? (frameHead.height || frameHead.getContentSize().height || 120) : 120;
-            }
-            // 头像顶部在 this.ui 坐标系中的 Y 坐标
-            const headTopY = headNode.y + headHeight / 2;
-            spineNode.y = headTopY + 60 / 2 + 10;
+            spineNode.x = headNode.x;
+            spineNode.y = headNode.y;
         }
         // 挂到座位节点下，与 Spine_Winner 同级
         this.ui.addChild(spineNode);
@@ -1535,12 +1547,76 @@ export default class Seat {
             GC.sound.Play('sfx_win');
             this._playYouWinAnim();
         } else {
-            // 他人赢：播放 Spine_Winner
-            this.uirc.Spine_Winner.node.active = true;
-            this.uirc.Spine_Winner.setAnimation(0, 'animation', false);
-            this.uirc.Spine_Winner.setCompleteListener(() => {
-                this.StopWinArmature();
+            // 他人赢：播放 OtherWin Spine 动画
+            this._playOtherWinAnim();
+        }
+    }
+
+    /**
+     * 动态加载并播放 OtherWin Spine 动画
+     */
+    private _playOtherWinAnim(): void {
+        if (this.IsDisposed || !this.ui) return;
+
+        // 先清理已有的
+        this._stopOtherWinAnim();
+
+        if (Seat._otherWinSkeletonData) {
+            this._createOtherWinSpineNode(Seat._otherWinSkeletonData);
+        } else {
+            cc.resources.load('spine/Texas_Win_Other/skeleton', sp.SkeletonData, (err, skeletonData: sp.SkeletonData) => {
+                if (err) {
+                    console.error('加载 OtherWin Spine 失败:', err.message);
+                    return;
+                }
+                Seat._otherWinSkeletonData = skeletonData;
+                if (!this.IsDisposed && this.ui) {
+                    this._createOtherWinSpineNode(skeletonData);
+                }
             });
+        }
+    }
+
+    /**
+     * 创建 OtherWin Spine 节点并播放动画
+     */
+    private _createOtherWinSpineNode(skeletonData: sp.SkeletonData): void {
+        const spineNode = new cc.Node('OtherWinSpine');
+        const skeleton = spineNode.addComponent(sp.Skeleton);
+        spineNode.opacity = 0;
+        skeleton.skeletonData = skeletonData;
+        // 放慢播放速度，让胜利动画停留更久（原速太短）
+        skeleton.timeScale = 0.5;
+        this.ui.addChild(spineNode);
+        skeleton.setAnimation(0, 'animation', false);
+        // 下一帧：恢复透明度 + 按实际包围盒归一化到较小尺寸（新骨骼原始尺寸过大）
+        const dur = getAnimDuration(skeleton, 'animation');
+        skeleton.scheduleOnce(() => {
+            if (!spineNode.isValid) return;
+            const b = sampleLiveBounds(skeleton, dur);
+            if (b.max > 0) {
+                spineNode.scale = Seat.OTHERWIN_TARGET_SIZE / b.max;
+            }
+            spineNode.opacity = 255;
+        }, 0);
+        skeleton.setCompleteListener(() => {
+            if (spineNode.isValid) {
+                spineNode.destroy();
+            }
+            if (this._otherWinSpineNode === spineNode) {
+                this._otherWinSpineNode = null;
+            }
+        });
+        this._otherWinSpineNode = spineNode;
+    }
+
+    /**
+     * 停止 OtherWin 动画
+     */
+    private _stopOtherWinAnim(): void {
+        if (this._otherWinSpineNode) {
+            this._otherWinSpineNode.destroy();
+            this._otherWinSpineNode = null;
         }
     }
 
@@ -1577,13 +1653,19 @@ export default class Seat {
         const skeleton = spineNode.addComponent(sp.Skeleton);
         spineNode.opacity = 0;
         skeleton.skeletonData = skeletonData;
+        // 放慢播放速度，让胜利动画停留更久（原速太短）
+        skeleton.timeScale = 0.5;
         this.ui.addChild(spineNode);
         skeleton.setAnimation(0, 'animation', false);
-        // 下一帧恢复透明度，跳过 setup pose
+        // 下一帧：恢复透明度 + 按实际包围盒归一化到中等尺寸（新骨骼原始尺寸过大）
+        const dur = getAnimDuration(skeleton, 'animation');
         skeleton.scheduleOnce(() => {
-            if (spineNode.isValid) {
-                spineNode.opacity = 255;
+            if (!spineNode.isValid) return;
+            const b = sampleLiveBounds(skeleton, dur);
+            if (b.max > 0) {
+                spineNode.scale = Seat.YOUWIN_TARGET_SIZE / b.max;
             }
+            spineNode.opacity = 255;
         }, 0);
         skeleton.setCompleteListener(() => {
             if (spineNode.isValid) {
@@ -1607,35 +1689,140 @@ export default class Seat {
     }
 
     /// <summary>
-    /// 在头像上方显示表情动画（6秒淡入淡出）
+    /// 在头像【正上方】显示表情动画（全尺寸，不遮挡头像，5秒后淡出）
     /// </summary>
     public ShowEmojiAnimation(emojiIndex: number): void {
-        if (!this.uirc.Frame_Head) return;
+        if (!this.ui || !this.ui.isValid) return;
+        // 先清理旧的（挂在座位节点 this.ui 上，名为 EmojiAnim）
+        this._stopEmojiAnim();
+        // 优先加载 Spine 动画版本（emoji_spine/em{idx}/skeleton），无则回退到静态图
+        cc.resources.load(`emoji_spine/em${emojiIndex}/skeleton`, sp.SkeletonData, (err, skelData: sp.SkeletonData) => {
+            if (!this.ui || !this.ui.isValid) return;
+            if (!err && skelData) {
+                this._playEmojiSpine(skelData);
+            } else {
+                this._playEmojiStatic(emojiIndex);
+            }
+        });
+    }
+
+    /** 头像顶部在座位节点(this.ui)坐标系中的 Y 坐标——表情动画以此为底，置于头像正上方 */
+    private _getHeadTopY(): number {
+        const headNode = this.uirc?.Head;
+        let headHeight = headNode ? headNode.height : 0;
+        if (headHeight <= 0) {
+            const frameHead = this.uirc?.Frame_Head;
+            headHeight = frameHead ? (frameHead.height || frameHead.getContentSize().height || 120) : 120;
+        }
+        const baseY = headNode ? headNode.y : 0;
+        return baseY + headHeight / 2;
+    }
+
+    /** 清理正在播放的表情动画 */
+    private _stopEmojiAnim(): void {
+        if (this._emojiAnimNode) {
+            if (this._emojiAnimNode.isValid) this._emojiAnimNode.destroy();
+            this._emojiAnimNode = null;
+        }
+        const old = this.ui && this.ui.isValid ? this.ui.getChildByName('EmojiAnim') : null;
+        if (old) old.destroy();
+    }
+
+    /**
+     * Spine 纹理必须禁止进入动态图集（dynamicAtlas）：<512px 的小图会被打包，
+     * 导致 atlas UV 错位 → 骨骼渲染为空白。运行时强制 packable=false 可彻底规避，
+     * 不依赖 .meta 重新导入。
+     */
+    private _unpackSpineTextures(skelData: sp.SkeletonData): void {
+        // 关闭动态图集：小图被打包后会破坏 Spine 的 UV（首帧正常、次帧变空白/闪烁）。
+        // disable 时引擎会 reset 并把已打包的纹理还原。只需触发一次。
+        try {
+            const dam: any = (cc as any).dynamicAtlasManager;
+            if (dam && dam.enabled) dam.enabled = false;
+        } catch (e) {}
+        try {
+            const texs: any = (skelData as any).textures;
+            if (texs && texs.forEach) {
+                texs.forEach((t: any) => { if (t) t.packable = false; });
+            }
+        } catch (e) {}
+    }
+
+    /// 播放 Spine 表情动画（全尺寸，挂在座位节点上，位于头像正上方）
+    private _playEmojiSpine(skelData: sp.SkeletonData): void {
+        this._unpackSpineTextures(skelData);
+        const node = new cc.Node('EmojiAnim');
+        const skeleton = node.addComponent(sp.Skeleton);
+        // 首帧透明，跳过 skeletonData 赋值时的 setup pose 渲染
+        node.opacity = 0;
+        skeleton.skeletonData = skelData;
+        skeleton.premultipliedAlpha = false;
+        skeleton.timeScale = 1;
+        // 取第一个动画名 + 皮肤名
+        let animName = 'animation';
+        let skinName: string | null = null;
+        try {
+            const rt: any = (skelData as any).getRuntimeData ? (skelData as any).getRuntimeData() : null;
+            if (rt && rt.animations && rt.animations.length) animName = rt.animations[0].name;
+            if (rt) skinName = (rt.defaultSkin && rt.defaultSkin.name) || (rt.skins && rt.skins[0] && rt.skins[0].name) || null;
+        } catch (e) {}
+        this.ui.addChild(node);
+        this._emojiAnimNode = node;
+        if (skinName) { try { skeleton.setSkin(skinName); } catch (e) {} }
+        try { skeleton.setAnimation(0, animName, true); } catch (e) {}
+        node.scale = Seat.EMOJI_ANIM_SCALE; // 临时缩放
+        const headTopY = this._getHeadTopY();
+        node.x = 0;
+        node.y = headTopY + Seat.EMOJI_ANIM_BOTTOM_GAP;
+        // 延迟一帧：组件激活后 sk.update 才会推进动画，再沿循环采样包围盒取最大并归一化、对齐
+        const dur = getAnimDuration(skeleton, animName);
+        skeleton.scheduleOnce(() => {
+            if (!node.isValid) return;
+            const b = sampleLiveBounds(skeleton, dur);
+            if (b.max > 0) {
+                const scale = Seat.EMOJI_ANIM_TARGET_SIZE / b.max;
+                node.scale = scale;
+                node.x = -(b.offX + b.szX / 2) * scale;       // 水平居中
+                node.y = headTopY - b.offY * scale + Seat.EMOJI_ANIM_BOTTOM_GAP; // 脚底贴头顶
+            }
+            node.opacity = 255;
+        }, 0);
+        cc.tween(node)
+            .delay(Seat.EMOJI_ANIM_HOLD)
+            .to(0.5, { opacity: 0 }, { easing: 'sineIn' })
+            .call(() => {
+                if (node.isValid) node.destroy();
+                if (this._emojiAnimNode === node) this._emojiAnimNode = null;
+            })
+            .start();
+    }
+
+    /// 播放静态表情图（无 Spine 时回退）——同样置于头像正上方
+    private _playEmojiStatic(emojiIndex: number): void {
         cc.resources.load(`emoji/em${emojiIndex}`, cc.SpriteFrame, (err, spriteFrame: cc.SpriteFrame) => {
-            if (err || !spriteFrame) {
+            if (err || !spriteFrame || !this.ui || !this.ui.isValid) {
                 console.warn(LN, `加载表情图 emoji/em${emojiIndex} 失败`, err);
                 return;
             }
-            const parentNode = this.uirc.Frame_Head;
-            // 先清理旧的
-            const old = parentNode.getChildByName('EmojiAnim');
-            if (old) old.destroy();
             const emojiNode = new cc.Node('EmojiAnim');
             const sprite = emojiNode.addComponent(cc.Sprite);
+            sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
             sprite.spriteFrame = spriteFrame;
-            emojiNode.setContentSize(70, 70);
+            const SIZE = 120;
+            emojiNode.setContentSize(SIZE, SIZE);
             emojiNode.opacity = 0;
-            // 显示在头像上靠上方位置
-            const headSize = parentNode.getContentSize();
             emojiNode.x = 0;
-            emojiNode.y = headSize.height / 4;
-            parentNode.addChild(emojiNode);
+            // 静态图锚点居中：底部贴头顶 → y = 头顶 + 半高
+            emojiNode.y = this._getHeadTopY() + SIZE / 2 + Seat.EMOJI_ANIM_BOTTOM_GAP;
+            this.ui.addChild(emojiNode);
+            this._emojiAnimNode = emojiNode;
             cc.tween(emojiNode)
                 .to(0.3, { opacity: 255 }, { easing: 'sineOut' })
-                .delay(5.2)
+                .delay(Seat.EMOJI_ANIM_HOLD)
                 .to(0.5, { opacity: 0 }, { easing: 'sineIn' })
                 .call(() => {
                     if (emojiNode.isValid) emojiNode.destroy();
+                    if (this._emojiAnimNode === emojiNode) this._emojiAnimNode = null;
                 })
                 .start();
         });

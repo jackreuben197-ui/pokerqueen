@@ -1,47 +1,33 @@
 youwin.png
-size: 938,686
+size: 400,400
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-images/Star
-  rotate: true
-  xy: 872, 465
-  size: 67, 64
-  orig: 67, 64
+images/shark_00032
+  rotate: false
+  xy: 2, 229
+  size: 393, 166
+  orig: 500, 225
+  offset: 45, 22
+  index: -1
+images/win_text_00032
+  rotate: false
+  xy: 123, 134
+  size: 182, 93
+  orig: 500, 225
+  offset: 217, 38
+  index: -1
+images/you_text_00032
+  rotate: false
+  xy: 2, 131
+  size: 119, 96
+  orig: 119, 96
   offset: 0, 0
   index: -1
-images/YOU WIN1
+images/you_text_00033
   rotate: false
-  xy: 2, 268
-  size: 868, 131
-  orig: 868, 131
-  offset: 0, 0
-  index: -1
-images/YOU WIN2
-  rotate: false
-  xy: 2, 135
-  size: 868, 131
-  orig: 868, 131
-  offset: 0, 0
-  index: -1
-images/YOU WIN3
-  rotate: false
-  xy: 2, 2
-  size: 868, 131
-  orig: 868, 131
-  offset: 0, 0
-  index: -1
-images/YOU WIN4
-  rotate: false
-  xy: 2, 401
-  size: 868, 131
-  orig: 868, 131
-  offset: 0, 0
-  index: -1
-images/you_win-m
-  rotate: false
-  xy: 2, 534
-  size: 876, 150
-  orig: 876, 150
-  offset: 0, 0
+  xy: 307, 132
+  size: 67, 95
+  orig: 67, 96
+  offset: 0, 1
   index: -1

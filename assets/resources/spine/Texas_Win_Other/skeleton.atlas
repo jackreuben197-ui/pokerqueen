@@ -1,0 +1,27 @@
+
+skeleton.png
+size: 884,884
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+images/light
+  rotate: false
+  xy: 2, 324
+  size: 557, 556
+  orig: 557, 556
+  offset: 0, 0
+  index: -1
+images/shark_logo
+  rotate: false
+  xy: 561, 561
+  size: 319, 319
+  orig: 319, 319
+  offset: 0, 0
+  index: -1
+images/win_title0031
+  rotate: false
+  xy: 561, 430
+  size: 314, 129
+  orig: 800, 450
+  offset: 228, 136
+  index: -1

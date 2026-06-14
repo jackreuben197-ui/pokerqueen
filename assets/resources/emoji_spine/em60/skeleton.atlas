@@ -1,0 +1,118 @@
+
+skeleton.png
+size: 1814,908
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+images/给你脸了是不 1
+  rotate: false
+  xy: 2, 304
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 10
+  rotate: false
+  xy: 606, 2
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 11
+  rotate: false
+  xy: 908, 304
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 12
+  rotate: false
+  xy: 1210, 606
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 13
+  rotate: false
+  xy: 908, 2
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 14
+  rotate: false
+  xy: 1210, 304
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 15
+  rotate: false
+  xy: 1512, 606
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 16
+  rotate: false
+  xy: 1210, 2
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 2
+  rotate: false
+  xy: 304, 606
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 3
+  rotate: false
+  xy: 2, 2
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 4
+  rotate: false
+  xy: 304, 304
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 5
+  rotate: false
+  xy: 606, 606
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 6
+  rotate: false
+  xy: 304, 2
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 7
+  rotate: false
+  xy: 606, 304
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 8
+  rotate: false
+  xy: 908, 606
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+images/给你脸了是不 9
+  rotate: false
+  xy: 2, 606
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
