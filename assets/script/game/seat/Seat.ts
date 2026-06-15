@@ -120,6 +120,8 @@ export default class Seat {
     private static readonly YOUWIN_TARGET_SIZE = 420;
     /** OtherWin（他人赢）胜利动画目标尺寸（像素，对手头像较小，取值更小；按需微调）*/
     private static readonly OTHERWIN_TARGET_SIZE = 200;
+    /** OtherWin 动画底部相对头顶的间隙（越大越靠上，越小/负值越往下压向头像）*/
+    private static readonly OTHERWIN_BOTTOM_GAP = -60;
     private _bubbleInsuranceCountDownHomeParent: cc.Node = null;
     private _bubbleInsuranceCountDownHomeSiblingIndex: number = -1;
     private _bubbleInsuranceCountDownHomeZIndex: number = 0;
@@ -517,7 +519,8 @@ export default class Seat {
         const hasSquidMark = !!(inSquidRound && p.squidCount > 0);
         const showSquidMask = !!(inSquidRound && p.squidCount <= 0);
         if (this.uirc.PlayerSquidCount) {
-            this.uirc.PlayerSquidCount.active = hasSquidMark;
+            // 按需求隐藏座位头像上的鱿鱼数量标记（紫色图标 + 数字）
+            this.uirc.PlayerSquidCount.active = false;
         }
         if (this.uirc.Head_Squid_Mask) {
             this.uirc.Head_Squid_Mask.active = showSquidMask;
@@ -1597,7 +1600,12 @@ export default class Seat {
             // 否则 complete 会被提前触发，动画一闪而过/不显示。
             const b = sampleLiveBounds(skeleton, dur);
             if (b.max > 0) {
-                spineNode.scale = Seat.OTHERWIN_TARGET_SIZE / b.max;
+                const scale = Seat.OTHERWIN_TARGET_SIZE / b.max;
+                spineNode.scale = scale;
+                // 置于头像正上方：水平居中，动画脚底贴头顶
+                const headTopY = this._getHeadTopY();
+                spineNode.x = -(b.offX + b.szX / 2) * scale;
+                spineNode.y = headTopY - b.offY * scale + Seat.OTHERWIN_BOTTOM_GAP;
             }
             skeleton.setAnimation(0, 'animation', false);
             skeleton.setCompleteListener(() => {

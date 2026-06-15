@@ -56,7 +56,9 @@ export default class TexasGameSquid {
     // 鱿鱼开局 Spine 动画：静态缓存 SkeletonData + 当前播放节点
     private static _squidStartSkeletonData: sp.SkeletonData = null;
     /** 鱿鱼开局动画目标尺寸（像素，包围盒较大边缩放到此值；与旧帧动画大小相近，按需微调）*/
-    private static readonly SQUID_START_TARGET_SIZE = 960;
+    private static readonly SQUID_START_TARGET_SIZE = 1200;
+    /** 居中微调：开局动画水平偏移（像素，负值向左）。骨骼内容左重（鱿鱼角色在左），需向左拉回视觉中心 */
+    private static readonly SQUID_START_OFFSET_X = -160;
     private squidStartSpineNode: cc.Node = null;
 
     constructor(private host: TexasGameSquidHost) {}
@@ -238,7 +240,7 @@ export default class TexasGameSquid {
             spineNode.opacity = 0;
             skeleton.skeletonData = skeletonData;
             // 放慢播放速度，让开局动画停留更久（原速太短）
-            skeleton.timeScale = 0.6;
+            skeleton.timeScale = 0.45;
             parent.addChild(spineNode);
             skeleton.setAnimation(0, 'animation', false);
             // 下一帧：按实际包围盒归一化到目标尺寸并居中（保持与旧动画相近大小、位置）
@@ -251,7 +253,7 @@ export default class TexasGameSquid {
                 if (b.max > 0) {
                     const scale = TexasGameSquid.SQUID_START_TARGET_SIZE / b.max;
                     spineNode.scale = scale;
-                    spineNode.x = -(b.offX + b.szX / 2) * scale;
+                    spineNode.x = -(b.offX + b.szX / 2) * scale + TexasGameSquid.SQUID_START_OFFSET_X;
                     spineNode.y = -(b.offY + b.szY / 2) * scale;
                 }
                 skeleton.setAnimation(0, 'animation', false);
