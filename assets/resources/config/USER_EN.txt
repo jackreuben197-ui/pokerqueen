@@ -3674,6 +3674,7 @@ UIloginEmail_logintext=Email
 UIloginphonecode_logintext=Login with OTP
 UIloginPhone_Registertext=Register
 UIloginEmail_Registertext=Email
+UILogin_AccountRegisterTip=Please keep your account and password safe. Once lost, they cannot be recovered.
 UIGuild_MemberBindVipDone=Bonded
 UIGuild_MemberUnBindVipDone=Unbound
 UIClub_IntroGuildDatail=Introduce the Club!

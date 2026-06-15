@@ -3674,6 +3674,7 @@ UIloginEmail_logintext=Email
 UIloginphonecode_logintext=Login com OTP
 UIloginPhone_Registertext=Registrar
 UIloginEmail_Registertext=Email
+UILogin_AccountRegisterTip=Guarde seu nome de usuário e senha com segurança. Uma vez perdidos, não poderão ser recuperados.
 UIGuild_MemberBindVipDone=Vinculado
 UIGuild_MemberUnBindVipDone=Desvinculado
 UIClub_IntroGuildDatail=Apresente o clube!

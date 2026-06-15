@@ -35,6 +35,7 @@ const seatArrange: Record<SeatPosition, cc.Vec3> = {
 const redColor = cc.Color.fromHEX(new cc.Color, '#FA2B4B');
 const greenColor = cc.Color.fromHEX(new cc.Color, '#78E4E4');
 const yellowColor = cc.Color.fromHEX(new cc.Color, '#F9CA9F');
+const grayColor = cc.Color.fromHEX(new cc.Color, '#B5B5B5');
 
 @ccclass
 @menu('CrazyPoker/Room/Texas/SeatPlayer')
@@ -421,7 +422,7 @@ export default class SeatPlayer extends cc.Component {
             break;
         case Def.Action.FOLD:
             this.seatActionDisplay.node.active = true;
-            this.seatActionDisplay.fold(i18nMgr.Get('adaptation10047'));
+            this.seatActionDisplay.fold(i18nMgr.Get('adaptation10047'), grayColor);
             if (aat == AnimateDisplayTypeAction.Done) {
                 if (this._seatPlayer.mine) {
                     const startPos = this.bigCardsContainer.position;
