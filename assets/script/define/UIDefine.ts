@@ -156,7 +156,6 @@ type UIDefineKey =
     | 'UIFunRecycleGive'
     | 'UITexasHistory'
     | 'UIChatDlg'
-    | 'UIBlank_dialog'
     | 'UIGameplayAddChipsAndDiamond'
     | 'UIEmojiDlg'
     | 'UIConfirmDialog'
@@ -1308,13 +1307,6 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Name: 'UIChatDlg',
         Bundle: 'texas',
         Path: 'prefab/widgetLayer/UIChatDlg',
-        DisAdaptScreen: true
-    },
-    UIBlank_dialog: {
-        UIType: UIType.CommonUI,
-        Name: 'UIBlank_dialog',
-        Bundle: 'texas',
-        Path: 'prefab/widgetLayer/Blank_Dialog',
         DisAdaptScreen: true
     },
     UIGameplayAddChipsAndDiamond: {

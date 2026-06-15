@@ -463,8 +463,11 @@ export default class TexasGameMessageHandler {
         console.log(LN, `预取牌谱缓存完成 handNum=${handNum}`);
     }
 
-    Protocol_Holdem_BringInOrStoreFail_Handler(Protocol_Holdem_BringInOrStoreFail: ProtocolCode, Protocol_Holdem_BringInOrStoreFail_Handler: any, arg2: this) {
-        throw new Error('Method not implemented.');
+    Protocol_Holdem_BringInOrStoreFail_Handler(response: any): void {
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_BringInOrStoreFail_Handler`, response);
+        if (!response) return;
+        const errMsg = response.extNotice || CPErrorCode.ServerErrorDescription(response.extErrcode);
+        UIComponent.Instance.Toast(errMsg);
     }
 
     // 保险赔付消息

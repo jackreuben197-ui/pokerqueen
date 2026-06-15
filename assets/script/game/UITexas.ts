@@ -658,12 +658,16 @@ export default class UITexas extends BaseScene {
     private onChipsChangeUpdate(response: any): void {
         if (!response) return;
         let hasNew = false;
+        const myUserId = GameCache.Instance.nUserId;
         for (const change of response.changesList || []) {
             if (change.reason !== 0 /* Def.ChipChangeReason.CC_NONE */) continue;
             const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(change.seatId);
             if (!seat?.Player) continue;
             const isNew = UITexasReportComponent.applyChipChange(seat.Player.userID, change.chips || 0, seat.Player.nick || '', seat.Player.headPic || '');
             if (isNew) hasNew = true;
+            if (seat.Player.userID === myUserId && (change.change || 0) > 0) {
+                UIComponent.Instance.ToastLanguage('UIGameplay_UCRechargeBringinAfter');
+            }
         }
         if (hasNew) this.post(GGEvent.SituationRefresh);
     }
