@@ -941,7 +941,11 @@ export default class UITexasReportComponent extends UIBase {
         textAllCol.getChildByName('Text_All').getComponent(cc.Label).string = StringHelper.GetLongString(pDto.bringIn);
         // Unity: bugin/Text_outChip 显示藏钱(storeChips)，非零时才显示
         const storeChipsStr = pDto.storeChips ? StringHelper.GetLongString(pDto.storeChips) : '';
-        textAllCol.getChildByName('Text_All1').getComponent(cc.Label).string = storeChipsStr ? `(${storeChipsStr})` : '';
+        if(storeChipsStr){
+            textAllCol.getChildByName('Text_All1').getComponent(cc.Label).string = storeChipsStr
+        }else{
+            textAllCol.getChildByName('Text_All1').active = false
+        }
         this.setCountText(ele.getChildByName('Text_Count'), pDto.score);
         // Unity: Text_Pool 显示入池率，poolRate/10 = 百分比
         const poolNode = ele.getChildByName('Text_Pool');
