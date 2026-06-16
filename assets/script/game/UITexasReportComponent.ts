@@ -948,7 +948,18 @@ export default class UITexasReportComponent extends UIBase {
         textAllCol.getChildByName('Text_All').getComponent(cc.Label).string = StringHelper.GetLongString(pDto.bringIn);
         // Unity: bugin/Text_outChip 显示藏钱(storeChips)，非零时才显示
         const storeChipsStr = pDto.storeChips ? StringHelper.GetLongString(pDto.storeChips) : '';
-        textAllCol.getChildByName('Text_All1').getComponent(cc.Label).string = storeChipsStr ? `(${storeChipsStr})` : '';
+        const textAll1Node = textAllCol.getChildByName('Text_All1');
+        const textAll1Label = textAll1Node ? textAll1Node.getComponent(cc.Label) : null;
+        if (storeChipsStr) {
+            if (textAll1Label) textAll1Label.string = `(${storeChipsStr})`;
+            if (textAll1Node) textAll1Node.active = true;
+        } else {
+            if (textAll1Label) textAll1Label.string = '';
+            // 无藏钱时收起第二行：竖直 Layout(RESIZE_CONTAINER) 会把“带入”值居中，与其他列底边对齐
+            if (textAll1Node) textAll1Node.active = false;
+        }
+        const allColLayout = textAllCol.getComponent(cc.Layout);
+        if (allColLayout && (allColLayout as any).updateLayout) (allColLayout as any).updateLayout();
         this.setCountText(ele.getChildByName('Text_Count'), pDto.score);
         // Unity: Text_Pool 显示入池率，poolRate/10 = 百分比
         const poolNode = ele.getChildByName('Text_Pool');
@@ -964,6 +975,31 @@ export default class UITexasReportComponent extends UIBase {
             this.applyMushSquidInfo(ele, subType, pDto);
         }
         ele.getChildByName('own').active = pDto.userId == GameCache.Instance.nUserId;
+        this.styleReportRow(ele);
+    }
+
+    /** 行内文字加粗、变亮、统一字号（积分列由 setCountText 着色，此处不覆盖颜色） */
+    private styleReportRow(ele: cc.Node): void {
+        if (!ele) return;
+        this._boldBrightLabel(ele.getChildByName('Text_Name'));
+        this._boldBrightLabel(ele.getChildByName('Text_Num'));
+        this._boldBrightLabel(ele.getChildByName('Text_Pool'));
+        this._boldBrightLabel(ele.getChildByName('Text_Deposit'));
+        const col = ele.getChildByName('Text_All_Col');
+        if (col) {
+            this._boldBrightLabel(col.getChildByName('Text_All'));
+            this._boldBrightLabel(col.getChildByName('Text_All1'));
+        }
+    }
+
+    private _boldBrightLabel(node: cc.Node): void {
+        if (!node) return;
+        const lab = node.getComponent(cc.Label);
+        if (!lab) return;
+        (lab as any).enableBold = true;     // 加粗（Inter TTF 支持）
+        lab.fontSize = 43;                   // 与其他列统一字号，底边对齐
+        lab.lineHeight = 43;
+        node.color = cc.Color.WHITE;         // 更亮的纯白
     }
 
     btnShowProblemClick() {
@@ -1201,10 +1237,33 @@ export default class UITexasReportComponent extends UIBase {
         if (this.baoxianCheckmark) this.baoxianCheckmark.active = showInsuranceToggle && this.curBottomTab === 'insurance';
         if (this.jackpotCheckmark) this.jackpotCheckmark.active = showJackpotToggle && this.curBottomTab === 'jackpot';
         if (this.squidCheckmark) this.squidCheckmark.active = showModeToggle && this.curBottomTab === 'mode';
+        // 激活态下划线改为红色（原素材为绿色，染色无法得到纯红，故代码绘制红条）
+        this.tintCheckmarkRed(this.battleCheckmark);
+        this.tintCheckmarkRed(this.baoxianCheckmark);
+        this.tintCheckmarkRed(this.jackpotCheckmark);
+        this.tintCheckmarkRed(this.squidCheckmark);
         this.setToggleTextColor(this.battleTextNode, showBottomToggle && this.curBottomTab === 'battle');
         this.setToggleTextColor(this.baoxianTextNode, showInsuranceToggle && this.curBottomTab === 'insurance');
         this.setToggleTextColor(this.jackpotTextNode, showJackpotToggle && this.curBottomTab === 'jackpot');
         this.setToggleTextColor(this.squidTextNode, showModeToggle && this.curBottomTab === 'mode');
+    }
+
+    /** 把切换标签的下划线指示器绘制成红色（隐藏原绿色素材，用 Graphics 画红条） */
+    private tintCheckmarkRed(node: cc.Node): void {
+        if (!node) return;
+        const sp = node.getComponent(cc.Sprite);
+        if (sp) sp.enabled = false;
+        if (node.getChildByName('__redline')) return;
+        const line = new cc.Node('__redline');
+        line.setAnchorPoint(0.5, 0.5);
+        line.setPosition(0, 0);
+        node.addChild(line);
+        const g = line.addComponent(cc.Graphics);
+        const w = node.width || 160;
+        const h = node.height || 10;
+        g.roundRect(-w / 2, -h / 2, w, h, h / 2);
+        g.fillColor = cc.color(250, 43, 75, 255); // #FA2B4B
+        g.fill();
     }
 
     private refreshModeToggleTitle(): void {
@@ -1801,12 +1860,13 @@ export default class UITexasReportComponent extends UIBase {
         const color = score > 0 ? '#FA2B4B' : score < 0 ? '#78E490' : '#FFFFFF';
         const rich = node.getComponent(cc.RichText);
         if (rich) {
-            rich.string = `<color=${color}>${text}</color>`;
+            rich.string = `<b><color=${color}>${text}</color></b>`;
             return;
         }
         const label = node.getComponent(cc.Label);
         if (label) {
             label.string = text;
+            (label as any).enableBold = true;
             label.node.color = cc.Color.BLACK.fromHEX(color);
         }
     }
@@ -1869,12 +1929,13 @@ export default class UITexasReportComponent extends UIBase {
         const color = value > 0 ? '#FA2B4B' : value < 0 ? '#78E490' : '#FFFFFF';
         const rich = node.getComponent(cc.RichText);
         if (rich) {
-            rich.string = `<color=${color}>${text}</color>`;
+            rich.string = `<b><color=${color}>${text}</color></b>`;
             return;
         }
         const label = node.getComponent(cc.Label);
         if (label) {
             label.string = text;
+            (label as any).enableBold = true;
             label.node.color = cc.Color.BLACK.fromHEX(color);
         }
     }
