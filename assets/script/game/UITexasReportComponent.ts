@@ -115,6 +115,8 @@ export default class UITexasReportComponent extends UIBase {
     listBarMushRoom: cc.Node = null;
     listBarJackpot: cc.Node = null;
     listBar4: cc.Node = null;
+    /** 代码生成的“Insurance”药丸标题（保险页专用，Figma 58:109729） */
+    private insurancePillNode: cc.Node = null;
     jackpotBarNode: cc.Node = null;
     jackpotTotalLabel: cc.Label | cc.RichText = null;
     listBar3ModeLabel: cc.Label = null;
@@ -466,6 +468,9 @@ export default class UITexasReportComponent extends UIBase {
         this.pageInfoNode = cc.find(`${bg}/squidPageInfo`, this.node);
         this.squidRoundNode = cc.find(`${top}/squidRound`, this.node);
         this.noDataNode = dataListNode ? cc.find('noData', dataListNode) : null;
+        // 按需求移除空状态的大图标（保留“暂无数据”文字）
+        const iconNoData = this.noDataNode ? cc.find('icon_no_data', this.noDataNode) : null;
+        if (iconNoData) iconNoData.active = false;
         this.publicAreaNode = contentNode ? cc.find('publicArea', contentNode) : null;
         this.totalMoneyLabel = this.publicAreaNode ? cc.find('total_money', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
         this.totalBringLabel = this.publicAreaNode ? cc.find('total_bring', this.publicAreaNode)?.getComponent(cc.Label) || null : null;
@@ -1007,7 +1012,53 @@ export default class UITexasReportComponent extends UIBase {
         this.UpdatePageTxt();
     }
 
+    /** 列表头样式（更大、加粗、纯白、底边对齐）只需应用一次 */
+    private _headerStyled: boolean = false;
+
+    /**
+     * 统一美化所有表头列标题：字体更大、加粗、纯白更亮、底边对齐到同一水平线。
+     * 资源/预制改动在本项目构建里不一定重新导入，故用代码处理。
+     */
+    private styleReportHeaders(): void {
+        if (this._headerStyled) return;
+        const bars = [
+            this.listBar1, this.listBar3, this.listBarSquid,
+            this.listBarMushRoom, this.listBarJackpot, this.listBar4
+        ];
+        let any = false;
+        bars.forEach(bar => { if (this.styleHeaderBar(bar)) any = true; });
+        if (any) this._headerStyled = true;
+    }
+
+    private styleHeaderBar(bar: cc.Node): boolean {
+        if (!bar) return false;
+        const FS = 46;
+        let baseY: number = null;
+        let styled = false;
+        bar.children.forEach(ch => {
+            const lab = ch.getComponent(cc.Label);
+            if (!lab) return;
+            lab.fontSize = FS;
+            lab.lineHeight = FS;
+            (lab as any).enableBold = true;            // TTF 真加粗
+            lab.verticalAlign = cc.Label.VerticalAlign.CENTER;
+            ch.color = cc.Color.WHITE;                 // 更亮的纯白
+            ch.opacity = 255;
+            ch.setAnchorPoint(ch.anchorX, 0.5);
+            // 底边对齐：所有列标题统一到同一 y（同字号 + 同 y + 居中 = 底边同线）
+            if (baseY === null) baseY = ch.y; else ch.y = baseY;
+            // 细描边增强清晰度/厚度
+            let ol = ch.getComponent(cc.LabelOutline);
+            if (!ol) ol = ch.addComponent(cc.LabelOutline);
+            ol.color = cc.color(255, 255, 255, 255);
+            ol.width = 1;
+            styled = true;
+        });
+        return styled;
+    }
+
     private refreshListBar(): void {
+        this.styleReportHeaders();
         const subType = this.reportSubType;
         if (this.listBar1) this.listBar1.active = false;
         if (this.listBar3) this.listBar3.active = false;
@@ -1034,6 +1085,63 @@ export default class UITexasReportComponent extends UIBase {
         if (this.listBar3ModeLabel) {
             this.listBar3ModeLabel.string = subType === 'squid' ? i18nMgr.Get('UISquid') : i18nMgr.Get('UIMush');
         }
+        this.updateInsurancePill(this.curBottomTab === 'insurance');
+    }
+
+    /**
+     * 代码生成 Figma(58:109729) 的“Insurance”药丸标题，浮在数据卡片左上角。
+     * 资源相关改动在该项目构建里不一定会重新导入，故纯代码绘制（cc.Graphics）。
+     */
+    private updateInsurancePill(show: boolean): void {
+        // 卡片节点：ListBar4 -> header -> dataList
+        const card = this.listBar4 && this.listBar4.parent ? this.listBar4.parent.parent : null;
+        if (!card) return;
+        if (!this.insurancePillNode || !this.insurancePillNode.isValid) {
+            const cardW = card.width || 1100;
+            const scale = cardW / 328; // Figma 卡片宽 328
+            const pillW = Math.round(113 * scale);
+            const pillH = Math.round(30 * scale);
+            const radius = pillH / 2;
+
+            const pill = new cc.Node('InsurancePill');
+            pill.setAnchorPoint(0, 0);
+            // 卡片锚点(0.5,1)：左上角 = (-cardW/2, 0)
+            pill.setPosition(-cardW / 2 + Math.round(10 * scale), Math.round(4 * scale));
+            card.addChild(pill);
+
+            const g = pill.addComponent(cc.Graphics);
+            g.roundRect(0, 0, pillW, pillH, radius);
+            g.fillColor = cc.color(255, 255, 255, 70); // 白 ~27%
+            g.fill();
+
+            // 绿色对勾圆点（独立节点，避免与药丸底色共用同一路径被重新填充）
+            const dotR = Math.round(7 * scale);
+            const dotCx = radius;
+            const dotCy = pillH / 2;
+            const dotNode = new cc.Node('dot');
+            dotNode.setAnchorPoint(0.5, 0.5);
+            dotNode.setPosition(dotCx, dotCy);
+            pill.addChild(dotNode);
+            const dg = dotNode.addComponent(cc.Graphics);
+            dg.circle(0, 0, dotR);
+            dg.fillColor = cc.color(120, 228, 144, 255);
+            dg.fill();
+
+            const txtNode = new cc.Node('label');
+            txtNode.setAnchorPoint(0, 0.5);
+            txtNode.setPosition(radius + dotR + Math.round(6 * scale), pillH / 2);
+            pill.addChild(txtNode);
+            const lab = txtNode.addComponent(cc.Label);
+            lab.string = 'Insurance';
+            lab.fontSize = Math.round(16 * scale);
+            lab.lineHeight = Math.round(16 * scale);
+            lab.horizontalAlign = cc.Label.HorizontalAlign.LEFT;
+            lab.verticalAlign = cc.Label.VerticalAlign.CENTER;
+            txtNode.color = cc.Color.BLACK.fromHEX('#F9F9F9');
+
+            this.insurancePillNode = pill;
+        }
+        if (this.insurancePillNode) this.insurancePillNode.active = show;
     }
 
     private onClickBottomToggle(tab: ReportBottomTab): void {
@@ -1543,6 +1651,46 @@ export default class UITexasReportComponent extends UIBase {
         // 赔付：insur_win * -1 与 Unity 保持一致（服务端以负值表示赔出）
         this.setSignedText(cardTxtNode, -(dto.insurWin || 0));
         if (ownNode) ownNode.active = Number(dto.userRid || 0) === Number(GameCache.Instance.nUserId || 0);
+        // Figma(58:109729) 各列之间的竖直分隔线（纯代码绘制）
+        this.decorateInsuranceRow(node, [
+            node.getChildByName('Text_Name'),
+            node.getChildByName('Text_Num'),
+            node.getChildByName('Text_All'),
+            cardTxtNode
+        ]);
+    }
+
+    /** 在保险行各相邻列的间隙中点绘制竖直分隔线 */
+    private decorateInsuranceRow(node: cc.Node, cols: cc.Node[]): void {
+        if (!node) return;
+        const valid = (cols || []).filter(c => !!c && c.isValid);
+        if (valid.length < 2) return;
+        let sep = node.getChildByName('__col_sep');
+        let g: cc.Graphics = null;
+        if (!sep) {
+            sep = new cc.Node('__col_sep');
+            sep.setAnchorPoint(0.5, 0.5);
+            node.addChild(sep);
+            sep.setSiblingIndex(0);
+            g = sep.addComponent(cc.Graphics);
+        } else {
+            g = sep.getComponent(cc.Graphics);
+        }
+        if (!g) return;
+        g.clear();
+        g.lineWidth = 2;
+        g.strokeColor = cc.color(255, 255, 255, 40);
+        const half = 18; // 线高约一行文字
+        for (let i = 0; i < valid.length - 1; i++) {
+            const a = valid[i];
+            const b = valid[i + 1];
+            const aRight = a.x + a.width * (1 - a.anchorX);
+            const bLeft = b.x - b.width * b.anchorX;
+            const x = (aRight + bLeft) / 2;
+            g.moveTo(x, half);
+            g.lineTo(x, -half);
+        }
+        g.stroke();
     }
 
     private RefreshJackpotTotalLabel(): void {
@@ -1642,13 +1790,15 @@ export default class UITexasReportComponent extends UIBase {
 
     private setToggleTextColor(node: cc.Node, selected: boolean): void {
         if (!node) return;
-        node.color = cc.Color.BLACK.fromHEX(selected ? '#EEF5FF' : '#757CAB');
+        // 文字统一白色；选中态由红色下划线（Checkmark）区分
+        node.color = cc.Color.BLACK.fromHEX('#FFFFFF');
     }
 
     private setCountText(node: cc.Node, score: number): void {
         if (!node) return;
         const text = StringHelper.GetLongString(score);
-        const color = score > 0 ? TextColor.Color6 : score < 0 ? TextColor.Color5 : '#FFFFFF';
+        // Figma 配色：正=红 #FA2B4B，负=绿 #78E490
+        const color = score > 0 ? '#FA2B4B' : score < 0 ? '#78E490' : '#FFFFFF';
         const rich = node.getComponent(cc.RichText);
         if (rich) {
             rich.string = `<color=${color}>${text}</color>`;
@@ -1715,7 +1865,8 @@ export default class UITexasReportComponent extends UIBase {
             return;
         }
         const text = StringHelper.GetSignedLongString(value);
-        const color = value > 0 ? TextColor.Color6 : value < 0 ? TextColor.Color5 : '#FFFFFF';
+        // Figma 配色：正=红 #FA2B4B，负=绿 #78E490
+        const color = value > 0 ? '#FA2B4B' : value < 0 ? '#78E490' : '#FFFFFF';
         const rich = node.getComponent(cc.RichText);
         if (rich) {
             rich.string = `<color=${color}>${text}</color>`;

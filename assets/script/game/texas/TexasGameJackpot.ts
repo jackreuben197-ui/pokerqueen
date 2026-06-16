@@ -86,27 +86,17 @@ export default class TexasGameJackpot {
             this.HideUI();
             return;
         }
+        // 按需求隐藏 JACKPOT 进场动画：停掉并隐藏动画节点，直接进入动画结束后的状态
+        // （显示奖池 UI + 金额滚动），不再播放进场动画。
         const animRoot = this.host.uirc?.JackpotAnimRoot as cc.Node;
         const anim = animRoot?.getComponent(cc.Animation);
-        if (!animRoot || !anim) {
-            this.ShowUI();
-            return;
-        }
-        const clipName = this.ResolveStartClip(anim);
-        if (!clipName) {
+        anim?.off('finished', this.OnStartAnimFinished, this);
+        anim?.stop();
+        if (animRoot) {
             animRoot.active = false;
-            this.ShowUI();
-            return;
         }
-        const button = this.host.uirc?.JackpotButton as cc.Node;
-        if (button) {
-            button.active = false;
-        }
-        animRoot.active = true;
-        anim.stop();
-        anim.off('finished', this.OnStartAnimFinished, this);
-        anim.on('finished', this.OnStartAnimFinished, this);
-        anim.play(clipName);
+        this.ShowUI();
+        this.RollGold(0, this.GetDisplayGoldValue(), 3);
     }
 
     public OnGoldChange(rec: ServerMessageJackpotGoldChange.AsObject): void {

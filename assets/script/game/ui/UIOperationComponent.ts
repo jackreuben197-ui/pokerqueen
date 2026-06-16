@@ -133,6 +133,10 @@ export default class UIOperationComponent extends UIBase {
         this.Fold_CountDown = this.getChildNodeOrComponent('Fold_CountDown');
         this.imageCheckCountDown = this.getChildNodeOrComponent('Image_CheckCountDown', cc.Sprite);
         this.imageFoldCountDown = this.getChildNodeOrComponent('Image_FoldCountDown', cc.Sprite);
+        // 倒计时圆环贴合按钮边框：环尺寸=按钮尺寸（描边外缘落在按钮边缘上），并修正按钮贴图约 2px 内边距偏移。
+        // 在代码里设置而非仅依赖预制体，确保改动随脚本生效（预制体改动需重新导入才会更新）。
+        this._fitCountDownRingToButton(this.imageCheckCountDown, this.buttonCheck);
+        this._fitCountDownRingToButton(this.imageFoldCountDown, this.buttonFold);
         //this.sliderFreeCall = this.getChildNodeOrComponent("Slider_FreeCall", GGSlider);
         this.slider = this.getChildNodeOrComponent('slider', SliderPlus);
         this.textFreeCall = this.getChildNodeOrComponent('Text_FreeCall', cc.Label);
@@ -509,6 +513,13 @@ export default class UIOperationComponent extends UIBase {
     /// <returns></returns>
     private potMutiplier(times: number): number {
         return this.actionDataInfo.CallAmount + (GameCache.Instance.CurGame.alreadAnte + this.actionDataInfo.CallAmount) * times;
+    }
+
+    /** 让倒计时圆环外缘贴合按钮边框：环尺寸=按钮尺寸，并修正按钮贴图约 2px 的内边距偏移 */
+    private _fitCountDownRingToButton(ring: cc.Sprite, button: cc.Node): void {
+        if (!ring || !ring.node || !button) return;
+        ring.node.setContentSize(button.width, button.height);
+        ring.node.setPosition(-1.5, 1.5);
     }
 
     protected update(dt: number): void {

@@ -517,13 +517,13 @@ export default class Seat {
         const p = this.Player;
         const inSquidRound = !!(enabled && inRound && p && p.inSquid);
         const hasSquidMark = !!(inSquidRound && p.squidCount > 0);
-        const showSquidMask = !!(inSquidRound && p.squidCount <= 0);
         if (this.uirc.PlayerSquidCount) {
-            // 按需求隐藏座位头像上的鱿鱼数量标记（紫色图标 + 数字）
+            // 按需求隐藏座位头像上的鱿鱼数量标记（橙色鱿鱼图标 + 数字）
             this.uirc.PlayerSquidCount.active = false;
         }
         if (this.uirc.Head_Squid_Mask) {
-            this.uirc.Head_Squid_Mask.active = showSquidMask;
+            // 按需求隐藏紫色鱿鱼触手遮罩（squid_mask.png）
+            this.uirc.Head_Squid_Mask.active = false;
         }
         if (hasSquidMark && this.uirc.Label_SquidCount) {
             this.uirc.Label_SquidCount.string = `${p.squidCount}`;

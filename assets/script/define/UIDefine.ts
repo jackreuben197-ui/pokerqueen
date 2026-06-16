@@ -527,19 +527,22 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         UIType: UIType.CommonUI,
         Name: 'UITexasSetting',
         Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UITexasSetting'
+        Path: 'prefab/widgetLayer/UITexasSetting',
+        Backdrop: true
     },
     UITexasRule: {
         UIType: UIType.CommonUI,
         Name: 'UITexasRule',
         Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UITexasRule'
+        Path: 'prefab/widgetLayer/UITexasRule',
+        Backdrop: true
     },
     UITexasReportComponent: {
         UIType: UIType.CommonUI,
         Name: 'UITexasReport',
         Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UITexasReport'
+        Path: 'prefab/widgetLayer/UITexasReport',
+        Backdrop: true
     },
     //普通桌结算
     UITexasGameEnd: {
@@ -1314,7 +1317,8 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         UIType: UIType.CommonUI,
         Name: 'UITexasHistory',
         Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UITexasHistory'
+        Path: 'prefab/widgetLayer/UITexasHistory',
+        Backdrop: true
     },
     //聊天弹窗
     UIChatDlg: {
