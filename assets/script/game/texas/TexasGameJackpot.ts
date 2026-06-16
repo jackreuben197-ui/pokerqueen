@@ -248,7 +248,8 @@ export default class TexasGameJackpot {
         if (!label || !label.node) {
             return;
         }
-        label.string = value;
+        // 奖池金额前缀显示 "JP"（空字符串时不显示前缀）
+        label.string = value ? `JP ${value}` : '';
     }
 
     private ShouldShowJackpot(): boolean {
@@ -264,7 +265,8 @@ export default class TexasGameJackpot {
         if (!label) {
             return 0;
         }
-        const value = Number((label.string || '0').replace(/,/g, ''));
+        // 去掉 "JP" 前缀及千分位逗号，仅取数字
+        const value = Number((label.string || '0').replace(/[^0-9.]/g, ''));
         return Number.isFinite(value) ? Math.floor(value) : 0;
     }
 
