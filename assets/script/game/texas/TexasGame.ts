@@ -783,14 +783,20 @@ export default class TexasGame {
         return this.setting.pokerType;
     }
 
-    // 获取大扑克牌SpriteFrame
+    // 获取大扑克牌SpriteFrame（0=经典, 1=暗色, 2=四色）
     public GetBigPokerSP(spriteName: string): cc.SpriteFrame {
-        return AssetContext.getAsset(spriteName, this.pokerType == 0 ? AssetFold.texture_BigCard0 : AssetFold.texture_BigCard1);
+        const fold = this.pokerType == 0 ? AssetFold.texture_BigCard0
+            : this.pokerType == 1 ? AssetFold.texture_BigCard1
+                : AssetFold.texture_BigCard2;
+        return AssetContext.getAsset(spriteName, fold);
     }
 
-    // 获取小扑克牌SpriteFrame
+    // 获取小扑克牌SpriteFrame（0=经典, 1=暗色, 2=四色）
     public GetSmallPokerSP(spriteName: string): cc.SpriteFrame {
-        return AssetContext.getAsset(spriteName, this.pokerType == 0 ? AssetFold.texture_SmallCard0 : AssetFold.texture_SmallCard1);
+        const fold = this.pokerType == 0 ? AssetFold.texture_SmallCard0
+            : this.pokerType == 1 ? AssetFold.texture_SmallCard1
+                : AssetFold.texture_SmallCard2;
+        return AssetContext.getAsset(spriteName, fold);
     }
 
     // 设置扑克牌样式 0 - 1

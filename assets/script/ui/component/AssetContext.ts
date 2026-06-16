@@ -30,7 +30,10 @@ export enum AssetFold {
     texture_new_club,
     //声音
     sound_all,
-    texture_icon
+    texture_icon,
+    // 注意：新增枚举必须追加在末尾，保证已有 prefab 里以数字保存的 fold 索引不被改变
+    texture_BigCard2,
+    texture_SmallCard2
 }
 const { ccclass, property, executionOrder } = cc._decorator;
 
