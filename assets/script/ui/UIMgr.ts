@@ -41,6 +41,7 @@ export class UIFormMgr {
         let newUI = this.find(uiDefine);
         if (newUI) {
             this.lateOpen(newUI, param, obj);
+            if (uiDefine.Backdrop) UICommonMgr.Instance.PushBackdrop(newUI.node);
             return;
         }
         ResManager.GetOrLoad<cc.Prefab>(uiDefine.Bundle, uiDefine.Path)
@@ -53,6 +54,7 @@ export class UIFormMgr {
                 }
                 this.uiMap[uiDefine.Name] = newUI;
                 this.lateOpen(newUI, param, obj);
+                if (uiDefine.Backdrop) UICommonMgr.Instance.PushBackdrop(newUI.node);
             })
             .catch(e => {
                 console.log(`[${this.Name}] open`, 'Get Resource Error', e);
@@ -71,6 +73,7 @@ export class UIFormMgr {
                         this.currUI.onClose(param);
                     }
                     ui.node.parent = this.CacheUILayer;
+                    UICommonMgr.Instance.PopBackdrop(ui.node);
                     this.showUIs.splice(i, 1);
                     this.currUI = this.showUIs[this.showUIs.length - 1];
                     console.log(`[${this.Name}]`, 'close ui left count:', this.Name, this.showUIs.length);
@@ -82,6 +85,7 @@ export class UIFormMgr {
                 this.currUI.close_animation = obj?.animation == null ? true : obj?.animation;
                 this.currUI.onClose(param);
                 this.currUI.node.parent = this.CacheUILayer;
+                UICommonMgr.Instance.PopBackdrop(this.currUI.node);
                 this.showUIs.pop();
                 this.currUI = this.showUIs[this.showUIs.length - 1];
             }
@@ -115,6 +119,7 @@ export class UIFormMgr {
         while (this.showUIs.length) {
             let ui = this.showUIs.shift();
             ui.node.parent = this.CacheUILayer;
+            UICommonMgr.Instance.PopBackdrop(ui.node);
         }
         this.showUIs = [];
         this.currUI = null;
@@ -174,10 +179,10 @@ export class UICommonMgr {
     private _blurTex: cc.RenderTexture = null;
     // 当前打开且需要遮罩的弹窗（按打开顺序）
     private _backdropStack: cc.Node[] = [];
-    /** 兜底暗色遮罩不透明度（0-255，截图失败时使用）*/
-    private static readonly BACKDROP_OPACITY = 200;
+    /** 全屏变暗遮罩不透明度（0-255）。Figma: Rectangle 4522 = #0c0c0c @ 60% ≈ 153 */
+    private static readonly BACKDROP_OPACITY = 153;
     /** 截图降采样倍数（越大越模糊、越省）*/
-    private static readonly BLUR_DOWNSAMPLE = 18;
+    private static readonly BLUR_DOWNSAMPLE = 12;
 
     static get Instance(): UICommonMgr {
         return ((<any>this).instance ??= new UICommonMgr());
@@ -247,7 +252,8 @@ export class UICommonMgr {
         dim.parent = node;
         dim.setContentSize(base, base);
         const g = dim.addComponent(cc.Graphics);
-        g.fillColor = cc.color(0, 0, 0, UICommonMgr.BACKDROP_OPACITY);
+        // Figma 全屏变暗层 Rectangle 4522：#0c0c0c @ 60%
+        g.fillColor = cc.color(12, 12, 12, UICommonMgr.BACKDROP_OPACITY);
         g.rect(-base / 2, -base / 2, base, base);
         g.fill();
         // 模糊截图层（默认隐藏，截图成功时启用）
@@ -263,11 +269,21 @@ export class UICommonMgr {
         return node;
     }
 
-    /** 截取当前画面（排除弹窗与遮罩自身），降采样得到模糊背景；失败返回 null */
-    private _captureBlur(exclude: cc.Node[]): cc.RenderTexture {
+    /**
+     * 用“真正的主摄像机”把牌桌场景（Main.Scene）渲染进降采样纹理 → 模糊背景。
+     * 关键：复用游戏自己的主摄像机（而不是临时新建摄像机），所以拍出来的背景与屏幕上一模一样，
+     * 不会出现“颜色/内容变了”的问题；只渲染场景层，所以不含任何弹窗。失败返回 null。
+     */
+    private _captureBlur(): cc.RenderTexture {
         try {
-            const canvas = cc.Canvas.instance && cc.Canvas.instance.node;
-            if (!canvas) return null;
+            const scene = Main.Scene;
+            if (!scene || !cc.isValid(scene)) return null;
+            // 取游戏主摄像机
+            let cam: cc.Camera = (cc.Camera as any).main;
+            if (!cam && (cc.Camera as any).cameras && (cc.Camera as any).cameras.length) {
+                cam = (cc.Camera as any).cameras[0];
+            }
+            if (!cam || !cc.isValid(cam)) return null;
             const ds = UICommonMgr.BLUR_DOWNSAMPLE;
             const w = Math.max(8, Math.floor((cc.winSize.width || 1242) / ds));
             const h = Math.max(8, Math.floor((cc.winSize.height || 2688) / ds));
@@ -276,19 +292,11 @@ export class UICommonMgr {
             // 线性过滤 + 边缘钳制：放大后是平滑模糊而非马赛克
             if ((tex as any).setFilters) tex.setFilters(cc.Texture2D.Filter.LINEAR, cc.Texture2D.Filter.LINEAR);
             if ((tex as any).setWrapMode) tex.setWrapMode(cc.Texture2D.WrapMode.CLAMP_TO_EDGE, cc.Texture2D.WrapMode.CLAMP_TO_EDGE);
-            const camNode = new cc.Node('BlurCam');
-            camNode.parent = canvas;
-            const cam = camNode.addComponent(cc.Camera);
-            cam.clearFlags = cc.Camera.ClearFlags.COLOR | cc.Camera.ClearFlags.DEPTH | cc.Camera.ClearFlags.STENCIL;
-            cam.backgroundColor = cc.color(15, 25, 20, 255);
-            cam.cullingMask = 0xffffffff;
-            cam.alignWithScreen = true;
+            // 临时把主摄像机渲染到纹理，渲染场景层后立即还原（保证下一帧正常渲染到屏幕）
+            const savedRT = cam.targetTexture;
             cam.targetTexture = tex;
-            const states = exclude.map(n => ({ n, a: n && n.active }));
-            states.forEach(s => { if (s.n && cc.isValid(s.n)) s.n.active = false; });
-            cam.render(canvas);
-            states.forEach(s => { if (s.n && cc.isValid(s.n)) s.n.active = s.a; });
-            camNode.destroy();
+            cam.render(scene);
+            cam.targetTexture = savedRT;
             return tex;
         } catch (e) {
             console.warn('[UICommonMgr] blur capture failed, fallback to dim:', e);
@@ -297,9 +305,8 @@ export class UICommonMgr {
     }
 
     /**
-     * 统一纯色暗层：所有弹窗背景完全一致。
-     * 不再实时截图（截图会因每个弹窗背后内容不同而出现“有时模糊牌桌、有时全黑、有时绿色”的不一致），
-     * 改为恒定暗色遮罩，保证每个弹窗背景看起来都一样。
+     * 弹窗背后只叠一层浅白色半透明遮罩（毛玻璃感）。
+     * 不再实时截取并重渲染牌桌（那样会让牌桌画面看起来变了），牌桌本身保持原样。
      */
     private _applyBlur(): void {
         const blur = this._backdropBlur;
@@ -307,6 +314,10 @@ export class UICommonMgr {
         if (blur) blur.active = false;
         if (dim) dim.active = true;
     }
+
+    /** 供其它 UI 管理器（Board/Dialog/Form 等）复用，保证所有牌桌弹窗共用同一遮罩，风格一致 */
+    public PushBackdrop(node: cc.Node): void { this._pushBackdrop(node); }
+    public PopBackdrop(node: cc.Node): void { this._popBackdrop(node); }
 
     private _pushBackdrop(node: cc.Node): void {
         if (!node) return;

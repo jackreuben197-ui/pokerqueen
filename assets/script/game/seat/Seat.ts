@@ -108,6 +108,8 @@ export default class Seat {
     private _otherWinSpineNode: cc.Node = null;
     // 表情动画节点（头像正上方）
     private _emojiAnimNode: cc.Node = null;
+    /** 座位整体缩放（缩小座位圈/头像/筹码等，1=原始大小，按需微调）*/
+    public static readonly SEAT_SCALE = 0.82;
     /** 表情统一目标尺寸（像素，包围盒较大边缩放到此值，使所有表情高宽一致；按需微调）*/
     private static readonly EMOJI_ANIM_TARGET_SIZE = 170;
     /** 兜底缩放（无法取包围盒时使用）*/
@@ -202,6 +204,8 @@ export default class Seat {
         // 小屏适配：加上 y 偏移量，防止底部头像被 main_menu 遮挡
         const pos = cc.v3(info.seat_pos.x, info.seat_pos.y + some_pos.seatYOffset, info.seat_pos.z);
         this.ui.setPosition(pos);
+        // 缩小座位整体尺寸（圈/头像/筹码随节点统一缩放，位置不变）
+        this.ui.setScale(Seat.SEAT_SCALE);
         this.uirc.imageBanker.setPosition(info.bank_pos);
         this.uirc.transSmallCardBacks.setPosition(info.card_back_pos);
         this.uirc.transCurRoundHaveBet.setPosition(info.bet_pos);
@@ -1547,7 +1551,7 @@ export default class Seat {
 
         if (this.IsMySeat) {
             // 自己赢：播放胜利音效 + YouWin 动画
-            GC.sound.Play('sfx_win');
+            GC.sound.Play('sfx_desk_mywin');
             this._playYouWinAnim();
         } else {
             // 他人赢：播放 OtherWin Spine 动画

@@ -337,6 +337,7 @@ export class SeatFSM {
         this.seat.UpdateBubble();
         this.seat.UpdateOnOrOffLine();
         this.seat.PlayBetAnimation();
+        GC.sound.Play('sfx_desk_post_call_p');
     }
 
     public CallExecute(): void {}
@@ -351,6 +352,7 @@ export class SeatFSM {
         this.seat.UpdateBubble();
         this.seat.UpdateOnOrOffLine();
         this.seat.PlayBetAnimation();
+        GC.sound.Play('sfx_desk_post_raise_p');
     }
 
     public RaiseExecute(): void {}

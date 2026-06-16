@@ -562,19 +562,22 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         UIType: UIType.CommonUI,
         Name: 'UITexasJackpotRecentAwardRecord',
         Bundle: null,
-        Path: 'main/prefab/dialog/UITexasJackpotRecentAwardRecord'
+        Path: 'main/prefab/dialog/UITexasJackpotRecentAwardRecord',
+        Backdrop: true
     },
     UITexasJackpotRewardDescription: {
         UIType: UIType.CommonUI,
         Name: 'UITexasJackpotRewardDescription',
         Bundle: 'texas',
-        Path: 'purple_prefab/ui/UITexasJackpotRewardDescription'
+        Path: 'purple_prefab/ui/UITexasJackpotRewardDescription',
+        Backdrop: true
     },
     UITexasDialogJackpotAwards: {
         UIType: UIType.CommonUI,
         Name: 'UITexasDialogJackpotAwards',
         Bundle: 'texas',
-        Path: 'purple_prefab/ui/UITexasDialogJackpotAwards'
+        Path: 'purple_prefab/ui/UITexasDialogJackpotAwards',
+        Backdrop: true
     },
     //房间模版
     UILaborPlayViewForm: {
@@ -587,25 +590,29 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         UIType: UIType.CommonUI,
         Name: 'UITexasPlayerInfo',
         Bundle: 'texas',
-        Path: 'purple_prefab/ui/UITexasPlayerInfo'
+        Path: 'purple_prefab/ui/UITexasPlayerInfo',
+        Backdrop: true
     },
     UIPlayerInfo: {
         UIType: UIType.CommonUI,
         Name: 'UIPlayerInfo',
         Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UIPlayerInfo'
+        Path: 'prefab/widgetLayer/UIPlayerInfo',
+        Backdrop: true
     },
     UITexasReportPlayerInfo: {
         UIType: UIType.CommonUI,
         Name: 'UITexasReportPlayerInfo',
         Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UITexasReportPlayerInfo'
+        Path: 'prefab/widgetLayer/UITexasReportPlayerInfo',
+        Backdrop: true
     },
     UITexasInsuranceComponent: {
         UIType: UIType.CommonUI,
         Name: 'UITexasInsuranceComponent',
         Bundle: 'texas',
-        Path: 'prefab/ui/UITexasInsurance'
+        Path: 'prefab/ui/UITexasInsurance',
+        Backdrop: true
     },
     UIlaborMerberManager: {
         UIType: UIType.Form,
@@ -1326,7 +1333,8 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Name: 'UIChatDlg',
         Bundle: 'texas',
         Path: 'prefab/widgetLayer/UIChatDlg',
-        DisAdaptScreen: true
+        DisAdaptScreen: true,
+        Backdrop: true
     },
     UIBlank_dialog: {
         UIType: UIType.CommonUI,
