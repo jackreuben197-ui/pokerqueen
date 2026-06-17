@@ -1997,6 +1997,9 @@ export default class TexasGameProtocol {
         UIComponent.Instance.HideUI(PrefabUI.UIBringIn);
         mSeat.FsmLogicComponent.SM.ChangeState(SeatAddChips.Instance);
         mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+        // 补充筹码成功后的 toast（对齐 Unity OnMsgBringIn → SetUCBringInTips(false, chips)）
+        // seated=false: 由 SetUCBringInTips 内部按 isPlaying 判断弹"下一手前完成带入"
+        this.game.SetUCBringInTips(false, rec.chips);
     }
 
     /** 主动加入/退出鱿鱼轮返回 */

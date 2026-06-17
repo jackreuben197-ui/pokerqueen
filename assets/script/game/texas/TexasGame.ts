@@ -1957,6 +1957,29 @@ export default class TexasGame {
     }
 
     /// <summary>
+    /// 补充筹码/带入成功后的 Toast 提示（对齐 Unity SetUCBringInTips）
+    /// seated=true: 即时到账，弹"完成带入 XX UC"（带金额）
+    /// seated=false: 仅当本人在玩本手牌(isPlaying)时弹"下一手前完成带入"，否则不弹
+    /// 仅 CLUB_EXTERNAL 桌生效
+    /// </summary>
+    public SetUCBringInTips(seated: boolean, chips: number): void {
+        if (chips <= 0) return;
+        if (GameplayUtil.GetTableType() != TableType.CLUB_EXTERNAL) return;
+        if (seated) {
+            // TODO: 鱿鱼模式开启时不减 MinStack，否则减去押金；
+            // cocos 这边 MinStack/鱿鱼开关字段未启用，先不减
+            UIComponent.Instance.Toast(
+                StringHelper.FormatString(
+                    i18nMgr.Get('UIGameplay_UCRechargeBringin'),
+                    StringHelper.GetLongStringLocale(chips, 1, 0)
+                )
+            );
+        } else if (this.mainPlayer != null && this.mainPlayer.isPlaying) {
+            UIComponent.Instance.ToastLanguage('UIGameplay_UCRechargeBringinAfter');
+        }
+    }
+
+    /// <summary>
     /// 坐下
     /// </summary>
     /// <param name="clientSeatId"></param>

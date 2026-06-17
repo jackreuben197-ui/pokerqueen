@@ -666,7 +666,14 @@ export default class UITexas extends BaseScene {
             const isNew = UITexasReportComponent.applyChipChange(seat.Player.userID, change.chips || 0, seat.Player.nick || '', seat.Player.headPic || '');
             if (isNew) hasNew = true;
             if (seat.Player.userID === myUserId && (change.change || 0) > 0) {
-                UIComponent.Instance.ToastLanguage('UIGameplay_UCRechargeBringinAfter');
+                // 即时到账的补充筹码：弹"完成带入 XX UC"，金额用 change（增量）
+                // 对齐 Unity SetUCBringInTips(true, change)
+                UIComponent.Instance.Toast(
+                    StringHelper.FormatString(
+                        i18nMgr.Get('UIGameplay_UCRechargeBringin'),
+                        StringHelper.GetLongStringLocale(change.change || 0, 1, 0)
+                    )
+                );
             }
         }
         if (hasNew) this.post(GGEvent.SituationRefresh);
