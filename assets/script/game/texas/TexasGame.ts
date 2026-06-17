@@ -3968,9 +3968,16 @@ export default class TexasGame {
         if (this.listDefaultPublicCardsLPos == null) {
             this.listDefaultPublicCardsLPos = [];
             this.listDefaultSecondPublicCardsLPos = [];
+            // 公共牌之间最小间距：以牌宽 + 固定缝隙计算步距，居中排布（中间牌 x=0）
+            const PUBLIC_CARD_GAP = 4; // 牌与牌之间的缝隙（像素），越小越紧凑
+            const cardW = this.uirc.listCards[0]?.trans?.width || 120;
+            const step = cardW + PUBLIC_CARD_GAP;
             for (let i = 0; i < 5; i++) {
-                this.listDefaultPublicCardsLPos.push(this.uirc.listCards[i].trans.position);
-                this.listDefaultSecondPublicCardsLPos.push(this.uirc.listSecondCards[i].trans.position);
+                const x = (i - 2) * step;
+                const firstPos = this.uirc.listCards[i].trans.position;
+                const secondPos = this.uirc.listSecondCards[i].trans.position;
+                this.listDefaultPublicCardsLPos.push(cc.v3(x, firstPos.y, firstPos.z));
+                this.listDefaultSecondPublicCardsLPos.push(cc.v3(x, secondPos.y, secondPos.z));
             }
         }
     }

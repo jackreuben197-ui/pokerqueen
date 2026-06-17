@@ -293,6 +293,11 @@ export default class UITexas extends BaseScene {
         }
         this.seats_content = this.getChildNodeOrComponent('seats_content');
         this.textRoomInfo = this.getChildNodeOrComponent('Text_RoomInfo', cc.Label);
+        // 牌桌中央房间信息文字去掉加粗（prefab 中 _styleFlags=1 / Bold），并降低亮度（半透明白叠在绿桌上，呈柔和暗青色）
+        if (this.textRoomInfo) {
+            (this.textRoomInfo as any).enableBold = false;
+            this.textRoomInfo.node.opacity = 160;
+        }
         this.Image_WaitForStartTips = this.getChildNodeOrComponent('Image_WaitForStartTips');
         this._buttonShare = this.Image_WaitForStartTips.getChildByName('ShareButton');
         this.Image_ReserveSeatTips = this.getChildNodeOrComponent('Image_ReserveSeatTips');
