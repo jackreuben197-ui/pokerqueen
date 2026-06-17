@@ -1424,6 +1424,8 @@ export default class Seat {
 
     public FoldHeadGray(active: boolean): void {
         this.uirc.Gray_Head.active = active;
+        // 同步显示/隐藏弃牌文字标识，所有调用路径（FSM、协议同步等）自动生效
+        if (this.uirc.foldText) this.uirc.foldText.active = active;
         if (this.IsMySeat) {
             let mCardUiInfo: CardUIInfo = null;
             for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {

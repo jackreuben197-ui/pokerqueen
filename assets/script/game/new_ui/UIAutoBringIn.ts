@@ -12,7 +12,6 @@ import UIBasePlus from '../../ui/UIBasePlus';
 import UIComponent, { PrefabUI } from '../../ui/UIComponent';
 import { GameCache } from '../GameCache';
 import GameUtil from '../util/GameUtil';
-import { AddClipsData } from './UIBringIn';
 const { ccclass, menu } = cc._decorator;
 
 // public sealed class SetAutoAddClipsData {

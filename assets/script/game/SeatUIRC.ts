@@ -14,7 +14,6 @@ import UIDialogComponent, { UIDialogParam } from '../ui/dialog/UIDialogComponent
 import UIBase from '../ui/UIBase';
 import UIComponent, { PrefabUI } from '../ui/UIComponent';
 import { GameCache } from './GameCache';
-import { AddClipsData } from './new_ui/UIBringIn';
 import Seat, { VoiceprintState } from './seat/Seat';
 import GameUtil from './util/GameUtil';
 
@@ -70,6 +69,8 @@ export default class SeatUIRC extends UIBase {
     Raw_Head: cc.Sprite = null;
     //头像灰色蒙版
     Gray_Head: cc.Node = null;
+    //弃牌状态文字标识（显示在头像上，与 Gray_Head 同步显隐）
+    foldText: cc.Node = null;
     //麦克风状态图标（动态创建）
     MicIcon: cc.Node = null;
     MicIconSprite: cc.Sprite = null;
@@ -153,6 +154,9 @@ export default class SeatUIRC extends UIBase {
         this.Frame_Head = this.getChildNodeOrComponent('Frame_Head');
         this.Raw_Head = this.getChildNodeOrComponent('Raw_Head', cc.Sprite);
         this.Gray_Head = this.getChildNodeOrComponent('Gray_Head');
+        this.foldText = this.getChildNodeOrComponent('foldText');
+        // 兜底初始隐藏（prefab 默认也是隐藏，避免坐下时残留）
+        if (this.foldText) this.foldText.active = false;
         // 动态创建麦克风状态图标
         this._createMicIcon();
         this.Nick_Coin = this.getChildNodeOrComponent('Nick_Coin');
