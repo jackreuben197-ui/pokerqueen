@@ -48,7 +48,7 @@ export default class UIPreloadingComponent extends UIBase {
         try {
             for (let i = 0; i < parts; i++) {
                 const definition = param.preloadDefinition[i];
-                await this.loadResources(definition.bundle, definition.dir, param.stopProgress, i * part, part);
+                await this.loadResources(definition.bundle, definition.dir, !!definition.single, param.stopProgress, i * part, part);
             }
             param.complete?.();
         } catch (e) {
@@ -56,9 +56,29 @@ export default class UIPreloadingComponent extends UIBase {
         }
     }
 
-    private loadResources(bundleName: string, dir: string, stopProgress: boolean, pastProgress: number, totalPercent: number): Promise<void> {
+    private loadResources(bundleName: string, dir: string, single: boolean, stopProgress: boolean, pastProgress: number, totalPercent: number): Promise<void> {
         return new Promise((resovle, reject) => {
             if (bundleName == BUNDLE_RESOURCES) {
+                // 单文件加载
+                if (single) {
+                    cc.resources.load(dir, (error: Error, asset: cc.Asset) => {
+                        if (error) {
+                            this.tracelog.warn(`资源加载失败:${bundleName}/${dir}`);
+                            UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
+                            reject(error as Error);
+                            return;
+                        }
+                        this.tracelog.info(`资源加载完成:${bundleName}/${dir}`, 1);
+                        ResManager.AssetForeach([asset], BUNDLE_RESOURCES);
+                        if (!stopProgress) {
+                            let percent = pastProgress + totalPercent;
+                            percent = Math.max(percent, this.prevPercent);
+                            this.setProgress(percent);
+                        }
+                        resovle();
+                    });
+                    return;
+                }
                 cc.resources.loadDir(
                     dir,
                     (finish: number, total: number, item: cc.AssetManager.RequestItem) => {

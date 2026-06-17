@@ -103,7 +103,7 @@
     "_prefab": {
       "__id__": 6
     },
-    "_opacity": 128,
+    "_opacity": 170,
     "_color": {
       "__type__": "cc.Color",
       "r": 0,
@@ -397,9 +397,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 44,
-      "g": 50,
-      "b": 87,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -457,7 +457,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "0a7ea3ca-6180-40ca-8006-425fc651bd6b"
+      "__uuid__": "5de2b722-52f2-4697-91d1-023327072cf7"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -581,8 +581,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 230,
-      "height": 57.96
+      "width": 300,
+      "height": 75.6
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -635,8 +635,8 @@
     "_dstBlendFactor": 771,
     "_string": "带出记分牌",
     "_N$string": "带出记分牌",
-    "_fontSize": 46,
-    "_lineHeight": 46,
+    "_fontSize": 60,
+    "_lineHeight": 60,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -664,7 +664,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": -28.98,
+    "_top": -37.8,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -804,9 +804,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 117,
-      "g": 124,
-      "b": 171,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -1036,9 +1036,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 117,
-      "g": 124,
-      "b": 171,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -1829,7 +1829,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "be58104e-be7e-4e0d-a6b5-62b3fc18c8f6"
+      "__uuid__": "f697556d-be04-4dde-be31-168b61c37a06"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -2093,10 +2093,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "cb0d103d-bbd8-4c3b-b140-0ee7cdc93edc"
+      "__uuid__": "952eb82e-b7c7-430e-9cdb-3bffb1f3fddd"
     },
     "_type": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -2128,7 +2128,7 @@
       "__id__": 54
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 59
@@ -2557,8 +2557,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 818,
-      "height": 186
+      "width": 865,
+      "height": 209
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2610,7 +2610,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "be232b64-5a4b-4cbb-ab87-3be7219fc51c"
+      "__uuid__": "0ddb50d3-09ad-4f0f-981d-959daa9fc8f0"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -2667,8 +2667,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 264,
-      "height": 83.16
+      "width": 300,
+      "height": 95.76
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2721,8 +2721,8 @@
     "_dstBlendFactor": 771,
     "_string": "确认带出",
     "_N$string": "确认带出",
-    "_fontSize": 66,
-    "_lineHeight": 66,
+    "_fontSize": 75,
+    "_lineHeight": 76,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,

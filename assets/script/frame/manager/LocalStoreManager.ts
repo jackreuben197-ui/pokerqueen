@@ -1,6 +1,18 @@
 import CCTools from '../../tools/CCTools';
-import GC from '../GameControl';
+import { BridgeStorage } from '../BridgeStorage';
 
+/**
+ * Cocos 端的 localStorage 入口。
+ *
+ * 历史实现是直接走 cc.sys.localStorage 并自带 'dzpk_' 前缀；现在已经收编到 bridge：
+ *   - 读：从 BridgeStorage 的内存镜像里同步取，握手完成后 H5 会推 ccStorageSnapshot
+ *     回灌 dzpk_cc_* 命名空间下的全部键值，确保镜像与 H5 端 localStorage 一致。
+ *   - 写：BridgeStorage.localStorageSet 先更新镜像，再 fire-and-forget 发到 H5 落盘。
+ *
+ * keyPre 默认空串：H5 端已统一加 'dzpk_cc_' 前缀做 cocos 命名空间隔离，
+ * 本层不再叠 'dzpk_'，避免最终 key 长成 dzpk_cc_dzpk_xxx。需要再细分命名空间
+ * （如按 player 拆 key）时，调用方可以通过 keyPre setter 自行设置。
+ */
 export default class LocalStoreManager {
     private static _instance: LocalStoreManager = null;
 
@@ -11,12 +23,10 @@ export default class LocalStoreManager {
         return LocalStoreManager._instance;
     }
 
-    private _keyPre = 'dzpk_';
+    private _keyPre = '';
 
     get keyPre() {
-        // let userId = GC?.data?.user?.info?.user_id || "";
-        let userId = '';
-        return `${this._keyPre}${userId}`;
+        return this._keyPre;
     }
 
     set keyPre(value: string) {
@@ -27,11 +37,11 @@ export default class LocalStoreManager {
         if (CCTools.isNull(value)) {
             value = null;
         }
-        cc.sys.localStorage.setItem(this.keyPre + key, this.encryptData(value));
+        BridgeStorage.localStorageSet(this.keyPre + key, this.encryptData(value));
     }
 
     getItem(key: string, df: any = null) {
-        let value = cc.sys.localStorage.getItem(this.keyPre + key);
+        let value = BridgeStorage.localStorageGet(this.keyPre + key);
         if (Boolean(value)) {
             df = this.decodeData(value);
         }
@@ -39,11 +49,11 @@ export default class LocalStoreManager {
     }
 
     removeItem(key: string) {
-        cc.sys.localStorage.removeItem(this.keyPre + key);
+        BridgeStorage.localStorageRemove(this.keyPre + key);
     }
 
     clear() {
-        cc.sys.localStorage.clear();
+        BridgeStorage.localStorageClear();
     }
 
     //加密压缩

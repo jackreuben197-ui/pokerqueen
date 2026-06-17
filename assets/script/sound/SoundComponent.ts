@@ -1,5 +1,7 @@
 import { traceClass } from '../crazyPoker/gameplay/common/core/LogTrace';
+import { ProcedureEnum } from '../define/EIDefine';
 import GC from '../frame/GameControl';
+import ProcedureManager from '../manager/ProcedureManager';
 import StorageKey from '../session/StorageKey';
 import AssetContext, { AssetFold } from '../ui/component/AssetContext';
 
@@ -29,7 +31,56 @@ export default class SoundComponent {
         } else {
             this.soundOn = false;
         }
+        this._installIOSLongLockGuard();
         this.listenVisibility();
+    }
+
+    /**
+     * iOS Safari 长锁屏（>10s）音频死锁守卫
+     *
+     * 现象：锁屏 10 秒以上后解锁再进房，所有声音都不播放。
+     *
+     * 根因：iOS 把 audio session 升级为 interrupted（context.state='interrupted'
+     * 或 'suspended' 且 currentTime>0），Cocos 2.4.8 引擎在 EVENT_SHOW → _restore
+     * → WebAudioElement.play 末段会在【非手势栈】里调 ctx.resume()，
+     * WebKit 对这种状态的非手势 resume 静默失败，并标记为"已申请恢复"，
+     * 之后用户真实手势里的 resume() 也被 noop 掉，context 永久卡死。
+     *
+     * 对策：在引擎执行污染 resume 之后，主动调一次 ctx.suspend()，强制 WebKit
+     * 完成一次合法状态转换，清掉它内部的"已申请恢复"标记。等用户下一次触摸
+     * 屏幕时，手势栈里的 ctx.resume() 就能正常生效。
+     *
+     * 注意：这里【不调】resume()，避免与用户手势恢复路径产生 race。
+     */
+    private _installIOSLongLockGuard(): void {
+        try {
+            if (cc.sys.os !== cc.sys.OS_IOS || !cc.sys.isBrowser) return;
+            // 用 visibilitychange + 一帧延迟：确保跑在引擎 EVENT_SHOW 链路之后
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) return;
+                requestAnimationFrame(() => {
+                    const ctx = this._getAudioContext();
+                    if (!ctx) return;
+                    const state = ctx.state as string;
+                    // 长锁屏指纹：interrupted，或 suspended 且 currentTime != 0
+                    const isLongLockState =
+                        state === 'interrupted' ||
+                        (state === 'suspended' && ctx.currentTime > 0);
+                    if (!isLongLockState) return;
+                    try {
+                        const ret: any = ctx.suspend();
+                        // suspend 返回 Promise，仅打印结果，不在此 resume
+                        if (ret && typeof ret.then === 'function') {
+                            ret.then(() => {
+                                console.log('[SoundComponent] iOS long-lock guard: state reset, waiting for user gesture');
+                            }).catch((err: any) => {
+                                console.warn('[SoundComponent] iOS long-lock guard suspend failed:', err);
+                            });
+                        }
+                    } catch (e) {}
+                });
+            });
+        } catch (e) {}
     }
 
     /** 获取 Cocos 2.4.8 引擎底层的 AudioContext */
@@ -94,9 +145,24 @@ export default class SoundComponent {
         try { cc.audioEngine.stopAll(); } catch (e) {}
         this._musicId = -1;
 
+        // 防线：只在仍处于游戏房间流程时才恢复 BGM
+        // 避免锁屏期间已退出房间，解锁后用户点屏误放残留的房间 BGM
+        if (!this._isInGameProcedure()) return;
+
         // 重新播放 BGM
         if (this.soundOn && this._musicPath) {
             this._playAudio(this._musicPath, true);
+        }
+    }
+
+    /** 当前是否处于游戏房间流程（牌桌内） */
+    private _isInGameProcedure(): boolean {
+        try {
+            const cur = ProcedureManager.currProcedure;
+            if (!cur) return false;
+            return cur.id === ProcedureEnum.Texas || cur.id === ProcedureEnum.EnterTexas;
+        } catch (e) {
+            return false;
         }
     }
 
@@ -173,6 +239,9 @@ export default class SoundComponent {
             cc.audioEngine.stop(this._musicId);
             this._musicId = -1;
         }
+        // 断根：清空 BGM 上下文，避免退房后锁屏-解锁恢复路径误放残留 BGM
+        this._musicPath = '';
+        this._musicClip = null;
     }
 
     /** 设置音效开关，同时控制 BGM */
@@ -183,7 +252,12 @@ export default class SoundComponent {
                 this._playAudio(this._musicPath, true);
             }
         } else {
-            this.stopMusic();
+            // 仅停止播放，保留 _musicPath，以便用户再次开声时恢复 BGM
+            // 不调 stopMusic（它会清空 _musicPath，导致开声无法续播）
+            if (this._musicId !== -1) {
+                cc.audioEngine.stop(this._musicId);
+                this._musicId = -1;
+            }
         }
     }
 

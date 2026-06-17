@@ -655,8 +655,6 @@ export default class UITexasReportComponent extends UIBase {
         }
         this.unscheduleAllCallbacks();
         this.clearView();
-        // this.btnShowProblem = this.getChildNodeOrComponent('BtnShowProblem');
-        // this.btnShowProblem.on('click', this.btnShowProblemClick, this)
         this.room_id.string = GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum;
         if (this.remainTimeLabel) this.remainTimeLabel.string = '--:--:--';
         this.reportSubType = this.resolveReportSubType();
@@ -1000,13 +998,6 @@ export default class UITexasReportComponent extends UIBase {
         lab.fontSize = 43;                   // 与其他列统一字号，底边对齐
         lab.lineHeight = 43;
         node.color = cc.Color.WHITE;         // 更亮的纯白
-    }
-
-    btnShowProblemClick() {
-        this.manualClose = true;
-        GameCache.Instance.CurGame?.SetReportKeepOpen?.(false);
-        UIComponent.close(this.UIDefine);
-        UIComponent.open(UIDefine.UITexasRule, null, { parentUI: this.node.parent });
     }
 
     imageMaskCloseClick() {

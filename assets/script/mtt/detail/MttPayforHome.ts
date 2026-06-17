@@ -7,6 +7,7 @@
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforHome.ts
  */
 import { UIDefine } from '../../define/UIDefine';
+import { BridgeStorage } from '../../frame/BridgeStorage';
 import { ClubCache } from '../../frame/data/club/ClubCache';
 import BaseForm from '../../ui/form/BaseForm';
 import UIComponent from '../../ui/UIComponent';
@@ -132,7 +133,7 @@ export default class MttPayforHome extends BaseForm {
             if (this._type == 1) {
                 ClubCache.mttPayWallat = null;
             } else {
-                ClubCache.mttPayWallat = ClubCache.mttPayWallat ? ClubCache.mttPayWallat : localStorage.getItem(GC.data.mtt.list.select.match_id + '');
+                ClubCache.mttPayWallat = ClubCache.mttPayWallat ? ClubCache.mttPayWallat : BridgeStorage.localStorageGet(GC.data.mtt.list.select.match_id + '');
             }
             this.initSelectWallet();
             this.bindClick(this.payNode, () => {
@@ -179,7 +180,7 @@ export default class MttPayforHome extends BaseForm {
                 walletData = element;
                 return element.club_random_id == ClubCache.mttPayWallat.club_random_id;
             });
-            localStorage.setItem(GC.data.mtt.list.select.match_id + '', walletData);
+            BridgeStorage.localStorageSet(GC.data.mtt.list.select.match_id + '', String(walletData));
             this.sure.active = true;
             this.setText(this.select_lbl, ClubCache.mttPayWallat.club_name);
             this.rateNode.active = true;

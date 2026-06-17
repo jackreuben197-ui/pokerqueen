@@ -10,7 +10,6 @@ export enum UIType {
     Prompt,
     TexasPreLoad,
     TexasUISting,
-    UITexasRule,
     UITexasReport,
     UITexasHistory,
     CommonUI //普通UI

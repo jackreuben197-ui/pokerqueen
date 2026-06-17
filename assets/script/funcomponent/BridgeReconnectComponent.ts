@@ -53,27 +53,15 @@ export default class BridgeReconnectComponent {
 
         H5MsgMgr.Instance.on('wsReconnected', payload => {
             console.log('[BridgeReconnect] wsReconnected:', payload);
-            // REGISTER 已经在 H5 端发出，等服务端回包；LobbySession.on_Protocol_Holdem_Register
-            // 收到回包后会判断 CurGame 决定 ReEnterRoom 还是 HideMask。
-            // 设一个兜底定时器，回包迟迟不到也要把遮罩清掉。
+            // REGISTER 已经在 H5 端发出，等服务端 ack；_onProtocolRegister 收到后会
+            // hideMask + ReEnterRoom（若 CurGame 存在）。设一个兜底定时器，ack 没到
+            // 就按重连失败收口，避免遮罩消失后状态机卡死。
             this._armHideFallback();
         });
 
         H5MsgMgr.Instance.on('wsReconnectFailed', payload => {
             console.error('[BridgeReconnect] wsReconnectFailed:', payload);
-            this._cancelHideFallback();
-            this._hideMask();
-            this._inReconnectFlow = false;
-            this._notifyFailure(payload.reason);
-            // 用户在牌桌上时，让 H5 回到访客首页并打开登录弹窗，避免卡在不可用界面。
-            if (payload.reason !== 'auth-invalid') {
-                H5MsgMgr.sendToH5('h5Navigate', 1, {
-                    name: 'guest-home',
-                    replace: true,
-                    ensureVisible: true,
-                    openLoginModal: true
-                });
-            }
+            this._handleReconnectFailure(payload.reason);
         });
     }
 
@@ -124,9 +112,11 @@ export default class BridgeReconnectComponent {
 
     private _onProtocolRegister(body: { status?: number }): void {
         if (body?.status !== 0) {
-            // 服务端拒绝注册（token 过期等）→ 让 wsReconnectFailed 流程兜底；
-            // 这里不强行 Logout，避免和 H5 的登录弹窗流程打架。
+            // 服务端在应用层拒绝注册（token 过期等）：wsReconnectFailed 只能由 H5 在 WS 层
+            // 失败时触发，对这种情况不会兜底，必须由这里收口，否则用户会卡在"遮罩消失但
+            // session 不可用"的状态。
             console.warn('[BridgeReconnect] Protocol_Holdem_Register failed:', body);
+            this._handleReconnectFailure('register-rejected');
             return;
         }
         this.OnRegisterAck();
@@ -138,18 +128,32 @@ export default class BridgeReconnectComponent {
 
     private _showMask(): void {
         if (!Main.Reconnect || !Main.Reconnect.isValid) return;
-        if (this._maskShown) return;
-        this._startMaskTextCountdown();
         Main.Reconnect.active = true;
         this._maskShown = true;
+        this._startMaskTextCountdown();
     }
 
     private _setMaskText(): void {
-        const warnLabel = Main.Reconnect.getChildByName('warn_label')?.getComponent(cc.Label);
-        if (!warnLabel) return;
+        const warnNode = this._findChild(Main.Reconnect, 'warn_label');
+        const warnLabel = warnNode?.getComponent(cc.Label);
+        if (!warnLabel) {
+            console.warn('[BridgeReconnect] warn_label not found');
+            return;
+        }
+        warnNode.active = true;
         const text = i18nMgr.Get(RECONNECTING_TEXT_KEY);
         warnLabel.string =
             text === RECONNECTING_TEXT_KEY ? RECONNECTING_TEXT_FALLBACK : text.replace('{0}', String(this._reconnectSecondsLeft));
+    }
+
+    private _findChild(root: cc.Node, name: string): cc.Node | null {
+        const direct = root.getChildByName(name);
+        if (direct) return direct;
+        for (const child of root.children) {
+            const target = this._findChild(child, name);
+            if (target) return target;
+        }
+        return null;
     }
 
     private _startMaskTextCountdown(): void {
@@ -182,8 +186,28 @@ export default class BridgeReconnectComponent {
         this._cancelHideFallback();
         this._hideFallbackTimer = setTimeout(() => {
             this._hideFallbackTimer = 0;
-            this._hideMask();
+            // 兜底点：wsReconnected 后这段时间内服务端 Register ack 没到。
+            // 仅藏遮罩会让 _inReconnectFlow 卡在 true、session 不可用、退桌按钮也没回包
+            // —— 必须按重连失败收口，把用户拉回登录态，避免卡死在不可恢复的牌桌上。
+            console.warn('[BridgeReconnect] register ack fallback fired, treat as reconnect failure');
+            this._handleReconnectFailure('register-timeout');
         }, REGISTER_HIDE_FALLBACK_MS) as unknown as number;
+    }
+
+    private _handleReconnectFailure(reason: string): void {
+        this._cancelHideFallback();
+        this._hideMask();
+        this._inReconnectFlow = false;
+        this._notifyFailure(reason);
+        // auth-invalid 路径下 H5 自己已经弹了登录窗，避免重复跳转。
+        if (reason !== 'auth-invalid') {
+            H5MsgMgr.sendToH5('h5Navigate', 1, {
+                name: 'guest-home',
+                replace: true,
+                ensureVisible: true,
+                openLoginModal: true
+            });
+        }
     }
 
     private _cancelHideFallback(): void {

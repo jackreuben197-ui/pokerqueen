@@ -1,4 +1,5 @@
 import { IUIDefine } from '../define/EIDefine';
+import H5MsgMgr from '../H5MsgMgr';
 import Main from '../Main';
 import BaseScene from '../ui/scene/BaseScene';
 import { ResManager } from './ResManager';
@@ -41,6 +42,11 @@ export default class SceneManager {
             this._doScene(newUI, currExitParams, newEnterParams);
         } catch (e) {
             console.log('switchScene, GetOrLoad error', e);
+            H5MsgMgr.sendToH5('showDialog', 1, {
+                message: '游戏场景资源加载失败，即将出现黑屏，请截图发给程序员',
+                confirmButtonText: '我已截图',
+                ensureVisible: true,
+            });
         }
     }
 
