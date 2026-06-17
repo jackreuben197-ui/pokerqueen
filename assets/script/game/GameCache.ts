@@ -1,3 +1,4 @@
+import { BridgeStorage } from '../frame/BridgeStorage';
 import GC from '../frame/GameControl';
 import { ServerMessageEnterRoom } from '../protobuf/holdem/req_th_enter_room_pb';
 import { RoomRecord } from '../protobuf/holdem/define_pb';
@@ -649,7 +650,7 @@ export class GameCache {
 
     private get securitySettingRooms(): number[] {
         if (this.securitySettingRoomsPrivate == null) {
-            const value = cc.sys.localStorage.getItem('SecuritySettingRooms') || '';
+            const value = BridgeStorage.localStorageGet('SecuritySettingRooms') || '';
             this.securitySettingRoomsPrivate = value
                 .split(',')
                 .map((v: string) => Number(v))
@@ -674,7 +675,7 @@ export class GameCache {
         if (list.length > 10) {
             list.splice(0, list.length - 10);
         }
-        cc.sys.localStorage.setItem('SecuritySettingRooms', list.join(','));
+        BridgeStorage.localStorageSet('SecuritySettingRooms', list.join(','));
     }
 
     InitTexasGame() {

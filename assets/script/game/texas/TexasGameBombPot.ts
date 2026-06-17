@@ -1,3 +1,4 @@
+import { BridgeStorage } from '../../frame/BridgeStorage';
 import GC from '../../frame/GameControl';
 import { GameCache } from '../GameCache';
 
@@ -179,11 +180,11 @@ export default class TexasGameBombPot {
         if (rooms.length > JOINED_ROOMS_MAX) {
             rooms.splice(0, rooms.length - JOINED_ROOMS_MAX);
         }
-        cc.sys.localStorage.setItem(JOINED_ROOMS_KEY, rooms.join(','));
+        BridgeStorage.localStorageSet(JOINED_ROOMS_KEY, rooms.join(','));
     }
 
     private GetJoinedRooms(): number[] {
-        const raw = cc.sys.localStorage.getItem(JOINED_ROOMS_KEY) || '';
+        const raw = BridgeStorage.localStorageGet(JOINED_ROOMS_KEY) || '';
         return raw
             .split(',')
             .map((v: string) => Number(v))

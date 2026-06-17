@@ -211,17 +211,7 @@ export default class TexasGameMessageHandler {
         if (!GameCache.Instance.isActiveLeaving && roomID == GameCache.Instance.room_id && matchID == GameCache.Instance.match_id) {
             return;
         }
-        if (response.status != 0) {
-            console.warn(`Protocol_Holdem_Leave: status = ${response.status}`);
-            this.game.TexasGameUtils.ExitRoom();
-            return;
-        }
-        UIComponent.Instance.Toast(
-            i18nMgr.Get(`LeaveReason${Def.LeaveReason.LR_ACTIVE}`),
-            () => {
-                this.game.TexasGameUtils.ExitRoom();
-            }
-        );
+        this.game.TexasGameUtils.ExitRoom();
     }
 
     /**
@@ -305,11 +295,6 @@ export default class TexasGameMessageHandler {
             this.game.ShowCallTime();
             this.game.TexasGameUtils.doStandUp(localSeatID);
         } else {
-            //     UI uiTexasPlayerInfo = UIComponent.Instance.Get(UIType.UITexasPlayerInfo);
-            // if (uiTexasPlayerInfo != null && uiTexasPlayerInfo.GameObject.activeInHierarchy) {
-            //         UITexasPlayerInfoComponent uiComponent = uiTexasPlayerInfo.GetComponent<UITexasPlayerInfoComponent>();
-            //     uiComponent.PlayerStandUp((int)seat.Player.userID);
-            // }
             // 站起消息到达时先清理扩展玩法角标，避免动画期间残留
             seat.ClearMushroomTag();
             seat.ClearSquidTag();
@@ -478,8 +463,11 @@ export default class TexasGameMessageHandler {
         console.log(LN, `预取牌谱缓存完成 handNum=${handNum}`);
     }
 
-    Protocol_Holdem_BringInOrStoreFail_Handler(Protocol_Holdem_BringInOrStoreFail: ProtocolCode, Protocol_Holdem_BringInOrStoreFail_Handler: any, arg2: this) {
-        throw new Error('Method not implemented.');
+    Protocol_Holdem_BringInOrStoreFail_Handler(response: any): void {
+        console.log(LN, `# MSG_CALLBACK: Protocol_Holdem_BringInOrStoreFail_Handler`, response);
+        if (!response) return;
+        const errMsg = response.extNotice || CPErrorCode.ServerErrorDescription(response.extErrcode);
+        UIComponent.Instance.Toast(errMsg);
     }
 
     // 保险赔付消息

@@ -45,7 +45,6 @@ type UIDefineKey =
     | 'UIPromptComponent'
     | 'TexasPreLoad'
     | 'UITexasSettingComponent'
-    | 'UITexasRule'
     | 'UITexasReportComponent'
     | 'UITexasGameEnd'
     | 'UISquidEnd'
@@ -53,7 +52,6 @@ type UIDefineKey =
     | 'UITexasJackpotRewardDescription'
     | 'UITexasDialogJackpotAwards'
     | 'UILaborPlayViewForm'
-    | 'UITexasPlayerInfo'
     | 'UIPlayerInfo'
     | 'UITexasReportPlayerInfo'
     | 'UITexasInsuranceComponent'
@@ -158,7 +156,6 @@ type UIDefineKey =
     | 'UIFunRecycleGive'
     | 'UITexasHistory'
     | 'UIChatDlg'
-    | 'UIBlank_dialog'
     | 'UIGameplayAddChipsAndDiamond'
     | 'UIEmojiDlg'
     | 'UIConfirmDialog'
@@ -527,22 +524,13 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         UIType: UIType.CommonUI,
         Name: 'UITexasSetting',
         Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UITexasSetting',
-        Backdrop: true
-    },
-    UITexasRule: {
-        UIType: UIType.CommonUI,
-        Name: 'UITexasRule',
-        Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UITexasRule',
-        Backdrop: true
+        Path: 'prefab/widgetLayer/UITexasSetting'
     },
     UITexasReportComponent: {
         UIType: UIType.CommonUI,
         Name: 'UITexasReport',
         Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UITexasReport',
-        Backdrop: true
+        Path: 'prefab/widgetLayer/UITexasReport'
     },
     //普通桌结算
     UITexasGameEnd: {
@@ -562,22 +550,19 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         UIType: UIType.CommonUI,
         Name: 'UITexasJackpotRecentAwardRecord',
         Bundle: null,
-        Path: 'main/prefab/dialog/UITexasJackpotRecentAwardRecord',
-        Backdrop: true
+        Path: 'main/prefab/dialog/UITexasJackpotRecentAwardRecord'
     },
     UITexasJackpotRewardDescription: {
         UIType: UIType.CommonUI,
         Name: 'UITexasJackpotRewardDescription',
         Bundle: 'texas',
-        Path: 'purple_prefab/ui/UITexasJackpotRewardDescription',
-        Backdrop: true
+        Path: 'purple_prefab/ui/UITexasJackpotRewardDescription'
     },
     UITexasDialogJackpotAwards: {
         UIType: UIType.CommonUI,
         Name: 'UITexasDialogJackpotAwards',
         Bundle: 'texas',
-        Path: 'purple_prefab/ui/UITexasDialogJackpotAwards',
-        Backdrop: true
+        Path: 'purple_prefab/ui/UITexasDialogJackpotAwards'
     },
     //房间模版
     UILaborPlayViewForm: {
@@ -586,33 +571,23 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Bundle: null,
         Path: 'main/prefab/UILaborPlayViewForm'
     },
-    UITexasPlayerInfo: {
-        UIType: UIType.CommonUI,
-        Name: 'UITexasPlayerInfo',
-        Bundle: 'texas',
-        Path: 'purple_prefab/ui/UITexasPlayerInfo',
-        Backdrop: true
-    },
     UIPlayerInfo: {
         UIType: UIType.CommonUI,
         Name: 'UIPlayerInfo',
         Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UIPlayerInfo',
-        Backdrop: true
+        Path: 'prefab/widgetLayer/UIPlayerInfo'
     },
     UITexasReportPlayerInfo: {
         UIType: UIType.CommonUI,
         Name: 'UITexasReportPlayerInfo',
         Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UITexasReportPlayerInfo',
-        Backdrop: true
+        Path: 'prefab/widgetLayer/UITexasReportPlayerInfo'
     },
     UITexasInsuranceComponent: {
         UIType: UIType.CommonUI,
         Name: 'UITexasInsuranceComponent',
         Bundle: 'texas',
-        Path: 'prefab/ui/UITexasInsurance',
-        Backdrop: true
+        Path: 'prefab/ui/UITexasInsurance'
     },
     UIlaborMerberManager: {
         UIType: UIType.Form,
@@ -1324,8 +1299,7 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         UIType: UIType.CommonUI,
         Name: 'UITexasHistory',
         Bundle: 'texas',
-        Path: 'prefab/widgetLayer/UITexasHistory',
-        Backdrop: true
+        Path: 'prefab/widgetLayer/UITexasHistory'
     },
     //聊天弹窗
     UIChatDlg: {
@@ -1333,14 +1307,6 @@ export const UIDefine: Record<UIDefineKey, IUIDefine> = {
         Name: 'UIChatDlg',
         Bundle: 'texas',
         Path: 'prefab/widgetLayer/UIChatDlg',
-        DisAdaptScreen: true,
-        Backdrop: true
-    },
-    UIBlank_dialog: {
-        UIType: UIType.CommonUI,
-        Name: 'UIBlank_dialog',
-        Bundle: 'texas',
-        Path: 'prefab/widgetLayer/Blank_Dialog',
         DisAdaptScreen: true
     },
     UIGameplayAddChipsAndDiamond: {

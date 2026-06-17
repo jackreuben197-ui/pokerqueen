@@ -1,6 +1,7 @@
 import TexasConfig from '../../config/TexasConfig';
 import { UIDefine } from '../../define/UIDefine';
 import DiamondModel from '../../diamond/DiamondModel';
+import H5MsgMgr from '../../H5MsgMgr';
 import SoundComponent from '../../sound/SoundComponent';
 import { DOTween, Sequence } from '../../dotween/DOTween';
 import { ClubCache } from '../../frame/data/club/ClubCache';
@@ -48,6 +49,7 @@ import * as protobuf_holdem_define_pb from '../../protobuf/holdem/define_pb';
 import GlobalSession from '../../session/GlobalSession';
 import StorageKey from '../../session/StorageKey';
 import AssetContext, { AssetFold } from '../../ui/component/AssetContext';
+import { BUNDLE_TEXAS } from '../../manager/ResManager';
 import UIDialogContentSizeLimit from '../../ui/dialog/UIDialogContentSizeLimit';
 import { UIConfirmDialogParam } from '../../crazyPoker/gameplay/common/view/common/UIConfirmDialog';
 import UIComponent, { PrefabUI } from '../../ui/UIComponent';
@@ -605,8 +607,8 @@ export default class TexasGame {
         }
         this.SMAgency.LoadGameStateConf();
         GC.uc.AddComponent(this.GameLogicSMComponent);
-        // 牌桌背景音乐已关闭，仅保留音效（按需求：关闭背景音乐，保留音效）
-        // SoundComponent.Instance.playMusicWithVolume('sound/bgm_game', 0.3);
+        // 播放游戏背景音乐，音量 30%（对齐 Unity BGM_GAMEPLAY）
+        SoundComponent.Instance.playMusicWithVolume('sound/bgm_game', 0.3);
     }
 
     RegisterMsgHandler() {
@@ -640,37 +642,64 @@ export default class TexasGame {
         return this.setting.deskType;
     }
 
-    /** 桌布贴图名称映射：索引对应 deskType，值为 texture_table prefab 中的节点名 */
-    private static readonly DESK_TEXTURE_MAP: string[] = [
-        'new_ui_top_table_0', // 0 - 默认桌布
-        'desk1',              // 1
-        'desk2',              // 2
-        'desk3',              // 3
-        'desk4',              // 4
-        'desk5',              // 5
-        'desk6',              // 6
-        'desk7',              // 7
-        'desk8',              // 8
-        'desk9',              // 9
-        'desk10',             // 10
-        'desk11',             // 11
-        'desk12',             // 12
-        'desk13',             // 13
-        'desk14',             // 14
-        'desk15',             // 15
-    ];
+    /** 桌布纹理在 resources 下的路径前缀，完整路径 = 前缀 + deskType */
+    private static readonly DESK_TEXTURE_PATH_PREFIX = 'desk_textures/desk';
+
+    /** 桌布 SpriteFrame 缓存（deskType → SpriteFrame），非默认桌布加载后缓存 */
+    private static _deskSpriteFrameCache: Map<number, cc.SpriteFrame> = new Map();
+
+    /** 预热桌布纹理（fire-and-forget），供 lateLoad 提前触发加载减少进桌闪烁 */
+    public static PreloadDeskTexture(type: number): void {
+        if (type <= 0 || TexasGame._deskSpriteFrameCache.has(type)) return;
+        cc.resources.load(
+            `${TexasGame.DESK_TEXTURE_PATH_PREFIX}${type}`,
+            cc.SpriteFrame,
+            (err, spriteFrame: cc.SpriteFrame) => {
+                if (!err) TexasGame._deskSpriteFrameCache.set(type, spriteFrame);
+            }
+        );
+    }
+    /** 竞态保护：记录最新请求的 deskType，旧加载完成时丢弃 */
+    private _pendingDeskType: number = -1;
 
     SetDeskType(type: number) {
         this.setting.deskType = type;
-        const textureName = TexasGame.DESK_TEXTURE_MAP[type] || TexasGame.DESK_TEXTURE_MAP[0];
-        const spriteFrame = AssetContext.getAsset(textureName, AssetFold.texture_table)
-            || AssetContext.getAsset(TexasGame.DESK_TEXTURE_MAP[0], AssetFold.texture_table);
-        this.uirc.sp_table_bg.spriteFrame = spriteFrame;
-        this._fitDeskCover();
+        this._pendingDeskType = type;
         this._playDeskSpine(type);
-        if (this.isBombPot) {
-            this.bombPotFeature?.PlayOpenScreen();
+
+        // type 0（默认桌布）：已嵌入 UITexas.prefab，无需加载
+        if (type === 0) {
+            this._fitDeskCover();
+            if (this.isBombPot) this.bombPotFeature?.PlayOpenScreen();
+            return;
         }
+
+        // 命中缓存：同步设回
+        const cached = TexasGame._deskSpriteFrameCache.get(type);
+        if (cached) {
+            if (this.uirc?.sp_table_bg) this.uirc.sp_table_bg.spriteFrame = cached;
+            this._fitDeskCover();
+            if (this.isBombPot) this.bombPotFeature?.PlayOpenScreen();
+            return;
+        }
+
+        // 未缓存：异步从 resources 加载（不依赖 bundle 预加载）
+        cc.resources.load(
+            `${TexasGame.DESK_TEXTURE_PATH_PREFIX}${type}`,
+            cc.SpriteFrame,
+            (err, spriteFrame: cc.SpriteFrame) => {
+                if (err) {
+                    console.error('[TexasGame] 桌布加载失败:', type, err.message);
+                    return;
+                }
+                if (this._pendingDeskType !== type) return;
+                if (this.IsDispose || !this.uirc?.sp_table_bg) return;
+                TexasGame._deskSpriteFrameCache.set(type, spriteFrame);
+                this.uirc.sp_table_bg.spriteFrame = spriteFrame;
+                this._fitDeskCover();
+                if (this.isBombPot) this.bombPotFeature?.PlayOpenScreen();
+            }
+        );
     }
 
     /** 各桌布类型的 Spine SkeletonData 缓存（按 deskType 索引） */
@@ -683,9 +712,14 @@ export default class TexasGame {
      * key: deskType, value: cc.resources 下的 SkeletonData 路径（不含扩展名）
      */
     private static readonly DESK_SPINE_MAP: { [type: number]: string } = {
-        // desk8~13 改用静态平面桌布（新设计），不再播放 Spine 动画
-        // （原 spine 映射保留备查：8 desk8/33background, 9 desk9/44paizuo,
-        //   10 desk10/skeleton, 11 desk11/77Background, 12 desk12/nature_japan88, 13 desk13/backgroud99）
+        // 桌布改用本地静态 PNG 设计（assets/resources/desk_textures/deskN.png），
+        // 不再叠加 Spine 动画，否则会盖住我们的静态桌布。如需恢复动画桌布，取消下面注释。
+        // 8: 'spine/desk8/33background',
+        // 9: 'spine/desk9/44paizuo',
+        // 10: 'spine/desk10/skeleton',
+        // 11: 'spine/desk11/77Background',
+        // 12: 'spine/desk12/nature_japan88',
+        // 13: 'spine/desk13/backgroud99',
     };
 
     /**
@@ -783,19 +817,15 @@ export default class TexasGame {
         return this.setting.pokerType;
     }
 
-    // 获取大扑克牌SpriteFrame（0=经典, 1=暗色, 2=四色）
+    // 获取大扑克牌SpriteFrame（支持第三套牌 pokerType==2）
     public GetBigPokerSP(spriteName: string): cc.SpriteFrame {
-        const fold = this.pokerType == 0 ? AssetFold.texture_BigCard0
-            : this.pokerType == 1 ? AssetFold.texture_BigCard1
-                : AssetFold.texture_BigCard2;
+        const fold = this.pokerType == 0 ? AssetFold.texture_BigCard0 : this.pokerType == 1 ? AssetFold.texture_BigCard1 : AssetFold.texture_BigCard2;
         return AssetContext.getAsset(spriteName, fold);
     }
 
-    // 获取小扑克牌SpriteFrame（0=经典, 1=暗色, 2=四色）
+    // 获取小扑克牌SpriteFrame（支持第三套牌 pokerType==2）
     public GetSmallPokerSP(spriteName: string): cc.SpriteFrame {
-        const fold = this.pokerType == 0 ? AssetFold.texture_SmallCard0
-            : this.pokerType == 1 ? AssetFold.texture_SmallCard1
-                : AssetFold.texture_SmallCard2;
+        const fold = this.pokerType == 0 ? AssetFold.texture_SmallCard0 : this.pokerType == 1 ? AssetFold.texture_SmallCard1 : AssetFold.texture_SmallCard2;
         return AssetContext.getAsset(spriteName, fold);
     }
 
@@ -838,12 +868,15 @@ export default class TexasGame {
     }
 
     public EnterRoom() {
-        // this.TexasGameUtils.EnterRoom();
-        // GC.notify.register(
-        //     ProtocolCode.Protocol_Holdem_EnterRoom,
-        //     this.TexasGameMessageHandler.Protocol_Holdem_EnterRoom_Handler,
-        //     this.TexasGameMessageHandler,
-        // );
+        // 检查网络通道是否就绪，防止协议被静默丢弃导致黑屏
+        if (!H5MsgMgr.Instance.handshakeDone) {
+            H5MsgMgr.sendToH5('showDialog', 1, {
+                message: 'H5桥接通道未就绪，进房协议发送失败，请截图发给程序员',
+                confirmButtonText: '我已截图',
+                ensureVisible: true,
+            });
+            return;
+        }
         const roomId = GameCache.Instance.room_id;
         const matchId = GameCache.Instance.match_id;
         const mttPartialBringIn = 0;
@@ -1238,6 +1271,9 @@ export default class TexasGame {
         this.jackpotFeature?.EnterGame();
         this.ShowCriticalInfo();
         this.RefreshRoomManagerStateAndStartButton();
+        // 同步右上角"加筹码"按钮可见性：重连/刷新进房后 mainPlayer.seatID 才赋值，
+        // 而 EnterInitUI 的初次刷新发生在 Roomers 包到达之前；此处兜底刷新，避免按钮一直不显示。
+        this.uirc?.refreshViewOnSitAndStandup(this.UserSitdown());
         // 视频房间重入：如果自己已坐下，自动开启本地摄像头
         this._restoreVideoOnReenter();
     }

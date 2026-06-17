@@ -10,7 +10,6 @@ export enum UIType {
     Prompt,
     TexasPreLoad,
     TexasUISting,
-    UITexasRule,
     UITexasReport,
     UITexasHistory,
     CommonUI //普通UI
@@ -58,8 +57,6 @@ export interface IUIDefine {
     Title?: string;
     DisAdaptScreen?: boolean;
     UIFadeStyle?: UIFadeStyleEnum;
-    /** CommonUI 弹窗是否在背后加暗色遮罩（让弹窗内容更清晰、屏蔽点击穿透）。默认 false */
-    Backdrop?: boolean;
 }
 
 /**

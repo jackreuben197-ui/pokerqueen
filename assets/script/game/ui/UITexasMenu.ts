@@ -412,9 +412,6 @@ export default class UITexasMenu extends UIBasePlus {
                 }
             }
         });
-        // UIComponent.open(UIDefine.UITexasRule, null, {
-        //     parentUI: this.game.uirc.Common_Con
-        // });
     }
 
     //设置自动上桌筹码

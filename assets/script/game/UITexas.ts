@@ -44,6 +44,9 @@ import UITexasReportComponent from './UITexasReportComponent';
 import GGEvent from '../event/GGEvent';
 const LN = '[UI][UITexas]';
 
+/** 用于非telegram状态下，屏幕上方设置与客服按钮组的位置调整 */
+const g_iSettingBtnAdj = 265;
+
 export class PotInfo {
     public pot: number;
     public textPot: cc.Label;
@@ -54,9 +57,10 @@ export class PotInfo {
 
     constructor(public trans: cc.Node) {
         if (null != trans) {
-            this.imagePotFrame = trans.getChildByName('Image_PotFrame').getComponent(cc.Sprite);
-            this.imagePot = trans.getChildByName('Image_Pot').getComponent(cc.Sprite);
-            this.textPot = trans.getChildByName('Text_Pot').getComponent(cc.Label);
+            // Pot 节点自身的 Sprite 就是九宫格背景（原 Image_PotFrame 子节点已合并）
+            this.imagePotFrame = trans.getComponent(cc.Sprite);
+            this.imagePot = trans.getChildByName('Image_Pot')?.getComponent(cc.Sprite);
+            this.textPot = trans.getChildByName('Text_Pot')?.getComponent(cc.Label);
             this.imagePotText = trans.getChildByName('Image_PotText')?.getComponent(cc.Label);
         }
     }
@@ -255,6 +259,11 @@ export default class UITexas extends BaseScene {
         this.name = 'UITexas';
         super.lateLoad();
         this.sp_table_bg = this.getChildNodeOrComponent('sp_table_bg', cc.Sprite);
+        // 预热当前桌布纹理（fire-and-forget），减少进桌时的默认桌布闪烁
+        {
+            const deskType = +(GC.localStore.getItem(StorageKey.SettingDeskType) || 0);
+            TexasGame.PreloadDeskTexture(deskType);
+        }
         this.sp_table_face = this.getChildNodeOrComponent('sp_table_face', cc.Sprite);
         this.main = this.getChildNodeOrComponent('main');
         this.btn_menu = this.getChildNodeOrComponent('btn_menu');
@@ -306,7 +315,11 @@ export default class UITexas extends BaseScene {
         this.seats_content = this.getChildNodeOrComponent('seats_content');
         this.Seat_Temp = this.getChildNodeOrComponent('Seat_Temp');
         // 鱿鱼
-        this.RemainingSquidCount = this.main?.getChildByName('RemainingSquidCount');
+        // 注意：RemainingSquidCount / SquidSwitch 实际挂在 UITexas 根节点下，不是 main 的直接子节点。
+        // 历史上误用 this.main?.getChildByName 导致永远取不到，初始隐藏失效，
+        // prefab 默认 _active=true，结果蘑菇/普通房左下角都显示了鱿鱼图标。
+        // 改用 getChildNodeOrComponent（基于 _view 全节点索引，按名字定位）。
+        this.RemainingSquidCount = this.getChildNodeOrComponent('RemainingSquidCount');
         this.RemainingSquidLabelCount = this.RemainingSquidCount?.getChildByName('RemainingSquidLabel')
             ?.getChildByName('RemainingSquidLabelCount')
             ?.getComponent(cc.Label);
@@ -314,7 +327,7 @@ export default class UITexas extends BaseScene {
             this.RemainingSquidCount.active = false;
             this._remainingSquidCountOrigY = this.RemainingSquidCount.y;
         }
-        this.SquidSwitch = this.main?.getChildByName('SquidSwitch');
+        this.SquidSwitch = this.getChildNodeOrComponent('SquidSwitch');
         this.SquidJoinLabel = this.SquidSwitch?.getChildByName('content')?.getChildByName('$joinLabel')?.getComponent(cc.Label);
         if (this.SquidJoinLabel) {
             this.SquidJoinLabel.string = i18nMgr.Get('UIClub_RoomJoin');
@@ -378,6 +391,18 @@ export default class UITexas extends BaseScene {
         this.Button_Delay = this.getChildNodeOrComponent('Button_Delay');
         this.Button_SeeMorePublic = this.getChildNodeOrComponent('Button_SeeMorePublic');
         this.Button_LookHandCard = this.getChildNodeOrComponent('Button_LookHandCard');
+        // 偷偷看/发发看 按钮：标题加粗放大、钻石图标放大（对齐 figma 新样式，蓝钻+绿底由资源提供）
+        [this.Button_SeeMorePublic, this.Button_LookHandCard].forEach(btn => {
+            if (!btn) return;
+            const title = btn.getChildByName('Text_SeeMorePublic')?.getComponent(cc.Label);
+            if (title) {
+                (title as any).enableBold = true;
+                title.fontSize = 36;
+                title.lineHeight = 40;
+            }
+            const icon = btn.getChildByName('normal')?.getChildByName('icon');
+            if (icon) icon.setContentSize(40, 37);
+        });
         this.Image_SeeMorePublicTips = this.getChildNodeOrComponent('Image_SeeMorePublicTips');
         this.textSeeMorePublicTips = this.getChildNodeOrComponent('Text_SeeMorePublicTips', cc.Label);
         this.textSeeMorePublic = this.getChildNodeOrComponent('Text_SeeMorePublic', cc.Label);
@@ -650,12 +675,16 @@ export default class UITexas extends BaseScene {
     private onChipsChangeUpdate(response: any): void {
         if (!response) return;
         let hasNew = false;
+        const myUserId = GameCache.Instance.nUserId;
         for (const change of response.changesList || []) {
             if (change.reason !== 0 /* Def.ChipChangeReason.CC_NONE */) continue;
             const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(change.seatId);
             if (!seat?.Player) continue;
             const isNew = UITexasReportComponent.applyChipChange(seat.Player.userID, change.chips || 0, seat.Player.nick || '', seat.Player.headPic || '');
             if (isNew) hasNew = true;
+            if (seat.Player.userID === myUserId && (change.change || 0) > 0) {
+                UIComponent.Instance.ToastLanguage('UIGameplay_UCRechargeBringinAfter');
+            }
         }
         if (hasNew) this.post(GGEvent.SituationRefresh);
     }
@@ -691,17 +720,21 @@ export default class UITexas extends BaseScene {
         //高度小于目标进行缩放
         let view_height = cc.view.getVisibleSize().height;
         let limit_height = 2400;
+        console.log(`[AdaptiveMain] view_height=${view_height}, limit_height=${limit_height}, main.anchor=(${this.main.anchorX},${this.main.anchorY}), main.pos=(${this.main.x},${this.main.y}), main.size=(${this.main.width},${this.main.height})`);
         if (view_height <= limit_height) {
             this.main.height = 2688;
             let scale = view_height / 2688;
             scale *= 1;
             this.main.setScale(scale, scale);
+            console.log(`[AdaptiveMain] 小屏缩放: scale=${scale}`);
         } else {
             this.main.setScale(1, 1);
             this.main.height = view_height;
+            console.log(`[AdaptiveMain] 大屏不缩放: main.height=${this.main.height}`);
         }
         // 延迟到下一帧计算座位偏移，确保 Widget 布局已完成
         this.scheduleOnce(() => {
+            console.log(`[AdaptiveMain] scheduleOnce回调: game=${!!this.game}, listSeat=${!!this.game?.listSeat}, listSeat.length=${this.game?.listSeat?.length}`);
             this.adjustSeatYOffset();
             // 偏移量计算完后，刷新已有座位的实际位置
             this.applySeatOffset();
@@ -721,7 +754,10 @@ export default class UITexas extends BaseScene {
     private adjustSeatYOffset() {
         some_pos.seatYOffset = 0;
         const mainMenu = this.getChildNodeOrComponent('main_menu') as cc.Node;
-        if (!mainMenu || !this.seats_content) return;
+        if (!mainMenu || !this.seats_content) {
+            console.log(`[adjustSeatYOffset] early return: mainMenu=${!!mainMenu}, seats_content=${!!this.seats_content}`);
+            return;
+        }
         // 用 getBoundingBoxToWorld 获取 main_menu 在世界坐标系中的实际包围盒
         const menuBox = mainMenu.getBoundingBoxToWorld();
         const menuTopWorldY = menuBox.y + menuBox.height;
@@ -731,6 +767,7 @@ export default class UITexas extends BaseScene {
         const seat0WorldY = seat0WorldPos.y;
         // 世界坐标中 main_menu 上边缘与 seat 0 中心的重叠量
         const overlapWorld = menuTopWorldY - seat0WorldY;
+        console.log(`[adjustSeatYOffset] menuTopWorldY=${menuTopWorldY}, seat0WorldY=${seat0WorldY}, overlapWorld=${overlapWorld}`);
         if (overlapWorld <= 0) return; // 无重叠
         // 将世界坐标的重叠量转换为 seats_content 本地坐标
         const mainScale = this.main.scaleY;
@@ -745,6 +782,7 @@ export default class UITexas extends BaseScene {
             offset = offset - topSeatNewY; // clamp 到刚好不超出
         }
         some_pos.seatYOffset = offset;
+        console.log(`[adjustSeatYOffset] seatYOffset=${offset}`);
     }
 
     /**
@@ -752,17 +790,58 @@ export default class UITexas extends BaseScene {
      * 同时将 btn_menu、btn_im、table_add_chip 上移 seatYOffset/2
      */
     private applySeatOffset() {
-        if (!this.game?.listSeat) return;
-        for (const seat of this.game.listSeat) {
-            seat.UpdateSeatUIInfo(seat.ClientSeatId);
-        }
-        // 按钮上移 seatYOffset / 2（有 safeArea 时不移动，由 safeArea 适配接管）
+        console.log(`[applySeatOffset] === START === safeArea.top=${H5MsgMgr.safeArea.top}, seatYOffset=${some_pos.seatYOffset}, main.scaleY=${this.main.scaleY}`);
+
+        // 图标偏移（不依赖座位数据，优先执行）
         const halfOffset = H5MsgMgr.safeArea.top > 0 ? 0 : some_pos.seatYOffset;
+        console.log(`[applySeatOffset] halfOffset=${halfOffset}, origY: menu=${this._btnMenuOrigY}, im=${this._btnImOrigY}, safety=${this._btnSafetyGuardOrigY}, addChip=${this._tableAddChipOrigY}`);
         if (this.btn_menu) this.btn_menu.y = this._btnMenuOrigY + halfOffset;
         if (this.btn_im) this.btn_im.y = this._btnImOrigY + halfOffset;
         if (this.btn_safety_guard) this.btn_safety_guard.y = this._btnSafetyGuardOrigY + halfOffset;
         if (this.table_add_chip) this.table_add_chip.y = this._tableAddChipOrigY + halfOffset;
         if (this.RemainingSquidCount) this.RemainingSquidCount.y = this._remainingSquidCountOrigY;
+
+        console.log(`[applySeatOffset] after halfOffset, icon.y: menu=${this.btn_menu?.y}, im=${this.btn_im?.y}, safety=${this.btn_safety_guard?.y}, addChip=${this.table_add_chip?.y}`);
+
+        // safeArea.top 为 0 时，以 btn_im 为基准确保图标距屏幕顶部不超过 280 像素
+        if (H5MsgMgr.safeArea.top <= 0 && this.btn_im && this.btn_im.active) {
+            // 用 main 节点的顶部作为屏幕顶部参考（main 填满屏幕）
+            const mainBox = this.main.getBoundingBoxToWorld();
+            const mainTopWorldY = mainBox.y + mainBox.height;
+            // btn_im 中心的世界坐标
+            const iconCenterWorld = this.btn_im.convertToWorldSpaceAR(cc.v2(0, -this.btn_im.height / 2));
+            const iconCenterWorldY = iconCenterWorld.y;
+            // 间距（世界坐标），转换为主容器本地坐标
+            const gapWorld = mainTopWorldY - iconCenterWorldY;
+            const gapLocal = gapWorld / this.main.scaleY;
+
+            console.log(`[applySeatOffset] gapCheck by btn_im: mainTop=${mainTopWorldY}, iconCenter=${iconCenterWorldY}, gapLocal=${gapLocal}`);
+
+            if (gapLocal > g_iSettingBtnAdj) {
+                const extraLocal = gapLocal - g_iSettingBtnAdj;
+                console.log(`[applySeatOffset] APPLYING extraLocal=${extraLocal}`);
+                if (this.btn_menu) this.btn_menu.y += extraLocal;
+                if (this.btn_im) this.btn_im.y += extraLocal;
+                if (this.btn_safety_guard) this.btn_safety_guard.y += extraLocal;
+                if (this.table_add_chip) this.table_add_chip.y += extraLocal;
+            } else {
+                console.log(`[applySeatOffset] gapLocal=${gapLocal} <= 280, no extra movement`);
+            }
+        } else {
+            console.log(`[applySeatOffset] skip gapCheck: safeArea.top=${H5MsgMgr.safeArea.top}, btn_im=${!!this.btn_im}, active=${this.btn_im?.active}`);
+        }
+
+        console.log(`[applySeatOffset] after all, icon.y: menu=${this.btn_menu?.y}, im=${this.btn_im?.y}, safety=${this.btn_safety_guard?.y}, addChip=${this.table_add_chip?.y}`);
+
+        // 座位更新（依赖座位数据）
+        if (!this.game?.listSeat) {
+            console.log(`[applySeatOffset] no game/listSeat, skip seat update`);
+            return;
+        }
+        for (const seat of this.game.listSeat) {
+            seat.UpdateSeatUIInfo(seat.ClientSeatId);
+        }
+        console.log(`[applySeatOffset] === END ===`);
     }
 
     //进入初始UI
@@ -830,8 +909,6 @@ export default class UITexas extends BaseScene {
         UIComponent.close(UIDefine.UIPlayerInfo);
         //关闭设置
         UIComponent.close(UIDefine.UITexasSettingComponent);
-        //关闭规则
-        UIComponent.close(UIDefine.UITexasRule);
         //关闭牌谱
         UIComponent.close(UIDefine.UITexasHistory);
     }
