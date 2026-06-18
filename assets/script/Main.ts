@@ -120,14 +120,20 @@ export default class Main extends cc.Component {
         // 启动握手：设置 __CC_READY__，等待 H5 发来 h5Ready，回复 ccAck
         H5MsgMgr.Instance.startHandshake();
         // 监听窗口大小变化（F12 开关、窗口拖拽等）
+        // 注意：不监听 visualViewport.resize。iOS Safari 键盘弹出时 visualViewport 会触发但
+        // window.innerHeight 不变，此时若调用 updateFitMode 反而会让 canvas 抖动/重绘，
+        // 表现为"画面变形"。参考 cocos_release 的实现，只监听 window resize，
+        // iOS 上键盘弹出由浏览器自动上移 canvas，cocos 内部状态完全不变。
         window.addEventListener('resize', this._onWindowResize.bind(this));
     }
 
     /**
      * 窗口大小变化时重新适配（防抖 200ms）
      *
-     * 不使用 resizeWithBrowserSize（会和 Canvas.fitCanvasToWindow 互相覆盖导致 _frameSize 过时），
-     * 而是手动更新容器 DOM，直接设置 _frameSize 并调用 setDesignResolutionSize。
+     * 引擎已启用 resizeWithBrowserSize(true)，会按新视口自动重新适配 canvas
+     * （保持设计分辨率比例，键盘弹出时整体上移而非变形）。
+     * 这里只负责按宽高比动态切换 FIXED_WIDTH / FIXED_HEIGHT 适配策略，
+     * 并刷新预览模式下未跟随窗口的容器 DOM。
      */
     private _onWindowResize(): void {
         clearTimeout(this._resizeTimer);

@@ -90,15 +90,11 @@ export default class ProcedureInit extends ProcedureBase {
         this.tracelog.debug('set frame rate');
         cc.game.setFrameRate(GameConfig.FRAME_RATE); // FPS 设置
         cc.macro.ENABLE_MULTI_RATIO = GameConfig.ENABLE_MULTI_TOUCH; // 禁止多点触摸
-        // 禁用引擎内置 resize 监听
-        cc.view.resizeWithBrowserSize(false);
-        // 替换引擎内部的 _initFrameSize，确保始终读取窗口实际尺寸
-        const view = cc.view as any;
-        view._initFrameSize = function () {
-            this._frameSize.width = window.innerWidth;
-            this._frameSize.height = window.innerHeight;
-            this._isRotated = false;
-        };
+        // 启用引擎内置 resize 监听：键盘弹出时由引擎按新视口重新适配 canvas，
+        // 保持设计分辨率比例，整体上移而非变形（与 cocos_release 行为一致）。
+        // 自定义键盘防御（固定 canvas 高度 + transform 上移）会破坏 canvas
+        // 内部渲染分辨率与 CSS 显示尺寸的同步，导致画面被压扁变形。
+        cc.view.resizeWithBrowserSize(true);
     }
 
     //初始化网络配置（static 供其他 Procedure 在 H5 桥接模式下兜底调用）
