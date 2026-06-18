@@ -91,6 +91,19 @@ if (fs.existsSync(buildAssets)) {
   console.log('  ✓ assets 已同步')
 }
 
+// --- 步骤 2.1：同步根级运行时脚本（不在 assets/ 下，copyDirSync 不覆盖）---
+// h5-cc-i18n.min.js 设置 window.__H5_CC_I18N__；缺失会导致预览里所有 i18n 退化成显示 key。
+for (const rootFile of ['h5-cc-i18n.min.js']) {
+  const src = path.join(BUILD_DIR, rootFile)
+  if (fs.existsSync(src)) {
+    copyFileSync(src, path.join(PREVIEW_DIR, rootFile))
+    console.log(`同步根级脚本: ${rootFile} → preview-templates/`)
+    console.log('  ✓ ' + rootFile + ' 已同步')
+  } else {
+    console.warn(`⚠ 未找到根级脚本 ${rootFile}（预览 i18n 可能显示原始 key）`)
+  }
+}
+
 // --- 步骤 2.5：同步 protobuf runtime 到 preview-templates ---
 if (PROTOBUF_SRC) {
   copyFileSync(PROTOBUF_SRC, PROTOBUF_PREVIEW_DEST)

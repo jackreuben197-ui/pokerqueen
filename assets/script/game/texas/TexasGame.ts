@@ -608,7 +608,8 @@ export default class TexasGame {
         this.SMAgency.LoadGameStateConf();
         GC.uc.AddComponent(this.GameLogicSMComponent);
         // 播放游戏背景音乐，音量 30%（对齐 Unity BGM_GAMEPLAY）
-        SoundComponent.Instance.playMusicWithVolume('sound/bgm_game', 0.3);
+        // 背景音乐已按需求关闭
+        // SoundComponent.Instance.playMusicWithVolume('sound/bgm_game', 0.3);
     }
 
     RegisterMsgHandler() {
