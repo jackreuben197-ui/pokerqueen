@@ -119,9 +119,9 @@ export default class Seat {
     /** 表情动画停留时长（秒），之后淡出 */
     private static readonly EMOJI_ANIM_HOLD = 5.0;
     /** YouWin 胜利动画目标尺寸（像素，包围盒较大边缩放到此值；新骨骼原始尺寸过大，按需微调）*/
-    private static readonly YOUWIN_TARGET_SIZE = 420;
+    private static readonly YOUWIN_TARGET_SIZE = 620;
     /** OtherWin（他人赢）胜利动画目标尺寸（像素，对手头像较小，取值更小；按需微调）*/
-    private static readonly OTHERWIN_TARGET_SIZE = 200;
+    private static readonly OTHERWIN_TARGET_SIZE = 330;
     /** OtherWin 动画底部相对头顶的间隙（越大越靠上，越小/负值越往下压向头像）*/
     private static readonly OTHERWIN_BOTTOM_GAP = -60;
     private _bubbleInsuranceCountDownHomeParent: cc.Node = null;
@@ -1736,6 +1736,12 @@ export default class Seat {
         return baseY + headHeight / 2;
     }
 
+    /** 头像中心 Y（用于把表情显示在头像上，而非头顶上方） */
+    private _getHeadCenterY(): number {
+        const headNode = this.uirc?.Head;
+        return headNode ? headNode.y : 0;
+    }
+
     /** 清理正在播放的表情动画 */
     private _stopEmojiAnim(): void {
         if (this._emojiAnimNode) {
@@ -1789,9 +1795,9 @@ export default class Seat {
         if (skinName) { try { skeleton.setSkin(skinName); } catch (e) {} }
         try { skeleton.setAnimation(0, animName, true); } catch (e) {}
         node.scale = Seat.EMOJI_ANIM_SCALE; // 临时缩放
-        const headTopY = this._getHeadTopY();
+        const headCenterY = this._getHeadCenterY();
         node.x = 0;
-        node.y = headTopY + Seat.EMOJI_ANIM_BOTTOM_GAP;
+        node.y = headCenterY;
         // 延迟一帧：组件激活后 sk.update 才会推进动画，再沿循环采样包围盒取最大并归一化、对齐
         const dur = getAnimDuration(skeleton, animName);
         skeleton.scheduleOnce(() => {
@@ -1800,8 +1806,8 @@ export default class Seat {
             if (b.max > 0) {
                 const scale = Seat.EMOJI_ANIM_TARGET_SIZE / b.max;
                 node.scale = scale;
-                node.x = -(b.offX + b.szX / 2) * scale;       // 水平居中
-                node.y = headTopY - b.offY * scale + Seat.EMOJI_ANIM_BOTTOM_GAP; // 脚底贴头顶
+                node.x = -(b.offX + b.szX / 2) * scale;                 // 水平居中
+                node.y = headCenterY - (b.offY + b.szY / 2) * scale;    // 垂直居中显示在头像上
             }
             node.opacity = 255;
         }, 0);
@@ -1830,8 +1836,8 @@ export default class Seat {
             emojiNode.setContentSize(SIZE, SIZE);
             emojiNode.opacity = 0;
             emojiNode.x = 0;
-            // 静态图锚点居中：底部贴头顶 → y = 头顶 + 半高
-            emojiNode.y = this._getHeadTopY() + SIZE / 2 + Seat.EMOJI_ANIM_BOTTOM_GAP;
+            // 锚点居中：直接显示在头像中心上
+            emojiNode.y = this._getHeadCenterY();
             this.ui.addChild(emojiNode);
             this._emojiAnimNode = emojiNode;
             cc.tween(emojiNode)
