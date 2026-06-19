@@ -1637,7 +1637,8 @@ export default class UITexasReportComponent extends UIBase {
 
     private setToggleTextColor(node: cc.Node, selected: boolean): void {
         if (!node) return;
-        node.color = cc.Color.BLACK.fromHEX(selected ? '#EEF5FF' : '#757CAB');
+        // 需求：底部 Tab 文字无论是否选中都为白色
+        node.color = cc.color(255, 255, 255);
     }
 
     private setCountText(node: cc.Node, score: number): void {

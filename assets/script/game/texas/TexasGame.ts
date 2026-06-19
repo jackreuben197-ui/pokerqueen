@@ -3544,10 +3544,10 @@ export default class TexasGame {
         normal.active = false;
         discount.active = false;
         free.active = false;
-        // 先查免费次数，有免费次数则显示"VIP免费"
+        // 先查免费次数，有免费次数则显示数字（对齐 Figma：单钻石 + 纯数字，与上方按钮一致）
         if (this._viewPubFreeCount > 0) {
-            free.active = true;
-            this.uirc.setChildLabel(free, 'label', `VIP免费 ${this._viewPubFreeCount}`);
+            normal.active = true;
+            this.uirc.setChildLabel(normal, 'label', `${this._viewPubFreeCount}`);
             return;
         }
         // 没有免费次数，走钻石价格逻辑
@@ -3577,15 +3577,15 @@ export default class TexasGame {
             return;
         }
         if (DiamondConfigSetting.discount_price == 0) {
-            free.active = true;
-            this.uirc.setChildLabel(free, 'label', `${DiamondConfigSetting.price}`);
+            normal.active = true;
+            this.uirc.setChildLabel(normal, 'label', `${DiamondConfigSetting.price}`);
         } else if (DiamondConfigSetting.discount_price == DiamondConfigSetting.price) {
             normal.active = true;
             this.uirc.setChildLabel(normal, 'label', `${DiamondConfigSetting.price}`);
         } else if (DiamondConfigSetting.discount_price < DiamondConfigSetting.price) {
-            discount.active = true;
-            this.uirc.setChildLabel(discount, 'old_label', `${DiamondConfigSetting.price}`);
-            this.uirc.setChildLabel(discount, 'new_label', `${DiamondConfigSetting.discount_price}`);
+            // 对齐 Figma：只显示单个钻石 + 折后价，不再显示原价划线（即不用 discount 的双钻石样式）
+            normal.active = true;
+            this.uirc.setChildLabel(normal, 'label', `${DiamondConfigSetting.discount_price}`);
         }
     }
 
@@ -3644,22 +3644,8 @@ export default class TexasGame {
         if (isSafeLimit) return;
         // 查询免费次数并刷新价格
         this.RefreshViewPubFreeCount();
-        // 按钮文本：全看模式 vs 分步模式
-        if (this._publicViewType == 2) {
-            this.uirc.textSeeMorePublic.string = '全看';
-        } else {
-            switch (public_card_count) {
-                case 0:
-                    this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10018);
-                    break;
-                case 3:
-                    this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10019);
-                    break;
-                default:
-                    this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10020);
-                    break;
-            }
-        }
+        // 按钮文本统一为"发发看"（对齐 Figma 设计），不再按阶段显示 查看翻牌/查看转牌/查看河牌/全看
+        this.uirc.textSeeMorePublic.string = i18nMgr.Get('UIViewAllPublicCards');
         if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) //MTT没有查看翻牌
         {
             this.uirc.Button_SeeMorePublic.active = true;

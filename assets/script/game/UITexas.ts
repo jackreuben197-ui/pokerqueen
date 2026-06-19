@@ -394,7 +394,7 @@ export default class UITexas extends BaseScene {
         // 偷偷看/发发看 按钮：标题加粗放大、钻石图标放大（对齐 figma 新样式，蓝钻+绿底由资源提供）
         [this.Button_SeeMorePublic, this.Button_LookHandCard].forEach(btn => {
             if (!btn) return;
-            const title = btn.getChildByName('Text_SeeMorePublic')?.getComponent(cc.Label);
+            const title = (btn.getChildByName('Text_SeeMorePublic') || btn.getChildByName('Text_LookHandCard'))?.getComponent(cc.Label);
             if (title) {
                 (title as any).enableBold = true;
                 title.fontSize = 36;

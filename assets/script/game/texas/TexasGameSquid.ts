@@ -56,9 +56,9 @@ export default class TexasGameSquid {
     // 鱿鱼开局 Spine 动画：静态缓存 SkeletonData + 当前播放节点
     private static _squidStartSkeletonData: sp.SkeletonData = null;
     /** 鱿鱼开局动画目标尺寸（像素，包围盒较大边缩放到此值；与旧帧动画大小相近，按需微调）*/
-    private static readonly SQUID_START_TARGET_SIZE = 1200;
+    private static readonly SQUID_START_TARGET_SIZE = 1880;
     /** 居中微调：开局动画水平偏移（像素，负值向左）。骨骼内容左重（鱿鱼角色在左），需向左拉回视觉中心 */
-    private static readonly SQUID_START_OFFSET_X = -80;
+    private static readonly SQUID_START_OFFSET_X = 110;
     private squidStartSpineNode: cc.Node = null;
 
     constructor(private host: TexasGameSquidHost) {}
