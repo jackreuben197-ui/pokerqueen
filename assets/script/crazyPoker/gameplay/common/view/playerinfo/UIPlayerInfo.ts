@@ -40,7 +40,9 @@ export default class UIPlayerInfo extends UIBasePlus {
     // 扔道具 PropsID: CtEmoji2(6) * 100 = 600
     // 600=番茄, 601=花环, 602=亲吻, 603=大拇指, 604=干杯, 605=摸头,
     // 606=鲨鱼, 607=抓鸡, 608=拳击, 609=撒钱, 610=鱼头, 611=棒球
-    // prefab 视觉布局: 亲吻,撒钱,拳击,摸头,番茄,鱼头 / 棒球,大拇指,干杯,抓鸡,花环,鲨鱼
+    // PROP_TYPE_MAP 按 $propOp_N 名称索引（与价格/图标随节点绑定）；视觉顺序由 prefab 中
+    // $PropOpNode 的 _children 排序决定: 鲨鱼,拳击,干杯,番茄,抓鸡 / 棒球,亲吻,花环,大拇指,摸头
+    // ($propOp_2 撒钱 / $propOp_6 鱼头 隐藏，不显示)
     private static readonly PROP_TYPE_BASE: number = Def.ConsumeType.CT_EMOJI_2 * 100; // 600
     /** propIndex(1~12) → propType，对应 prefab 中 $propOp_1 ~ $propOp_12 的视觉位置 */
     private static readonly PROP_TYPE_MAP: number[] = [
@@ -180,7 +182,8 @@ export default class UIPlayerInfo extends UIBasePlus {
             let ulNode = new cc.Node('underline');
             let gfx = ulNode.addComponent(cc.Graphics);
             let w = node ? node.width : 100;
-            gfx.strokeColor = cc.Color.WHITE;
+            // Tab 选中下划线改为红色（需求：从绿色改红色）
+            gfx.strokeColor = cc.color(230, 68, 85);
             gfx.lineWidth = 8;
             gfx.moveTo(-w / 2, 0);
             gfx.lineTo(w / 2, 0);
@@ -309,10 +312,14 @@ export default class UIPlayerInfo extends UIBasePlus {
             index = 0;
         }
         this._tabIndex = index;
-        // 更新 tab 选中状态：下划线显示/隐藏，颜色保持白色
+        // 更新 tab 选中状态：下划线显示/隐藏；选中文字红色，未选中白色
         for (let i = 0; i < this._underlineNodes.length; i++) {
             if (this._underlineNodes[i]) {
                 this._underlineNodes[i].active = i === index;
+            }
+            if (this._tabLabels[i]) {
+                // tab 文字始终保持亮白色（选中也不变红，仅靠下划线表示选中）
+                this._tabLabels[i].node.color = cc.color(255, 255, 255);
             }
         }
         // 切换内容节点显示

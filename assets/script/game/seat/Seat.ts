@@ -1269,7 +1269,8 @@ export default class Seat {
         // textBubbleInsuranceCountDown.text = $"购买剩余{Player.timeLeft_insurance}秒";
         this.uirc.Image_BubbleInsuranceCountDown.active = true;
         this.MoveBubbleInsuranceCountDownToTop();
-        this.uirc.Text_BubbleInsuranceCountDown.string = `${CPErrorCode.LanguageDescription(10298)} ${this.Player.timeLeft_insurance < 0 ? 0 : this.Player.timeLeft_insurance}s`;
+        // 分两行：上面中文文案，下面倒计时（如 10s）
+        this.uirc.Text_BubbleInsuranceCountDown.string = `${CPErrorCode.LanguageDescription(10298)}\n${this.Player.timeLeft_insurance < 0 ? 0 : this.Player.timeLeft_insurance}s`;
         this.HideBubbleInsurance();
     }
 
@@ -1289,6 +1290,13 @@ export default class Seat {
             return;
         }
         this.CacheBubbleInsuranceCountDownHierarchy();
+        // 让保险倒计时显示在头像上方，与下注气泡（加注/跟注等）同一位置
+        const bubble = this.uirc?.Image_Bubble;
+        if (bubble && bubble.parent && node.parent) {
+            const worldPos = bubble.parent.convertToWorldSpaceAR(bubble.position);
+            node.setPosition(node.parent.convertToNodeSpaceAR(worldPos));
+            return;
+        }
         const homeParent = this._bubbleInsuranceCountDownHomeParent;
         if (homeParent && node.parent && node.parent !== homeParent) {
             const worldPos = homeParent.convertToWorldSpaceAR(pos);

@@ -432,7 +432,7 @@ export class SeatFSM {
             if (this.seat.keepSeatLeftTime <= 0) {
                 this.seat.bKeepSeatCounting = false;
             } else {
-                this.seat.uirc.textCancelReserveSeat.string = `${CPErrorCode.LanguageDescription(10011)}\n${this.seat.keepSeatLeftTime}s`;
+                this.seat.uirc.textCancelReserveSeat.string = `${CPErrorCode.LanguageDescription(10011)}(${this.seat.keepSeatLeftTime}s)`;
                 this.seat.uirc.m_ReserveTime.string = `${this.seat.keepSeatLeftTime}s`;
             }
         }

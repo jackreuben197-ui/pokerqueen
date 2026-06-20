@@ -493,7 +493,7 @@
       "__uuid__": "7662bf3d-fff0-4812-8b23-b71b6608486d"
     },
     "_type": 0,
-    "_sizeMode": 2,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -24275,8 +24275,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 142,
-      "height": 61
+      "width": 180,
+      "height": 100
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -24288,12 +24288,12 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -41,
         0,
         0,
         0,
         0,
-        1,
+        0.10452846326765346,
+        0.9945218953682733,
         1,
         1,
         1
@@ -24303,7 +24303,7 @@
       "__type__": "cc.Vec3",
       "x": 0,
       "y": 0,
-      "z": 0
+      "z": 12
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -24335,15 +24335,15 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 155,
-      "g": 80,
-      "b": 11,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 140,
-      "height": 30
+      "width": 160,
+      "height": 36
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -24355,7 +24355,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        11.574,
+        24,
         0,
         0,
         0,
@@ -24396,8 +24396,8 @@
     "_dstBlendFactor": 771,
     "_string": "In custody",
     "_N$string": "In custody",
-    "_fontSize": 25,
-    "_lineHeight": 25,
+    "_fontSize": 32,
+    "_lineHeight": 32,
     "_enableWrapText": false,
     "_N$file": {
       "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
@@ -24405,7 +24405,7 @@
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
-    "_styleFlags": 0,
+    "_styleFlags": 1,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -24456,15 +24456,15 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 155,
-      "g": 80,
-      "b": 11,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
-      "height": 30
+      "width": 160,
+      "height": 34
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -24476,7 +24476,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -12.26,
+        -24,
         0,
         0,
         0,
@@ -24517,8 +24517,8 @@
     "_dstBlendFactor": 771,
     "_string": "180s",
     "_N$string": "180s",
-    "_fontSize": 20,
-    "_lineHeight": 20,
+    "_fontSize": 30,
+    "_lineHeight": 30,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
@@ -24526,7 +24526,7 @@
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
-    "_styleFlags": 0,
+    "_styleFlags": 1,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -25162,8 +25162,8 @@
     "_dstBlendFactor": 771,
     "_string": "-",
     "_N$string": "-",
-    "_fontSize": 26,
-    "_lineHeight": 26,
+    "_fontSize": 30,
+    "_lineHeight": 38,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
@@ -25171,7 +25171,7 @@
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
-    "_styleFlags": 0,
+    "_styleFlags": 1,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -25207,7 +25207,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "0209b1c0-da4a-4679-8601-9327a188da91"
+      "__uuid__": "0aa27075-7a4f-46f0-9ddf-5eb544d72225"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -25244,10 +25244,10 @@
       "height": 40
     },
     "_N$startAxis": 0,
-    "_N$paddingLeft": 0,
-    "_N$paddingRight": 0,
-    "_N$paddingTop": 5,
-    "_N$paddingBottom": 5,
+    "_N$paddingLeft": 28,
+    "_N$paddingRight": 28,
+    "_N$paddingTop": 12,
+    "_N$paddingBottom": 12,
     "_N$spacingX": 0,
     "_N$spacingY": 0,
     "_N$verticalDirection": 1,

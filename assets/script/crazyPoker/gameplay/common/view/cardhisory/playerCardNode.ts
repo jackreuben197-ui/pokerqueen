@@ -313,7 +313,7 @@ export default class playerCardNode extends UIBasePlus {
         // 第一套盈亏
         this.profit.string = StringHelper.GetSignedLongString(winAnte);
         if (winAnte > 0) {
-            this.profit.node.color = cc.color(250, 43, 75);
+            this.profit.node.color = cc.color(255, 56, 56);
         } else if (winAnte < 0) {
             this.profit.node.color = cc.color(120, 228, 144);
         }
@@ -322,19 +322,19 @@ export default class playerCardNode extends UIBasePlus {
             this.profit_b.node.active = true;
             this.profit_b.string = StringHelper.GetSignedLongString(winAnte2);
             if (winAnte2 > 0) {
-                this.profit_b.node.color = cc.color(250, 43, 75);
+                this.profit_b.node.color = cc.color(255, 56, 56);
             } else if (winAnte2 < 0) {
                 this.profit_b.node.color = cc.color(120, 228, 144);
             }
         } else {
             this.profit_b.node.active = false;
         }
-        // 自己的金色高亮
+        // 自己：名字白色，盈亏数字用红色高亮（更易读）
         if (isMine) {
-            this.playerName.node.color = cc.color(220, 186, 130);
-            this.profit.node.color = cc.color(220, 186, 130);
+            this.playerName.node.color = cc.color(255, 255, 255);
+            this.profit.node.color = cc.color(255, 56, 56);
             if (this.profit_b.node.active) {
-                this.profit_b.node.color = cc.color(220, 186, 130);
+                this.profit_b.node.color = cc.color(255, 56, 56);
             }
         }
     }

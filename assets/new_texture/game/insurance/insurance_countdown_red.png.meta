@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "d03b976d-4869-40a0-a33b-e1b44af2529a",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 80,
+  "height": 80,
+  "platformSettings": {},
+  "subMetas": {
+    "insurance_countdown_red": {
+      "ver": "1.0.6",
+      "uuid": "0aa27075-7a4f-46f0-9ddf-5eb544d72225",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "d03b976d-4869-40a0-a33b-e1b44af2529a",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 80,
+      "height": 80,
+      "rawWidth": 80,
+      "rawHeight": 80,
+      "borderTop": 26,
+      "borderBottom": 26,
+      "borderLeft": 26,
+      "borderRight": 26,
+      "subMetas": {}
+    }
+  }
+}

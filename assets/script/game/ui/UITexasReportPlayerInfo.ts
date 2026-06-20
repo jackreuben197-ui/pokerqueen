@@ -107,11 +107,12 @@ export default class UITexasReportPlayerInfo extends UIBase {
     }
 
     refreshHeadImg(headStr: string) {
-        let img_head: cc.Sprite = this.getChildNodeOrComponent('img_head', cc.Sprite);
-        // img_head.node.active = false;
-        WebImageHelper.SetUrlImage(img_head, headStr).then(() => {
-            img_head.node.active = true;
-        });
+        // 预制体里头像节点名为 img_head_bg（带圆形遮罩材质），原来的 'img_head' 取不到节点，
+        // 导致头像一直停留在默认图。改用正确节点 + SetHeadImage（与座位头像一致，带默认兜底与共享缓存）
+        let img_head: cc.Sprite = this.getChildNodeOrComponent('img_head_bg', cc.Sprite);
+        if (!img_head) return;
+        WebImageHelper.SetHeadImage(img_head, headStr);
+        img_head.node.active = true;
     }
 
     refreshUserName(nameStr: string) {

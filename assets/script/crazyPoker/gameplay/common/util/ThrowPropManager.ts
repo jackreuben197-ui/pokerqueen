@@ -37,24 +37,24 @@ export default class ThrowPropManager {
     };
     /** 12个道具的动画配置，索引0=type600(番茄) ... 索引11=type611(棒球) */
     private static readonly CONFIGS: PropAnimConfig[] = [
-        // 0: 番茄 (600) — 模式A
-        { pattern: 'A', spines: ['spine/Expression_Tomato/skeleton'], anims: ['1'] },
-        // 1: 花环 (601) — 模式A
-        { pattern: 'A', spines: ['spine/Expression_Flower/skeleton'], anims: ['animation'] },
-        // 2: 亲吻 (602) — 模式A
-        { pattern: 'A', spines: ['spine/Expression_Kiss/kiss'], anims: ['1'] },
-        // 3: 大拇指 (603) — 模式A
-        { pattern: 'A', spines: ['spine/Expression_Good/skeleton'], anims: ['animation'] },
-        // 4: 干杯 (604) — 模式D
-        { pattern: 'D', spines: ['spine/Expression_Beer/cheers_2', 'spine/Expression_Beer_Screen/cheers_1'], anims: [] },
-        // 5: 摸头 (605) — 模式B
-        { pattern: 'B', spines: ['spine/Expression_Touch/touch'], anims: ['animation'] },
-        // 6: 鲨鱼 (606) — 模式C
-        { pattern: 'C', spines: ['spine/Expression_Shark/shark'], anims: ['shark_set', 'shark_receive'] },
-        // 7: 抓鸡 (607) — 模式C (伸手飞行 + 抓鸡)
-        { pattern: 'C', spines: ['spine/Expression_Chicken/chicken_spine'], anims: ['chicken_set', 'chicken_receive'] },
-        // 8: 拳击 (608) — 模式D
-        { pattern: 'D', spines: ['spine/Expression_Box/box_local', 'spine/Expression_Box_Screen/box_full'], anims: [] },
+        // 0: 番茄(600)→新dirt — 模式A（飞行后在目标处播放溅落）
+        { pattern: 'A', spines: ['spine/Expression_Tomato/skeleton'], anims: ['dirt_splash'] },
+        // 1: 花环(601)→新nice-hand — 模式A
+        { pattern: 'A', spines: ['spine/Expression_Flower/skeleton'], anims: ['hand_wave'] },
+        // 2: 亲吻(602)→新Kiss — 模式A
+        { pattern: 'A', spines: ['spine/Expression_Kiss/kiss'], anims: ['lip_kissing'] },
+        // 3: 大拇指(603)→新Thumbs up — 模式A
+        { pattern: 'A', spines: ['spine/Expression_Good/skeleton'], anims: ['thumbs_up'] },
+        // 4: 干杯(604)→新beer — 单骨骼，改模式A
+        { pattern: 'A', spines: ['spine/Expression_Beer/cheers_2'], anims: ['beer_cheers'] },
+        // 5: 摸头(605)→新hand pat — 模式B
+        { pattern: 'B', spines: ['spine/Expression_Touch/touch'], anims: ['hand_patting'] },
+        // 6: 鲨鱼 (606) — 模式C（新鱼主题鲨鱼：阴影/上升/牙齿三层动画叠加在目标处播放=完整鲨鱼）
+        { pattern: 'C', spines: ['spine/Expression_Shark/shark'], anims: ['shark_rising', 'shark_shadow', 'babyshark_tooth'] },
+        // 7: 抓鸡(607)→新hen — 模式C (伸手飞行 hand_flying + 目标处母鸡挣扎 hen_struggling)
+        { pattern: 'C', spines: ['spine/Expression_Chicken/chicken_spine'], anims: ['hand_flying', 'hen_struggling'] },
+        // 8: 拳击(608)→新gun — 单骨骼，改模式A
+        { pattern: 'A', spines: ['spine/Expression_Box/box_local'], anims: ['bullet_shots'] },
         // 9: 撒钱 (609) — 模式C (简化，无伸手)
         { pattern: 'C', spines: ['spine/Expression_Money/attachments'], anims: ['attachments_1_receive'] },
         // 10: 鱼头 (610) — 模式D
@@ -68,12 +68,8 @@ export default class ThrowPropManager {
             ],
             anims: []
         },
-        // 11: 棒球 (611) — 模式D
-        {
-            pattern: 'D',
-            spines: ['spine/Expression_BaseBall_Sender/skeleton', 'spine/Expression_BaseBall_Receiver/ballfolder1', 'spine/Expression_BaseBall_Other/skeleton'],
-            anims: []
-        }
+        // 11: 棒球(611)→新blast — 单骨骼，改模式A（炸弹飞行+爆炸）
+        { pattern: 'A', spines: ['spine/Expression_BaseBall_Sender/skeleton'], anims: ['bomb_flying'] }
     ];
 
     constructor(game: TexasGame) {
@@ -317,6 +313,18 @@ export default class ThrowPropManager {
         this.loadSkeletons(config.spines)
             .then(allData => {
                 if (!cc.isValid(root)) return;
+                // 鲨鱼(6)：新鱼主题鲨鱼，三层动画(上升/阴影/牙齿)叠加在目标位置同时播放 = 完整鲨鱼
+                if (offset === 6) {
+                    const node = new cc.Node('PropSpine');
+                    const skeleton = node.addComponent(sp.Skeleton);
+                    skeleton.skeletonData = allData[0];
+                    node.parent = root;
+                    node.setPosition(targetPos);
+                    config.anims.forEach((a, i) => skeleton.setAnimation(i, a, false));
+                    this.destroyAfterComplete(node, 4);
+                    this.playSound(soundName);
+                    return;
+                }
                 if (config.anims.length === 1) {
                     // 抓鸡(7)/撒钱(9)：只在目标位置播放主效果
                     const node = this.createSpineNode(allData[0], config.anims[0], false, root, targetPos);
