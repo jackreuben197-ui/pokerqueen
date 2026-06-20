@@ -1943,7 +1943,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "b6dbfa00-8439-4e5c-b615-04a418227f94"
+      "__uuid__": "2fce9a3e-0296-4ac0-9588-c38e47242f53"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -1990,9 +1990,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 120,
+      "g": 228,
+      "b": 144,
       "a": 255
     },
     "_contentSize": {
