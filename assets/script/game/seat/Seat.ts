@@ -2042,6 +2042,17 @@ export default class Seat {
         console.log(LN, '刷新下方筹码位置');
     }
 
+    /** 在桌总额（含待生效的补充筹码 cacheAddChips），对齐 Unity BaseSeat.GetTableChips。
+     *  未行动：chips + cacheAddChips；已行动：cacheChips + cacheAddChips */
+    public GetTableChips(): number {
+        if (!this.Player) return 0;
+        const add = this.Player.cacheAddChips || 0;
+        if (this.Player.actionStatus !== Def.Action.NONE) {
+            return this.Player.cacheChips + add;
+        }
+        return this.Player.chips + add;
+    }
+
     //刷新下注的筹码数
     public UpdateBet(bet: number = -1) {
         let value = bet > -1 ? bet : this.Player?.anteNumber || 0;

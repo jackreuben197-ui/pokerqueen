@@ -259,6 +259,11 @@ export default class TexasGameProtocol {
         // videoMaskId > 4 时客户端统一归为 1
         if (rec.videoMaskId > 4) rec.videoMaskId = 1;
         this.game.mainPlayer.chips = rec.chips;
+        this.game.mainPlayer.totalBringIn = rec.totalBringin;
+        this.game.mainPlayer.bringInChips = rec.chips;
+        // 坐下带入即时生效，弹"完成带入 XX UC"提示，对齐 Unity OnMsgSeated SetUCBringInTips(true, chips)
+        console.log(LN, `[BringIn-Toast] 来源=OnMsgSeated(坐下响应) | chips=${rec.chips}`);
+        this.game.SetUCBringInTips(true, rec.chips);
         this.game.mainPlayer.leavelChips = rec.accountChips;
         // GameCache.Instance.gold = rec.accountChips;
         GC.data.user.info.gold = rec.accountChips;
@@ -487,6 +492,10 @@ export default class TexasGameProtocol {
             Seat.Player.SetCards(this.game.GetHandCardsByRecList(rec.playersList[i].cardsList));
             Seat.Player.chips = rec.playersList[i].chip;
             Seat.Player.cacheChips = rec.playersList[i].chip + rec.playersList[i].roundBet + rec.playersList[i].ante;
+            // 新一手开始，补充筹码已生效（含在 chip 里），清空待生效缓存
+            if (Seat.seatID == this.game.mainPlayer.seatID) {
+                Seat.Player.cacheAddChips = 0;
+            }
             Seat.Player.canPlayStatus = Def.CanPlayStatus.NORMAL; //数组里面有人即可打牌
             Seat.Player.extraBlind = 0; //是否补盲，已在列表的玩家不需要补盲
             Seat.Player.isFold = rec.playersList[i].action == Def.Action.FOLD;
@@ -1948,6 +1957,11 @@ export default class TexasGameProtocol {
                 ) {
                     UIComponent.Instance.Toast(StringHelper.Format(i18nMgr.Get('Addondz'), [StringHelper.GetSignedLongString(playerChipChange.change)]));
                 }
+                // 即时到账的补充筹码提示，对齐 Unity OnMsgChipsChange CcNone+change>0
+                if (playerChipChange.reason === 0 /* CC_NONE */ && playerChipChange.change > 0) {
+                    console.log(LN, `[BringIn-Toast] 来源=HANDLER_REQ_GAME_CHANGE_CHIPS(广播) | change=${playerChipChange.change}`);
+                    this.game.SetUCBringInTips(true, playerChipChange.change);
+                }
                 UIComponent.Instance.HideUI(PrefabUI.UIBringOut);
                 this.game.mainPlayer.cacheStoreChips = playerChipChange.storeChips;
             }
@@ -1993,12 +2007,16 @@ export default class TexasGameProtocol {
             return;
         }
         mSeat.Player.chips = rec.chips;
+        mSeat.Player.bringInChips = rec.chips;
+        // 待生效的补充筹码（下一手开始时清零生效），对齐 Unity _cacheAddChips
+        mSeat.Player.cacheAddChips = Math.max(0, rec.totalChips - rec.chips);
         //UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
         UIComponent.Instance.HideUI(PrefabUI.UIBringIn);
         mSeat.FsmLogicComponent.SM.ChangeState(SeatAddChips.Instance);
         mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
         // 补充筹码成功后的 toast（对齐 Unity OnMsgBringIn → SetUCBringInTips(false, chips)）
         // seated=false: 由 SetUCBringInTips 内部按 isPlaying 判断弹"下一手前完成带入"
+        console.log(LN, `[BringIn-Toast] 来源=HANDLER_REQ_GAME_ADD_CHIPS(BringIn响应) | chips=${rec.chips}, totalChips=${rec.totalChips}`);
         this.game.SetUCBringInTips(false, rec.chips);
     }
 

@@ -36,7 +36,6 @@ import { VideoModel } from '../crazyPoker/gameplay/common/constant/VideoModel';
 import GameplayUtil from '../crazyPoker/gameplay/common/util/GameplayUtil';
 import { TableType } from '../crazyPoker/gameplay/common/constant/TableType';
 import { HttpRoomBringInByIDProtocol } from '../crazyPoker/module/message/CPHotfixWebMessage/room/HttpRoomBringInByIDProtocol';
-import H5MsgMgr from '../H5MsgMgr';
 import ProtocolAgency from '../net/websocket/ProtocolAgency';
 import { ProtocolCode } from '../net/websocket/ProtocolCode';
 import { Def } from '../protobuf/holdem/define_pb';
@@ -658,23 +657,12 @@ export default class UITexas extends BaseScene {
     private onChipsChangeUpdate(response: any): void {
         if (!response) return;
         let hasNew = false;
-        const myUserId = GameCache.Instance.nUserId;
         for (const change of response.changesList || []) {
             if (change.reason !== 0 /* Def.ChipChangeReason.CC_NONE */) continue;
             const seat = GameCache.Instance.CurGame?.GetSeatByServerSeatID(change.seatId);
             if (!seat?.Player) continue;
             const isNew = UITexasReportComponent.applyChipChange(seat.Player.userID, change.chips || 0, seat.Player.nick || '', seat.Player.headPic || '');
             if (isNew) hasNew = true;
-            if (seat.Player.userID === myUserId && (change.change || 0) > 0) {
-                // 即时到账的补充筹码：弹"完成带入 XX UC"，金额用 change（增量）
-                // 对齐 Unity SetUCBringInTips(true, change)
-                UIComponent.Instance.Toast(
-                    StringHelper.FormatString(
-                        i18nMgr.Get('UIGameplay_UCRechargeBringin'),
-                        StringHelper.GetLongStringLocale(change.change || 0, 1, 0)
-                    )
-                );
-            }
         }
         if (hasNew) this.post(GGEvent.SituationRefresh);
     }
@@ -789,7 +777,7 @@ export default class UITexas extends BaseScene {
         if (this.btn_im) this.btn_im.y = this._btnImOrigY + halfOffset;
         if (this.btn_safety_guard) this.btn_safety_guard.y = this._btnSafetyGuardOrigY + halfOffset;
         if (this.table_add_chip) this.table_add_chip.y = this._tableAddChipOrigY + halfOffset;
-        if (this.RemainingSquidCount) this.RemainingSquidCount.y = this._remainingSquidCountOrigY;
+        if (this.RemainingSquidCount) this.RemainingSquidCount.y = this._remainingSquidCountOrigY + halfOffset;
 
         console.log(`[applySeatOffset] after halfOffset, icon.y: menu=${this.btn_menu?.y}, im=${this.btn_im?.y}, safety=${this.btn_safety_guard?.y}, addChip=${this.table_add_chip?.y}`);
 
@@ -814,6 +802,7 @@ export default class UITexas extends BaseScene {
                 if (this.btn_im) this.btn_im.y += extraLocal;
                 if (this.btn_safety_guard) this.btn_safety_guard.y += extraLocal;
                 if (this.table_add_chip) this.table_add_chip.y += extraLocal;
+                if (this.RemainingSquidCount) this.RemainingSquidCount.y += extraLocal;
             } else {
                 console.log(`[applySeatOffset] gapLocal=${gapLocal} <= 280, no extra movement`);
             }

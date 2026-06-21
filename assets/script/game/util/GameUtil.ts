@@ -568,7 +568,7 @@ export default class GameUtil {
     ];
 
     static get isInGameplay() {
-        return GameCache.Instance.CurrentRoomID != 0;
+        return GameCache.Instance._currentRoomID != 0;
     }
 
     //扑克映射表 服务端 : 客户端
