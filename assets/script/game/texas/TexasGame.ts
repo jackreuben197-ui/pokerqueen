@@ -3886,6 +3886,8 @@ export default class TexasGame {
             PublicCardInfo.cardId = -1;
             PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
             PublicCardInfo.imageSelect.node.active = false;
+            // 重置摊牌阶段的高亮偏移/放大（_hlRaised 标记 + 还原 y/scale）
+            TexasGameUtils.ResetCardHighlight(PublicCardInfo.imageCard.node);
             PublicCardInfo.trans.active = false;
         }
     }
@@ -3902,6 +3904,8 @@ export default class TexasGame {
             PublicCardInfo.cardId = -1;
             PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
             PublicCardInfo.imageSelect.node.active = false;
+            // 重置摊牌阶段的高亮偏移/放大（_hlRaised 标记 + 还原 y/scale）
+            TexasGameUtils.ResetCardHighlight(PublicCardInfo.imageCard.node);
             PublicCardInfo.trans.active = false;
         }
     }

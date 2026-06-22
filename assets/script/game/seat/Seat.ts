@@ -18,6 +18,7 @@ import { SeatFSM } from '../SeatFSM';
 import { SeatEmpty, SeatKeep, SeatSit, SeatWaitOther, SeatWaitStart } from '../SeatStateHandler';
 import SeatUIRC, { CardUIInfo } from '../SeatUIRC';
 import GameUtil, { RoomType, seat_info, some_pos } from '../util/GameUtil';
+import TexasGameUtils from '../util/TexasGameUtils';
 
 /// </summary>
 export enum VoiceprintState {
@@ -1351,6 +1352,16 @@ export default class Seat {
                                 cc.v3(this.listCardUIInfos[i].imageCard.position.x, this.listCardUIInfos[i].imageCard.position.y)
                             ); //+40奥马哈两个手牌上移
                             this.listCardUIInfos[i].imageSelect.node.active = false;
+                            // 高亮的私牌上移30放大1.05（同公牌处理）
+                            const cardNode = this.listCardUIInfos[i].imageCard as any;
+                            if (!cardNode._hlRaised) {
+                                cardNode._hlRaised = true;
+                                cardNode._hlOrigY = this.listCardUIInfos[i].imageCard.y;
+                                cardNode._hlOrigScale = this.listCardUIInfos[i].imageCard.scaleX;
+                                cc.tween(this.listCardUIInfos[i].imageCard)
+                                    .to(0.2, { y: this.listCardUIInfos[i].imageCard.y + 30, scale: 1.05 }, { easing: 'sineOut' })
+                                    .start();
+                            }
                         } else {
                             this.listCardUIInfos[i].imageSelect.node.active = true;
                         }
@@ -1362,8 +1373,60 @@ export default class Seat {
             this.uirc.imageCardType.node.active = false;
             this.uirc.textSmallCardType.string = CardTypeUtil.GetCardTypeName(type);
             for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+                // 摊牌阶段（isGameend=true）：默认灰化非参与组合的牌
+                if (isGameend && this.listSmallCardUIInfos[i].imageCard) {
+                    this.listSmallCardUIInfos[i].imageCard.color = cc.Color.GRAY;
+                }
                 this.listSmallCardUIInfos[i].imageSelect.node.active = false;
             }
+            // 摊牌阶段：把参与最大牌型的私牌还原白色（赢家高亮）
+            if (isGameend && hightCards && hightCards.length > 0) {
+                for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+                    for (let j = 0, m = hightCards.length; j < m; j++) {
+                        if (this.Player.cards[i] == hightCards[j]) {
+                            if (this.listSmallCardUIInfos[i].imageCard) {
+                                this.listSmallCardUIInfos[i].imageCard.color = cc.Color.WHITE;
+                                // 高亮的私牌上移30放大1.05（同公牌处理）
+                                const cardNode = this.listSmallCardUIInfos[i].imageCard as any;
+                                if (!cardNode._hlRaised) {
+                                    cardNode._hlRaised = true;
+                                    cardNode._hlOrigY = this.listSmallCardUIInfos[i].imageCard.y;
+                                    cardNode._hlOrigScale = this.listSmallCardUIInfos[i].imageCard.scaleX;
+                                    cc.tween(this.listSmallCardUIInfos[i].imageCard)
+                                        .to(0.2, { y: this.listSmallCardUIInfos[i].imageCard.y + 30, scale: 1.05 }, { easing: 'sineOut' })
+                                        .start();
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 输家私牌灰化：摊牌后对所有摊开的私牌（大牌和小牌）全部置灰，不显示牌型名。
+    /// 参考 Unity TexasGameMessageHandler.cs:3225 Color.gray 的视觉处理。
+    /// </summary>
+    public GrayAllCards(): void {
+        if (null == this.Player || null == this.Player.cards) return;
+        // 隐藏牌型名节点
+        this.uirc.imageCardType.node.active = false;
+        if (this.uirc.imageSmallCardType?.node) this.uirc.imageSmallCardType.node.active = false;
+        // 主玩家大牌（自己看自己的）
+        for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
+            const info = this.listCardUIInfos[i];
+            if (!info) continue;
+            if (info.imageCard) info.imageCard.color = cc.Color.GRAY;
+            if (info.imageSelect?.node) info.imageSelect.node.active = false;
+        }
+        // 看别人的小牌（每个座位都有）
+        for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+            const info = this.listSmallCardUIInfos[i];
+            if (!info) continue;
+            if (info.imageCard) info.imageCard.color = cc.Color.GRAY;
+            if (info.imageSelect?.node) info.imageSelect.node.active = false;
         }
     }
 
@@ -1375,6 +1438,9 @@ export default class Seat {
         for (let i = 0, n = this.Player.cards.length; i < n; i++) {
             this.listSmallCardUIInfos[i].imageCard.color = cc.Color.WHITE;
             this.listCardUIInfos[i].imageSelect.node.active = false;
+            // 重置摊牌阶段的高亮偏移/放大（_hlRaised 标记 + 还原 y/scale）
+            TexasGameUtils.ResetCardHighlight(this.listSmallCardUIInfos[i].imageCard);
+            TexasGameUtils.ResetCardHighlight(this.listCardUIInfos[i].imageCard);
         }
         this.uirc.imageSmallCardType.node.active = false;
         this.uirc.imageCardType.node.active = false;

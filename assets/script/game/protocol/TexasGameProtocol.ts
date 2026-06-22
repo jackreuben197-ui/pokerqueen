@@ -1151,7 +1151,7 @@ export default class TexasGameProtocol {
                 mSeat.UpdateImageBackActive();
             }
         }
-        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listCards, this.game.GetPublicCards(1));
+        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listCards, true);
         //第一套牌
         this.game.SetSecondPublicCardImageColor(cc.Color.GRAY);
         this.HandleTwoWinnerAnimation(true);
@@ -1159,7 +1159,7 @@ export default class TexasGameProtocol {
         //等待3秒，处理第二套牌动画
         this.game.SetSecondPublicCardImageColor(cc.Color.WHITE);
         this.game.SetPublicCardsImageColor(cc.Color.GRAY);
-        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listSecondCards, this.game.GetPublicCards(2));
+        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listSecondCards, false);
         this.HandleTwoWinnerAnimation(false);
     }
 
@@ -1173,7 +1173,6 @@ export default class TexasGameProtocol {
         let tween = Sequence.tween;
         let SeatId = 0;
         let Seat: Seat = null;
-        let mainSeatHightCards: number[] = [];
         for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
             let Result = this.game.MessageWinnerData.resultsList[i];
             SeatId = this.game.GetLocalSeatID(Result.seatId);
@@ -1222,30 +1221,34 @@ export default class TexasGameProtocol {
                     })
                 );
             }
-            if (SeatId == this.game.mainPlayer.seatID) {
-                if (isFirst) {
-                    Result.winCardsList.forEach(winCard => {
-                        mainSeatHightCards.push(winCard.card);
+            // 双套玩法按 SplitResults[0/1].isWinner 判定每套赢家（参考 Unity TexasGameUtils.cs:342）
+            // 直接用 winCardsList/winCards2List 私牌部分作为高亮列表，不依赖客户端 CardTypeUtil 评估
+            // （客户端评估会因卡 ID 匹配问题导致赢家私牌全灰，详见 HandleMessageWinnerData 同款修复）
+            if (Result.myCardsList && Result.myCardsList.length > 0) {
+                const isWin = isFirst ? isWin1 : isWin2;
+                if (isWin) {
+                    const winCards = isFirst ? Result.winCardsList : Result.winCards2List;
+                    const winnerHighlight = winCards.filter(v => !v.isPublic).map(v => v.card);
+                    const usedFallback = winnerHighlight.length === 0;
+                    // 诊断 log（待老板确认 fallback 根因后删除）
+                    console.log('[WinnerHL][winner2]', Result.seatId, {
+                        isFirst,
+                        winCardsList: winCards.map(v => ({ card: v.card, pub: v.isPublic })),
+                        winnerHighlight,
+                        usedFallback,
+                        myCardsList: [...(Result.myCardsList || [])]
                     });
+                    const finalHighlight = usedFallback ? (Result.myCardsList || []).filter(c => c > 0) : winnerHighlight;
+                    const handType = isFirst ? Result.handValueType : Result.handValueType2;
+                    Seat.UpdateCardType(handType, finalHighlight, true);
                 } else {
-                    Result.winCards2List.forEach(winCard => {
-                        mainSeatHightCards.push(winCard.card);
-                    });
+                    Seat.GrayAllCards();
                 }
             }
             Seat.Player.chips = isFirst ? Result.chip + Result.fee - Result.splitResultsList[1].win - fee1 : Result.chip;
             Seat.UpdateCoin();
         }
         tween.start();
-        let mainSeat: Seat = null;
-        mainSeat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
-        if (mainSeat != null) {
-            let cacheCards: number[] = isFirst ? this.game.GetPublicCards(1) : this.game.GetPublicCards(2);
-            let highlightCards_ref = { highlightCards: [] as number[] };
-            let cardType: CardType = this.game.GetCardType(highlightCards_ref, cacheCards);
-            //let highlightCards = highlightCards_ref.highlightCards;
-            mainSeat.UpdateCardType(cardType, mainSeatHightCards, true);
-        }
     }
 
     /// <summary>
@@ -1300,22 +1303,62 @@ export default class TexasGameProtocol {
         let mCount = this.game.GetPublicCardsCount(1);
         let mCanPlayEndPublicCardsAnimation = mCount == 5 && !mOtherAllFold;
         if (mCanPlayEndPublicCardsAnimation) {
-            let highlightCards_ref = { highlightCards: [] as number[] };
-            let cardType: CardType = this.game.GetCardType(highlightCards_ref, this.game.GetPublicCards(1));
-            let highlightCards = highlightCards_ref.highlightCards;
+            // 数据驱动：直接用服务器下发的 winCardsList 决定高亮集合（参考 Unity Winner.ts:25-37）
+            // 赢家判定：win - handBet > 0（净赢）
+            const pubHighlight = new Set<number>();
+            for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+                const r = this.game.MessageWinnerData.resultsList[i];
+                if (r.standUp) continue;
+                if (r.win - r.handBet <= 0) continue;
+                r.winCardsList.forEach(v => { if (v.isPublic) pubHighlight.add(v.card); });
+            }
+            // 公牌：高亮的保持白色 + imageSelect 选框 + 上移30放大1.05；非高亮的灰化
             for (let i = 0, n = this.game.uirc.listCards.length; i < n; i++) {
-                this.game.uirc.listCards[i].imageSelect.node.active = false;
-                for (let j = 0, m = highlightCards.length; j < m; j++) {
-                    if (this.game.uirc.listCards[i].cardId == highlightCards[j]) {
-                        this.game.uirc.listCards[i].imageSelect.node.active = true;
-                        break;
+                const pub = this.game.uirc.listCards[i];
+                const inHl = pubHighlight.has(pub.cardId);
+                pub.imageSelect.node.active = inHl;
+                if (pub.imageCard) {
+                    pub.imageCard.node.color = inHl ? cc.Color.WHITE : cc.Color.GRAY;
+                    if (inHl) {
+                        const cardNode = pub.imageCard.node as any;
+                        if (!cardNode._hlRaised) {
+                            cardNode._hlRaised = true;
+                            cardNode._hlOrigY = pub.imageCard.node.y;
+                            cardNode._hlOrigScale = pub.imageCard.node.scaleX;
+                            cc.tween(pub.imageCard.node)
+                                .to(0.2, { y: pub.imageCard.node.y + 30, scale: 1.05 }, { easing: 'sineOut' })
+                                .start();
+                        }
                     }
                 }
             }
-            let mSeatmy: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
-            if (null != mSeatmy) {
-                if (this.game.mainPlayer.cards.length > 3) {
-                    mSeatmy.UpdateCardType(cardType, highlightCards, true);
+            // 私牌：赢家直接用 winCardsList 私牌部分（isPublic=false）作为高亮列表，
+            // 不再用 CardTypeUtil.GetCardType 客户端重新评估 —— 之前那样做会导致 highlightCards
+            // 与 Player.cards 的卡 ID 匹配失败，赢家私牌反而全灰。
+            for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+                const r = this.game.MessageWinnerData.resultsList[i];
+                if (r.standUp) continue;
+                const seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(r.seatId));
+                if (!seat || !seat.Player) continue;
+                // muck 或未摊牌的玩家私牌未公开，跳过高亮/灰化
+                if (!r.myCardsList || r.myCardsList.length == 0) continue;
+                if (r.win - r.handBet > 0) {
+                    // 赢家：用 winCardsList 私牌部分（isPublic=false）作为高亮列表；
+                    // 防御 fallback：服务器未标 isPublic=false 时降级到全部 myCardsList 高亮
+                    const winnerHighlight = r.winCardsList.filter(v => !v.isPublic).map(v => v.card);
+                    const usedFallback = winnerHighlight.length === 0;
+                    // 诊断 log（待老板确认 fallback 根因后删除）
+                    console.log('[WinnerHL][winner]', r.seatId, {
+                        winCardsList: r.winCardsList.map(v => ({ card: v.card, pub: v.isPublic })),
+                        winnerHighlight,
+                        usedFallback,
+                        myCardsList: [...(r.myCardsList || [])]
+                    });
+                    const finalHighlight = usedFallback ? (r.myCardsList || []).filter(c => c > 0) : winnerHighlight;
+                    seat.UpdateCardType(r.handValueType, finalHighlight, true);
+                } else {
+                    // 输家：全部灰化，不显示牌型名
+                    seat.GrayAllCards();
                 }
             }
         }
@@ -1407,39 +1450,13 @@ export default class TexasGameProtocol {
             }
         }
         tween.start();
-        let mCacheWinnerSeatIds: number[] = null; // 赢家座位
-        let mCacheWinnerCardTypes: number[] = null; // 赢家牌型
-        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
-            let result = this.game.MessageWinnerData.resultsList[i];
-            // 找到赢家
-            if (result.win > 0) {
-                if (null == mCacheWinnerSeatIds) mCacheWinnerSeatIds = [];
-                mCacheWinnerSeatIds.push(this.game.GetLocalSeatID(result.seatId));
-                if (null == mCacheWinnerCardTypes) mCacheWinnerCardTypes = [];
-                mCacheWinnerCardTypes.push(result.handValueType);
-            }
-        }
-        let mTmpCardSorts = [];
-        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
-            let mTmpCards = [];
-            for (let j = 0, m = this.game.MessageWinnerData.resultsList[i].winCardsList.length; j < m; j++) {
-                mTmpCards.push(this.game.MessageWinnerData.resultsList[i].winCardsList[j].card);
-            }
-            mTmpCardSorts.push(mTmpCards);
-        }
-        let mHaveCardSort = true;
-        if (mHaveCardSort && null != mCacheWinnerSeatIds && mCacheWinnerSeatIds.length != 0) {
-            for (let i = 0; i < mCacheWinnerSeatIds.length; i++) {
-                mSeatId = mCacheWinnerSeatIds[i];
-                mSeat = this.game.GetSeatByLocalSeatID(mSeatId);
-                if (null == mSeat || null == mSeat.Player) continue;
-                if (mTmpCardSorts.length > i) {
-                    if (mSeat.Player.userID != GameCache.Instance.CurGame.mainPlayer.userID) {
-                        mSeat.UpdateCardType(mSeat.Player.cardType, mTmpCardSorts[i], true);
-                    }
-                }
-            }
-        }
+        // 已删除：原此处有一段给"5张牌排序动画"做准备的废代码块，其动画调用全部被注释掉，
+        // 只剩一个错误的 mSeat.UpdateCardType(mSeat.Player.cardType, mTmpCardSorts[i], true) 副作用调用。
+        // 该代码块用 mCacheWinnerSeatIds（仅含赢家）的循环索引 i 去取 mTmpCardSorts（含所有玩家）的项，
+        // 导致索引错位 —— 赢家 seat 被传入前面某个输家的 winCardsList（甚至空数组）作为 hightCards，
+        // 覆盖了前面 1340 行 UpdateCardType 调用已经正确高亮的私牌（参考 Player.cards[i] == hightCards[j] 匹配），
+        // 表现为：赢家私牌先被设白色又被这次错误调用全部灰化。
+        // 第一次 UpdateCardType 调用（行 1340 附近）数据正确，能覆盖赢家高亮需求，所以直接删除此块即可。
         if (mCanPlayEndPublicCardsAnimation) {
             this.game.PlayEndPublicCardsAnimation(this.game.MessageWinnerData);
         }
