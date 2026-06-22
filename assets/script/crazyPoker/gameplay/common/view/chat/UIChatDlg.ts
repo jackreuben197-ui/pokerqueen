@@ -158,9 +158,11 @@ export default class UIChatDlg extends UIBasePlus {
         if (this._editBox) {
             this._editBox.string = '';
         }
-        // 设置对话框标题为当前房间名
+        // 设置对话框标题：房间名 + 换行 + 房间ID
         if (this._dlgTitleLabel) {
-            this._dlgTitleLabel.string = GameCache.Instance.roomName || '';
+            const roomName = GameCache.Instance.roomName || '';
+            const roomId = GameCache.Instance.room_id;
+            this._dlgTitleLabel.string = `${roomName}\n#${roomId}`;
         }
         // 只监听 1019（自己发送成功确认），1121 由 ChatManager 统一处理
         GC.notify.register(ProtocolCode.Protocol_Holdem_BroadcastMsg, this._onSendChatResponse, this);
