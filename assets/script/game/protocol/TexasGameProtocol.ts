@@ -930,9 +930,26 @@ export default class TexasGameProtocol {
                 return;
             }
             mSeat.UpdateCards(rec.isAll);
+            // AllIn 摊牌（rec.isAll=true，所有玩家都能看到牌）：放大其他玩家头像上方的小牌到 1.2 倍，
+            // 等距水平展开，0.3s 动画。标记 _isSpread 后，比牌阶段 SpreadShowdownCards 会跳过避免重复展开。
+            // 主玩家大牌不处理（屏幕底部）。新一局 ResetCardsUI 自动清除标记 + 还原 scale=1。
+            if (rec.isAll) {
+                mSeat.SpreadAllInCards();
+            }
             //allin后显示自己头像
             if (this.game.mainPlayer.seatID == mSeat.seatID) {
                 mSeat.SetOperationHeadActive(true);
+            }
+        }
+        // 主玩家自己 allin 摊牌场景的兜底：遍历所有 seat 调用 SpreadAllInCards（_isSpread 防重复）。
+        // 注意：主玩家自己点 AllIn 的放大在 HANDLER_REQ_GAME_RECV_ACTION 的 case ALLIN 里触发，
+        // 不依赖 Showcards 协议（很多 AllIn 场景服务器不会下发 Showcards）。
+        if (rec.isAll) {
+            for (let i = 0, n = this.game.listSeat.length; i < n; i++) {
+                const seat = this.game.listSeat[i];
+                if (seat && seat.Player) {
+                    seat.SpreadAllInCards();
+                }
             }
         }
     }
@@ -1031,6 +1048,13 @@ export default class TexasGameProtocol {
                 case Def.Action.ALLIN:
                     Seat.Player.isOffLine = 0;
                     Seat.FsmLogicComponent.SM.ChangeState(SeatAllin.Instance);
+                    // 主玩家自己 ALLIN：立即放大大牌 + 等距水平展开（不等摊牌）。
+                    // 用 _isSpread 防重复，比牌阶段 SpreadShowdownCards 会自动跳过。
+                    // 注意：服务器不下发主玩家自己的牌给客户端（已知），HANDLER_REQ_GAME_PLAYER_CARDS 的循环里
+                    // 不含主玩家，所以主玩家大牌的放大必须在这里触发。
+                    if (Seat.IsMySeat) {
+                        Seat.SpreadAllInCards();
+                    }
                     break;
                 case Def.Action.CHECK:
                     // 其他玩家托管状态，发一牌就check
@@ -1230,14 +1254,6 @@ export default class TexasGameProtocol {
                     const winCards = isFirst ? Result.winCardsList : Result.winCards2List;
                     const winnerHighlight = winCards.filter(v => !v.isPublic).map(v => v.card);
                     const usedFallback = winnerHighlight.length === 0;
-                    // 诊断 log（待老板确认 fallback 根因后删除）
-                    console.log('[WinnerHL][winner2]', Result.seatId, {
-                        isFirst,
-                        winCardsList: winCards.map(v => ({ card: v.card, pub: v.isPublic })),
-                        winnerHighlight,
-                        usedFallback,
-                        myCardsList: [...(Result.myCardsList || [])]
-                    });
                     const finalHighlight = usedFallback ? (Result.myCardsList || []).filter(c => c > 0) : winnerHighlight;
                     const handType = isFirst ? Result.handValueType : Result.handValueType2;
                     Seat.UpdateCardType(handType, finalHighlight, true);
@@ -1299,6 +1315,9 @@ export default class TexasGameProtocol {
             } else {
                 mSeat.UpdateCards();
             }
+            // 摊牌阶段：放大其他玩家头像上方的小牌到 1.2 倍，等距水平展开避免重叠
+            // （主玩家大牌在屏幕底部，不在此处理；详见 Seat.SpreadShowdownCards）
+            mSeat.SpreadShowdownCards();
         }
         let mCount = this.game.GetPublicCardsCount(1);
         let mCanPlayEndPublicCardsAnimation = mCount == 5 && !mOtherAllFold;
@@ -1347,13 +1366,6 @@ export default class TexasGameProtocol {
                     // 防御 fallback：服务器未标 isPublic=false 时降级到全部 myCardsList 高亮
                     const winnerHighlight = r.winCardsList.filter(v => !v.isPublic).map(v => v.card);
                     const usedFallback = winnerHighlight.length === 0;
-                    // 诊断 log（待老板确认 fallback 根因后删除）
-                    console.log('[WinnerHL][winner]', r.seatId, {
-                        winCardsList: r.winCardsList.map(v => ({ card: v.card, pub: v.isPublic })),
-                        winnerHighlight,
-                        usedFallback,
-                        myCardsList: [...(r.myCardsList || [])]
-                    });
                     const finalHighlight = usedFallback ? (r.myCardsList || []).filter(c => c > 0) : winnerHighlight;
                     seat.UpdateCardType(r.handValueType, finalHighlight, true);
                 } else {
