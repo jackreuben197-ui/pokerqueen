@@ -30942,7 +30942,7 @@
         "__id__": 847
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 850
@@ -31102,9 +31102,7 @@
     "root": {
       "__id__": 843
     },
-    "asset": {
-      "__uuid__": "de12f4e8-0959-490d-8b4b-c10ed9049951"
-    },
+    "asset": null,
     "fileId": "07tIbAVgxJYJXIGGEIyzi9",
     "sync": false
   },
@@ -31210,9 +31208,7 @@
     "root": {
       "__id__": 843
     },
-    "asset": {
-      "__uuid__": "de12f4e8-0959-490d-8b4b-c10ed9049951"
-    },
+    "asset": null,
     "fileId": "a5r7CWnjBHY6rtRpp5NgMd",
     "sync": false
   },
@@ -31268,9 +31264,7 @@
     "root": {
       "__id__": 843
     },
-    "asset": {
-      "__uuid__": "de12f4e8-0959-490d-8b4b-c10ed9049951"
-    },
+    "asset": null,
     "fileId": "4dpc8v6WVNLb/hq2KbImVn",
     "sync": false
   },
