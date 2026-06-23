@@ -1,62 +1,153 @@
 
 skeleton.png
-size: 2116,964
+size: 3762,754
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-images/Shinchan-b 1
-  rotate: true
-  xy: 2, 519
-  size: 443, 540
-  orig: 726, 873
-  offset: 141, 169
+images/shinchan doubt 1
+  rotate: false
+  xy: 2, 2
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
   index: -1
-images/Shinchan-b 2
-  rotate: true
-  xy: 1589, 2
-  size: 495, 508
-  orig: 726, 873
-  offset: 128, 169
+images/shinchan doubt 10
+  rotate: false
+  xy: 1506, 2
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
   index: -1
-images/Shinchan-b 3
-  rotate: true
-  xy: 1086, 499
-  size: 463, 514
-  orig: 726, 873
-  offset: 169, 168
+images/shinchan doubt 11
+  rotate: false
+  xy: 1882, 378
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
   index: -1
-images/Shinchan-b 4
-  rotate: true
-  xy: 540, 48
-  size: 469, 534
-  orig: 726, 873
-  offset: 134, 170
+images/shinchan doubt 12
+  rotate: false
+  xy: 1882, 2
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
   index: -1
-images/Shinchan-b 5
-  rotate: true
-  xy: 544, 519
-  size: 443, 540
-  orig: 726, 873
-  offset: 141, 150
+images/shinchan doubt 13
+  rotate: false
+  xy: 2258, 378
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
   index: -1
-images/Shinchan-b 6
-  rotate: true
-  xy: 1076, 3
-  size: 494, 511
-  orig: 726, 873
-  offset: 101, 150
+images/shinchan doubt 14
+  rotate: false
+  xy: 2258, 2
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
   index: -1
-images/Shinchan-b 7
-  rotate: true
-  xy: 1602, 499
-  size: 463, 512
-  orig: 726, 873
-  offset: 95, 151
+images/shinchan doubt 15
+  rotate: false
+  xy: 2634, 378
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
   index: -1
-images/Shinchan-b 8
-  rotate: true
-  xy: 2, 48
-  size: 469, 536
-  orig: 726, 873
-  offset: 125, 148
+images/shinchan doubt 16
+  rotate: false
+  xy: 2634, 2
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 17
+  rotate: false
+  xy: 3010, 378
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 18
+  rotate: false
+  xy: 3010, 2
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 19
+  rotate: false
+  xy: 3386, 378
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 2
+  rotate: false
+  xy: 378, 378
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 20
+  rotate: false
+  xy: 3386, 2
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 21
+  rotate: false
+  xy: 3386, 2
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 3
+  rotate: false
+  xy: 378, 2
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 4
+  rotate: false
+  xy: 754, 378
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 5
+  rotate: false
+  xy: 754, 2
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 6
+  rotate: false
+  xy: 1130, 378
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 7
+  rotate: false
+  xy: 1130, 2
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 8
+  rotate: false
+  xy: 1506, 378
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
+  index: -1
+images/shinchan doubt 9
+  rotate: false
+  xy: 2, 378
+  size: 374, 374
+  orig: 375, 375
+  offset: 0, 1
   index: -1

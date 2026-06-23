@@ -1,34 +1,34 @@
 
 skeleton.png
-size: 1556,438
+size: 1728,474
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-images/smile-star-1
+images/emoj-smile-1
   rotate: false
-  xy: 2, 8
-  size: 407, 428
-  orig: 463, 510
-  offset: 27, 28
+  xy: 616, 4
+  size: 594, 468
+  orig: 800, 689
+  offset: 126, 94
   index: -1
-images/smile-star-2
+images/emoj-smile-3
   rotate: false
-  xy: 1182, 3
-  size: 372, 433
-  orig: 463, 510
-  offset: 67, 25
+  xy: 1212, 2
+  size: 514, 470
+  orig: 800, 689
+  offset: 107, 94
   index: -1
-images/smile-star-3
+images/emoj-smile-4
   rotate: false
-  xy: 808, 2
-  size: 372, 434
-  orig: 463, 510
-  offset: 61, 24
+  xy: 2, 4
+  size: 612, 468
+  orig: 800, 689
+  offset: 127, 95
   index: -1
-images/smile-star-4
+images/emoj-smile-2
   rotate: false
-  xy: 411, 2
-  size: 395, 434
-  orig: 463, 510
-  offset: 68, 28
+  xy: 2, 4
+  size: 612, 468
+  orig: 800, 689
+  offset: 127, 95
   index: -1

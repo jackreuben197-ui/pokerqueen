@@ -4,7 +4,7 @@ size: 304,304
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-r47
+1.amazing
   rotate: false
   xy: 2, 2
   size: 300, 300

@@ -1,83 +1,34 @@
 
 skeleton.png
-size: 3343,1936
+size: 1075,1415
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-images/boy-dance 1
-  rotate: true
-  xy: 653, 655
-  size: 644, 895
-  orig: 796, 1092
-  offset: 76, 99
-  index: -1
-images/boy-dance 10
+images/mush-blsh 1
   rotate: false
-  xy: 2, 115
-  size: 636, 914
-  orig: 796, 1092
-  offset: 78, 100
+  xy: 524, 29
+  size: 549, 691
+  orig: 944, 986
+  offset: 198, 147
   index: -1
-images/boy-dance 11
-  rotate: true
-  xy: 640, 12
-  size: 641, 895
-  orig: 796, 1092
-  offset: 78, 101
-  index: -1
-images/boy-dance 2
+images/mush-blsh 2
   rotate: false
-  xy: 2, 1031
-  size: 649, 903
-  orig: 796, 1092
-  offset: 46, 101
+  xy: 2, 701
+  size: 514, 712
+  orig: 944, 986
+  offset: 215, 126
   index: -1
-images/boy-dance 3
-  rotate: true
-  xy: 1564, 661
-  size: 644, 883
-  orig: 796, 1092
-  offset: 4, 105
+images/mush-blsh 3
+  rotate: false
+  xy: 2, 2
+  size: 520, 697
+  orig: 944, 986
+  offset: 212, 140
   index: -1
-images/boy-dance 4
-  rotate: true
-  xy: 1564, 1307
-  size: 627, 910
-  orig: 796, 1092
-  offset: 0, 100
-  index: -1
-images/boy-dance 5
-  rotate: true
-  xy: 1550, 17
-  size: 642, 880
-  orig: 796, 1092
-  offset: 0, 98
-  index: -1
-images/boy-dance 6
-  rotate: true
-  xy: 653, 1301
-  size: 633, 909
-  orig: 796, 1092
-  offset: 0, 99
-  index: -1
-images/boy-dance 7
-  rotate: true
-  xy: 2449, 651
-  size: 641, 883
-  orig: 796, 1092
-  offset: 77, 101
-  index: -1
-images/boy-dance 8
-  rotate: true
-  xy: 2432, 2
-  size: 647, 862
-  orig: 796, 1092
-  offset: 60, 102
-  index: -1
-images/boy-dance 9
-  rotate: true
-  xy: 2476, 1294
-  size: 640, 865
-  orig: 796, 1092
-  offset: 76, 100
+images/mush-blsh 4
+  rotate: false
+  xy: 518, 722
+  size: 555, 691
+  orig: 944, 986
+  offset: 198, 144
   index: -1

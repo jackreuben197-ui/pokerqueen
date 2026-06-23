@@ -8,8 +8,8 @@
   "premultiplyAlpha": false,
   "genMipmaps": false,
   "packable": true,
-  "width": 1242,
-  "height": 166,
+  "width": 220,
+  "height": 150,
   "platformSettings": {},
   "subMetas": {
     "Group 4871 (1)": {
@@ -24,14 +24,14 @@
       "offsetY": 0,
       "trimX": 0,
       "trimY": 0,
-      "width": 1242,
-      "height": 166,
-      "rawWidth": 1242,
-      "rawHeight": 166,
-      "borderTop": 0,
-      "borderBottom": 0,
-      "borderLeft": 0,
-      "borderRight": 0,
+      "width": 220,
+      "height": 150,
+      "rawWidth": 220,
+      "rawHeight": 150,
+      "borderTop": 60,
+      "borderBottom": 60,
+      "borderLeft": 55,
+      "borderRight": 55,
       "subMetas": {}
     }
   }

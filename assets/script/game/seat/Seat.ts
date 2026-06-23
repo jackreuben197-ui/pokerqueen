@@ -111,7 +111,7 @@ export default class Seat {
     /** 座位整体缩放（缩小座位圈/头像/筹码等，1=原始大小，按需微调）*/
     public static readonly SEAT_SCALE = 0.82;
     /** 表情统一目标尺寸（像素，包围盒较大边缩放到此值，使所有表情高宽一致；按需微调）*/
-    private static readonly EMOJI_ANIM_TARGET_SIZE = 170;
+    private static readonly EMOJI_ANIM_TARGET_SIZE = 260;
     /** 兜底缩放（无法取包围盒时使用）*/
     private static readonly EMOJI_ANIM_SCALE = 0.6;
     /** 表情动画底部相对头顶的间隙（越大越靠上，避免遮挡头像）*/
@@ -1721,6 +1721,8 @@ export default class Seat {
         if (!this.ui || !this.ui.isValid) return;
         // 先清理旧的（挂在座位节点 this.ui 上，名为 EmojiAnim）
         this._stopEmojiAnim();
+        // 播放该表情对应的语音（目前仅蘑菇头 em26-35 有音频，其余无文件时静默）
+        this._playEmojiSound(emojiIndex);
         // 优先加载 Spine 动画版本（emoji_spine/em{idx}/skeleton），无则回退到静态图
         cc.resources.load(`emoji_spine/em${emojiIndex}/skeleton`, sp.SkeletonData, (err, skelData: sp.SkeletonData) => {
             if (!this.ui || !this.ui.isValid) return;
@@ -1729,6 +1731,24 @@ export default class Seat {
             } else {
                 this._playEmojiStatic(emojiIndex);
             }
+        });
+    }
+
+    /**
+     * 播放表情语音。音频文件放在 resources/emoji_audio/em{idx}.mp3，
+     * 目前只有蘑菇头表情（em26-35，对应 mogu1-10）有配音；其余序号无文件即静默。
+     * 受声音开关 (GC.sound.soundOn) 控制。
+     */
+    private _playEmojiSound(emojiIndex: number): void {
+        try {
+            if (GC.sound && (GC.sound as any).soundOn === false) return;
+        } catch (e) {}
+        cc.resources.load(`emoji_audio/em${emojiIndex}`, cc.AudioClip, (err, clip: cc.AudioClip) => {
+            if (err || !clip) return; // 无音频文件的表情直接静默
+            try {
+                if (GC.sound && (GC.sound as any).soundOn === false) return;
+                cc.audioEngine.playEffect(clip, false);
+            } catch (e) {}
         });
     }
 
@@ -1816,6 +1836,17 @@ export default class Seat {
                 node.scale = scale;
                 node.x = -(b.offX + b.szX / 2) * scale;                 // 水平居中
                 node.y = headCenterY - (b.offY + b.szY / 2) * scale;    // 垂直居中显示在头像上
+            } else {
+                // 量不到包围盒（部分单区域导出 setup 不绑定 → 之前按固定缩放会变巨大/移出屏幕 = “动画不显示”）。
+                // 改用骨骼导出尺寸归一化，保证可见且大小一致。
+                let dmax = 0;
+                try {
+                    const rt: any = (skelData as any).getRuntimeData ? (skelData as any).getRuntimeData() : null;
+                    if (rt) dmax = Math.max(rt.width || 0, rt.height || 0);
+                } catch (e) {}
+                node.scale = dmax > 0 ? Seat.EMOJI_ANIM_TARGET_SIZE / dmax : Seat.EMOJI_ANIM_SCALE;
+                node.x = 0;
+                node.y = headCenterY;
             }
             node.opacity = 255;
         }, 0);

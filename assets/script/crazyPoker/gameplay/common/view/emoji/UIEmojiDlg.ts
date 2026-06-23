@@ -26,10 +26,10 @@ export default class UIEmojiDlg extends UIBasePlus {
     private curCategory: number = 0;
     /** 标签栏 Y 坐标（面板底部，可在此微调位置；越大越靠上）*/
     private static readonly TAB_Y = -255;
-    /** 标签图标尺寸 */
-    private static readonly TAB_ICON_SIZE = 72;
+    /** 标签图标尺寸（放大，使底部分类标签更清晰可见）*/
+    private static readonly TAB_ICON_SIZE = 96;
     /** 选中标签下划线（红色）相对图标的 Y 偏移 */
-    private static readonly TAB_UNDERLINE_Y = -46;
+    private static readonly TAB_UNDERLINE_Y = -60;
     /** 网格底部留白，给底部标签栏让位（可微调）*/
     private static readonly GRID_PADDING_BOTTOM = 180;
     /** 每个表情消耗的钻石数（底部显示的数值）*/
@@ -42,10 +42,12 @@ export default class UIEmojiDlg extends UIBasePlus {
      */
     private static readonly CATEGORIES: { name: string; icon: string; indices: number[] }[] = [
         // 每个标签 1 个底部图标 + 10 个表情。
-        // 标签顺序按 Figma：Teddy → Dancing boy → Shinchan → Frog → Dog
-        { name: 'Teddy', icon: 'emtab1', indices: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25] },
-        { name: 'Dancing boy', icon: 'emtab2', indices: [26, 27, 28, 29, 30, 31, 32, 33, 34, 35] },
+        // 标签顺序：MushroomHead → Shinchan → Teddy(panda) → Frog → Dog
+        // 图标/底部标签固定: em16-25=熊猫(Teddy/emtab1), em26-35=蘑菇头(emtab2), em36-45=蜡笔小新(emtab3),
+        //   em46-55=青蛙(emtab4), em56-65=狗(emtab5)。动画已对齐同序号图标。
+        { name: 'MushroomHead', icon: 'emtab2', indices: [26, 27, 28, 29, 30, 31, 32, 33, 34, 35] },
         { name: 'Shinchan', icon: 'emtab3', indices: [36, 37, 38, 39, 40, 41, 42, 43, 44, 45] },
+        { name: 'Teddy', icon: 'emtab1', indices: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25] },
         { name: 'Frog', icon: 'emtab4', indices: [46, 47, 48, 49, 50, 51, 52, 53, 54, 55] },
         { name: 'Dog', icon: 'emtab5', indices: [56, 57, 58, 59, 60, 61, 62, 63, 64, 65] }
     ];
@@ -134,14 +136,14 @@ export default class UIEmojiDlg extends UIBasePlus {
         // 选中标签下划线：使用 Figma 红色下划线贴图 emoji/emunderline（节点 93-58878）
         const underline = new cc.Node('underline');
         underline.setParent(bar);
-        underline.setContentSize(56, 5);
+        underline.setContentSize(74, 6);
         underline.y = UIEmojiDlg.TAB_UNDERLINE_Y;
         const usp = underline.addComponent(cc.Sprite);
         usp.sizeMode = cc.Sprite.SizeMode.CUSTOM;
         cc.resources.load('emoji/emunderline', cc.SpriteFrame, (err, sf: cc.SpriteFrame) => {
             if (!err && sf && cc.isValid(underline)) {
                 usp.spriteFrame = sf;
-                underline.setContentSize(56, 5);
+                underline.setContentSize(74, 6);
             }
         });
         this.tabUnderline = underline;
@@ -156,8 +158,9 @@ export default class UIEmojiDlg extends UIBasePlus {
             const idx = parseInt(tab.name.replace('tab', ''));
             if (isNaN(idx)) return;
             const selected = idx === index;
-            tab.scale = selected ? 1.15 : 0.9;
-            tab.opacity = selected ? 255 : 140;
+            // 选中放大更明显，未选中也保持清晰可见（不再大幅变暗/缩小）
+            tab.scale = selected ? 1.3 : 1.05;
+            tab.opacity = selected ? 255 : 210;
             if (selected && this.tabUnderline) this.tabUnderline.x = tab.x;
         });
         this.scrollContent.removeAllChildren();

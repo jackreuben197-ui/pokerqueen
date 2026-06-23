@@ -4,7 +4,7 @@ size: 304,304
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-r50
+rgn0
   rotate: false
   xy: 2, 2
   size: 300, 300

@@ -4,168 +4,168 @@ size: 1814,1210
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-images/伸手不打笑脸狗 1
+rgn0
   rotate: false
   xy: 2, 606
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 10
+rgn1
   rotate: false
   xy: 908, 908
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 11
+rgn2
   rotate: false
   xy: 304, 2
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 12
+rgn3
   rotate: false
   xy: 606, 304
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 13
+rgn4
   rotate: false
   xy: 908, 606
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 14
+rgn5
   rotate: false
   xy: 1210, 908
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 15
+rgn6
   rotate: false
   xy: 606, 2
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 16
+rgn7
   rotate: false
   xy: 908, 304
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 17
+rgn8
   rotate: false
   xy: 1210, 606
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 18
+rgn9
   rotate: false
   xy: 1512, 908
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 19
+rgn10
   rotate: false
   xy: 908, 2
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 2
+rgn11
   rotate: false
   xy: 304, 908
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 20
+rgn12
   rotate: false
   xy: 1210, 304
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 21
+rgn13
   rotate: false
   xy: 1512, 606
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 22
+rgn14
   rotate: false
   xy: 1210, 2
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 23
+rgn15
   rotate: false
   xy: 1512, 304
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 24
+rgn16
   rotate: false
   xy: 1512, 2
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 3
+rgn17
   rotate: false
   xy: 2, 304
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 4
+rgn18
   rotate: false
   xy: 304, 606
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 5
+rgn19
   rotate: false
   xy: 606, 908
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 6
+rgn20
   rotate: false
   xy: 2, 2
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 7
+rgn21
   rotate: false
   xy: 304, 304
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 8
+rgn22
   rotate: false
   xy: 606, 606
   size: 300, 300
   orig: 300, 300
   offset: 0, 0
   index: -1
-images/伸手不打笑脸狗 9
+rgn23
   rotate: false
   xy: 2, 908
   size: 300, 300
