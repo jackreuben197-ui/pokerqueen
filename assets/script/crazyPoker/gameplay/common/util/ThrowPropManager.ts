@@ -50,7 +50,8 @@ export default class ThrowPropManager {
         // 5: 摸头(605)→新hand pat — 模式B
         { pattern: 'B', spines: ['spine/Expression_Touch/touch'], anims: ['hand_patting'] },
         // 6: 鲨鱼 (606) — 模式C（新鱼主题鲨鱼：阴影/上升/牙齿三层动画叠加在目标处播放=完整鲨鱼）
-        { pattern: 'C', spines: ['spine/Expression_Shark/shark'], anims: ['shark_rising', 'shark_shadow', 'babyshark_tooth'] },
+        // 2026-06-23 更新到 TABLE EMOJI 最新鲨鱼导出：动画 babyshark_tooth 改名为 babyshark
+        { pattern: 'C', spines: ['spine/Expression_Shark/shark'], anims: ['shark_rising', 'shark_shadow', 'babyshark'] },
         // 7: 抓鸡(607)→新hen — 模式C (伸手飞行 hand_flying + 目标处母鸡挣扎 hen_struggling)
         { pattern: 'C', spines: ['spine/Expression_Chicken/chicken_spine'], anims: ['hand_flying', 'hen_struggling'] },
         // 8: 拳击(608)→新gun — 单骨骼，改模式A
@@ -215,12 +216,32 @@ export default class ThrowPropManager {
             .start();
     }
 
-    /** 判断当前玩家角色 */
-    private getRole(senderId: number, targetId: number): 'sender' | 'receiver' | 'bystander' {
+    /**
+     * 判断当前玩家角色。
+     * 用「座位号 seatID」判定本地玩家，而不是用 gc.nUserId 比对广播里的 user_id。
+     * 原因：广播里的 target_user_id 是接收者的座位 rid，而 gc.nUserId 在部分账号上
+     * 并不等于 rid（可能是数据库 user_id）。当 nUserId!=rid 时，接收者会被错判为
+     * bystander → 全屏(whole page)动画不播放（表现为：我方发送时对方全屏不触发）。
+     * 座位已经能正确解析（座位动画正常播放），所以用 seatID 与 mainPlayer.seatID
+     * 比对最可靠，且与全局 Seat.IsMySeat 的自我判定一致。
+     */
+    private getRole(senderSeat: Seat, targetSeat: Seat): 'sender' | 'receiver' | 'bystander' {
+        const mainPlayer = this.game ? this.game.mainPlayer : null;
+        const mySeatID = mainPlayer ? mainPlayer.seatID : -999;
+        if (mySeatID >= 0) {
+            if (targetSeat && targetSeat.seatID === mySeatID) return 'receiver';
+            if (senderSeat && senderSeat.seatID === mySeatID) return 'sender';
+            return 'bystander';
+        }
+        // 兜底：座位号不可用时退回 id 比对（用 == 容忍 JSON 解析出的 string/number 差异）
         const gc = GameCache.Instance;
         const myId = gc.nUserId || gc.userId;
-        if (myId === senderId) return 'sender';
-        if (myId === targetId) return 'receiver';
+        const senderId = senderSeat && senderSeat.Player ? senderSeat.Player.userID : 0;
+        const targetId = targetSeat && targetSeat.Player ? targetSeat.Player.userID : 0;
+        // eslint-disable-next-line eqeqeq
+        if (myId == senderId) return 'sender';
+        // eslint-disable-next-line eqeqeq
+        if (myId == targetId) return 'receiver';
         return 'bystander';
     }
 
@@ -331,7 +352,7 @@ export default class ThrowPropManager {
                     this.destroyAfterComplete(node, 4);
                     // 撒钱：接收者播摸头声，其他人播放撒钱声
                     if (offset === 9) {
-                        const role = this.getRole(senderSeat.Player ? senderSeat.Player.userID : 0, targetSeat.Player ? targetSeat.Player.userID : 0);
+                        const role = this.getRole(senderSeat, targetSeat);
                         if (role === 'receiver') {
                             this.playSound('sfx_touch_mus');
                         } else {
@@ -379,7 +400,7 @@ export default class ThrowPropManager {
         const root = this.getAnimRoot();
         console.log(LN, 'playPatternD root=', !!root, 'propOffset=', propOffset);
         if (!root) return;
-        const role = this.getRole(senderSeat.Player ? senderSeat.Player.userID : 0, targetSeat.Player ? targetSeat.Player.userID : 0);
+        const role = this.getRole(senderSeat, targetSeat);
         switch (propOffset) {
             case 4:
                 this.playBeer(root, senderSeat, targetSeat, role);

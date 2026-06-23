@@ -9,7 +9,7 @@
   "genMipmaps": false,
   "packable": true,
   "width": 133,
-  "height": 66,
+  "height": 80,
   "platformSettings": {},
   "subMetas": {
     "Rectangle 1278 (3)": {
@@ -30,8 +30,8 @@
       "rawHeight": 80,
       "borderTop": 0,
       "borderBottom": 0,
-      "borderLeft": 0,
-      "borderRight": 0,
+      "borderLeft": 33,
+      "borderRight": 33,
       "subMetas": {}
     }
   }

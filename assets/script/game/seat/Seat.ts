@@ -1269,8 +1269,10 @@ export default class Seat {
         // textBubbleInsuranceCountDown.text = $"购买剩余{Player.timeLeft_insurance}秒";
         this.uirc.Image_BubbleInsuranceCountDown.active = true;
         this.MoveBubbleInsuranceCountDownToTop();
-        // 分两行：上面中文文案，下面倒计时（如 10s）
-        this.uirc.Text_BubbleInsuranceCountDown.string = `${CPErrorCode.LanguageDescription(10298)}\n${this.Player.timeLeft_insurance < 0 ? 0 : this.Player.timeLeft_insurance}s`;
+        // 重新锚定到下注气泡(Image_Bubble)位置，确保始终在头像正上方（与投保/不保气泡同位置）
+        this.SetBubbleInsuranceCountDownPosition(cc.Vec3.ZERO);
+        // 单行：文案 + 倒计时（如 购买中9s），与气泡 png 保持一行
+        this.uirc.Text_BubbleInsuranceCountDown.string = `${CPErrorCode.LanguageDescription(10298)}${this.Player.timeLeft_insurance < 0 ? 0 : this.Player.timeLeft_insurance}s`;
         this.HideBubbleInsurance();
     }
 
@@ -2205,7 +2207,53 @@ export default class Seat {
                 ]);
             }
         }
+        // 让"投保/不保"结果气泡显示在头像上方（与购买中倒计时同位置、同置顶），不再卡在头像中间
+        if (!this.IsMySeat) {
+            const shown =
+                this.Player.totalInsuredAmount + this.Player.autoInsuredAmount == 0
+                    ? this.uirc.Image_BubbleInsuranceNum
+                    : this.uirc.Image_BubbleInsuranceToubao;
+            this._moveInsuranceResultToTop(shown);
+        }
         this.CloseInsuranceBaoBubaoBubble();
+    }
+
+    /** "投保/不保"结果气泡的原始层级，用于复位 */
+    private _insResultHome: { node: cc.Node; parent: cc.Node; sibling: number; z: number; pos: cc.Vec3 } | null = null;
+
+    /** 把结果气泡移动到头像上方（复用购买中倒计时的定位/置顶逻辑，保证两者同位置） */
+    private _moveInsuranceResultToTop(node: cc.Node): void {
+        if (!node || !node.parent) return;
+        if (this._insResultHome) this._restoreInsuranceResult();
+        const topParent = this.GetBubbleInsuranceCountDownTopParent();
+        if (!topParent) return;
+        this._insResultHome = { node, parent: node.parent, sibling: node.getSiblingIndex(), z: node.zIndex, pos: node.position.clone() };
+        // 目标 = 下注气泡(Image_Bubble)的世界坐标，购买中倒计时用的也是这个
+        const bubble = this.uirc?.Image_Bubble;
+        let worldPos: cc.Vec3;
+        if (bubble && bubble.parent) {
+            worldPos = bubble.parent.convertToWorldSpaceAR(bubble.position);
+        } else {
+            worldPos = node.parent.convertToWorldSpaceAR(node.position);
+        }
+        if (node.parent !== topParent) node.parent = topParent;
+        node.setPosition(topParent.convertToNodeSpaceAR(worldPos));
+        node.zIndex = cc.macro.MAX_ZINDEX;
+        node.setSiblingIndex(topParent.childrenCount - 1);
+    }
+
+    /** 复位结果气泡到原始父节点/层级 */
+    private _restoreInsuranceResult(): void {
+        const h = this._insResultHome;
+        if (!h || !h.node || !cc.isValid(h.parent)) {
+            this._insResultHome = null;
+            return;
+        }
+        if (h.node.parent !== h.parent) h.node.parent = h.parent;
+        h.node.setPosition(h.pos);
+        h.node.zIndex = h.z;
+        if (h.sibling >= 0) h.node.setSiblingIndex(Math.min(h.sibling, h.parent.childrenCount - 1));
+        this._insResultHome = null;
     }
 
     private async CloseInsuranceBaoBubaoBubble() {
@@ -2216,6 +2264,7 @@ export default class Seat {
         if (this.uirc.Image_BubbleInsuranceToubao.activeInHierarchy) {
             this.uirc.Image_BubbleInsuranceToubao.active = false;
         }
+        this._restoreInsuranceResult();
     }
 
     //刷新猎人头奖励
