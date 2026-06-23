@@ -225,8 +225,8 @@ export default class BridgeReconnectComponent {
         this._hideMask();
         this._inReconnectFlow = false;
         this._notifyFailure(reason);
-        // auth-invalid 路径下 H5 自己已经弹了登录窗，避免重复跳转。
-        if (reason !== 'auth-invalid') {
+        // 应用层 auth 失效（register-rejected / auth-invalid）由 H5 自己弹登录窗，避免重复跳转。
+        if (!this._isAuthFailure(reason)) {
             H5MsgMgr.sendToH5('h5Navigate', 1, {
                 name: 'guest-home',
                 replace: true,
@@ -234,6 +234,10 @@ export default class BridgeReconnectComponent {
                 openLoginModal: true
             });
         }
+    }
+
+    private _isAuthFailure(reason: string): boolean {
+        return reason === 'auth-invalid' || reason === 'register-rejected';
     }
 
     private _cancelHideFallback(): void {
@@ -245,7 +249,7 @@ export default class BridgeReconnectComponent {
 
     private _notifyFailure(reason: string): void {
         // adaptation10050=网络异常 / ReConnectError001=重连服务器失败，请检测网络环境
-        const key = reason === 'auth-invalid' ? 'tokenFail' : 'ReConnectError001';
+        const key = this._isAuthFailure(reason) ? 'tokenFail' : 'ReConnectError001';
         UIComponent.Instance.Toast(i18nMgr.Get(key) || '网络异常');
     }
 }

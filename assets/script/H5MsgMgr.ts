@@ -444,6 +444,13 @@ export interface SyncDiamondConfigPayload {
     raw?: Record<number, unknown>;
 }
 
+/** H5 → CC：token 变更（登录/续期/登出）；token 为空表示已登出。*/
+export interface SyncTokenPayload {
+    token: string;
+    /** 秒级时间戳；缺省时 Cocos 不更新 TOKEN_EXPIREAT。*/
+    expireAt?: number;
+}
+
 // ─── H5 → CC Payload 映射表 ────────────────────────────────────────────────
 // on<T>(action, callback) 通过 T 自动推导回调 payload 的精确类型。
 // 如需新增 action，同步更新：h5-game/src/bridge/protocol/h5ToCocos.ts
@@ -474,6 +481,7 @@ export interface H5ToCocosPayloadMap {
     syncLanguage: SyncLanguagePayload;
     syncGlobalConfig: SyncGlobalConfigPayload;
     syncDiamondConfig: SyncDiamondConfigPayload;
+    syncToken: SyncTokenPayload;
     // 持久化代理回执
     ccStorageResult: CcStorageResultPayload;
     ccStorageSnapshot: CcStorageSnapshotPayload;
