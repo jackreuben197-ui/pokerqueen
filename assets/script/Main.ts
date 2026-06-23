@@ -136,10 +136,12 @@ export default class Main extends cc.Component {
      * 并刷新预览模式下未跟随窗口的容器 DOM。
      */
     private _onWindowResize(): void {
+        console.log('[TG-Diag] window.resize 触发', 'innerW=' + window.innerWidth, 'innerH=' + window.innerHeight);
         clearTimeout(this._resizeTimer);
         this._resizeTimer = window.setTimeout(() => {
             const w = window.innerWidth;
             const h = window.innerHeight;
+            console.log('[TG-Diag] _onWindowResize 防抖后执行', 'w=' + w, 'h=' + h);
             this.tracelog.info('[Main] 窗口 resize，重新适配', w, h);
             // 更新容器 DOM（预览模式下容器不会自动跟随窗口）
             const content = document.getElementById('content');

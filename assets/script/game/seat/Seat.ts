@@ -845,6 +845,7 @@ export default class Seat {
                 cardInfo.imageCard.active = false;
                 cardInfo.imageCard.color = cc.Color.WHITE;
                 cardInfo.imageCard.scale = 1;
+                TexasGameUtils.ResetCardHighlight(cardInfo.imageCard);
             }
             if (cardInfo.imageBack?.node) {
                 cc.Tween.stopAllByTarget(cardInfo.imageBack.node);

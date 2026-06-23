@@ -149,30 +149,34 @@ export default class DanmuManager {
         const label = node.getChildByName('DanmuLabel')?.getComponent(cc.Label);
         if (label) label.string = text;
 
-        // 飞行轨迹（世界坐标系，原点在屏幕左下角）
-        const screenSize = cc.view.getVisibleSize();
+        // 飞行轨迹：直接基于 layer 本地坐标系计算（弹幕节点的父级就是 layer）
+        // 不再用 convertToNodeSpaceAR 转换 —— layer 的世界位置/锚点若不在屏幕原点会导致终点偏移到屏幕内部，
+        // 弹幕看起来"没完全移出左侧就消失"。改用 layer 自己的 width/anchorX 直接算左右边缘外，确保完全移出后再销毁。
         const nodeWidth = node.width || 0;
-        const worldStartX = screenSize.width + nodeWidth / 2;                                              // 屏幕右外
-        const worldEndX = -nodeWidth / 2;                                                                  // 屏幕左外
-        const worldY = screenSize.height - screenSize.height * TOP_OFFSET_RATIO - trackIdx * TRACK_OFFSET_Y;  // 距屏幕顶部 20%
+        const BUFFER = 50; // 屏幕外保险距离，兼容 node.width 测量偏差
+        // layer 本地坐标系：左边缘 = -layer.width * anchorX；右边缘 = layer.width * (1 - anchorX)
+        const localStartX = layer.width * (1 - layer.anchorX) + nodeWidth + BUFFER;  // layer 右边缘外
+        const localEndX = -layer.width * layer.anchorX - nodeWidth - BUFFER;         // layer 左边缘外 nodeWidth + buffer
 
-        // 转换为 layer 本地坐标
-        const localStart = layer.convertToNodeSpaceAR(cc.v2(worldStartX, worldY));
-        const localEnd = layer.convertToNodeSpaceAR(cc.v2(worldEndX, worldY));
-        node.x = localStart.x;
-        node.y = localStart.y;
+        // Y 仍用世界坐标转换（已验证显示在屏幕顶部 20% 处正确）
+        const screenSize = cc.view.getVisibleSize();
+        const worldY = screenSize.height - screenSize.height * TOP_OFFSET_RATIO - trackIdx * TRACK_OFFSET_Y;
+        const localY = layer.convertToNodeSpaceAR(cc.v2(0, worldY)).y;
+
+        node.x = localStartX;
+        node.y = localY;
 
         // 占用轨道
         this._tracks[trackIdx] = node;
 
         // 随机速度 140-200 px/s，让多条弹幕飞行速度有差异更自然
-        const distance = Math.abs(localStart.x - localEnd.x);
+        const distance = Math.abs(localStartX - localEndX);
         const speed = SPEED_MIN + Math.random() * (SPEED_MAX - SPEED_MIN);
         const duration = distance / speed;
 
         // 匀速直线飞行，完成后销毁节点 + 释放轨道 + 尝试调度下一条
         cc.tween(node)
-            .to(duration, { x: localEnd.x })
+            .to(duration, { x: localEndX })
             .call(() => {
                 if (cc.isValid(node)) node.destroy();
                 if (this._tracks[trackIdx] === node) this._tracks[trackIdx] = null;

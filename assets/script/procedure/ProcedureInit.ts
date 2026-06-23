@@ -59,9 +59,43 @@ export default class ProcedureInit extends ProcedureBase {
     }
 
     /**
+     * 检测当前是否处于 Telegram 环境且软键盘已弹出。
+     * 仅依赖 Telegram WebApp SDK 的 viewportHeight 差值（参考 OrientationComponent 已验证逻辑，
+     * 阈值 50px 为生产环境验证值）。
+     * 标准浏览器（Safari/Chrome）无 window.Telegram.WebApp，直接返回 false，
+     * 不影响现有 Safari/Chrome 软键盘弹出后的适配逻辑。
+     */
+    private static isTelegramKeyboardOpen(): boolean {
+        const tg = (window as any).Telegram?.WebApp;
+        if (!tg) {
+            console.log('[TG-Diag] isTelegramKeyboardOpen=false（非 Telegram 环境）');
+            return false;
+        }
+        if (tg.viewportHeight == null || tg.viewportStableHeight == null) {
+            console.log('[TG-Diag] isTelegramKeyboardOpen=false（viewport 字段为空）', 'viewportHeight=', tg.viewportHeight, 'viewportStableHeight=', tg.viewportStableHeight);
+            return false;
+        }
+        const diff = tg.viewportStableHeight - tg.viewportHeight;
+        const open = diff > 50;
+        console.log('[TG-Diag] isTelegramKeyboardOpen=' + open, 'stable=' + tg.viewportStableHeight, 'cur=' + tg.viewportHeight, 'diff=' + diff);
+        return open;
+    }
+
+    /**
      * 根据当前窗口宽高比重新计算适配模式并直接应用
+     *
+     * Telegram 键盘守卫：Telegram 中键盘弹出会同时触发 viewportChanged + window.resize，
+     * 双重信号让本方法重算适配策略导致画面变形。检测到 Telegram 键盘弹出时直接 return，
+     * 让 CC 跟随 iOS Safari 路径（完全不响应，由浏览器整体上移 canvas）。
+     * 标准浏览器（Safari/Chrome）无 Telegram SDK，永远不命中守卫，行为保持不变。
      */
     static updateFitMode(): void {
+        console.log('[TG-Diag] updateFitMode 被调用');
+        if (ProcedureInit.isTelegramKeyboardOpen()) {
+            console.log('[TG-Diag] 守卫命中，跳过重新适配');
+            return;
+        }
+        console.log('[TG-Diag] 守卫未命中，执行重新适配');
         const w = window.innerWidth;
         const h = window.innerHeight;
         const w_h_r = w / h;
