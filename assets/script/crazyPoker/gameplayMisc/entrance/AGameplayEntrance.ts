@@ -27,6 +27,7 @@ export enum LoadIndicator {
  */
 export default abstract class AGameplayEntrance {
     public oldPathForEnter: boolean = false;
+    public lastErrorMessage: string = '';
 
     // ==================== 属性 ====================
     /**
@@ -200,6 +201,7 @@ export default abstract class AGameplayEntrance {
             this.cacheGlobalDataAfterLoad(false);
             return true;
         } catch (ex) {
+            this.lastErrorMessage = `进房流程异常: ${ex?.message || ex}`;
             console.error(`${this.constructor.name}: EnterForegroundAsync: ${ex}`);
             this.cacheGlobalDataBeforeLoad(true);
             this.cacheGlobalDataAfterLoad(true);
