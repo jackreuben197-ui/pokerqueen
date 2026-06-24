@@ -4,7 +4,7 @@ import { UIDefine } from '../../../../../define/UIDefine';
 import { CPlayer } from '../../../../../game/CPlayer';
 import {
     WebOtherUserInfo,
-    WebStatsOtherUserStats,
+    WebMiscCombine,
     WebRoomCenterRoomUserLeave,
     WebRoomCenterRoomUserStandUp,
     WebUserMute,
@@ -754,16 +754,32 @@ export default class UIPlayerInfo extends UIBasePlus {
         }
     }
 
-    /** 请求用户统计数据 */
+    /** 请求用户统计数据（对齐 Unity UIGameplayPlayerInfoDialogComponent:199-211）
+     *  走 WebMiscCombine + 完整 scope 单查，避免与 prefetch 缓存通路数据口径不一致
+     */
     private reqUserStats(random_num: number): void {
+        const scope = GameplayPlayerInfoCache.Instance.getCurrentScope();
         WWW.Instance.CommonAPI({
-            web_class: WebStatsOtherUserStats,
-            api_id: random_num
+            web_class: WebMiscCombine,
+            body: {
+                api_list: [WebMiscCombine.ApiType.OTHER_USER_STATS],
+                user_stats_by_user_rid_req: {
+                    game_type: scope.gameType,
+                    poker_type: scope.pokerType,
+                    gold_type: scope.goldType,
+                    origin_type: scope.originType,
+                    room_id: GameCache.Instance.room_id,
+                    user_random_id: [random_num]
+                }
+            },
+            juhua: false
         }).then((res: any) => {
             if (!cc.isValid(this.node)) return;
-            if (res?.data) {
-                this.refreshDataPanel(res.data);
-                GameplayPlayerInfoCache.Instance.updateStats(random_num, res.data);
+            const list = res?.data?.user_stats_by_user_rid_resp;
+            const statsData = Array.isArray(list) && list.length > 0 ? list[0] : null;
+            if (statsData) {
+                this.refreshDataPanel(statsData);
+                GameplayPlayerInfoCache.Instance.updateStats(random_num, statsData);
             }
         });
     }

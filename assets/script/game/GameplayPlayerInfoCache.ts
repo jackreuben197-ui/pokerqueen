@@ -57,7 +57,8 @@ export class GameplayPlayerInfoCache {
     private _infoMem: Map<number, CacheRecord<PublicInfoData>> = new Map();
     private _statsMem: Map<string, CacheRecord<StatsData>> = new Map();
 
-    private getCurrentScope(): StatsScope {
+    /** 当前牌桌的统计 scope，作为 stats 缓存 key 维度 + combine 请求过滤参数 */
+    public getCurrentScope(): StatsScope {
         const gc = GameCache.Instance;
         return {
             gameType: gc.game_type || 0,

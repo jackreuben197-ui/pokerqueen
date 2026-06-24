@@ -14,7 +14,6 @@ import UIDialogComponent, { UIDialogParam } from '../ui/dialog/UIDialogComponent
 import UIBase from '../ui/UIBase';
 import UIComponent, { PrefabUI } from '../ui/UIComponent';
 import { GameCache } from './GameCache';
-import { AddClipsData } from './new_ui/UIBringIn';
 import Seat, { VoiceprintState } from './seat/Seat';
 import GameUtil from './util/GameUtil';
 
@@ -70,6 +69,8 @@ export default class SeatUIRC extends UIBase {
     Raw_Head: cc.Sprite = null;
     //头像灰色蒙版
     Gray_Head: cc.Node = null;
+    //弃牌状态文字标识（显示在头像上，与 Gray_Head 同步显隐）
+    foldText: cc.Node = null;
     //麦克风状态图标（动态创建）
     MicIcon: cc.Node = null;
     MicIconSprite: cc.Sprite = null;
@@ -141,6 +142,14 @@ export default class SeatUIRC extends UIBase {
     imageSmallCardBacks: cc.Sprite[];
     //winner动画
     Spine_Winner: sp.Skeleton = null;
+    // 赢家头像底部 UI（参考 Unity TexasSeat.UpdateWinCoin）
+    // WinTypeNnum: 牌型+筹码容器（其他玩家且 cardType>0 时显示），子节点 pokertype/num
+    // WinNum: 只筹码容器（主玩家 / 其他玩家 cardType<=0 时显示），子节点 num
+    winTypeNnum: cc.Node = null;
+    winTypeNnumPokerType: cc.Label = null;
+    winTypeNnumNum: cc.Label = null;
+    winNum: cc.Node = null;
+    winNumNum: cc.Label = null;
     //保险状态
     Image_BubbleInsuranceCountDown: cc.Node = null;
     Text_BubbleInsuranceCountDown: cc.Label = null;
@@ -153,6 +162,9 @@ export default class SeatUIRC extends UIBase {
         this.Frame_Head = this.getChildNodeOrComponent('Frame_Head');
         this.Raw_Head = this.getChildNodeOrComponent('Raw_Head', cc.Sprite);
         this.Gray_Head = this.getChildNodeOrComponent('Gray_Head');
+        this.foldText = this.getChildNodeOrComponent('foldText');
+        // 兜底初始隐藏（prefab 默认也是隐藏，避免坐下时残留）
+        if (this.foldText) this.foldText.active = false;
         // 动态创建麦克风状态图标
         this._createMicIcon();
         this.Nick_Coin = this.getChildNodeOrComponent('Nick_Coin');
@@ -194,6 +206,16 @@ export default class SeatUIRC extends UIBase {
             this.Head_Squid_Mask.active = false;
         }
         this.Spine_Winner = this.getChildNodeOrComponent('Spine_Winner', sp.Skeleton);
+        // 赢家头像底部 UI（WinTypeNnum / WinNum），用 getChildByName 显式获取避免命名冲突
+        this.winTypeNnum = this.getChildNodeOrComponent('WinTypeNnum');
+        this.winNum = this.getChildNodeOrComponent('WinNum');
+        if (this.winTypeNnum) {
+            this.winTypeNnumPokerType = this.winTypeNnum.getChildByName('pokertype')?.getComponent(cc.Label);
+            this.winTypeNnumNum = this.winTypeNnum.getChildByName('num')?.getComponent(cc.Label);
+        }
+        if (this.winNum) {
+            this.winNumNum = this.winNum.getChildByName('num')?.getComponent(cc.Label);
+        }
         //当前最大6张
         this.imageCards = [];
         this.imageSmallCards = [];

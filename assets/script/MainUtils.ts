@@ -411,6 +411,22 @@ export async function registerH5Listeners(): Promise<void> {
         _ploger.info('[H5Bridge] syncDiamondConfig 预填完成');
     });
 
+    // token 变更：登录/续期/登出统一从 H5 推过来，写入 LoginSession（内存）与 BridgeStorage（dzpk_cc_TOKEN）。
+    H5MsgMgr.Instance.on('syncToken', payload => {
+        const token = typeof payload?.token === 'string' ? payload.token.trim() : '';
+        if (!token) {
+            LoginSession.ClearToken();
+            _ploger.info('[H5Bridge] syncToken 清空登录态');
+            return;
+        }
+        LoginSession.Token = token;
+        const expireAt = Number(payload?.expireAt || 0);
+        if (Number.isFinite(expireAt) && expireAt > 0) {
+            LoginSession.TokenExpireAt = expireAt;
+        }
+        _ploger.info('[H5Bridge] syncToken 更新完成, expireAt:', expireAt || 0);
+    });
+
     // H5MsgMgr.Instance.on('syncRoomsList', (payload) => {
     //     _ploger.info('[H5Bridge] 同步房间列表:', payload);
     //     const records = payload?.response?.data?.records;

@@ -36,6 +36,10 @@ export default class BridgeReconnectComponent {
     private _reconnectSecondsLeft = RECONNECT_TEXT_SECONDS;
     // 重连流程开始 → EnterRoom 回包到达期间为 true，供牌桌业务（如 ReEnterClear）判断。
     private _inReconnectFlow = false;
+    // WS 链路是否可用（已 wsOpen / wsReconnected 且当前未断开）。
+    // 乐观初值 true：app 启动时通常 WS 已连或即将连上；后续按 wsClosed/wsError/wsReconnectFailed 翻 false。
+    // 供进房等关键路径预检，避免发请求等到超时才弹笼统的"通信失败"。
+    private _wsUsable = true;
 
     public Start(): void {
         if (this._started) return;
@@ -45,14 +49,27 @@ export default class BridgeReconnectComponent {
         // 用于重连成功后及时收掉遮罩并触发 ReEnterRoom。
         GC.notify.register(ProtocolCode.Protocol_Holdem_Register, this._onProtocolRegister, this);
 
+        // WS 链路状态跟踪：wsOpen/wsReconnected → 可用；wsClosed/wsError/wsReconnectFailed → 不可用。
+        H5MsgMgr.Instance.on('wsOpen', () => {
+            this._wsUsable = true;
+        });
+        H5MsgMgr.Instance.on('wsClosed', () => {
+            this._wsUsable = false;
+        });
+        H5MsgMgr.Instance.on('wsError', () => {
+            this._wsUsable = false;
+        });
+
         H5MsgMgr.Instance.on('wsReconnecting', payload => {
             console.warn('[BridgeReconnect] wsReconnecting:', payload);
             this._inReconnectFlow = true;
+            this._wsUsable = false;
             this._showMask();
         });
 
         H5MsgMgr.Instance.on('wsReconnected', payload => {
             console.log('[BridgeReconnect] wsReconnected:', payload);
+            this._wsUsable = true;
             // REGISTER 已经在 H5 端发出，等服务端 ack；_onProtocolRegister 收到后会
             // hideMask + ReEnterRoom（若 CurGame 存在）。设一个兜底定时器，ack 没到
             // 就按重连失败收口，避免遮罩消失后状态机卡死。
@@ -61,6 +78,7 @@ export default class BridgeReconnectComponent {
 
         H5MsgMgr.Instance.on('wsReconnectFailed', payload => {
             console.error('[BridgeReconnect] wsReconnectFailed:', payload);
+            this._wsUsable = false;
             this._handleReconnectFailure(payload.reason);
         });
     }
@@ -96,6 +114,14 @@ export default class BridgeReconnectComponent {
      */
     public IsReconnecting(): boolean {
         return this._inReconnectFlow;
+    }
+
+    /**
+     * WS 链路是否当前可用（已连上且未处于断开/重连失败状态）。
+     * 进房、入座等需要发请求的关键路径预检用，避免请求挂死到超时才报"通信失败"。
+     */
+    public IsWsUsable(): boolean {
+        return this._wsUsable;
     }
 
     /**
@@ -199,8 +225,8 @@ export default class BridgeReconnectComponent {
         this._hideMask();
         this._inReconnectFlow = false;
         this._notifyFailure(reason);
-        // auth-invalid 路径下 H5 自己已经弹了登录窗，避免重复跳转。
-        if (reason !== 'auth-invalid') {
+        // 应用层 auth 失效（register-rejected / auth-invalid）由 H5 自己弹登录窗，避免重复跳转。
+        if (!this._isAuthFailure(reason)) {
             H5MsgMgr.sendToH5('h5Navigate', 1, {
                 name: 'guest-home',
                 replace: true,
@@ -208,6 +234,10 @@ export default class BridgeReconnectComponent {
                 openLoginModal: true
             });
         }
+    }
+
+    private _isAuthFailure(reason: string): boolean {
+        return reason === 'auth-invalid' || reason === 'register-rejected';
     }
 
     private _cancelHideFallback(): void {
@@ -219,7 +249,7 @@ export default class BridgeReconnectComponent {
 
     private _notifyFailure(reason: string): void {
         // adaptation10050=网络异常 / ReConnectError001=重连服务器失败，请检测网络环境
-        const key = reason === 'auth-invalid' ? 'tokenFail' : 'ReConnectError001';
+        const key = this._isAuthFailure(reason) ? 'tokenFail' : 'ReConnectError001';
         UIComponent.Instance.Toast(i18nMgr.Get(key) || '网络异常');
     }
 }

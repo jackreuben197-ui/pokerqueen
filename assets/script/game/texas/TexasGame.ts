@@ -979,6 +979,8 @@ export default class TexasGame {
             this.mainPlayer.seatID = this.GetLocalSeatID(rec.myInfo.seatId);
             this.mainPlayer.chips = rec.myInfo.chip;
             this.mainPlayer.cacheStoreChips = rec.myInfo.storeChips;
+            // 断线重连/进房：恢复待生效的补充筹码，对齐 Unity OnMsgEnterRoom _cacheAddChips = TotalChips - Chip
+            this.mainPlayer.cacheAddChips = Math.max(0, (rec.myInfo as any).totalChips - rec.myInfo.chip);
             // Unity 对齐：MyInfo 仅使用 squidRoundSeated，玩法状态由 Players/HandInfo 同步
             this.mainPlayer.squidRoundSeated = (rec.myInfo as any).squidRoundSeated || false;
         }
@@ -1959,6 +1961,62 @@ export default class TexasGame {
         } catch (e) {
             console.error(LN, 'StartAddChips', e);
         }
+    }
+
+    /// <summary>
+    /// 补充筹码/带入成功后的 Toast 提示（对齐 Unity SetUCBringInTips）
+    /// seated=true: 即时到账，弹"完成带入 XX UC"（带金额）
+    /// seated=false: 仅当本人在玩本手牌(isPlaying)时弹"下一手前完成带入"，否则不弹
+    /// 仅 CLUB_EXTERNAL 桌生效
+    /// </summary>
+    public SetUCBringInTips(seated: boolean, chips: number): void {
+        // [诊断日志] 进入函数时打印所有判断条件，便于确认 toast 是否应该弹出
+        const tableType = GameplayUtil.GetTableType();
+        const isClubExternal = tableType === TableType.CLUB_EXTERNAL;
+        const isPlaying = this.mainPlayer != null ? this.mainPlayer.isPlaying : 'null';
+        console.log(
+            LN,
+            `[SetUCBringInTips] 进入 | seated=${seated}, chips=${chips}, tableType=${tableType}(CLUB_EXTERNAL=${isClubExternal}), squidEnabled=${this.squidEnabled}, mainPlayer.isPlaying=${isPlaying}`
+        );
+
+        if (chips <= 0) {
+            console.log(LN, `[SetUCBringInTips] 不弹：chips<=0`);
+            return;
+        }
+        if (!isClubExternal) {
+            console.log(LN, `[SetUCBringInTips] 不弹：非 CLUB_EXTERNAL 桌(tableType=${tableType})`);
+            return;
+        }
+        if (seated) {
+            // 对齐 Unity：鱿鱼模式不减押金，否则扣除蘑菇押金(MinStack)
+            const stack = this.squidEnabled ? 0 : this.GetMinBringInWithMush();
+            let displayChips = chips;
+            if (chips > stack) displayChips = chips - stack;
+            console.log(
+                LN,
+                `[SetUCBringInTips] 弹"完成带入" | stack=${stack}, displayChips=${displayChips} (原chips=${chips})`
+            );
+            UIComponent.Instance.Toast(
+                StringHelper.FormatString(i18nMgr.Get('UIGameplay_UCRechargeBringin'), this.formatUCBringInAmount(displayChips))
+            );
+        } else if (this.mainPlayer != null && this.mainPlayer.isPlaying) {
+            console.log(LN, `[SetUCBringInTips] 弹"下一手前完成带入" | isPlaying=${isPlaying}`);
+            UIComponent.Instance.ToastLanguage('UIGameplay_UCRechargeBringinAfter');
+        } else {
+            console.log(LN, `[SetUCBringInTips] 不弹：seated=false 且 isPlaying=${isPlaying}（未在玩本手牌）`);
+        }
+    }
+
+    private formatUCBringInAmount(chips: number): string {
+        // 对齐 Unity LanguageUtility.GetFormatLongNumber：金额按 /100 展示，中文不加千分位，其他语言加千分位。
+        const normalized = Number((chips / 100).toFixed(2));
+        if (i18nMgr.language === 'cn' || i18nMgr.language === 'zh') {
+            return normalized.toString();
+        }
+        return normalized.toLocaleString('en-US', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        });
     }
 
     /// <summary>
@@ -3819,6 +3877,8 @@ export default class TexasGame {
             PublicCardInfo.cardId = -1;
             PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
             PublicCardInfo.imageSelect.node.active = false;
+            // 重置摊牌阶段的高亮偏移/放大（_hlRaised 标记 + 还原 y/scale）
+            TexasGameUtils.ResetCardHighlight(PublicCardInfo.imageCard.node);
             PublicCardInfo.trans.active = false;
         }
     }
@@ -3835,6 +3895,8 @@ export default class TexasGame {
             PublicCardInfo.cardId = -1;
             PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
             PublicCardInfo.imageSelect.node.active = false;
+            // 重置摊牌阶段的高亮偏移/放大（_hlRaised 标记 + 还原 y/scale）
+            TexasGameUtils.ResetCardHighlight(PublicCardInfo.imageCard.node);
             PublicCardInfo.trans.active = false;
         }
     }

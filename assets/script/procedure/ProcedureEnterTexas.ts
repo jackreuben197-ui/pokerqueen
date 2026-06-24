@@ -1,5 +1,6 @@
 import { ProcedureEnum } from '../define/EIDefine';
 import { GameCache } from '../game/GameCache';
+import BridgeReconnectComponent from '../funcomponent/BridgeReconnectComponent';
 import H5MsgMgr from '../H5MsgMgr';
 import ProcedureManager from '../manager/ProcedureManager';
 import { PreloadDefinitionTexas, PreloadParams } from '../manager/ResManager';
@@ -24,6 +25,20 @@ export default class ProcedureEnterTexas extends ProcedureBase {
     override lateEnter<T>(param?: T) {
         super.lateEnter(param);
         if (!param) console.log('[ProcedureEnterTexas]', 'miss param');
+        // 预检 WS 链路：H5 桥接 WS 已断开/重连失败时直接退回，避免 enterForegroundAsync
+        // 等到协议超时才弹笼统的"通信失败"，并把真实原因（网络断开）告诉用户。
+        if (!BridgeReconnectComponent.Instance.IsWsUsable()) {
+            console.warn('[ProcedureEnterTexas]', 'ws not usable, abort enter and return');
+            H5MsgMgr.sendToH5('showDialog', 1, {
+                message: '网络连接已断开，请刷新页面后重试',
+                confirmButtonText: '我知道了',
+                ensureVisible: true,
+            });
+            ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
+                needClosedUI: [PrefabUI.UIPreloading]
+            });
+            return;
+        }
         H5MsgMgr.sendToH5('h5Hide', 1);
         // 监听 wsError：进房过程中 WS 断开则直接退回 H5
         this._isEntering = true;

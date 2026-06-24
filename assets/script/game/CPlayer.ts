@@ -47,6 +47,9 @@ export class CPlayer {
     public AddonPlusMode1Times: number = 0; // 用户已增购次数(MTT) 截止买入/重购前(客户端断线后更新)
     public AddonPlusMode2Times: number = 0; // 用户已增购次数(MTT) 截止买入/重购后(客户端断线后更新)
     public cacheChips: number = 0; //缓存每把开始筹码量，MTT addon plus 模式1 使用
+    public cacheAddChips: number = 0; //待生效的补充筹码（下一手开始时清零），对齐 Unity _cacheAddChips
+    public totalBringIn: number = 0; //总带入筹码，对齐 Unity _totalBringIn
+    public bringInChips: number = 0; //本次带入筹码，对齐 Unity _bringInChips
     public usedAddon: boolean = false; //本手是否使用过Add on
     public VoiceprintId: number = 0; //声纹ID
     public Sponsor_name: string = null; //发起声纹验证的人的名字
@@ -203,5 +206,8 @@ export class CPlayer {
         this.squidEscaped = false;
         this.squidRoundSeated = false;
         this.videoMaskId = 0;
+        this.cacheAddChips = 0;
+        this.totalBringIn = 0;
+        this.bringInChips = 0;
     }
 }

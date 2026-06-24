@@ -19,6 +19,7 @@ import { SeatEmpty, SeatKeep, SeatSit, SeatWaitOther, SeatWaitStart } from '../S
 import SeatUIRC, { CardUIInfo } from '../SeatUIRC';
 import GameUtil, { RoomType, seat_info, some_pos } from '../util/GameUtil';
 import { sampleLiveBounds, getAnimDuration } from '../util/SpineBoundsUtil';
+import TexasGameUtils from '../util/TexasGameUtils';
 
 /// </summary>
 export enum VoiceprintState {
@@ -124,6 +125,8 @@ export default class Seat {
     private static readonly OTHERWIN_TARGET_SIZE = 330;
     /** OtherWin 动画底部相对头顶的间隙（越大越靠上，越小/负值越往下压向头像）*/
     private static readonly OTHERWIN_BOTTOM_GAP = -60;
+    // 其他玩家 Spine_Winner 原始 y（播放 win 动画时上移 60px 避免盖住放大的牌面）
+    private _spineWinnerOrigY: number = null;
     private _bubbleInsuranceCountDownHomeParent: cc.Node = null;
     private _bubbleInsuranceCountDownHomeSiblingIndex: number = -1;
     private _bubbleInsuranceCountDownHomeZIndex: number = 0;
@@ -867,6 +870,7 @@ export default class Seat {
                 cardInfo.imageCard.active = false;
                 cardInfo.imageCard.color = cc.Color.WHITE;
                 cardInfo.imageCard.scale = 1;
+                TexasGameUtils.ResetCardHighlight(cardInfo.imageCard);
             }
             if (cardInfo.imageBack?.node) {
                 cc.Tween.stopAllByTarget(cardInfo.imageBack.node);
@@ -898,6 +902,7 @@ export default class Seat {
         cc.Tween.stopAllByTarget(this.deal_sequence_obj);
         this.deal_sequence_obj = {};
         this.ResetShowCardsId();
+        this.ResetSpread(); // 清除 AllIn/摊牌的展开标记，新一局可重新展开
     }
 
     /// <summary>
@@ -1008,11 +1013,16 @@ export default class Seat {
         try {
             for (let i = mUpdateStart; i < mUpdateEnd; i++) {
                 if (this.IsMySeat) {
-                    list[i].imageCard.setPosition(Seat.myCardsPos[i]);
+                    // _isSpread=true 时保持 spread 位置（AllIn/摊牌已放大展开，避免 ShowCards 还原到原始位置导致重叠）
+                    if (!this._isSpread) {
+                        list[i].imageCard.setPosition(Seat.myCardsPos[i]);
+                    }
                     //list[i].imageCard.transform.localRotation = Quaternion.Euler(myCardsRot[i]);
                 } else {
                     list[i].imageCard.color = cc.Color.WHITE;
-                    list[i].imageCard.setPosition(Seat.smallCardPos[i]);
+                    if (!this._isSpread) {
+                        list[i].imageCard.setPosition(Seat.smallCardPos[i]);
+                    }
                 }
                 let mCard = this.Player.cards[i];
                 //list[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(mCard));
@@ -1040,6 +1050,95 @@ export default class Seat {
         }
         for (let i = mHideStart; i < mHideEnd; i++) {
             list[i].imageCard.active = false;
+        }
+    }
+
+    /// <summary>
+    /// <summary>
+    /// 摊牌/AllIn 阶段放大其他玩家头像上方的小牌到 1.2 倍，并等距水平展开避免重叠。
+    /// 主玩家自己的大牌（屏幕底部）不处理。
+    /// 用 _isSpread 标记防重复：AllIn 已展开后，摊牌时不再重复展开（保持视觉稳定）。
+    /// 新一局 ResetCardsUI 会清掉 _isSpread，下次 ShowCards 默认 setPosition(smallCardPos[i]) + scale=1 自动还原。
+    /// </summary>
+    private _isSpread: boolean = false;
+
+    public SpreadCards(animate: boolean = false): void {
+        if (this._isSpread) return; // 已展开（AllIn 时已展开过），跳过避免重复
+        if (!this.Player || !this.Player.cards || this.Player.cards.length === 0) return;
+
+        const isMySeat = this.IsMySeat;
+        // 主玩家用大牌 listCardUIInfos + myCardsPos；其他玩家用小牌 listSmallCardUIInfos + smallCardPos
+        const cards = isMySeat ? this.listCardUIInfos : this.listSmallCardUIInfos;
+        const defaultPos = isMySeat ? Seat.myCardsPos : Seat.smallCardPos;
+
+        if (!cards || cards.length === 0) return;
+        const cardCount = Math.min(cards.length, this.Player.cards.length);
+        if (cardCount === 0) return;
+
+        // 用首尾两张牌的默认位置算中心点（保持视觉中心不变）
+        const posFirst = defaultPos[0];
+        const posLast = defaultPos[cardCount - 1];
+        const centerX = (posFirst.x + posLast.x) / 2;
+        const centerY = (posFirst.y + posLast.y) / 2;
+
+        // 新间距 = 视觉宽度（cardWidth × 1.2）+ 15px buffer，保证放大后视觉上明显分开不重叠
+        // 之前 buffer 只有 4px，scale=1.2 时两张牌边缘只有 4px 间距，视觉上像重叠
+        const cardWidth = cards[0].imageCard.width || 60;
+        const newStep = cardWidth * 1.2 + 15;
+        const startX = centerX - (newStep * (cardCount - 1)) / 2;
+
+        this._isSpread = true;
+        for (let i = 0; i < cardCount; i++) {
+            const info = cards[i];
+            if (!info?.imageCard) continue;
+            const newPos = cc.v3(startX + i * newStep, centerY, 0);
+            if (animate) {
+                cc.tween(info.imageCard)
+                    .to(0.3, { position: newPos, scale: 1.2 }, { easing: 'sineOut' })
+                    .start();
+            } else {
+                info.imageCard.setPosition(newPos);
+                info.imageCard.scale = 1.2;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 摊牌阶段入口（带 0.3s 动画）。如果 AllIn 时已经展开过则跳过。
+    /// </summary>
+    public SpreadShowdownCards(): void {
+        this.SpreadCards(true);
+    }
+
+    /// <summary>
+    /// AllIn 时入口：必须 rec.isAll=true（所有玩家都能看到牌）才调用。
+    /// 用 0.3s 动画展开，并标记 _isSpread，使后续摊牌阶段不再重复展开。
+    /// </summary>
+    public SpreadAllInCards(): void {
+        this.SpreadCards(true);
+    }
+
+    /// <summary>
+    /// 重置展开标记 + 还原私牌 scale 到默认值。
+    /// 位置不在这里处理（下次 ShowCards 默认 setPosition(smallCardPos[i]/myCardsPos[i]) 会自动还原）。
+    /// 调用时机：ClearRoundEndData（新一局结束清理）。
+    /// 注意：ResetCardsUI（玩家离开座位）也会调用本方法，作为兜底。
+    /// </summary>
+    public ResetSpread(): void {
+        this._isSpread = false;
+        // 还原大牌 scale 到 myCardsScale（主玩家大牌默认值，从 prefab 加载）
+        if (this.listCardUIInfos) {
+            for (let i = 0; i < this.listCardUIInfos.length; i++) {
+                const info = this.listCardUIInfos[i];
+                if (info?.imageCard) info.imageCard.scale = Seat.myCardsScale || 1;
+            }
+        }
+        // 还原小牌 scale 到 1（其他玩家小牌默认值）
+        if (this.listSmallCardUIInfos) {
+            for (let i = 0; i < this.listSmallCardUIInfos.length; i++) {
+                const info = this.listSmallCardUIInfos[i];
+                if (info?.imageCard) info.imageCard.scale = 1;
+            }
         }
     }
 
@@ -1226,8 +1325,48 @@ export default class Seat {
     /// </summary>
     public StopWinArmature(): void {
         this.uirc.Spine_Winner.node.active = false;
+        // 隐藏赢家头像底部 UI（参考 Unity StopWinAnim：_imageWinner/_imageOtherWinner SetActive(false)）
+        if (this.uirc?.winTypeNnum) this.uirc.winTypeNnum.active = false;
+        if (this.uirc?.winNum) this.uirc.winNum.active = false;
+        // 还原 Spine_Winner 的 y（PlayWinArmature 加的 55px 偏移）
+        if (this._spineWinnerOrigY !== null && this.uirc?.Spine_Winner?.node) {
+            this.uirc.Spine_Winner.node.y = this._spineWinnerOrigY;
+        }
         this._stopYouWinAnim();
         this._stopOtherWinAnim();
+    }
+
+    /// <summary>
+    /// 刷新赢家头像底部 UI：主玩家只显示筹码（WinNum）；其他玩家根据 cardType 决定显示
+    /// 牌型+筹码（WinTypeNnum）还是只筹码（WinNum）。参考 Unity TexasSeat.cs:2804 UpdateWinCoin。
+    /// 隐藏逻辑：StopWinArmature 会隐藏两个容器（对应 Unity StopWinAnim）。
+    /// </summary>
+    public UpdateWinCoin(): void {
+        if (!this.Player || this.Player.winChips == 0) return;
+        const chipStr = StringHelper.getStringDiv100(this.Player.winChips);
+        if (this.IsMySeat) {
+            // 主玩家：只显示 WinNum（筹码）
+            if (this.uirc?.winNum) {
+                this.uirc.winNum.active = true;
+                if (this.uirc.winNumNum) this.uirc.winNumNum.string = chipStr;
+            }
+        } else {
+            // 其他玩家：cardType > 0 显示 WinTypeNnum（牌型+筹码），否则显示 WinNum（只筹码）
+            if (this.Player.cardType > 0) {
+                if (this.uirc?.winTypeNnum) {
+                    this.uirc.winTypeNnum.active = true;
+                    if (this.uirc.winTypeNnumPokerType) {
+                        this.uirc.winTypeNnumPokerType.string = CardTypeUtil.GetCardTypeName(this.Player.cardType as CardType);
+                    }
+                    if (this.uirc.winTypeNnumNum) this.uirc.winTypeNnumNum.string = chipStr;
+                }
+            } else {
+                if (this.uirc?.winNum) {
+                    this.uirc.winNum.active = true;
+                    if (this.uirc.winNumNum) this.uirc.winNumNum.string = chipStr;
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -1387,6 +1526,15 @@ export default class Seat {
                                 cc.v3(this.listCardUIInfos[i].imageCard.position.x, this.listCardUIInfos[i].imageCard.position.y)
                             ); //+40奥马哈两个手牌上移
                             this.listCardUIInfos[i].imageSelect.node.active = false;
+                            // 高亮的私牌上移30（不放大，scale 由 SpreadShowdownCards 控制）
+                            const cardNode = this.listCardUIInfos[i].imageCard as any;
+                            if (!cardNode._hlRaised) {
+                                cardNode._hlRaised = true;
+                                cardNode._hlOrigY = this.listCardUIInfos[i].imageCard.y;
+                                cc.tween(this.listCardUIInfos[i].imageCard)
+                                    .to(0.2, { y: this.listCardUIInfos[i].imageCard.y + 30 }, { easing: 'sineOut' })
+                                    .start();
+                            }
                         } else {
                             this.listCardUIInfos[i].imageSelect.node.active = true;
                         }
@@ -1398,8 +1546,59 @@ export default class Seat {
             this.uirc.imageCardType.node.active = false;
             this.uirc.textSmallCardType.string = CardTypeUtil.GetCardTypeName(type);
             for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+                // 摊牌阶段（isGameend=true）：默认灰化非参与组合的牌
+                if (isGameend && this.listSmallCardUIInfos[i].imageCard) {
+                    this.listSmallCardUIInfos[i].imageCard.color = cc.Color.GRAY;
+                }
                 this.listSmallCardUIInfos[i].imageSelect.node.active = false;
             }
+            // 摊牌阶段：把参与最大牌型的私牌还原白色（赢家高亮）
+            if (isGameend && hightCards && hightCards.length > 0) {
+                for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+                    for (let j = 0, m = hightCards.length; j < m; j++) {
+                        if (this.Player.cards[i] == hightCards[j]) {
+                            if (this.listSmallCardUIInfos[i].imageCard) {
+                                this.listSmallCardUIInfos[i].imageCard.color = cc.Color.WHITE;
+                                // 高亮的私牌上移30（不放大，scale 由 SpreadShowdownCards 控制）
+                                const cardNode = this.listSmallCardUIInfos[i].imageCard as any;
+                                if (!cardNode._hlRaised) {
+                                    cardNode._hlRaised = true;
+                                    cardNode._hlOrigY = this.listSmallCardUIInfos[i].imageCard.y;
+                                    cc.tween(this.listSmallCardUIInfos[i].imageCard)
+                                        .to(0.2, { y: this.listSmallCardUIInfos[i].imageCard.y + 30 }, { easing: 'sineOut' })
+                                        .start();
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 输家私牌灰化：摊牌后对所有摊开的私牌（大牌和小牌）全部置灰，不显示牌型名。
+    /// 参考 Unity TexasGameMessageHandler.cs:3225 Color.gray 的视觉处理。
+    /// </summary>
+    public GrayAllCards(): void {
+        if (null == this.Player || null == this.Player.cards) return;
+        // 隐藏牌型名节点
+        this.uirc.imageCardType.node.active = false;
+        if (this.uirc.imageSmallCardType?.node) this.uirc.imageSmallCardType.node.active = false;
+        // 主玩家大牌（自己看自己的）
+        for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
+            const info = this.listCardUIInfos[i];
+            if (!info) continue;
+            if (info.imageCard) info.imageCard.color = cc.Color.GRAY;
+            if (info.imageSelect?.node) info.imageSelect.node.active = false;
+        }
+        // 看别人的小牌（每个座位都有）
+        for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+            const info = this.listSmallCardUIInfos[i];
+            if (!info) continue;
+            if (info.imageCard) info.imageCard.color = cc.Color.GRAY;
+            if (info.imageSelect?.node) info.imageSelect.node.active = false;
         }
     }
 
@@ -1411,6 +1610,9 @@ export default class Seat {
         for (let i = 0, n = this.Player.cards.length; i < n; i++) {
             this.listSmallCardUIInfos[i].imageCard.color = cc.Color.WHITE;
             this.listCardUIInfos[i].imageSelect.node.active = false;
+            // 重置摊牌阶段的高亮偏移/放大（_hlRaised 标记 + 还原 y/scale）
+            TexasGameUtils.ResetCardHighlight(this.listSmallCardUIInfos[i].imageCard);
+            TexasGameUtils.ResetCardHighlight(this.listCardUIInfos[i].imageCard);
         }
         this.uirc.imageSmallCardType.node.active = false;
         this.uirc.imageCardType.node.active = false;
@@ -1460,6 +1662,8 @@ export default class Seat {
 
     public FoldHeadGray(active: boolean): void {
         this.uirc.Gray_Head.active = active;
+        // 同步显示/隐藏弃牌文字标识，所有调用路径（FSM、协议同步等）自动生效
+        if (this.uirc.foldText) this.uirc.foldText.active = active;
         if (this.IsMySeat) {
             let mCardUiInfo: CardUIInfo = null;
             for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
@@ -1557,6 +1761,9 @@ export default class Seat {
     /// 自己赢播放 YouWin Spine 动画，他人赢播放 Spine_Winner
     /// </summary>
     public PlayWinArmature(): void {
+        // 参考 Unity PlayWinAnim（TexasSeat.cs:5257）：先刷新赢家 UI（牌型+筹码），再判定赢家动画
+        this.UpdateWinCoin();
+
         if (!this.Player.isWin) return;
 
         if (this.IsMySeat) {
@@ -2075,6 +2282,8 @@ export default class Seat {
         //this.isCountDown = false;
         this.StopCountDown();
         this.defaultIconChipLocalPos = cc.Vec3.ZERO;
+        // 新一局清理：还原上一局 AllIn/摊牌的展开状态（_isSpread + scale）
+        this.ResetSpread();
     }
 
     /// <summary>
@@ -2337,6 +2546,17 @@ export default class Seat {
         //     this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[0]);
         // }
         console.log(LN, '刷新下方筹码位置');
+    }
+
+    /** 在桌总额（含待生效的补充筹码 cacheAddChips），对齐 Unity BaseSeat.GetTableChips。
+     *  未行动：chips + cacheAddChips；已行动：cacheChips + cacheAddChips */
+    public GetTableChips(): number {
+        if (!this.Player) return 0;
+        const add = this.Player.cacheAddChips || 0;
+        if (this.Player.actionStatus !== Def.Action.NONE) {
+            return this.Player.cacheChips + add;
+        }
+        return this.Player.chips + add;
     }
 
     //刷新下注的筹码数

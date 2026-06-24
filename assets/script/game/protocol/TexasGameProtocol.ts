@@ -259,6 +259,11 @@ export default class TexasGameProtocol {
         // videoMaskId > 4 时客户端统一归为 1
         if (rec.videoMaskId > 4) rec.videoMaskId = 1;
         this.game.mainPlayer.chips = rec.chips;
+        this.game.mainPlayer.totalBringIn = rec.totalBringin;
+        this.game.mainPlayer.bringInChips = rec.chips;
+        // 坐下带入即时生效，弹"完成带入 XX UC"提示，对齐 Unity OnMsgSeated SetUCBringInTips(true, chips)
+        console.log(LN, `[BringIn-Toast] 来源=OnMsgSeated(坐下响应) | chips=${rec.chips}`);
+        this.game.SetUCBringInTips(true, rec.chips);
         this.game.mainPlayer.leavelChips = rec.accountChips;
         // GameCache.Instance.gold = rec.accountChips;
         GC.data.user.info.gold = rec.accountChips;
@@ -487,6 +492,10 @@ export default class TexasGameProtocol {
             Seat.Player.SetCards(this.game.GetHandCardsByRecList(rec.playersList[i].cardsList));
             Seat.Player.chips = rec.playersList[i].chip;
             Seat.Player.cacheChips = rec.playersList[i].chip + rec.playersList[i].roundBet + rec.playersList[i].ante;
+            // 新一手开始，补充筹码已生效（含在 chip 里），清空待生效缓存
+            if (Seat.seatID == this.game.mainPlayer.seatID) {
+                Seat.Player.cacheAddChips = 0;
+            }
             Seat.Player.canPlayStatus = Def.CanPlayStatus.NORMAL; //数组里面有人即可打牌
             Seat.Player.extraBlind = 0; //是否补盲，已在列表的玩家不需要补盲
             Seat.Player.isFold = rec.playersList[i].action == Def.Action.FOLD;
@@ -921,9 +930,26 @@ export default class TexasGameProtocol {
                 return;
             }
             mSeat.UpdateCards(rec.isAll);
+            // AllIn 摊牌（rec.isAll=true，所有玩家都能看到牌）：放大其他玩家头像上方的小牌到 1.2 倍，
+            // 等距水平展开，0.3s 动画。标记 _isSpread 后，比牌阶段 SpreadShowdownCards 会跳过避免重复展开。
+            // 主玩家大牌不处理（屏幕底部）。新一局 ResetCardsUI 自动清除标记 + 还原 scale=1。
+            if (rec.isAll) {
+                mSeat.SpreadAllInCards();
+            }
             //allin后显示自己头像
             if (this.game.mainPlayer.seatID == mSeat.seatID) {
                 mSeat.SetOperationHeadActive(true);
+            }
+        }
+        // 主玩家自己 allin 摊牌场景的兜底：遍历所有 seat 调用 SpreadAllInCards（_isSpread 防重复）。
+        // 注意：主玩家自己点 AllIn 的放大在 HANDLER_REQ_GAME_RECV_ACTION 的 case ALLIN 里触发，
+        // 不依赖 Showcards 协议（很多 AllIn 场景服务器不会下发 Showcards）。
+        if (rec.isAll) {
+            for (let i = 0, n = this.game.listSeat.length; i < n; i++) {
+                const seat = this.game.listSeat[i];
+                if (seat && seat.Player) {
+                    seat.SpreadAllInCards();
+                }
             }
         }
     }
@@ -1022,6 +1048,13 @@ export default class TexasGameProtocol {
                 case Def.Action.ALLIN:
                     Seat.Player.isOffLine = 0;
                     Seat.FsmLogicComponent.SM.ChangeState(SeatAllin.Instance);
+                    // 主玩家自己 ALLIN：立即放大大牌 + 等距水平展开（不等摊牌）。
+                    // 用 _isSpread 防重复，比牌阶段 SpreadShowdownCards 会自动跳过。
+                    // 注意：服务器不下发主玩家自己的牌给客户端（已知），HANDLER_REQ_GAME_PLAYER_CARDS 的循环里
+                    // 不含主玩家，所以主玩家大牌的放大必须在这里触发。
+                    if (Seat.IsMySeat) {
+                        Seat.SpreadAllInCards();
+                    }
                     break;
                 case Def.Action.CHECK:
                     // 其他玩家托管状态，发一牌就check
@@ -1142,7 +1175,7 @@ export default class TexasGameProtocol {
                 mSeat.UpdateImageBackActive();
             }
         }
-        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listCards, this.game.GetPublicCards(1));
+        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listCards, true);
         //第一套牌
         this.game.SetSecondPublicCardImageColor(cc.Color.GRAY);
         this.HandleTwoWinnerAnimation(true);
@@ -1150,7 +1183,7 @@ export default class TexasGameProtocol {
         //等待3秒，处理第二套牌动画
         this.game.SetSecondPublicCardImageColor(cc.Color.WHITE);
         this.game.SetPublicCardsImageColor(cc.Color.GRAY);
-        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listSecondCards, this.game.GetPublicCards(2));
+        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listSecondCards, false);
         this.HandleTwoWinnerAnimation(false);
     }
 
@@ -1164,7 +1197,6 @@ export default class TexasGameProtocol {
         let tween = Sequence.tween;
         let SeatId = 0;
         let Seat: Seat = null;
-        let mainSeatHightCards: number[] = [];
         for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
             let Result = this.game.MessageWinnerData.resultsList[i];
             SeatId = this.game.GetLocalSeatID(Result.seatId);
@@ -1213,30 +1245,26 @@ export default class TexasGameProtocol {
                     })
                 );
             }
-            if (SeatId == this.game.mainPlayer.seatID) {
-                if (isFirst) {
-                    Result.winCardsList.forEach(winCard => {
-                        mainSeatHightCards.push(winCard.card);
-                    });
+            // 双套玩法按 SplitResults[0/1].isWinner 判定每套赢家（参考 Unity TexasGameUtils.cs:342）
+            // 直接用 winCardsList/winCards2List 私牌部分作为高亮列表，不依赖客户端 CardTypeUtil 评估
+            // （客户端评估会因卡 ID 匹配问题导致赢家私牌全灰，详见 HandleMessageWinnerData 同款修复）
+            if (Result.myCardsList && Result.myCardsList.length > 0) {
+                const isWin = isFirst ? isWin1 : isWin2;
+                if (isWin) {
+                    const winCards = isFirst ? Result.winCardsList : Result.winCards2List;
+                    const winnerHighlight = winCards.filter(v => !v.isPublic).map(v => v.card);
+                    const usedFallback = winnerHighlight.length === 0;
+                    const finalHighlight = usedFallback ? (Result.myCardsList || []).filter(c => c > 0) : winnerHighlight;
+                    const handType = isFirst ? Result.handValueType : Result.handValueType2;
+                    Seat.UpdateCardType(handType, finalHighlight, true);
                 } else {
-                    Result.winCards2List.forEach(winCard => {
-                        mainSeatHightCards.push(winCard.card);
-                    });
+                    Seat.GrayAllCards();
                 }
             }
             Seat.Player.chips = isFirst ? Result.chip + Result.fee - Result.splitResultsList[1].win - fee1 : Result.chip;
             Seat.UpdateCoin();
         }
         tween.start();
-        let mainSeat: Seat = null;
-        mainSeat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
-        if (mainSeat != null) {
-            let cacheCards: number[] = isFirst ? this.game.GetPublicCards(1) : this.game.GetPublicCards(2);
-            let highlightCards_ref = { highlightCards: [] as number[] };
-            let cardType: CardType = this.game.GetCardType(highlightCards_ref, cacheCards);
-            //let highlightCards = highlightCards_ref.highlightCards;
-            mainSeat.UpdateCardType(cardType, mainSeatHightCards, true);
-        }
     }
 
     /// <summary>
@@ -1287,26 +1315,62 @@ export default class TexasGameProtocol {
             } else {
                 mSeat.UpdateCards();
             }
+            // 摊牌阶段：放大其他玩家头像上方的小牌到 1.2 倍，等距水平展开避免重叠
+            // （主玩家大牌在屏幕底部，不在此处理；详见 Seat.SpreadShowdownCards）
+            mSeat.SpreadShowdownCards();
         }
         let mCount = this.game.GetPublicCardsCount(1);
         let mCanPlayEndPublicCardsAnimation = mCount == 5 && !mOtherAllFold;
         if (mCanPlayEndPublicCardsAnimation) {
-            let highlightCards_ref = { highlightCards: [] as number[] };
-            let cardType: CardType = this.game.GetCardType(highlightCards_ref, this.game.GetPublicCards(1));
-            let highlightCards = highlightCards_ref.highlightCards;
+            // 数据驱动：直接用服务器下发的 winCardsList 决定高亮集合（参考 Unity Winner.ts:25-37）
+            // 赢家判定：win - handBet > 0（净赢）
+            const pubHighlight = new Set<number>();
+            for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+                const r = this.game.MessageWinnerData.resultsList[i];
+                if (r.standUp) continue;
+                if (r.win - r.handBet <= 0) continue;
+                r.winCardsList.forEach(v => { if (v.isPublic) pubHighlight.add(v.card); });
+            }
+            // 公牌：高亮的保持白色 + imageSelect 选框 + 上移30放大1.05；非高亮的灰化
             for (let i = 0, n = this.game.uirc.listCards.length; i < n; i++) {
-                this.game.uirc.listCards[i].imageSelect.node.active = false;
-                for (let j = 0, m = highlightCards.length; j < m; j++) {
-                    if (this.game.uirc.listCards[i].cardId == highlightCards[j]) {
-                        this.game.uirc.listCards[i].imageSelect.node.active = true;
-                        break;
+                const pub = this.game.uirc.listCards[i];
+                const inHl = pubHighlight.has(pub.cardId);
+                pub.imageSelect.node.active = inHl;
+                if (pub.imageCard) {
+                    pub.imageCard.node.color = inHl ? cc.Color.WHITE : cc.Color.GRAY;
+                    if (inHl) {
+                        const cardNode = pub.imageCard.node as any;
+                        if (!cardNode._hlRaised) {
+                            cardNode._hlRaised = true;
+                            cardNode._hlOrigY = pub.imageCard.node.y;
+                            cardNode._hlOrigScale = pub.imageCard.node.scaleX;
+                            cc.tween(pub.imageCard.node)
+                                .to(0.2, { y: pub.imageCard.node.y + 30, scale: 1.05 }, { easing: 'sineOut' })
+                                .start();
+                        }
                     }
                 }
             }
-            let mSeatmy: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
-            if (null != mSeatmy) {
-                if (this.game.mainPlayer.cards.length > 3) {
-                    mSeatmy.UpdateCardType(cardType, highlightCards, true);
+            // 私牌：赢家直接用 winCardsList 私牌部分（isPublic=false）作为高亮列表，
+            // 不再用 CardTypeUtil.GetCardType 客户端重新评估 —— 之前那样做会导致 highlightCards
+            // 与 Player.cards 的卡 ID 匹配失败，赢家私牌反而全灰。
+            for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+                const r = this.game.MessageWinnerData.resultsList[i];
+                if (r.standUp) continue;
+                const seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(r.seatId));
+                if (!seat || !seat.Player) continue;
+                // muck 或未摊牌的玩家私牌未公开，跳过高亮/灰化
+                if (!r.myCardsList || r.myCardsList.length == 0) continue;
+                if (r.win - r.handBet > 0) {
+                    // 赢家：用 winCardsList 私牌部分（isPublic=false）作为高亮列表；
+                    // 防御 fallback：服务器未标 isPublic=false 时降级到全部 myCardsList 高亮
+                    const winnerHighlight = r.winCardsList.filter(v => !v.isPublic).map(v => v.card);
+                    const usedFallback = winnerHighlight.length === 0;
+                    const finalHighlight = usedFallback ? (r.myCardsList || []).filter(c => c > 0) : winnerHighlight;
+                    seat.UpdateCardType(r.handValueType, finalHighlight, true);
+                } else {
+                    // 输家：全部灰化，不显示牌型名
+                    seat.GrayAllCards();
                 }
             }
         }
@@ -1398,39 +1462,13 @@ export default class TexasGameProtocol {
             }
         }
         tween.start();
-        let mCacheWinnerSeatIds: number[] = null; // 赢家座位
-        let mCacheWinnerCardTypes: number[] = null; // 赢家牌型
-        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
-            let result = this.game.MessageWinnerData.resultsList[i];
-            // 找到赢家
-            if (result.win > 0) {
-                if (null == mCacheWinnerSeatIds) mCacheWinnerSeatIds = [];
-                mCacheWinnerSeatIds.push(this.game.GetLocalSeatID(result.seatId));
-                if (null == mCacheWinnerCardTypes) mCacheWinnerCardTypes = [];
-                mCacheWinnerCardTypes.push(result.handValueType);
-            }
-        }
-        let mTmpCardSorts = [];
-        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
-            let mTmpCards = [];
-            for (let j = 0, m = this.game.MessageWinnerData.resultsList[i].winCardsList.length; j < m; j++) {
-                mTmpCards.push(this.game.MessageWinnerData.resultsList[i].winCardsList[j].card);
-            }
-            mTmpCardSorts.push(mTmpCards);
-        }
-        let mHaveCardSort = true;
-        if (mHaveCardSort && null != mCacheWinnerSeatIds && mCacheWinnerSeatIds.length != 0) {
-            for (let i = 0; i < mCacheWinnerSeatIds.length; i++) {
-                mSeatId = mCacheWinnerSeatIds[i];
-                mSeat = this.game.GetSeatByLocalSeatID(mSeatId);
-                if (null == mSeat || null == mSeat.Player) continue;
-                if (mTmpCardSorts.length > i) {
-                    if (mSeat.Player.userID != GameCache.Instance.CurGame.mainPlayer.userID) {
-                        mSeat.UpdateCardType(mSeat.Player.cardType, mTmpCardSorts[i], true);
-                    }
-                }
-            }
-        }
+        // 已删除：原此处有一段给"5张牌排序动画"做准备的废代码块，其动画调用全部被注释掉，
+        // 只剩一个错误的 mSeat.UpdateCardType(mSeat.Player.cardType, mTmpCardSorts[i], true) 副作用调用。
+        // 该代码块用 mCacheWinnerSeatIds（仅含赢家）的循环索引 i 去取 mTmpCardSorts（含所有玩家）的项，
+        // 导致索引错位 —— 赢家 seat 被传入前面某个输家的 winCardsList（甚至空数组）作为 hightCards，
+        // 覆盖了前面 1340 行 UpdateCardType 调用已经正确高亮的私牌（参考 Player.cards[i] == hightCards[j] 匹配），
+        // 表现为：赢家私牌先被设白色又被这次错误调用全部灰化。
+        // 第一次 UpdateCardType 调用（行 1340 附近）数据正确，能覆盖赢家高亮需求，所以直接删除此块即可。
         if (mCanPlayEndPublicCardsAnimation) {
             this.game.PlayEndPublicCardsAnimation(this.game.MessageWinnerData);
         }
@@ -1948,6 +1986,11 @@ export default class TexasGameProtocol {
                 ) {
                     UIComponent.Instance.Toast(StringHelper.Format(i18nMgr.Get('Addondz'), [StringHelper.GetSignedLongString(playerChipChange.change)]));
                 }
+                // 即时到账的补充筹码提示，对齐 Unity OnMsgChipsChange CcNone+change>0
+                if (playerChipChange.reason === 0 /* CC_NONE */ && playerChipChange.change > 0) {
+                    console.log(LN, `[BringIn-Toast] 来源=HANDLER_REQ_GAME_CHANGE_CHIPS(广播) | change=${playerChipChange.change}`);
+                    this.game.SetUCBringInTips(true, playerChipChange.change);
+                }
                 UIComponent.Instance.HideUI(PrefabUI.UIBringOut);
                 this.game.mainPlayer.cacheStoreChips = playerChipChange.storeChips;
             }
@@ -1993,10 +2036,17 @@ export default class TexasGameProtocol {
             return;
         }
         mSeat.Player.chips = rec.chips;
+        mSeat.Player.bringInChips = rec.chips;
+        // 待生效的补充筹码（下一手开始时清零生效），对齐 Unity _cacheAddChips
+        mSeat.Player.cacheAddChips = Math.max(0, rec.totalChips - rec.chips);
         //UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
         UIComponent.Instance.HideUI(PrefabUI.UIBringIn);
         mSeat.FsmLogicComponent.SM.ChangeState(SeatAddChips.Instance);
         mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+        // 补充筹码成功后的 toast（对齐 Unity OnMsgBringIn → SetUCBringInTips(false, chips)）
+        // seated=false: 由 SetUCBringInTips 内部按 isPlaying 判断弹"下一手前完成带入"
+        console.log(LN, `[BringIn-Toast] 来源=HANDLER_REQ_GAME_ADD_CHIPS(BringIn响应) | chips=${rec.chips}, totalChips=${rec.totalChips}`);
+        this.game.SetUCBringInTips(false, rec.chips);
     }
 
     /** 主动加入/退出鱿鱼轮返回 */

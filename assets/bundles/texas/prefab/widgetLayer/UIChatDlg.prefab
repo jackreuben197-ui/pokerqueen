@@ -361,7 +361,7 @@
       "__id__": 6
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 8
@@ -384,7 +384,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 700,
-      "height": 100.8
+      "height": 135.6
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -395,8 +395,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -415.765,
-        1100,
+        -423.511,
+        1110.365,
         0,
         0,
         0,
@@ -435,10 +435,10 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "房间名字",
-    "_N$string": "房间名字",
-    "_fontSize": 60,
-    "_lineHeight": 80,
+    "_string": "房间名\n#1234321432",
+    "_N$string": "房间名\n#1234321432",
+    "_fontSize": 50,
+    "_lineHeight": 60,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -1727,7 +1727,7 @@
       "ctor": "Float64Array",
       "array": [
         -117.376,
-        579,
+        563,
         0,
         0,
         0,
@@ -2415,7 +2415,7 @@
     "_left": 0,
     "_right": 0,
     "_top": 0,
-    "_bottom": 1773,
+    "_bottom": 1757,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,

@@ -29,6 +29,23 @@ export default class TexasGameUtils {
     constructor(private game: TexasGame) {}
 
     /**
+     * 重置卡牌高亮：清除 _hlRaised 标记，还原 y/scale 到高亮前的原始值。
+     * 用于新一局发牌或卡牌重置阶段，避免 _hlRaised 残留导致下次高亮无法触发偏移/放大。
+     * 节点上挂的属性：_hlRaised（是否已高亮）、_hlOrigY（原始 y）、_hlOrigScale（原始 scale）
+     */
+    public static ResetCardHighlight(node: cc.Node): void {
+        if (!node) return;
+        const n = node as any;
+        if (n._hlRaised) {
+            if (n._hlOrigY != null) node.y = n._hlOrigY;
+            if (n._hlOrigScale != null) node.scale = n._hlOrigScale;
+            delete n._hlRaised;
+            delete n._hlOrigY;
+            delete n._hlOrigScale;
+        }
+    }
+
+    /**
      * 请求进入房间
      * ProtocolAgency.Send 已统一处理 H5 桥接 / 直连路由，业务层无需关心
      */
@@ -189,26 +206,43 @@ export default class TexasGameUtils {
     }
 
     /// <summary>
-    /// 当有第二套牌时设置高亮手牌和公共牌
+    /// 双套牌摊牌后高亮公共牌：用服务器下发的 winCardsList/winCards2List 替代客户端 GetCardType 评估。
+    /// isFirst=true 处理第一套（listCards），isFirst=false 处理第二套（listSecondCards）。
+    /// 私牌高亮/灰化由 HandleTwoWinnerAnimation 中的 Seat.UpdateCardType / Seat.GrayAllCards 处理。
+    /// 参考 Unity TexasGameUtils.cs:326 SetWinnerCardsHighlight(publicCardInfos, cards, isFirst)。
     /// </summary>
-    /// <param name="publicCardInfos"></param>
-    public SetWinnerCardsHight(publicCardInfos: PublicCardInfo[], _cards: number[]): void {
-        let highlightCards_ref = { highlightCards: [] as number[] };
-        let cardType: CardType = this.game.GetCardType(highlightCards_ref, _cards);
-        let highlightCards = highlightCards_ref.highlightCards;
-        for (let i = 0, n = publicCardInfos.length; i < n; i++) {
-            publicCardInfos[i].imageSelect.node.active = false;
-            for (let j = 0, m = highlightCards.length; j < m; j++) {
-                if (publicCardInfos[i].cardId == highlightCards[j]) {
-                    publicCardInfos[i].imageSelect.node.active = true;
-                    break;
-                }
-            }
+    /// <param name="publicCardInfos">公牌 UI 列表（第一套或第二套）</param>
+    /// <param name="isFirst">true=第一套，false=第二套</param>
+    public SetWinnerCardsHight(publicCardInfos: PublicCardInfo[], isFirst: boolean): void {
+        // 双套玩法赢家判定：用 SplitResults[0/1].isWinner（参考 Unity TexasGameUtils.cs:342）
+        const pubHighlight = new Set<number>();
+        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+            const r = this.game.MessageWinnerData.resultsList[i];
+            if (r.standUp) continue;
+            if (!r.splitResultsList || r.splitResultsList.length < 2) continue;
+            const isWinner = isFirst ? r.splitResultsList[0].isWinner : r.splitResultsList[1].isWinner;
+            if (!isWinner) continue;
+            const cards = isFirst ? r.winCardsList : r.winCards2List;
+            cards.forEach(v => { if (v.isPublic) pubHighlight.add(v.card); });
         }
-        let Seat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
-        if (null != Seat) {
-            if (this.game.mainPlayer.cards.length > 3) {
-                Seat.UpdateCardType(cardType, highlightCards, true);
+        // 高亮的保持白色 + imageSelect 选框 + 上移30放大1.05；非高亮的灰化（与单套玩法 HandleMessageWinnerData 保持一致）
+        for (let i = 0, n = publicCardInfos.length; i < n; i++) {
+            const pub = publicCardInfos[i];
+            const inHl = pubHighlight.has(pub.cardId);
+            pub.imageSelect.node.active = inHl;
+            if (pub.imageCard) {
+                pub.imageCard.node.color = inHl ? cc.Color.WHITE : cc.Color.GRAY;
+                if (inHl) {
+                    const cardNode = pub.imageCard.node as any;
+                    if (!cardNode._hlRaised) {
+                        cardNode._hlRaised = true;
+                        cardNode._hlOrigY = pub.imageCard.node.y;
+                        cardNode._hlOrigScale = pub.imageCard.node.scaleX;
+                        cc.tween(pub.imageCard.node)
+                            .to(0.2, { y: pub.imageCard.node.y + 30, scale: 1.05 }, { easing: 'sineOut' })
+                            .start();
+                    }
+                }
             }
         }
     }

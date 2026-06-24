@@ -287,6 +287,7 @@ export default class UIBringIn<T extends keyof RoomDataBasicGC> extends UICompon
     private _autoBringInRange: number = 0;
     private _autoBringInMin: number = 0;
     // 状态变量
+    private addChipsData: AddChipsData = null;
     private mySelectWallet: IWallet = null;
     private currentSelect: number = 0;
     private walletToggles: cc.Toggle[] = [];
@@ -343,6 +344,7 @@ export default class UIBringIn<T extends keyof RoomDataBasicGC> extends UICompon
     }
 
     onShow(obj?: any): void {
+        this.addChipsData = obj as AddChipsData;
         this._updateDisplay();
     }
 

@@ -249,6 +249,7 @@ export default class ProtocolAgency extends cc.Component {
         }
         if (
             code < 1000 &&
+            code != ProtocolCode.Protocol_Holdem_Register &&
             code != ProtocolCode.Protocol_Holdem_Rooms &&
             code != ProtocolCode.Protocol_Holdem_MttDetail &&
             code != ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo &&
