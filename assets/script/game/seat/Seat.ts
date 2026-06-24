@@ -119,6 +119,8 @@ export default class Seat {
     private static readonly EMOJI_ANIM_BOTTOM_GAP = 10;
     /** 表情动画停留时长（秒），之后淡出 */
     private static readonly EMOJI_ANIM_HOLD = 5.0;
+    /** 表情语音叠加层音量（0~1）：主层 1.0 + 此层 ≈ 整体响度倍数，越大越响（文件本身偏小，叠加提升）*/
+    private static readonly EMOJI_SOUND_BOOST = 0.5;
     /** YouWin 胜利动画目标尺寸（像素，包围盒较大边缩放到此值；新骨骼原始尺寸过大，按需微调）*/
     private static readonly YOUWIN_TARGET_SIZE = 620;
     /** OtherWin（他人赢）胜利动画目标尺寸（像素，对手头像较小，取值更小；按需微调）*/
@@ -1956,7 +1958,11 @@ export default class Seat {
             if (err || !clip) return; // 无音频文件的表情直接静默
             try {
                 if (GC.sound && (GC.sound as any).soundOn === false) return;
-                cc.audioEngine.playEffect(clip, false);
+                // 表情语音文件录制音量偏小：主层满音量播放，再叠加一层同音效提升整体响度（约 1.5 倍，清晰但不过响）
+                const id1 = cc.audioEngine.playEffect(clip, false);
+                try { cc.audioEngine.setVolume(id1, 1.0); } catch (e) {}
+                const id2 = cc.audioEngine.playEffect(clip, false);
+                try { cc.audioEngine.setVolume(id2, Seat.EMOJI_SOUND_BOOST); } catch (e) {}
             } catch (e) {}
         });
     }
