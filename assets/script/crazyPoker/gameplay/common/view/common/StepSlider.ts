@@ -40,11 +40,33 @@ export default class StepSlider extends cc.Component {
 
     public onValueChanged: (progress: number) => void = null;
 
+    /** 滑动条轨道(底槽/进度条)的统一厚度（像素）。在代码里强制设置，避免依赖预制体重新导入。
+     *  对齐 Figma：细一点的轨道（之前 40 太粗），取较小值更接近设计。 */
+    private static readonly TRACK_THICKNESS = 18;
+
     onLoad() {
+        this._applyTrackThickness();
         this.updateColors();
         if (!CC_EDITOR) {
             this.slider.node.on('slide', this.onSlide, this);
             this.syncVisual(this.slider.progress);
+        }
+    }
+
+    /** 运行时强制加粗轨道（底槽、进度条容器、进度条填充），保证视觉一致且不受预制体缓存影响。 */
+    private _applyTrackThickness(): void {
+        const h = StepSlider.TRACK_THICKNESS;
+        if (this.bgSprite && this.bgSprite.node) {
+            this.bgSprite.node.height = h;
+        }
+        if (this.progressBar) {
+            if (this.progressBar.node) {
+                this.progressBar.node.height = h;
+            }
+            const bar = this.progressBar.barSprite;
+            if (bar && bar.node) {
+                bar.node.height = h;
+            }
         }
     }
 

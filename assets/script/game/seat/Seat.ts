@@ -1369,6 +1369,39 @@ export default class Seat {
                 }
             }
         }
+        // 红底黑字 + 整体放大，确保其他玩家也能清晰看到赢取金额（代码强制，不依赖预制体重新导入）
+        this._styleWinBubble();
+    }
+
+    /** 赢取金额气泡：对齐 Figma — 牌型文字常规黑色、金额加粗黑色、整体放大（红色背景由 winnum/winpokernnum 贴图提供）。
+     *  同时把气泡移到牌的下方、并置于最前层，避免被(其他玩家亮牌时的)手牌挡住看不清。 */
+    private static readonly WIN_BUBBLE_Y = -175; // 下移到牌下方（与保险倒计时气泡同高），原 -120 会被手牌遮挡
+    private static readonly WIN_BUBBLE_Z = 50;   // 提到最前，避免被 Cards/SmallCards 盖住
+    private _styleWinBubble(): void {
+        const SCALE = 1.3;
+        const black = cc.color(0, 0, 0);
+        const placeFront = (node: cc.Node) => {
+            if (!node) return;
+            node.zIndex = Seat.WIN_BUBBLE_Z;
+            node.y = Seat.WIN_BUBBLE_Y;
+        };
+        if (this.uirc?.winTypeNnum) {
+            this.uirc.winTypeNnum.scale = SCALE;
+            placeFront(this.uirc.winTypeNnum);
+            if (this.uirc.winTypeNnumPokerType) this.uirc.winTypeNnumPokerType.node.color = black;
+            if (this.uirc.winTypeNnumNum) {
+                this.uirc.winTypeNnumNum.node.color = black;
+                this.uirc.winTypeNnumNum.enableBold = true; // 金额加粗
+            }
+        }
+        if (this.uirc?.winNum) {
+            this.uirc.winNum.scale = SCALE;
+            placeFront(this.uirc.winNum);
+            if (this.uirc.winNumNum) {
+                this.uirc.winNumNum.node.color = black;
+                this.uirc.winNumNum.enableBold = true; // 金额加粗
+            }
+        }
     }
 
     /// <summary>
@@ -2422,6 +2455,9 @@ export default class Seat {
                 ]);
             }
         }
+        // 文案加粗加大、气泡放大，保证清晰易读（代码强制，避免依赖预制体重新导入）
+        this._styleInsuranceBubble(this.uirc.Image_BubbleInsuranceNum, false);
+        this._styleInsuranceBubble(this.uirc.Image_BubbleInsuranceToubao, true);
         // 让"投保/不保"结果气泡显示在头像上方（与购买中倒计时同位置、同置顶），不再卡在头像中间
         if (!this.IsMySeat) {
             const shown =
@@ -2431,6 +2467,22 @@ export default class Seat {
             this._moveInsuranceResultToTop(shown);
         }
         this.CloseInsuranceBaoBubaoBubble();
+    }
+
+    /** 强制设置"投保/不保"结果气泡的字体(加粗加大)与气泡尺寸，保证清晰易读（不依赖预制体重新导入） */
+    private _styleInsuranceBubble(bubble: cc.Node, isToubao: boolean): void {
+        if (!bubble) return;
+        // 气泡背景（9宫格自动拉伸）—— 回到较小尺寸，避免过大
+        bubble.setContentSize(isToubao ? 340 : 230, 108);
+        const textNode = bubble.getChildByName('Text');
+        if (!textNode) return;
+        textNode.setContentSize(isToubao ? 312 : 202, 90);
+        const lab = textNode.getComponent(cc.Label);
+        if (!lab) return;
+        lab.fontSize = 44;            // 字号
+        lab.lineHeight = 44;
+        (lab as any).enableBold = true; // 加粗，文字更清晰
+        lab.overflow = cc.Label.Overflow.SHRINK; // 文案过长时收缩，避免溢出气泡
     }
 
     /** "投保/不保"结果气泡的原始层级，用于复位 */
