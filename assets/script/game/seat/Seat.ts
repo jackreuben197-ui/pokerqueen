@@ -1470,6 +1470,7 @@ export default class Seat {
         const bubble = this.uirc?.Image_Bubble;
         if (bubble && bubble.parent && node.parent) {
             const worldPos = bubble.parent.convertToWorldSpaceAR(bubble.position);
+            worldPos.y += Seat.INSURANCE_BUBBLE_UP_OFFSET; // 略微上移，避免遮挡头像上方的手牌
             node.setPosition(node.parent.convertToNodeSpaceAR(worldPos));
             return;
         }
@@ -2469,6 +2470,9 @@ export default class Seat {
         this.CloseInsuranceBaoBubaoBubble();
     }
 
+    /** 保险倒计时/投保结果气泡相对下注气泡再上移的像素（避免遮挡头像上方的手牌） */
+    private static readonly INSURANCE_BUBBLE_UP_OFFSET = 40;
+
     /** 强制设置"投保/不保"结果气泡的字体(加粗加大)与气泡尺寸，保证清晰易读（不依赖预制体重新导入） */
     private _styleInsuranceBubble(bubble: cc.Node, isToubao: boolean): void {
         if (!bubble) return;
@@ -2503,6 +2507,7 @@ export default class Seat {
         } else {
             worldPos = node.parent.convertToWorldSpaceAR(node.position);
         }
+        worldPos.y += Seat.INSURANCE_BUBBLE_UP_OFFSET; // 略微上移，避免遮挡头像上方的手牌
         if (node.parent !== topParent) node.parent = topParent;
         node.setPosition(topParent.convertToNodeSpaceAR(worldPos));
         node.zIndex = cc.macro.MAX_ZINDEX;
