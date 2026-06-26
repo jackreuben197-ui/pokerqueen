@@ -16,10 +16,13 @@ import WebImageHelper from '../../../../../helper/WebImageHelper';
 import HttpRequest from '../../../../../net/https/HttpRequest';
 import { WebChatRoomMessageSync } from '../../../../../net/https/web_request/WebRequestChat';
 import DanmuManager from './DanmuManager';
+import PublicCacheReader from '../../../../../tools/PublicCacheReader';
 
 const { ccclass, property } = cc._decorator;
 /** 聊天模式：chatOnly = 只发聊天（默认），danmuAndChat = 同时发弹幕+聊天 */
 type ChatMode = 'chatOnly' | 'danmuAndChat';
+/** 当前快捷语显示的语言（中文） */
+const QUICK_MESSAGE_LANG = 'zh';
 
 @ccclass
 export default class UIChatDlg extends UIBasePlus {
@@ -52,6 +55,16 @@ export default class UIChatDlg extends UIBasePlus {
     /** 欢迎语节点（开场白） */
     private _welcomeNode: cc.Node = null;
     private _welcomeLabel: cc.Label = null;
+    /** 快捷语面板根节点（chatTemplate，含 cc.Layout 垂直排列子节点） */
+    private _chatTemplateNode: cc.Node = null;
+    /** 快捷语单条模板节点（chatBg，复制后填充文案） */
+    private _chatItemTemplate: cc.Node = null;
+    /** 触发显示/隐藏快捷语面板的按钮（chatTemplateBtn） */
+    private _chatTemplateBtn: cc.Node = null;
+    /** 当前快捷语面板是否展开 */
+    private _chatTemplatePanelActive: boolean = false;
+    /** 是否成功加载过快捷语（用于决定 chatTemplateBtn 是否可点） */
+    private _chatTemplateLoaded: boolean = false;
 
     protected override lateLoad(): void {
         super.lateLoad();
@@ -137,6 +150,24 @@ export default class UIChatDlg extends UIBasePlus {
             }
             this._updateChatModeUI();
         }
+        // 快捷语面板：chatTemplateBtn 触发显示/隐藏，chatTemplate 是垂直 Layout 容器，
+        // 其下的 chatItem 节点是单条模板（带背景 Sprite + chatContent Label）。
+        // 首次进入时把 chatItem 从父节点移出作为隐藏模板，避免被 cc.Layout 算进布局占位。
+        this._chatTemplateBtn = this.node.getChildByName('chatTemplateBtn');
+        if (this._chatTemplateBtn) {
+            this.setButtonClick(this._chatTemplateBtn, this.click_toggleChatTemplate);
+        }
+        this._chatTemplateNode = this.node.getChildByName('chatTemplate');
+        if (this._chatTemplateNode) {
+            this._chatItemTemplate = this._chatTemplateNode.getChildByName('chatItem');
+            if (this._chatItemTemplate) {
+                // 从父节点移出（保留所有子节点和组件），后续用 cc.instantiate 复制
+                this._chatItemTemplate.removeFromParent(false);
+                this._chatItemTemplate.active = false;
+            }
+            // 默认隐藏面板，等数据加载后才允许显示
+            this._chatTemplateNode.active = false;
+        }
     }
 
     onShow(param?: any): void {
@@ -173,6 +204,72 @@ export default class UIChatDlg extends UIBasePlus {
         }
         // 获取俱乐部开场白
         this._fetchAndDisplayPrologue();
+        // 异步加载快捷语（从 H5 的 public_cache.app_config.game_quick_message_config 读取）
+        // 读取成功前 chatTemplateBtn 即使被点击也只是无操作（_chatTemplateLoaded 守卫）
+        this._loadQuickMessages();
+    }
+
+    /**
+     * 异步加载快捷语列表并填充到 chatTemplate 容器。
+     * 读不到（库不存在 / 字段为空）就静默不显示，chatTemplateBtn 也不可激活面板。
+     */
+    private async _loadQuickMessages(): Promise<void> {
+        const messages = await PublicCacheReader.readQuickMessages(QUICK_MESSAGE_LANG);
+        if (!cc.isValid(this.node)) return;
+        if (!messages || messages.length === 0) {
+            // 没数据：标记未加载，按钮点击时不会激活面板
+            this._chatTemplateLoaded = false;
+            return;
+        }
+        this._setChatTemplates(messages);
+        this._chatTemplateLoaded = true;
+    }
+
+    /**
+     * 把快捷语数组填充到 chatTemplate 容器：对每条文案 instantiate 一份 chatBg 模板，
+     * 设置 Label.string，绑定点击 → 填入输入框。cc.Layout 自动垂直排列。
+     */
+    private _setChatTemplates(messages: string[]): void {
+        if (!this._chatTemplateNode || !this._chatItemTemplate) return;
+        // 清掉之前可能的子节点（保留容器本身和 Layout 组件）
+        this._chatTemplateNode.removeAllChildren();
+        for (const text of messages) {
+            const item = cc.instantiate(this._chatItemTemplate);
+            item.active = true;
+            const labelNode = item.getChildByName('chatContent');
+            if (labelNode) {
+                const label = labelNode.getComponent(cc.Label);
+                if (label) label.string = text;
+            }
+            // 点击这条快捷语 → 填入输入框 + 自动收起面板
+            // 用闭包绑定当前 text，避免 cc 事件回调 this 指针 / 参数问题
+            const onClick = () => this._onChatTemplateClick(text);
+            item.on(cc.Node.EventType.TOUCH_END, onClick, this);
+            this._chatTemplateNode.addChild(item);
+        }
+    }
+
+    /** chatTemplateBtn 点击：切换面板显示/隐藏。未加载到数据时无操作。 */
+    private click_toggleChatTemplate(): void {
+        if (!this._chatTemplateNode) return;
+        if (!this._chatTemplateLoaded) return;
+        this._chatTemplatePanelActive = !this._chatTemplatePanelActive;
+        this._chatTemplateNode.active = this._chatTemplatePanelActive;
+    }
+
+    /**
+     * 点击某条快捷语：填入输入框等用户继续编辑或回车发送。
+     * 设计上不直接发送，让用户有机会检查 / 修改文案。
+     */
+    private _onChatTemplateClick(text: string): void {
+        if (this._editBox) {
+            this._editBox.string = text;
+        }
+        // 选完即收起面板，避免遮挡聊天列表
+        this._chatTemplatePanelActive = false;
+        if (this._chatTemplateNode) {
+            this._chatTemplateNode.active = false;
+        }
     }
 
     protected override lateClose(param?: any): void {
@@ -181,6 +278,11 @@ export default class UIChatDlg extends UIBasePlus {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_BroadcastMsg, this._onSendChatResponse, this);
         // 断开 ChatManager 实时回调
         ChatManager.Instance.onNewMessage = null;
+        // 关闭面板，避免下次打开还残留展开状态
+        this._chatTemplatePanelActive = false;
+        if (this._chatTemplateNode) {
+            this._chatTemplateNode.active = false;
+        }
     }
 
     /**
