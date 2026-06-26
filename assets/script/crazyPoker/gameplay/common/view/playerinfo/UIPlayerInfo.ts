@@ -153,6 +153,26 @@ export default class UIPlayerInfo extends UIBasePlus {
         this.refreshDataDescriptions();
         this.initOpButtonEvents();
         this.initPropNodes();
+        this._forceLocalizeLabels();
+    }
+
+    /** 代码强制把几个写死的英文标签改成中文（预制体在 bundle 里改了不一定生效，这里兜底） */
+    private _forceLocalizeLabels(): void {
+        // 标签页：数据 / 赠送钻石（中间 All In 保留）
+        if (this._tabLabels) {
+            if (this._tabLabels[0]) this._tabLabels[0].string = '数据';
+            if (this._tabLabels[2]) this._tabLabels[2].string = '赠送钻石';
+        }
+        // 备注前缀（noteNode 自身的 Label，子节点 playerNote 是可编辑备注，不动）
+        const noteNode = this.$HeadImgNode ? this.$HeadImgNode.getChildByName('noteNode') : null;
+        const noteLab = noteNode ? noteNode.getComponent(cc.Label) : null;
+        if (noteLab) noteLab.string = '备注：';
+        // 钻石余额前缀
+        const dlg = this._dlgNode || (this.node ? this.node.getChildByName('PlayerInfoDlg') : null);
+        const diamondShow = dlg ? dlg.getChildByName('$DiamondShow') : null;
+        const balNode = diamondShow ? diamondShow.getChildByName('New Label') : null;
+        const balLab = balNode ? balNode.getComponent(cc.Label) : null;
+        if (balLab) balLab.string = '钻石余额：';
     }
 
     private initTabs(): void {
