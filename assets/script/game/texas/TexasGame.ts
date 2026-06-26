@@ -2154,32 +2154,15 @@ export default class TexasGame {
                     }
                     seatedData.bringIn = returnAmount;
                     seatedData.clubId = response.data.last_bring_out.club_id;
-                    // 钱包够,没输光(反桌)
-                    if (bringToTable > 0) {
-                        // 没有藏钱直接坐下
-                        if (retainDetail.RetainType == RoomInfo.RetainType.RT_DISABLE || ( retainDetail.RetainType == RoomInfo.RetainType.RT_AUTO  && bringToTable >= seatedData.autoOnTable)) {
-                            ProtocolAgency.Send<ClientMessageSeated.AsObject>({
-                                Code: ProtocolCode.Protocol_Holdem_Seated,
-                                RoomID: GameCache.Instance.room_id,
-                                MatchID: GameCache.Instance.match_id,
-                                Body: seatedData
-                            });
-                        }
-                        // 如果有藏钱的逻辑(还要保留最小上桌)
-                        if (retainDetail.RetainType ==  RoomInfo.RetainType.RT_MANUAL) {
-                            if (bringToTable >= retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2) {
-                                //手动逻辑自己管理Store
-                                seatedData.store = bringToTable - retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2;
-                            }
-                            ProtocolAgency.Send<ClientMessageSeated.AsObject>({
-                                Code: ProtocolCode.Protocol_Holdem_Seated,
-                                RoomID: GameCache.Instance.room_id,
-                                MatchID: GameCache.Instance.match_id,
-                                Body: seatedData
-                            });
-                        }
+                    // 🆕 跟 Unity 对齐：反桌时不自动发 Seated 协议（避免重复发送 + "没有带出无法返回" 错误）
+                    //   Unity 在 TexasGameMessageHandler.cs:4748 反桌时只设置 _isReturnTable 标识，不发协议
+                    //   用户在 UI 点"确定"后由 _commitBringInCallback 触发 Seated
+                    // 手动藏钱逻辑：预设 store 字段（用户在 UI 里可调整，对应 Unity RT_MANUAL 分支的计算）
+                    if (retainDetail.RetainType == RoomInfo.RetainType.RT_MANUAL
+                        && bringToTable >= retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2) {
+                        seatedData.store = bringToTable - retainDetail.RetainMinRate * GameCache.Instance._roomRecord.sb * 2;
                     }
-                    // 其他都需要弹窗口输入
+                    // 弹窗口让用户确认（与 Unity 行为一致）
                     UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
                     return;
                 }
@@ -2216,17 +2199,8 @@ export default class TexasGame {
                     const bringToTable = response.data.last_bring_out.to_wallet + response.data.last_bring_out.fee - GameCache.Instance._texasData._deposit;
                     seatedData.bringIn = returnAmount;
                     seatedData.clubId = response.data.last_bring_out.club_id;
-                    // 钱包够,没输光(反桌)
-                    if (bringToTable > 0) {
-                        ProtocolAgency.Send<ClientMessageSeated.AsObject>({
-                            Code: ProtocolCode.Protocol_Holdem_Seated,
-                            RoomID: GameCache.Instance.room_id,
-                            MatchID: GameCache.Instance.match_id,
-                            Body: seatedData
-                        });
-                        return;
-                    }
-                    // 其他都需要弹窗口输入
+                    // 🆕 跟 Unity 对齐：反桌时不自动发 Seated 协议，只打开 UI 让用户确认
+                    //   用户在 UI 点"确定"后由 _commitBringInCallback 触发 Seated
                     UIComponent.open<AddChipsData>(UIDefine.UIGameplayAddChipsAndDiamond, addChipData);
                     return;
                 }
