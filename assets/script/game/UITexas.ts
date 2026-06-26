@@ -524,6 +524,11 @@ export default class UITexas extends BaseScene {
         this.game = GameCache.Instance.CurGame;
         // 设置UI对象
         this.game.uirc = this;
+        // 修复：EnterRoom 协议可能在 UITexas.Enter 之前到达，那时 game.uirc=null，
+        // squidFeature.RefreshGlobalRemain 会命中 if(!node)return 静默退出，
+        // 桌面剩余鱿鱼图标保持 lateLoad 设的 active=false 而不显示。
+        // uirc 绑定后兜底重刷一次，确保鱿鱼桌能正确激活图标。
+        this.game.RefreshSquidMarks();
         // 设置公共牌位置
         this.game.InitPublicLocalPos();
         // 是否是观看(MTT)

@@ -61,32 +61,24 @@ export default class ProcedureInit extends ProcedureBase {
     /**
      * 检测当前是否处于 Telegram 环境且软键盘已弹出。
      *
-     * ⚠️ 3 路判断 fallback（跟 H5 层 isKeyboardOpen 一致），任一命中即认为键盘弹出：
-     *  (a) Telegram SDK viewportStableHeight - viewportHeight > 50px（Android Telegram）
-     *  (b) visualViewport.height / innerHeight < 0.75（W3C 标准）
-     *  (c) innerHeight / screen.height < 0.6（兜底）
+     * ⚠️ 主信号：H5 层 focusin/focusout 驱动的 window.__TG_KEYBOARD_OPEN__ 标志
+     *    （DOM 焦点事件，跟物理键盘状态强绑定，不受机型/屏幕高度/键盘高度影响）
      *
-     * ⚠️ iOS Telegram 实测发现：键盘弹出时 SDK 的 stableHeight 和 viewportHeight 同步变小
-     *    （都是 476），diff=0 永远命中不了 (a)。必须用 (b)(c) 兜底，否则守卫失效。
+     * 替代了之前的 3 路阈值判断（SDK viewportHeight 差值 + visualViewport + innerHeight/screen.height）：
+     * 阈值 0.6 在大屏机型（iPhone 16 Pro，screen.height≈874）上会踩边界失效——键盘弹出后
+     * innerHeight/screen.height 可能 ≈0.61~0.65 > 0.6，导致守卫不命中、画面变形。
      *
-     * 标准浏览器（Safari/Chrome）无 window.Telegram.WebApp，第一步直接 return false，
+     * 标志由 H5 层 setupTelegramKeyboardFix 维护：
+     *  - focusin（input/textarea 获得焦点）→ true
+     *  - focusout（延迟 200ms，input 间切换不触发）→ false
+     *
+     * 标准浏览器（Safari/Chrome）无 window.Telegram.WebApp，第一步 return false，
      * 不影响现有 Safari/Chrome 软键盘弹出后的适配逻辑。
      */
     private static isTelegramKeyboardOpen(): boolean {
         const tg = (window as any).Telegram?.WebApp;
         if (!tg) return false;
-        // (a) Telegram SDK viewportHeight 差值
-        if (tg.viewportHeight != null && tg.viewportStableHeight != null) {
-            const diff = tg.viewportStableHeight - tg.viewportHeight;
-            if (diff > 50) return true;
-        }
-        // (b) visualViewport（iOS Telegram 上 SDK 字段同步变小，必须用 vv 兜底）
-        const vv = (window as any).visualViewport;
-        if (vv && window.innerHeight > 0 && vv.height / window.innerHeight < 0.75) return true;
-        // (c) screen 兜底
-        if (window.screen && window.screen.height > 0
-            && window.innerHeight / window.screen.height < 0.6) return true;
-        return false;
+        return (window as any).__TG_KEYBOARD_OPEN__ === true;
     }
 
     /**
