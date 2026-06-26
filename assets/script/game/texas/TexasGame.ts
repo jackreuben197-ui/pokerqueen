@@ -583,7 +583,22 @@ export default class TexasGame {
         this.jackpotFeature = new TexasGameJackpot(this);
         this.throwPropMgr = new ThrowPropManager(this);
         this.seatMoveStruct = new SeatMoveStruct();
+        this._migratePokerTypeDefault();
         this.RCInit();
+    }
+
+    /** 一次性：清除历史遗留的牌面选择(例如设备上残留的第3套牌)，回到默认第一套牌。
+     *  只执行一次(用 flag 记录)，之后用户在设置里选的牌面照常保存生效。 */
+    private _migratePokerTypeDefault(): void {
+        const FLAG = 'SettingPokerTypeResetV1';
+        try {
+            if (!GC.localStore.getItem(FLAG)) {
+                GC.localStore.setItem(StorageKey.SettingPokerType, String(TexasConfig.DefaultPokerType));
+                GC.localStore.setItem(FLAG, '1');
+            }
+        } catch (e) {
+            // ignore
+        }
     }
 
     protected RCInit() {
@@ -814,7 +829,8 @@ export default class TexasGame {
     //////////////////////////////////////////////////////////////////////////
     /////////////////////////////////扑克样式/////////////////////////////////
     public get pokerType() {
-        this.setting.pokerType == null && (this.setting.pokerType = +(GC.localStore.getItem(StorageKey.SettingPokerType) ?? TexasConfig.DefaultDeskType));
+        // 默认用第一套牌(DefaultPokerType=0)；原来误用 DefaultDeskType
+        this.setting.pokerType == null && (this.setting.pokerType = +(GC.localStore.getItem(StorageKey.SettingPokerType) ?? TexasConfig.DefaultPokerType));
         return this.setting.pokerType;
     }
 
