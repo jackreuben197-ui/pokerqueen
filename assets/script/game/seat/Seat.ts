@@ -1718,7 +1718,7 @@ export default class Seat {
         }
         // 挂到座位节点下，与 Spine_Winner 同级
         this.ui.addChild(spineNode);
-        // 播放 animation，不循环
+        // 播放 animation，不循环（cocos spine 默认行为：播完后停在最后一帧）
         skeleton.setAnimation(0, 'animation', false);
         // 下一帧恢复透明度，此时动画已从第0帧开始正常推进
         skeleton.scheduleOnce(() => {
@@ -1726,14 +1726,9 @@ export default class Seat {
                 spineNode.opacity = 255;
             }
         }, 0);
-        skeleton.setCompleteListener(() => {
-            if (spineNode.isValid) {
-                spineNode.destroy();
-            }
-            if (this._allinSpineNode === spineNode) {
-                this._allinSpineNode = null;
-            }
-        });
+        // 🆕 动画播放完成后节点保留，停在最后一帧，直到当前这手牌结束。
+        //   一手牌结束时 StopAllinArmature 会被调用清理（SeatFSM.ts:411 新一手 Enter / :216 StartToPlayingEnter）。
+        //   所以这里不再注册 setCompleteListener 销毁节点，保持 spine 停在最后一帧的视觉。
         this._allinSpineNode = spineNode;
     }
 
