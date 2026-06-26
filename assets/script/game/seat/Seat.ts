@@ -686,8 +686,9 @@ export default class Seat {
                 break;
             case Def.Action.STRADDLE:
                 this.ShowBubbleBG(this.uirc.Image_Bubble, 'straddle');
-                this.uirc.textBubble.string = 'Straddle';
-                this.uirc.textBubble.node.active = false;
+                // 原来 string='Straddle' 但隐藏了文字节点 → 只剩一个空白气泡。改为显示中文“强抓”
+                this.uirc.textBubble.string = '强抓';
+                this.uirc.textBubble.node.active = true;
                 this.StopAllinArmature();
                 break;
             default:
@@ -1699,7 +1700,12 @@ export default class Seat {
     public FoldHeadGray(active: boolean): void {
         this.uirc.Gray_Head.active = active;
         // 同步显示/隐藏弃牌文字标识，所有调用路径（FSM、协议同步等）自动生效
-        if (this.uirc.foldText) this.uirc.foldText.active = active;
+        if (this.uirc.foldText) {
+            this.uirc.foldText.active = active;
+            // 代码强制中文“弃牌”，避免预制体残留英文 Fold（且不依赖预制体重新导入）
+            const foldLab = this.uirc.foldText.getComponent(cc.Label) || this.uirc.foldText.getComponentInChildren(cc.Label);
+            if (foldLab && foldLab.string !== '弃牌') foldLab.string = '弃牌';
+        }
         if (this.IsMySeat) {
             let mCardUiInfo: CardUIInfo = null;
             for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
