@@ -18,6 +18,10 @@ interface PropAnimConfig {
     /** 可选：true 表示动画本身已包含位移/内部运动（如开枪喷火、摸头），
      *  直接在目标位置静止播放 anims[0]，不要再用tween搬动节点（否则整段动画被拖着走）。 */
     atTarget?: boolean;
+    /** 命中音效相对“命中动画开始”的延迟秒数（默认0=命中即响，和动画同步）。 */
+    soundDelay?: number;
+    /** 飞行段时长覆盖(秒)。不设则用飞行动画真实时长(限幅)；用于让飞行更快/更慢。 */
+    flyDur?: number;
 }
 
 /**
@@ -29,6 +33,8 @@ export default class ThrowPropManager {
     private skeletonCache: Map<string, sp.SkeletonData> = new Map();
     /** 音效文件路径前缀 */
     private static readonly SOUND_PREFIX = 'sound/PropOp/';
+    /** 头像上播放的特效统一缩放系数（缩小一点，避免盖住头像） */
+    private static readonly AVATAR_ANIM_SCALE = 0.7;
     /** 道具偏移量→音效文件名映射 (不含扩展名) */
     private static readonly SOUND_MAP: Record<number, string> = {
         0: 'sfx_tomato_mus', // 番茄
@@ -39,18 +45,18 @@ export default class ThrowPropManager {
         5: 'sfx_touch_mus', // 摸头
         6: 'sfx_shark_mus', // 鲨鱼
         7: 'sfx_zhuaji_mus', // 抓鸡
-        11: 'sfx_baseball' // 棒球
+        11: 'sfx_shark_mus' // 炸弹：按需改用鲨鱼音效(鲨鱼本身改为静音)
     };
     /** 12个道具的动画配置，索引0=type600(番茄) ... 索引11=type611(棒球) */
     private static readonly CONFIGS: PropAnimConfig[] = [
-        // 0: 番茄(600)→新dirt — 模式A（分段：dirt_flying 飞行 → dirt_splash 溅落，按动画真实时序衔接）
-        { pattern: 'A', spines: ['spine/Expression_Tomato/skeleton'], anims: ['dirt_splash'], flyAnim: 'dirt_flying' },
+        // 0: 番茄(600)→新dirt — 分段：dirt_flying 飞行 → dirt_splash 溅落；音效素材(sfx_tomato_mus)起音稍慢，提前0.2s播放对齐
+        { pattern: 'A', spines: ['spine/Expression_Tomato/skeleton'], anims: ['dirt_splash'], flyAnim: 'dirt_flying', soundDelay: -0.2 },
         // 1: 花环(601)→新nice-hand — 模式A
         { pattern: 'A', spines: ['spine/Expression_Flower/skeleton'], anims: ['hand_wave'] },
         // 2: 亲吻(602)→新Kiss — 模式A
         { pattern: 'A', spines: ['spine/Expression_Kiss/kiss'], anims: ['lip_kissing'] },
-        // 3: 大拇指(603)→新Thumbs up — 模式A（分段：fist_flying 飞行 → thumbs_up 命中）
-        { pattern: 'A', spines: ['spine/Expression_Good/skeleton'], anims: ['thumbs_up'], flyAnim: 'fist_flying' },
+        // 3: 大拇指(603)→新Thumbs up — 模式A（分段：fist_flying 飞行 → thumbs_up 命中）；飞行加快(0.5s)
+        { pattern: 'A', spines: ['spine/Expression_Good/skeleton'], anims: ['thumbs_up'], flyAnim: 'fist_flying', flyDur: 0.5 },
         // 4: 干杯(604)→新beer — 单骨骼，改模式A
         { pattern: 'A', spines: ['spine/Expression_Beer/cheers_2'], anims: ['beer_cheers'] },
         // 5: 摸头(605)→新hand pat — 模式A，atTarget：动画自带摸头动作，直接在目标头顶静止播放一次
@@ -59,8 +65,8 @@ export default class ThrowPropManager {
         { pattern: 'C', spines: ['spine/Expression_Shark/shark'], anims: ['shark_rising', 'shark_shadow', 'babyshark'] },
         // 7: 抓鸡(607)→新hen — 模式C (伸手飞行 hand_flying + 目标处母鸡挣扎 hen_struggling)
         { pattern: 'C', spines: ['spine/Expression_Chicken/chicken_spine'], anims: ['hand_flying', 'hen_struggling'] },
-        // 8: 拳击(608)→新gun — 模式A，atTarget：bullets-fireballs 含开枪+火球飞行(7根骨骼内部位移)，在目标处静止播放
-        { pattern: 'A', spines: ['spine/Expression_Box/box_local'], anims: ['bullets-fireballs'], atTarget: true },
+        // 8: 拳击(608)→新gun — 模式D(自定义)：枪停在发送者头像，子弹/火球朝目标飞去(旋转对准+缩放够到)
+        { pattern: 'D', spines: ['spine/Expression_Box/box_local'], anims: ['bullets-fireballs'] },
         // 9: 撒钱 (609) — 模式C (简化，无伸手)
         { pattern: 'C', spines: ['spine/Expression_Money/attachments'], anims: ['attachments_1_receive'] },
         // 10: 鱼头 (610) — 模式D
@@ -80,6 +86,10 @@ export default class ThrowPropManager {
 
     constructor(game: TexasGame) {
         this.game = game;
+        // 进桌即预加载所有道具音效，保证首次投掷音效也能与动画同步（不受加载延迟影响）
+        const extra = ['sfx_money', 'sfx_beer_screen'];
+        const names = new Set<string>([...Object.keys(ThrowPropManager.SOUND_MAP).map(k => ThrowPropManager.SOUND_MAP[+k]), ...extra]);
+        names.forEach(n => this.preloadSound(n));
     }
 
     // ─── 公开接口 ───
@@ -93,6 +103,8 @@ export default class ThrowPropManager {
         console.log(LN, 'senderSeat=', !!senderSeat, 'targetSeat=', !!targetSeat, 'target_user_id=', broadcastMsg.target_user_id);
         if (!senderSeat || !targetSeat) return;
         const config = ThrowPropManager.CONFIGS[offset];
+        // 立即预加载该道具音效，飞行期间完成加载，命中时即时播放，避免音效比动画慢
+        this.preloadSound(ThrowPropManager.SOUND_MAP[offset]);
         console.log(LN, '播放道具动画 type=', broadcastMsg.type, 'pattern=', config.pattern);
         switch (config.pattern) {
             case 'A':
@@ -170,11 +182,12 @@ export default class ThrowPropManager {
     }
 
     /** 创建一个 Spine 动画节点并添加到父节点 */
-    private createSpineNode(skeletonData: sp.SkeletonData, animName: string, loop: boolean, parentNode: cc.Node, localPos: cc.Vec3): cc.Node {
+    private createSpineNode(skeletonData: sp.SkeletonData, animName: string, loop: boolean, parentNode: cc.Node, localPos: cc.Vec3, scale: number = 1): cc.Node {
         const node = new cc.Node('PropSpine');
         const skeleton = node.addComponent(sp.Skeleton);
         skeleton.skeletonData = skeletonData;
         node.parent = parentNode;
+        node.scale = scale;
         node.setPosition(localPos);
         // 设置完 parent 后再播放动画
         skeleton.setAnimation(0, animName, loop);
@@ -199,12 +212,32 @@ export default class ThrowPropManager {
             .start();
     }
 
-    /** 播放道具音效 */
+    /** 音效缓存：预加载后即可即时播放，避免每次 load 的异步延迟导致音效比动画慢半拍 */
+    private audioClips: Map<string, cc.AudioClip> = new Map();
+
+    /** 预加载音效到缓存（在投掷开始时调用，飞行期间完成加载，命中时即可即时播放） */
+    private preloadSound(name: string): void {
+        if (!name || this.audioClips.has(name)) return;
+        this.audioClips.set(name, null); // 占位：标记加载中，避免重复加载
+        const path = ThrowPropManager.SOUND_PREFIX + name;
+        cc.resources.load(path, cc.AudioClip, (err, clip: cc.AudioClip) => {
+            if (!err && clip) this.audioClips.set(name, clip);
+            else this.audioClips.delete(name);
+        });
+    }
+
+    /** 播放道具音效：命中缓存则即时播放(无延迟)；否则加载后播放并缓存 */
     private playSound(name: string): void {
         if (!name) return;
+        const cached = this.audioClips.get(name);
+        if (cached) {
+            cc.audioEngine.playEffect(cached, false);
+            return;
+        }
         const path = ThrowPropManager.SOUND_PREFIX + name;
         cc.resources.load(path, cc.AudioClip, (err, clip: cc.AudioClip) => {
             if (!err && clip) {
+                this.audioClips.set(name, clip);
                 cc.audioEngine.playEffect(clip, false);
             }
         });
@@ -256,10 +289,7 @@ export default class ThrowPropManager {
         const root = this.getAnimRoot();
         if (!root) return;
         const soundName = ThrowPropManager.SOUND_MAP[offset];
-        // 亲吻：飞行开始时立即播放一次声音
-        if (offset === 2) {
-            this.playSound(soundName);
-        }
+        const soundDelay = config.soundDelay != null ? config.soundDelay : 0; // 默认命中即响
         this.loadSkeleton(config.spines[0])
             .then(skeletonData => {
                 if (!cc.isValid(root)) return;
@@ -270,18 +300,31 @@ export default class ThrowPropManager {
                 const skeleton = node.addComponent(sp.Skeleton);
                 skeleton.skeletonData = skeletonData;
                 node.parent = root;
+                node.scale = ThrowPropManager.AVATAR_ANIM_SCALE; // 缩小头像上的特效
                 node.setPosition(startPos);
+
+                // 从投掷开始计时调度音效：在“命中时刻 + soundDelay”播放。
+                // soundDelay 可为负=提前播放(用于音效素材本身起音稍慢、听起来偏晚的情况)。
+                const scheduleSound = (impactTime: number) => {
+                    if (!soundName) return;
+                    const t = Math.max(0, impactTime + soundDelay);
+                    if (t <= 0.001) {
+                        this.playSound(soundName);
+                    } else {
+                        cc.tween(root).delay(t).call(() => this.playSound(soundName)).start();
+                    }
+                };
 
                 // 动画自带内部运动（开枪/摸头）：直接在目标处静止播放，不要搬动节点
                 if (config.atTarget) {
                     node.setPosition(endPos);
                     if (config.anims[0]) skeleton.setAnimation(0, config.anims[0], false);
                     this.destroyAfterComplete(node, 4);
-                    if (soundName && offset !== 2) this.playSound(soundName);
+                    scheduleSound(0);
                     return;
                 }
 
-                // 到达目标后：播放命中段（如有）并延迟1秒播放音效（保证只触发一次）
+                // 到达目标后：播放命中段（音效已独立调度，保证只触发一次）
                 let arrived = false;
                 const onArrive = () => {
                     if (arrived || !cc.isValid(node)) return;
@@ -294,19 +337,14 @@ export default class ThrowPropManager {
                         // 没有独立命中段（如棒球：飞行即全部），到达后短暂保留再销毁
                         this.destroyAfterDelay(node, 0.5);
                     }
-                    if (soundName && offset !== 2) {
-                        cc.tween(root)
-                            .delay(1.0)
-                            .call(() => this.playSound(soundName))
-                            .start();
-                    }
                 };
 
                 if (config.flyAnim) {
-                    // 分段动画：飞行过程中播放“飞行段”，时长按动画真实时长，播完(到达)再衔接命中段
+                    // 分段动画：飞行过程中播放“飞行段”，到达再衔接命中段
                     const entry = skeleton.setAnimation(0, config.flyAnim, false);
-                    let flyDur = this.getEntryDuration(entry, 0.5);
+                    let flyDur = config.flyDur != null ? config.flyDur : this.getEntryDuration(entry, 0.5);
                     flyDur = Math.max(0.3, Math.min(flyDur, 2.0));
+                    scheduleSound(flyDur); // 命中时刻=飞行结束
                     cc.tween(node).to(flyDur, { x: endPos.x, y: endPos.y }, { easing: 'quadInOut' }).start();
                     // 飞行动画自然播完=到达目标，再播命中段（用动画真实结束事件衔接，避免硬编码延时）
                     skeleton.setCompleteListener(() => {
@@ -319,7 +357,8 @@ export default class ThrowPropManager {
                         .call(() => onArrive())
                         .start();
                 } else {
-                    // 无独立飞行段：移动到目标后再播放命中段（原有时序）
+                    // 无独立飞行段：移动0.5s到目标后播放命中段
+                    scheduleSound(0.5); // 命中时刻=移动结束
                     cc.tween(node)
                         .to(0.5, { x: endPos.x, y: endPos.y }, { easing: 'quadInOut' })
                         .call(() => onArrive())
@@ -359,6 +398,7 @@ export default class ThrowPropManager {
                 const skeleton = node.addComponent(sp.Skeleton);
                 skeleton.skeletonData = skeletonData;
                 node.parent = root;
+                node.scale = ThrowPropManager.AVATAR_ANIM_SCALE;
                 node.setPosition(startPos);
                 cc.tween(node)
                     .to(0.5, { x: endPos.x, y: endPos.y }, { easing: 'quadInOut' })
@@ -392,16 +432,17 @@ export default class ThrowPropManager {
                     const skeleton = node.addComponent(sp.Skeleton);
                     skeleton.skeletonData = allData[0];
                     node.parent = root;
+                    node.scale = ThrowPropManager.AVATAR_ANIM_SCALE;
                     node.setPosition(targetPos);
                     skeleton.setAnimation(0, 'babyshark', false);     // 鲨鱼出水
                     skeleton.addAnimation(0, 'shark_eaten', false, 0); // 紧接着咬人(用spine队列自动衔接)
                     this.destroyAfterDelay(node, 4); // babyshark(1.87)+shark_eaten(1.53)≈3.4s
-                    this.playSound(soundName);
+                    // 鲨鱼按需静音，不播放音效
                     return;
                 }
                 if (config.anims.length === 1) {
                     // 抓鸡(7)/撒钱(9)：只在目标位置播放主效果
-                    const node = this.createSpineNode(allData[0], config.anims[0], false, root, targetPos);
+                    const node = this.createSpineNode(allData[0], config.anims[0], false, root, targetPos, ThrowPropManager.AVATAR_ANIM_SCALE);
                     this.destroyAfterComplete(node, 4);
                     // 撒钱：接收者播摸头声，其他人播放撒钱声
                     if (offset === 9) {
@@ -425,6 +466,7 @@ export default class ThrowPropManager {
                         const handSkeleton = handNode.addComponent(sp.Skeleton);
                         handSkeleton.skeletonData = allData[0];
                         handNode.parent = root;
+                        handNode.scale = ThrowPropManager.AVATAR_ANIM_SCALE;
                         handNode.setPosition(senderPos);
                         const flyEntry = handSkeleton.setAnimation(0, config.anims[0], false);
                         let flyDur = this.getEntryDuration(flyEntry, 0.5);
@@ -435,7 +477,7 @@ export default class ThrowPropManager {
                             if (henPlayed) return;
                             henPlayed = true;
                             if (cc.isValid(handNode)) handNode.destroy();
-                            const targetNode = this.createSpineNode(allData[0], config.anims[1], false, root, targetPos);
+                            const targetNode = this.createSpineNode(allData[0], config.anims[1], false, root, targetPos, ThrowPropManager.AVATAR_ANIM_SCALE);
                             this.destroyAfterComplete(targetNode, 4);
                             this.playSound(soundName);
                         };
@@ -447,10 +489,10 @@ export default class ThrowPropManager {
                         cc.tween(root).delay(flyDur + 0.1).call(() => playHen()).start();
                     } else {
                         // 鲨鱼(6)：发送者位置播游泳，目标位置播吃（无飞行）
-                        const senderNode = this.createSpineNode(allData[0], config.anims[0], false, root, senderPos);
+                        const senderNode = this.createSpineNode(allData[0], config.anims[0], false, root, senderPos, ThrowPropManager.AVATAR_ANIM_SCALE);
                         this.destroyAfterComplete(senderNode, 4);
                         // 目标：被吃动画，动画开始时播放音效（对应Unity spine "sfx"事件）
-                        const targetNode = this.createSpineNode(allData[0], config.anims[1], false, root, targetPos);
+                        const targetNode = this.createSpineNode(allData[0], config.anims[1], false, root, targetPos, ThrowPropManager.AVATAR_ANIM_SCALE);
                         this.destroyAfterComplete(targetNode, 4);
                         this.playSound(soundName);
                     }
@@ -471,7 +513,7 @@ export default class ThrowPropManager {
                 this.playBeer(root, senderSeat, targetSeat, role);
                 break;
             case 8:
-                this.playBoxing(root, senderSeat, targetSeat, role);
+                this.playGun(root, senderSeat, targetSeat);
                 break;
             case 10:
                 this.playFish(root, senderSeat, targetSeat, role);
@@ -513,6 +555,62 @@ export default class ThrowPropManager {
                     this.destroyAfterComplete(s1, 5);
                     this.destroyAfterComplete(s2, 5);
                 }
+            })
+            .catch(() => {});
+    }
+
+    // ─── 枪 (608) ───
+    /** 枪：该骨骼的3个动画各只显示一部分(gun=枪 / bullet_shots=枪火爆点 / bullets-fireballs=火球)，
+     *  且都改写全部slot颜色无法叠加在同一骨骼上。因此用3个独立实例组合出完整效果：
+     *  ① 枪停在发送者头像并对准目标 ② 火球从发送者飞向目标(旋转对准+按距离缩放够到)
+     *  ③ 子弹飞到后在目标头像处爆出枪火(命中) */
+    private playGun(root: cc.Node, senderSeat: Seat, targetSeat: Seat): void {
+        this.loadSkeleton('spine/Expression_Box/box_local')
+            .then(data => {
+                if (!cc.isValid(root)) return;
+                const senderPos = this.getHeadLocalPos(senderSeat);
+                const targetPos = this.getHeadLocalPos(targetSeat);
+                const dx = targetPos.x - senderPos.x;
+                const dy = targetPos.y - senderPos.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                // 原生枪口/子弹朝 +Y(向上)。node.angle逆时针为正，使局部+Y对准目标 = atan2(-dx, dy)
+                const aimAngle = (Math.atan2(-dx, dy) * 180) / Math.PI;
+                const aimX = dist > 0 ? dx / dist : 0;
+                const aimY = dist > 0 ? dy / dist : 1;
+
+                const spawn = (anim: string, pos: cc.Vec3, angle: number, scale: number, life: number) => {
+                    const node = new cc.Node('PropSpine');
+                    const sk = node.addComponent(sp.Skeleton);
+                    sk.skeletonData = data;
+                    node.parent = root;
+                    node.setPosition(pos);
+                    node.angle = angle;
+                    node.scale = scale;
+                    sk.setAnimation(0, anim, false);
+                    this.destroyAfterComplete(node, life);
+                    return node;
+                };
+
+                // ① 枪：停在发送者头像、对准目标（原生尺寸），枪口约在原点上方 +86
+                spawn('gun', senderPos, aimAngle, 1, 4);
+                // ② 火球：原生从 y≈-240 飞到 y≈+500(span≈740)。缩放+前移，使其“从枪口(+86)出发、飞到目标”，
+                //    避免看起来从枪下方冒出。 scale 让飞行距离=目标距离-枪口偏移；位置前移使起点落在枪口。
+                const MUZZLE = 86;      // 枪口相对原点的native高度
+                const FB_START = -240;  // 火球起始native y
+                const FB_SPAN = 740;    // 火球飞行native跨度(起点→终点)
+                let fbScale = dist > 0 ? (dist - MUZZLE) / FB_SPAN : 0.7;
+                fbScale = Math.max(0.5, Math.min(1.8, fbScale));
+                const fbOffset = MUZZLE - FB_START * fbScale; // 把火球起点搬到枪口处
+                const fbPos = cc.v3(senderPos.x + aimX * fbOffset, senderPos.y + aimY * fbOffset, senderPos.z);
+                spawn('bullets-fireballs', fbPos, aimAngle, fbScale, 4);
+                // ③ 命中：子弹飞到后在目标头像处爆出枪火
+                cc.tween(root)
+                    .delay(0.7)
+                    .call(() => {
+                        if (!cc.isValid(root)) return;
+                        spawn('bullet_shots', targetPos, 0, 1, 4);
+                    })
+                    .start();
             })
             .catch(() => {});
     }
