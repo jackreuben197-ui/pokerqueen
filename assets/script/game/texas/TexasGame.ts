@@ -2217,20 +2217,28 @@ export default class TexasGame {
         // 要坐下
         if (seatedData)
             return (amount, store, autoOnTable, clubID) => {
-                seatedData.bringIn = amount;
-                seatedData.clubId = clubID;
+                // 🆕 反桌场景（returnOrNew === 1）：金额、俱乐部、store 都是服务端决定的固定值，
+                //   已经在 TexasGame.ts 反桌分支里预设到 seatedData 了。
+                //   这里【不能】用用户在 UI 里输入的 amount/clubID/store 覆盖，
+                //   否则服务端校验失败会返回 90003 "无效的论点" 导致坐下失败。
+                //   非反桌场景（returnOrNew !== 1）：正常用 UI 输入值覆盖。
+                const isReturnTable = seatedData.returnOrNew === 1;
+                if (!isReturnTable) {
+                    seatedData.bringIn = amount;
+                    seatedData.clubId = clubID;
+                    // 如果用钱包自动充值
+                    if (autoOnTable > 0) {
+                        seatedData.autoOnTableNoStore = true;
+                        seatedData.autoUseWallet = true;
+                        seatedData.autoOnTable = autoOnTable;
+                    } else {
+                        // 手动藏钱
+                        seatedData.store = store;
+                        // 如果是自动藏钱，已经在初始化的时候用房间配置设定
+                    }
+                }
                 if (clubID > 0) {
                     this.bringInClubId = clubID;
-                }
-                // 如果用钱包自动充值
-                if (autoOnTable > 0) {
-                    seatedData.autoOnTableNoStore = true;
-                    seatedData.autoUseWallet = true;
-                    seatedData.autoOnTable = autoOnTable;
-                } else {
-                    // 手动藏钱
-                    seatedData.store = store;
-                    // 如果是自动藏钱，已经在初始化的时候用房间配置设定
                 }
                 ProtocolAgency.Send<ClientMessageSeated.AsObject>({
                     Code: ProtocolCode.Protocol_Holdem_Seated,

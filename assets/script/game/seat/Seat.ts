@@ -1625,7 +1625,17 @@ export default class Seat {
     }
 
     public FoldHeadGray(active: boolean): void {
-        this.uirc.Gray_Head.active = active;
+        // 🆕 改用内置 2d-gray-sprite material 把头像本身转真灰度（黑白效果）
+        //   原方案是显示 Gray_Head 黑色遮罩节点，视觉上是"半透明黑色叠加"，不是真灰度
+        //   新方案用 shader 直接把头像纹理的 RGB 转灰阶（标准亮度公式 0.299R + 0.587G + 0.114B）
+        //   对齐 UIBase.ts:37 setSpriteShowGray 的实现（Seat 没继承 UIBase，所以直接内联）
+        //   备注：cocos 2.4.x 切 spriteFrame 不会重置 material，所以异步加载头像后灰度仍生效
+        if (this.uirc.Raw_Head) {
+            const mat = active
+                ? cc.Material.getBuiltinMaterial('2d-gray-sprite')
+                : cc.Material.getBuiltinMaterial('2d-sprite');
+            this.uirc.Raw_Head.setMaterial(0, mat);
+        }
         // 同步显示/隐藏弃牌文字标识，所有调用路径（FSM、协议同步等）自动生效
         if (this.uirc.foldText) this.uirc.foldText.active = active;
         if (this.IsMySeat) {
