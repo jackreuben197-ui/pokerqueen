@@ -2473,20 +2473,35 @@ export default class Seat {
     /** 保险倒计时/投保结果气泡相对下注气泡再上移的像素（避免遮挡头像上方的手牌） */
     private static readonly INSURANCE_BUBBLE_UP_OFFSET = 40;
 
-    /** 强制设置"投保/不保"结果气泡的字体(加粗加大)与气泡尺寸，保证清晰易读（不依赖预制体重新导入） */
+    /** 设置"投保/不保"结果气泡：普通(不加粗不描边)但够大可读；背景随文字自适应，去掉多余留白 */
     private _styleInsuranceBubble(bubble: cc.Node, isToubao: boolean): void {
         if (!bubble) return;
-        // 气泡背景（9宫格自动拉伸）—— 回到较小尺寸，避免过大
-        bubble.setContentSize(isToubao ? 340 : 230, 108);
         const textNode = bubble.getChildByName('Text');
         if (!textNode) return;
-        textNode.setContentSize(isToubao ? 312 : 202, 90);
         const lab = textNode.getComponent(cc.Label);
         if (!lab) return;
-        lab.fontSize = 44;            // 字号
-        lab.lineHeight = 44;
-        (lab as any).enableBold = true; // 加粗，文字更清晰
-        lab.overflow = cc.Label.Overflow.SHRINK; // 文案过长时收缩，避免溢出气泡
+        lab.fontSize = 58;            // 稍大一点更清晰(背景随文字自适应，不会多出空白)
+        lab.lineHeight = 58;
+        (lab as any).enableBold = false; // 不加粗，简单文字
+        lab.overflow = cc.Label.Overflow.NONE; // 文字框随内容自适应（消除多余留白）
+        // 去掉描边
+        const outline = textNode.getComponent(cc.LabelOutline);
+        if (outline) outline.width = 0;
+        // 立即计算文字真实尺寸，再让气泡背景刚好包住文字(留少量内边距)
+        try { (lab as any)._forceUpdateRenderData && (lab as any)._forceUpdateRenderData(); } catch (e) {}
+        let tw = textNode.width;
+        let th = textNode.height;
+        if (!tw || tw < 10) {
+            // 兜底：按字符估算宽度(CJK按字号、其余按0.55字号)
+            const s = lab.string || '';
+            let est = 0;
+            for (let i = 0; i < s.length; i++) est += s.charCodeAt(i) > 255 ? lab.fontSize : lab.fontSize * 0.55;
+            tw = est;
+            th = lab.fontSize;
+        }
+        const padX = 44; // 左右内边距(含圆角)，足够但不空旷
+        const padY = 28;
+        bubble.setContentSize(Math.max(tw + padX, 110), Math.max(th + padY, 80));
     }
 
     /** "投保/不保"结果气泡的原始层级，用于复位 */

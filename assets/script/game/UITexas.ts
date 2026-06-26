@@ -926,8 +926,23 @@ export default class UITexas extends BaseScene {
     /// <param name="num"></param>几张
     /// <param name="premium"></param>保费
     /// <param name="paynum"></param>赔付金额
+    /** 投保提示弹窗统一样式：背景纯白 + 文字黑色（保持原来字体粗细，不加粗、不描边） */
+    private _styleInsuranceTipsPopup(): void {
+        const bg = this.Image_InsuranceTips;
+        if (!bg) return;
+        bg.color = cc.color(255, 255, 255); // 背景纯白
+        const textNode = bg.getChildByName('Text_Tips');
+        if (!textNode) return;
+        textNode.color = cc.color(0, 0, 0); // 文字黑色
+        const lab = textNode.getComponent(cc.Label);
+        if (lab) (lab as any).enableBold = false; // 不加粗，保持原来粗细
+        const outline = textNode.getComponent(cc.LabelOutline);
+        if (outline) outline.width = 0; // 去掉描边
+    }
+
     public async ShowInsuranceTip(num: number, premium: number, paynum: number) {
         this.Image_InsuranceTips.active = true;
+        this._styleInsuranceTipsPopup();
         this.Image_InsuranceTips.getChildByName('Text_Tips').getComponent(cc.Label).string =
             `${i18nMgr.Get('UILobby_Menu_menu_btn_my')}......\n` +
             StringHelper.FormatString(i18nMgr.Get('UIInsurance_tips001'), num, StringHelper.GetLongString(premium), StringHelper.GetLongString(paynum));
@@ -1045,6 +1060,7 @@ export default class UITexas extends BaseScene {
 
     public async ShowInsuranceTipJieSuan(paynum: number) {
         this.Image_InsuranceTips.active = true;
+        this._styleInsuranceTipsPopup();
         this.Image_InsuranceTips.getChildByName('Text_Tips').getComponent(cc.Label).string = StringHelper.FormatString(
             i18nMgr.Get('UIInsurance_tips003'),
             StringHelper.GetLongString(paynum)
