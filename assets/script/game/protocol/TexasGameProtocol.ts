@@ -194,8 +194,8 @@ export default class TexasGameProtocol {
     protected HANDLER_REQ_GAME_RECV_SEAT_DOWN(rec: ServerMessageSeatedOthers.AsObject) {
         if (rec == null) return;
         console.log('[VideoMask] 别人坐下, videoMaskId:', rec.videoMaskId, 'userRid:', rec.userRid);
-        // videoMaskId > 4 时客户端统一归为 1
-        if (rec.videoMaskId > 4) rec.videoMaskId = 1;
+        // videoMaskId > 18 时客户端统一归为 1
+        if (rec.videoMaskId > 18) rec.videoMaskId = 1;
         let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.seatId));
         if (null == mSeat) return;
         if (null != mSeat.Player) {
@@ -256,8 +256,8 @@ export default class TexasGameProtocol {
             return;
         }
         console.log('[VideoMask] 自己坐下, videoMaskId:', rec.videoMaskId);
-        // videoMaskId > 4 时客户端统一归为 1
-        if (rec.videoMaskId > 4) rec.videoMaskId = 1;
+        // videoMaskId > 18 时客户端统一归为 1
+        if (rec.videoMaskId > 18) rec.videoMaskId = 1;
         this.game.mainPlayer.chips = rec.chips;
         this.game.mainPlayer.totalBringIn = rec.totalBringin;
         this.game.mainPlayer.bringInChips = rec.chips;
@@ -3031,9 +3031,9 @@ export default class TexasGameProtocol {
         console.log('[VideoMask] 收到窗花变更广播, userRid:', rec.userRid, 'videoMaskId:', rec.videoMaskId);
         // 自己的变更已经在 requestSetVideoMask 里本地处理过了，跳过
         if (rec.userRid === this.game.mainPlayer.userID) return;
-        // videoMaskId > 4 时客户端统一归为 1
+        // videoMaskId > 18 时客户端统一归为 1
         let maskId = rec.videoMaskId || 0;
-        if (maskId > 4) maskId = 1;
+        if (maskId > 18) maskId = 1;
         // 找到对应座位
         const seat = this.game?.GetSeatByUserId(rec.userRid);
         if (!seat?.Player) return;

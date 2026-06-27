@@ -1124,10 +1124,10 @@ export default class UITexas extends BaseScene {
             ToastManager.Instance.showToast('请先入座');
             return;
         }
-        // videoMaskId 循环 +1，大于4回到1
+        // videoMaskId 循环 +1，大于18回到1（共18个脸部滤镜）
         const oldMaskId = this.game.mainPlayer.videoMaskId || 0;
         let newMaskId = oldMaskId + 1;
-        if (newMaskId > 4) newMaskId = 1;
+        if (newMaskId > 18) newMaskId = 1;
         // 立即更新本地数据和窗花显示（乐观更新）
         this.game.mainPlayer.videoMaskId = newMaskId;
         if (headNode?.isValid) {
