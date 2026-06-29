@@ -405,6 +405,12 @@ export default class UIInsuranceNewPanel extends UIBasePlus {
         this.textThirdMoney = cc.find('Text_Third_money', this.buttonThird)?.getComponent(cc.Label) || null;
         this.textFifthMoney = cc.find('Text_Fifth_money', this.buttonFifth)?.getComponent(cc.Label) || null;
         this.textEighthMoney = cc.find('Text_Eighth_money', this.buttonEighth)?.getComponent(cc.Label) || null;
+        // 六档金额气泡：强制单行显示（如 107.84，不要换成两行）。
+        [this.textMinMoney, this.textAllMoney, this.textHalfMoney, this.textThirdMoney, this.textFifthMoney, this.textEighthMoney].forEach((lab) => {
+            if (!lab) return;
+            lab.enableWrapText = false;
+            lab.overflow = cc.Label.Overflow.SHRINK;
+        });
         this.buttonDelay = cc.find('SubstratumBut/Button_Delay', dialog);
         this.buttonCancel = cc.find('SubstratumBut/Button_Cancel', dialog);
         this.buttonBuy = cc.find('SubstratumBut/Button_Buy', dialog);

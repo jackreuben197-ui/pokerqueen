@@ -845,7 +845,48 @@ export default class ThrowPropManager {
         this.destroyAfterDelay(node, 10);
     }
 
-    // ─── 钻石赠送动画 ───
+    // ─── 钻石赠送动画（diamond-give 美术：代码驱动，无需 spine 运行时） ───
+    /** 钻石特效美术（resources/effect/diamond/）懒加载缓存 */
+    private diamondArt: Map<string, cc.SpriteFrame> = new Map();
+
+    /** 异步加载钻石特效美术（diamond / glow / glowmain），全部就绪后回调 */
+    private loadDiamondArt(cb: () => void): void {
+        const names = ['diamond', 'glow', 'glowmain'];
+        if (names.every((n) => this.diamondArt.has(n))) { cb(); return; }
+        let pending = names.length;
+        let failed = false;
+        const done = () => { if (--pending === 0 && !failed) cb(); };
+        names.forEach((n) => {
+            if (this.diamondArt.has(n)) { done(); return; }
+            cc.resources.load('effect/diamond/' + n, cc.Texture2D, (err, tex: cc.Texture2D) => {
+                if (err || !tex) {
+                    console.warn(LN, 'diamond art load failed:', n, err && err.message);
+                    failed = true;
+                } else {
+                    this.diamondArt.set(n, new cc.SpriteFrame(tex));
+                }
+                done();
+            });
+        });
+    }
+
+    /** 用钻石美术新建一个 Sprite 节点放到 parent 的 localPos，additive=true 用叠加混合(发光) */
+    private makeDiamondArtNode(name: string, parent: cc.Node, localPos: cc.Vec3, additive: boolean): cc.Node {
+        const sf = this.diamondArt.get(name);
+        if (!sf) return null;
+        const node = new cc.Node(name);
+        const sprite = node.addComponent(cc.Sprite);
+        sprite.spriteFrame = sf;
+        sprite.sizeMode = cc.Sprite.SizeMode.TRIMMED;
+        if (additive) {
+            sprite.srcBlendFactor = cc.macro.BlendFactor.SRC_ALPHA;
+            sprite.dstBlendFactor = cc.macro.BlendFactor.ONE;
+        }
+        node.parent = parent;
+        node.setPosition(localPos);
+        return node;
+    }
+
     /** 播放钻石赠送飞行动画（由服务端广播触发，所有玩家都调用） */
     playDiamondAnimation(senderId: number, receiverId: number, amount: number): void {
         const root = this.getAnimRoot();
@@ -856,63 +897,82 @@ export default class ThrowPropManager {
         if (!senderSeat.uirc?.Frame_Head || !receiverSeat.uirc?.Frame_Head) return;
         const senderWorldPos = senderSeat.uirc.Frame_Head.parent.convertToWorldSpaceAR(senderSeat.uirc.Frame_Head.position);
         const receiverWorldPos = receiverSeat.uirc.Frame_Head.parent.convertToWorldSpaceAR(receiverSeat.uirc.Frame_Head.position);
-        cc.resources.load('effect/diamondFly', cc.Prefab, (err, flyPrefab: cc.Prefab) => {
-            if (err) {
-                console.warn(LN, 'diamondFly load failed:', err.message);
-                return;
-            }
-            cc.resources.load('effect/DiamondIcon', cc.Prefab, (err2, iconPrefab: cc.Prefab) => {
-                if (err2) {
-                    console.warn(LN, 'DiamondIcon load failed:', err2.message);
-                    return;
-                }
-                cc.resources.load('effect/diamondSpine', cc.Prefab, (err3, spinePrefab: cc.Prefab) => {
-                    if (err3) {
-                        console.warn(LN, 'diamondSpine load failed:', err3.message);
-                        return;
-                    }
+        // 数字 +/- 仍复用 diamondFly 预制体
+        cc.resources.load('effect/diamondFly', cc.Prefab, (errFly, flyPrefab: cc.Prefab) => {
+            if (errFly) console.warn(LN, 'diamondFly load failed:', errFly.message);
+            const spawnNum = (worldPos: cc.Vec3, text: string) => {
+                if (flyPrefab && cc.isValid(root)) this.spawnDiamondFlyNode(flyPrefab, root, worldPos, text);
+            };
+            this.loadDiamondArt(() => {
+                if (!cc.isValid(root)) return;
+                const startLocal = root.convertToNodeSpaceAR(senderWorldPos);
+                const endLocal = root.convertToNodeSpaceAR(receiverWorldPos);
+                // 1) 赠送方：-amount
+                spawnNum(senderWorldPos, `-${amount}`);
+                // 2) 钻石从赠送方头像飞到接收方头像（边飞边旋转）
+                const fly = this.makeDiamondArtNode('diamond', root, startLocal, false);
+                const onArrive = () => {
                     if (!cc.isValid(root)) return;
-                    // 1) 赠送方：立即播放 -amount 飞行动画
-                    this.spawnDiamondFlyNode(flyPrefab, root, senderWorldPos, `-${amount}`);
-                    // 2) 钻石图标从赠送方头像飞到接收方头像（900ms）
-                    const icon = cc.instantiate(iconPrefab);
-                    icon.parent = root;
-                    const startLocal = root.convertToNodeSpaceAR(senderWorldPos);
-                    const endLocal = root.convertToNodeSpaceAR(receiverWorldPos);
-                    icon.setPosition(startLocal);
-                    cc.tween(icon)
-                        .to(0.9, { position: endLocal }, { easing: 'quadInOut' })
+                    this.playDiamondBurst(root, endLocal);
+                    spawnNum(receiverWorldPos, `+${amount}`);
+                };
+                if (fly) {
+                    fly.scale = 0.7;
+                    cc.tween(fly).by(0.85, { angle: -360 }).start();
+                    cc.tween(fly)
+                        .to(0.85, { position: endLocal }, { easing: 'quadInOut' })
                         .call(() => {
-                            if (!cc.isValid(root)) return;
-                            // 3) 先播放 spine 特效
-                            const receiverLocal = root.convertToNodeSpaceAR(receiverWorldPos);
-                            this.playDiamondSpineEffect(spinePrefab, root, receiverLocal);
-                            // 4) 再播放 +amount 飞行动画
-                            this.spawnDiamondFlyNode(flyPrefab, root, receiverWorldPos, `+${amount}`);
-                            if (cc.isValid(icon)) icon.destroy();
+                            onArrive();
+                            if (cc.isValid(fly)) fly.destroy();
                         })
                         .start();
-                });
+                } else {
+                    onArrive();
+                }
             });
         });
     }
 
-    private playDiamondSpineEffect(prefab: cc.Prefab, parentNode: cc.Node, localPos: cc.Vec3): void {
-        const node = cc.instantiate(prefab);
-        if (!node) return;
-        node.parent = parentNode;
-        node.setPosition(localPos);
-        const skeleton = node.getComponent(sp.Skeleton);
-        if (skeleton) {
-            skeleton.setCompleteListener(() => {
-                if (cc.isValid(node)) node.destroy();
-            });
-        } else {
-            cc.tween(node)
-                .delay(2)
-                .call(() => {
-                    if (cc.isValid(node)) node.destroy();
-                })
+    /** 接收方头像处的钻石爆发特效：主光晕 + 闪光 + 钻石弹出 */
+    private playDiamondBurst(parent: cc.Node, localPos: cc.Vec3): void {
+        // 主光晕（叠加发光，放大旋转淡出）
+        const glowMain = this.makeDiamondArtNode('glowmain', parent, localPos, true);
+        if (glowMain) {
+            glowMain.opacity = 0;
+            glowMain.scale = 0.3;
+            cc.tween(glowMain)
+                .parallel(
+                    cc.tween().to(0.2, { opacity: 255 }).to(0.7, { opacity: 0 }),
+                    cc.tween().to(0.9, { scale: 1.6 }, { easing: 'quadOut' }),
+                    cc.tween().by(0.9, { angle: 180 })
+                )
+                .call(() => { if (cc.isValid(glowMain)) glowMain.destroy(); })
+                .start();
+        }
+        // 闪光（快速放大淡出）
+        const glow = this.makeDiamondArtNode('glow', parent, localPos, true);
+        if (glow) {
+            glow.opacity = 255;
+            glow.scale = 0.2;
+            cc.tween(glow)
+                .parallel(
+                    cc.tween().to(0.45, { scale: 1.3 }, { easing: 'quadOut' }),
+                    cc.tween().to(0.15, { opacity: 255 }).to(0.4, { opacity: 0 })
+                )
+                .call(() => { if (cc.isValid(glow)) glow.destroy(); })
+                .start();
+        }
+        // 钻石弹出（回弹放大→稳定→淡出）
+        const dm = this.makeDiamondArtNode('diamond', parent, localPos, false);
+        if (dm) {
+            dm.opacity = 255;
+            dm.scale = 0.2;
+            cc.tween(dm)
+                .to(0.22, { scale: 1.35 }, { easing: 'backOut' })
+                .to(0.12, { scale: 1.0 })
+                .delay(0.35)
+                .to(0.3, { opacity: 0, scale: 1.2 })
+                .call(() => { if (cc.isValid(dm)) dm.destroy(); })
                 .start();
         }
     }
