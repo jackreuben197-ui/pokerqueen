@@ -800,15 +800,12 @@ export default class GameUtil {
 
     public static GetOddsByPlayerNum(playerNum: number, selectOuts: number): number {
         selectOuts -= 1; //从数组零下标开始
-        let outs: number[] = [];
-        //this.OutsList.TryGetValue(playerNum, out outs);
-        let value = this.OutsList.get(playerNum);
-        if (value) outs = value;
-        if (selectOuts > outs.length && selectOuts <= 30) {
-            return outs[outs.length - 1];
-        }
-        if (selectOuts > 30 || selectOuts < 0) return 0;
-        return outs[selectOuts];
+        if (selectOuts < 0 || selectOuts > 30) return 0;
+        const outs = this.OutsList.get(playerNum) || [];
+        if (outs.length === 0) return 0;
+        // 请求的 outs 数 > 表中条目数时，回退到表中最后一项；否则按索引取。
+        const value = outs[Math.min(selectOuts, outs.length - 1)];
+        return Number.isFinite(value) ? value : 0;
     }
 
     // /**
