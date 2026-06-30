@@ -112,7 +112,7 @@
     "_prefab": {
       "__id__": 7
     },
-    "_opacity": 176,
+    "_opacity": 220,
     "_color": {
       "__type__": "cc.Color",
       "r": 0,
@@ -485,7 +485,7 @@
     "_enabled": true,
     "_fontFamily": "Arial",
     "_isSystemFontUsed": false,
-    "_N$string": "TITLE",
+    "_N$string": "",
     "_N$horizontalAlign": 1,
     "_N$fontSize": 70,
     "_N$font": {
