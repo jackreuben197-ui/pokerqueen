@@ -845,8 +845,8 @@ export default class UITexas extends BaseScene {
         this.setActive(this.StartGameButton, false);
         this.setActive(this.BombPotOpen, false);
         this.setActive(this.BombPotLogo, false);
-        //消息按钮显示
-        this.btn_msg.active = GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2;
+        //消息按钮：按要求在好友桌/俱乐部桌均隐藏，不再显示
+        this.btn_msg.active = false;
         // 视频控制按钮初始状态
         this._cameraOn = false;
         this._micOn = false;

@@ -1808,7 +1808,7 @@
         "__id__": 50
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 53
@@ -30300,7 +30300,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 100,
-      "height": 41.58
+      "height": 69.3
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -30354,7 +30354,7 @@
     "_string": "加入",
     "_N$string": "加入",
     "_fontSize": 50,
-    "_lineHeight": 33,
+    "_lineHeight": 55,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
