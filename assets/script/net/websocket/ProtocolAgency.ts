@@ -9,6 +9,7 @@ import ProcedureManager from '../../manager/ProcedureManager';
 import ProcedureEnterTexas from '../../procedure/ProcedureEnterTexas';
 import { ServerMessageNotificationRoomReady } from '../../protobuf/holdem/recv_g_notification_room_ready_pb';
 import { ClientMessageLeave } from '../../protobuf/holdem/req_th_leave_pb';
+import { ServerMessageRooms } from '../../protobuf/holdem/req_rpc_rooms_pb';
 import LoginSession from '../../session/LoginSession';
 import OpCodeHelper from './OpCodeHelper';
 import PacketHead from './PacketHead';
@@ -285,6 +286,16 @@ export default class ProtocolAgency extends cc.Component {
         if (OpCodeHelper.NeedLog(code)) {
             this.tracelog.debug(`>>>>> protocol receive : ${protocol_name}`, `RoomID:${roomid},MatchID:${matchid},body:`, body);
         }
+        // 暴击桌配置兜底：服务器 EnterRoom 协议不填 rounds/subConfigs/criticalHit，
+        // 在 rpcId 检查（可能 return）之前拦截 Protocol_Holdem_Rooms 响应，
+        // 把 Unity 从 _roomInfo 读取的字段写进 GameCache。
+        // 对齐 Unity TexasGameplayEntrance.cacheGlobalDataBeforeLoad：
+        //   _criticalHitRound = _roomInfo.Rounds
+        //   _subGamePlayAnte  = _roomInfo.SubConfigs[0].Ante
+        //   _isCriticalHitEnable = _roomInfo.SubConfigs[0].CriticalHit == 1
+        if (code == ProtocolCode.Protocol_Holdem_Rooms) {
+            this._handleRoomsCriticalHit(body as ServerMessageRooms.AsObject);
+        }
         const rpcId = this._getRpcId(body);
         // 检查是否有 SendAsync 在等这个 code
         if (rpcId && this._pendingRequests.has(rpcId)) {
@@ -341,6 +352,44 @@ export default class ProtocolAgency extends cc.Component {
         GameCache.Instance.room_id = data.room.roomId;
         ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas);
         return true;
+    }
+
+    /**
+     * 拦截 Protocol_Holdem_Rooms 响应，把暴击桌需要的配置字段写进 GameCache。
+     * 对齐 Unity TexasGameplayEntrance.cacheGlobalDataBeforeLoad：
+     *   _criticalHitRound = _roomInfo.Rounds
+     *   _subGamePlayAnte  = _roomInfo.SubConfigs[0].Ante
+     *   _isCriticalHitEnable = _roomInfo.SubConfigs[0].CriticalHit == 1
+     * 服务器 EnterRoom 协议不填这些字段，EnterRoom 路径只能拿到 criticalHit=0，
+     * 必须靠 Rooms 协议兜底，否则暴击弹窗显示 0手牌/0BB。
+     */
+    static _handleRoomsCriticalHit(body: ServerMessageRooms.AsObject): void {
+        try {
+            if (!body || !body.roomsList || body.roomsList.length === 0) {
+                return;
+            }
+            const room = body.roomsList[0] as any;
+            const gc = GameCache.Instance as any;
+            // 暴击开关：优先取 SubConfigs[0].criticalHit，其次 room.criticalHit
+            const subConfigs = room.subConfigsList || room.sub_configs || room.subConfigs || [];
+            const subCfg = subConfigs.length > 0 ? subConfigs[0] : null;
+            const criticalHitFlag = subCfg?.criticalHit ?? subCfg?.critical_hit ?? room.criticalHit ?? room.critical_hit;
+            if (criticalHitFlag != null) {
+                gc.room_critical_hit = Number(criticalHitFlag) > 0 ? 1 : 0;
+            }
+            // 暴击间隔手数：_roomInfo.Rounds
+            const rounds = Number(room.rounds || 0);
+            if (rounds > 0) {
+                gc.room_critical_hit_round = rounds;
+            }
+            // 暴击押金：_roomInfo.SubConfigs[0].Ante
+            const subAnte = Number(subCfg?.ante ?? subCfg?.an ?? 0);
+            if (subAnte > 0) {
+                gc.room_critical_hit_ante = subAnte;
+            }
+        } catch (e) {
+            console.warn('[CriticalHit] Rooms 协议解析异常:', e);
+        }
     }
 
     static _readNumber(ua: Uint8Array, offset: number, size: number): number {

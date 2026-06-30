@@ -3,13 +3,11 @@ export abstract class StateHandler {
     public SourceData: any = null;
 
     public Enter(entity?: any) {
-        cc.log(`[StateHandler] ${this.Name}:${entity.id} is Enter`);
     }
 
     public Execute(entity?: any, dt?: number) {}
 
     public Exit(entity?: any) {
-        cc.log(`[StateHandler] ${this.Name}:${entity.id} is Exit`);
         this.SourceData = null; // 解除对源数据的引用
     }
 }

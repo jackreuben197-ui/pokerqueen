@@ -2109,9 +2109,8 @@ export default class TexasGameProtocol {
                 this.game.UpdateRoomDes();
             }
         } else if (this.game.criticalHitEnabled) {
-            const prevCriticalHitOpen = this.game.isCriticalHitOpen;
             this.game.isCriticalHitOpen = !!rec.criticalHitOpen;
-            if (!prevCriticalHitOpen && this.game.isCriticalHitOpen) {
+            if (rec.criticalHitOpen) {
                 this.game.PlayCriticalHitStartAnim();
             }
             this.game.UpdateRoomDes();
@@ -2122,12 +2121,6 @@ export default class TexasGameProtocol {
                 GameCache.Instance._texasData._squidMaxNum = rec.squidTotalLimit;
             } else {
                 GameCache.Instance._texasData._isGameInSquidRoundReal = false;
-            }
-        } else {
-            if (GameCache.Instance._texasData._isCriticalHitEnable) {
-                GameCache.Instance._texasData._isCriticalHitOpen = rec.criticalHitOpen;
-                if (rec.criticalHitOpen) {
-                }
             }
         }
     }

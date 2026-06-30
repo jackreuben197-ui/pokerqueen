@@ -309,7 +309,6 @@ export default class Seat {
                 })
             );
             let mLocalPos: cc.Vec3 = this.uirc.transSmallCardBacks.convertToNodeSpaceAR(targetPos);
-            console.log(LN, 'this.listImageSmallCardBack.length >> ', this.listImageSmallCardBack.length);
             for (let i = 0, n = this.listImageSmallCardBack.length; i < n; i++) {
                 let mTmpObj: cc.Node = this.listImageSmallCardBack[i].node;
                 let pos = this.GetBackSmallCardPos(i);
@@ -669,7 +668,6 @@ export default class Seat {
                 this.StopAllinArmature();
                 break;
         }
-        console.log(LN, '播放气泡');
         if (this.uirc.textBubble.string != '') {
             if (null == this.sequenceUpdateBubble || !this.sequenceUpdateBubble.IsPlaying) this.PlayUpdateBubbleAnimation();
         } else {
@@ -891,7 +889,6 @@ export default class Seat {
     /// 刷新手牌
     /// </summary>
     public UpdateCards(isAllin: boolean = false): void {
-        console.log(LN, '---UpdateCards---', 'seat:', this.id, 'isAllin', isAllin);
         if (GC.game.seatMoveStruct.moving) {
             GC.game.seatMoveStruct.cacheFuncs.push({ a: this, b: this.__UpdateCards, c: isAllin, d: '__UpdateCards' });
         } else {
@@ -1282,7 +1279,6 @@ export default class Seat {
         // this.uirc.Text_NickName.node.active = !this.IsMySeat;
         this.uirc.Frame_Head.active = istrue;
         this.uirc.Text_NickName.node.active = istrue;
-        console.log(LN, 'SetOperationHeadActive', istrue);
     }
 
     /// <summary>
@@ -1348,7 +1344,6 @@ export default class Seat {
     /// </summary>
     /// <param name="countDown"></param>
     public StartCountDown(countDown: number, isInsruance: boolean = false): void {
-        console.log(LN, 'StartCountDown :: ', countDown);
         this.optCurTime = countDown;
         let defaultOpTime: number = GameCache.Instance.CurGame.GetOpTime();
         if (isInsruance) defaultOpTime = 30;
@@ -2257,7 +2252,6 @@ export default class Seat {
         // } else {
         //     this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[0]);
         // }
-        console.log(LN, '刷新下方筹码位置');
     }
 
     /** 在桌总额（含待生效的补充筹码 cacheAddChips），对齐 Unity BaseSeat.GetTableChips。

@@ -901,7 +901,6 @@ export default class TexasGame {
             MatchID: matchId,
             Body: body
         });
-        console.log(LN, `EnterRoom: room_id=${roomId}, match_id=${matchId}, observer=${observer}`);
     }
 
     //更新房间数据
@@ -952,7 +951,6 @@ export default class TexasGame {
     }
 
     UpdateRoomCommon(rec: ServerMessageEnterRoom.AsObject) {
-        console.log(LN, 'UpdateRoomCommon');
         this.ClearAllData();
         this.ClearAllPlayers(); // 清空玩家数据
         if (this.listSeat?.length) {
@@ -1067,7 +1065,6 @@ export default class TexasGame {
         GameCache.Instance.insurance = this.insurance;
         for (let i = 0; i < rec.handInfo.potsList.length; i++) {
             this.pots.push(rec.handInfo.potsList[i].amount);
-            console.log(LN, '排池子数据:', this.pots);
         }
         if (this.waitBlind == 1) {
             this.ShowWaitBlindBtn();
@@ -1280,10 +1277,8 @@ export default class TexasGame {
     RunRoomReqlist() {
         if (this.roomReqList.length) {
             let obj = this.roomReqList.shift();
-            console.log(LN, '请求---->', obj.name);
             obj.func.call(this, this.RunRoomReqlist);
         } else {
-            console.log(LN, '房间队列请求完毕---->');
         }
     }
     roomReqList: any = [];
@@ -1530,7 +1525,6 @@ export default class TexasGame {
             juhua: false
         }).then(
             (res: any) => {
-                console.log(LN, '[StartGameButton] is_room_admin', roomId, res?.code, res?.data?.is_admin);
                 if (res && (res.code === undefined || Number(res.code) === 0)) {
                     const apiIsAdmin = res?.data?.is_admin;
                     if (apiIsAdmin !== undefined && apiIsAdmin !== null) {
@@ -1776,7 +1770,6 @@ export default class TexasGame {
         const operationPos2D = cc.v2(Operation_Pos.x, Operation_Pos.y + 200);
         this.uirc.UIOperation_Com.SetUIPos(operationPos2D);
         this.uirc.UIAutoOperation_Com.SetUIPos(operationPos2D);
-        console.log(LN, '设置 - InitOperationPos', Operation_Pos.toString());
     }
 
     // 转换远端座位号到本地座位号 服务器下发位置从  1开始，0为默认值，客户端-1为默认值(所以需要减一下，暂时不大改客户端)
@@ -1864,7 +1857,6 @@ export default class TexasGame {
 
     //座位运动结束的处理
     private AllSeatMoveEnd() {
-        console.log(LN, '所有座位运动完毕');
         while (this.seatMoveStruct.cacheFuncs?.length) {
             let f = this.seatMoveStruct.cacheFuncs.shift();
             f.b.call(f.a, f.c);
@@ -1975,11 +1967,9 @@ export default class TexasGame {
         );
 
         if (chips <= 0) {
-            console.log(LN, `[SetUCBringInTips] 不弹：chips<=0`);
             return;
         }
         if (!isClubExternal) {
-            console.log(LN, `[SetUCBringInTips] 不弹：非 CLUB_EXTERNAL 桌(tableType=${tableType})`);
             return;
         }
         if (seated) {
@@ -1995,10 +1985,8 @@ export default class TexasGame {
                 StringHelper.FormatString(i18nMgr.Get('UIGameplay_UCRechargeBringin'), this.formatUCBringInAmount(displayChips))
             );
         } else if (this.mainPlayer != null && this.mainPlayer.isPlaying) {
-            console.log(LN, `[SetUCBringInTips] 弹"下一手前完成带入" | isPlaying=${isPlaying}`);
             UIComponent.Instance.ToastLanguage('UIGameplay_UCRechargeBringinAfter');
         } else {
-            console.log(LN, `[SetUCBringInTips] 不弹：seated=false 且 isPlaying=${isPlaying}（未在玩本手牌）`);
         }
     }
 
@@ -2147,7 +2135,6 @@ export default class TexasGame {
                     const walletAmount = UITexasModel.mInstance.getGoldFromWallets(response.data.last_bring_out.club_id, response.data.wallet);
                     // 要反桌，但是钱包钱不够了
                     if (bringToTable > 0 && returnFromWallet > walletAmount) {
-                        console.log(LN, 'return table, not enough from wallet', 'need:', returnFromWallet, 'current:', walletAmount);
                         // 金额不足
                         UIComponent.Instance.Toast(i18nMgr.Get('adaptation20010') + `(${returnFromWallet} > ${walletAmount})`);
                         return;
@@ -2342,10 +2329,6 @@ export default class TexasGame {
             return;
         }
         this.lastAgreePostReqTime = now;
-        console.log(LN, '[WaitBlind] send agree post', {
-            localSeatID: this.mainPlayer?.seatID,
-            serverSeatID: (this.mainPlayer?.seatID ?? -1) + 1
-        });
         ProtocolAgency.Send<ClientMessageAgreePost.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_AgreePost,
             RoomID: GameCache.Instance.room_id,
@@ -2508,7 +2491,6 @@ export default class TexasGame {
     //             // });
     //             UIComponent.Instance.Toast("声纹认证暂未开启");
     //         } else {
-    //             console.log(LN, 'seated bringin', anteNumber, "returnOrNew:", returnOrNew);
     //             ProtocolAgency.Send<ClientMessageSeated.AsObject>({
     //                 Code: ProtocolCode.Protocol_Holdem_Seated,
     //                 RoomID: GameCache.Instance.room_id,
@@ -2547,7 +2529,6 @@ export default class TexasGame {
     //         (GameUtil.GetFriendsOrClubTable() == 1 ||
     //             GameUtil.GetFriendsOrClubTable() == 2) &&
     //         GameCache.Instance.FriendsTableLimitBringIn;
-    //     console.log(LN, 'only bringin', anteNumber, applyBringIn);
     //     ProtocolAgency.Send<ClientMessageBringIn.AsObject>({
     //         Code: ProtocolCode.Protocol_Holdem_BringIn,
     //         RoomID: GameCache.Instance.room_id,
@@ -2619,13 +2600,11 @@ export default class TexasGame {
     /// <returns></returns>
     // public GetChipSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
     //     let sf: cc.SpriteFrame = AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
-    //     if (!sf) console.log(LN,"素材获取失败:", spriteName);
     //     return sf;
     // }
     // //获取气泡相关的spriteframe
     // public GetBubbleSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
     //     let sf: cc.SpriteFrame = AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
-    //     if (!sf) console.log(LN,"素材获取失败:", spriteName);
     //     return sf;
     // }
     /// <summary>
@@ -2782,7 +2761,6 @@ export default class TexasGame {
     /// 隐藏返回游戏按钮
     /// </summary>
     public HideCancelTrustBtn(): void {
-        console.log(LN, '关闭了返回按钮？？？？？？？？？？？？');
         if (this.uirc.Button_CancelTrust.activeInHierarchy) {
             this.uirc.Button_CancelTrust.active = false;
         }
@@ -3608,7 +3586,6 @@ export default class TexasGame {
         }
         let DiamondConfigSetting = this.GetSetting(diamondConfig);
         if (DiamondConfigSetting == null) {
-            console.log(LN, '未拿到查看翻牌配置');
             return;
         }
         if (DiamondConfigSetting.discount_price == 0) {
@@ -3758,7 +3735,6 @@ export default class TexasGame {
     /// </summary>
     public UpdatePublicCardsNoAnim(): void {
         if (this.uirc.listCards.length == 0) return;
-        console.log(LN, '显示公共牌');
         let mPublicCardInfo: PublicCardInfo;
         let cards = this.GetPublicCards(1);
         let public_card_count = this.GetPublicCardsCount(1);
@@ -3860,7 +3836,6 @@ export default class TexasGame {
     /// 清空公共牌UI
     /// </summary>
     public ClearPublicCardsUI() {
-        console.log(LN, 'ClearPublicCardsUI');
         let PublicCardInfo: PublicCardInfo = null;
         for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
             PublicCardInfo = this.uirc.listCards[i];
@@ -3878,7 +3853,6 @@ export default class TexasGame {
     /// 清空公共牌UI
     /// </summary>
     public ClearSecondPublicCardsUI(): void {
-        console.log(LN, 'ClearSecondPublicCardsUI');
         let PublicCardInfo: PublicCardInfo = null;
         for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
             PublicCardInfo = this.uirc.listSecondCards[i];
@@ -3985,7 +3959,6 @@ export default class TexasGame {
         }
         const setting = this.GetSetting(diamondConfig);
         if (!setting) {
-            console.log(LN, '未拿到偷偷看配置setting');
             return;
         }
         // 显示价格到按钮子节点 numDiamond
@@ -4056,7 +4029,6 @@ export default class TexasGame {
     /// </summary>
     /// <param name="complete"></param>
     protected KillAllTweener(complete = false): void {
-        console.log(LN, 'TexasGame KillAllTweener');
         if (this.sequencePlayDealAnimation?.tween) {
             this.sequencePlayDealAnimation.IsPlaying = false;
             cc.Tween.stopAllByTarget(this.uirc.node);
@@ -4075,7 +4047,6 @@ export default class TexasGame {
     }
 
     protected ClearAllData() {
-        console.log(LN, '清理所有数据');
         this.gamestatus = -1;
         GameCache.Instance.GameStatus = this.gamestatus;
         this.bigIndex = 0;
@@ -4193,7 +4164,6 @@ export default class TexasGame {
     }
 
     ClearAllPlayers() {
-        console.log(LN, '清理所有玩家');
         if (null != this.mainPlayer) {
             this.mainPlayer.Dispose();
             this.mainPlayer = null;
@@ -4755,7 +4725,6 @@ export default class TexasGame {
      * 退出
      */
     Dispose() {
-        console.log(LN, 'TexasGame >>>> Dispose');
         // 停止游戏背景音乐
         SoundComponent.Instance.stopMusic();
         this.IsDispose = true;
