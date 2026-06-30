@@ -51,6 +51,71 @@ try {
     process.exit(1);
 }
 
+// [3.5/5] 注入 Cocos resize null 防护
+// h5-game 的 index.html 由别人维护，同步过来的副本在此打补丁：cocos 引擎为异步加载，
+// boot() 完成前 cc.game.container/canvas 为 null，此时若 window resize 触发 cc.view._resizeEvent
+// → _initFrameSize 会读 null.style 崩溃。轮询等 cc.view 就绪后 patch _resizeEvent/setCanvasSize，
+// 画布未就绪时直接跳过。标记名 __previewNullGuardPatched__ 与 sync-template.js 对齐，便于预览模板去重。
+console.log('\n[3.5/5] 注入 Cocos resize null 防护...');
+try {
+    const targetIndex = path.join(targetDir, 'index.html');
+    const GUARD_TOKEN = '__previewNullGuardPatched__';
+    let html = fs.readFileSync(targetIndex, 'utf-8');
+    if (html.includes(GUARD_TOKEN)) {
+        console.log('防护已存在，跳过。');
+    } else {
+        const guard = `
+    <!-- Cocos resize 空引用防护（构建版补丁，与 preview-templates 对齐）：cocos 引擎异步加载，
+         boot() 完成前 cc.game.container/canvas 为 null，window resize 触发 _resizeEvent →
+         _initFrameSize 会读 null.style 崩溃。轮询等 cc.view 就绪后 patch _resizeEvent/setCanvasSize，
+         画布未就绪时直接跳过。标记 __previewNullGuardPatched__ 供 sync-template 去重。 -->
+    <script>
+      ;(function () {
+        function patchOnce() {
+          if (!window.cc || !cc.view || cc.view.${GUARD_TOKEN}) {
+            return !!(window.cc && cc.view && cc.view.${GUARD_TOKEN})
+          }
+          var view = cc.view
+          var originalSetCanvasSize = typeof view.setCanvasSize === 'function' ? view.setCanvasSize : null
+          var originalResizeEvent = typeof view._resizeEvent === 'function' ? view._resizeEvent : null
+          if (originalSetCanvasSize) {
+            view.setCanvasSize = function (width, height) {
+              if (!this._canvas || !this._frame) return
+              return originalSetCanvasSize.call(this, width, height)
+            }
+          }
+          if (originalResizeEvent) {
+            view._resizeEvent = function () {
+              if (!this._canvas || !this._frame) return
+              return originalResizeEvent.apply(this, arguments)
+            }
+          }
+          view.${GUARD_TOKEN} = true
+          return true
+        }
+        if (patchOnce()) return
+        var retryCount = 0
+        var timer = setInterval(function () {
+          retryCount++
+          if (patchOnce() || retryCount > 200) clearInterval(timer)
+        }, 50)
+        window.addEventListener('beforeunload', function () { clearInterval(timer) })
+      })()
+    </script>`;
+        const closeIdx = html.lastIndexOf('</body>');
+        if (closeIdx >= 0) {
+            html = html.slice(0, closeIdx) + guard + '\n' + html.slice(closeIdx);
+        } else {
+            html += guard;
+        }
+        fs.writeFileSync(targetIndex, html, 'utf-8');
+        console.log('✓ null 防护已注入 build-templates/web-mobile/index.html');
+    }
+} catch (error) {
+    console.error(`[ERROR] 注入 null 防护失败: ${error.message}`);
+    process.exit(1);
+}
+
 // [4/5] Run sync:template
 console.log('\n[4/5] 执行 sync:template...');
 runCommand('npm run sync:template');
