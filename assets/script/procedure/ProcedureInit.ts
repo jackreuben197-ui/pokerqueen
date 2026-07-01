@@ -23,7 +23,7 @@ export default class ProcedureInit extends ProcedureBase {
         //解析 语言配置
         this.setNetwork();
         i18nMgr.initLanguage();
-        await i18nMgr.loadAndRefreshConfig();
+        i18nMgr.refresh();
         // 已加载过牌桌资源则隐藏首次加载提示
         if (GC.localStore.getItem(StorageKey.TextureResourceLoaded) === 1) {
             const firstloadLabel = cc.find('Canvas/Block - 遮挡/UIPreloading/progress_node/firstload_label');

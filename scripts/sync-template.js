@@ -82,6 +82,22 @@ if (i18nSynced) {
   console.log('  ✓ i18n 已同步')
 }
 
+// --- 步骤 1.5：同步 h5-cc-i18n runtime (min.js) ---
+// Cocos 侧 i18nMgr 走 proxy，运行时从 window.__H5_CC_I18N__ 取；
+// 该全局变量由 h5-cc-i18n.min.js 挂载，build/preview 的 index.html 都引用它。
+const I18N_RUNTIME_SRC = [
+  path.join(ROOT, 'node_modules', '@silenthill', 'h5-cc-i18n', 'dist', 'h5-cc-i18n.min.js'),
+].find(p => fs.existsSync(p)) || null
+
+if (I18N_RUNTIME_SRC) {
+  copyFileSync(I18N_RUNTIME_SRC, path.join(BUILD_DIR, 'h5-cc-i18n.min.js'))
+  copyFileSync(I18N_RUNTIME_SRC, path.join(PREVIEW_DIR, 'h5-cc-i18n.min.js'))
+  console.log('同步 h5-cc-i18n.min.js → build-templates + preview-templates')
+  console.log('  ✓ h5-cc-i18n runtime 已同步')
+} else {
+  console.warn('⚠ 未找到 h5-cc-i18n.min.js，请先 npm install @silenthill/h5-cc-i18n')
+}
+
 // --- 步骤 2：同步 build assets 到 preview assets ---
 const buildAssets = path.join(BUILD_DIR, 'assets')
 const previewAssets = path.join(PREVIEW_DIR, 'assets')
