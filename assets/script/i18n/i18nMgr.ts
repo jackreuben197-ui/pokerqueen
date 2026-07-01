@@ -1,75 +1,42 @@
 import { EventName } from '../config/EventName';
-import { GameConfig } from '../config/GameConfig';
 import GC from '../frame/GameControl';
 import StorageKey from '../session/StorageKey';
+import i18n from '@silenthill/h5-cc-i18n';
 import * as i18nLabel from './i18nLabel';
 import * as i18nSprite from './i18nSprite';
-//var CSV = require("CSV");
-//上来先处理数据 当前的语言 0简中 1繁中 2英文 3葡语  let type = ["cn","zh","en","pt"]
-var LanguageAllObject: Record<string, { [key: string]: string }> = {
-    cn: {},
-    zh: {},
-    en: {},
-    pt: {}
-};
-//补充一些表格内缺失的,优先判断
-var excelAdd = {
-    // en: {
-    //     UILogin_USER101: "Read and agree to<color = #DCBA82>《User Agreement》</color>",
-    //     UISettingPassword001: "Account Management",
-    // },
-    // cn: {
-    //     UISettingPassword001: "账号管理",
-    // },
-    // zh: {
-    //     UISettingPassword001: "賬號管理",
-    // },
-    // pt: {
-    //     UISettingPassword001: "Gestão de contas",
-    // }
+
+/**
+ * 多语言管理器（Cocos 侧）。
+ *
+ * 翻译数据由 h5-cc-i18n 提供：H5 层 index.html 以 <script> 加载 h5-cc-i18n.min.js，
+ * 挂到 window.__H5_CC_I18N__；本模块 import 的是 proxy，运行时从该全局单例取数据。
+ * 语言代码对外沿用历史 cn/zh/en/pt（与 H5 层、服务端协议、本地存储保持一致），
+ * 内部映射到包的 LANG_ZH_CN / LANG_ZH_TW / LANG_EN / LANG_PT。
+ */
+const LEGACY_TO_PACKAGE: Record<string, string> = {
+    cn: i18n.LANG_ZH_CN,
+    zh: i18n.LANG_ZH_TW,
+    en: i18n.LANG_EN,
+    pt: i18n.LANG_PT
 };
 
 export class i18nMgr {
-    public static language = ''; // 当前语言
+    public static language = 'cn'; // 当前语言（cn/zh/en/pt）
     private static labelArr: i18nLabel.i18nLabel[] = []; // i18nLabel 列表
-    private static LanguageObject: { [key: string]: string } = {}; // 文字配置
     private static spriteArr: i18nSprite.i18nSprite[] = []; // i18nSprite 列表
 
-    // private static LanMap = {
-    //     cn: "sl_bnftN7UY",
-    //     pt: "sl_ptyyPutao",
-    //     en: "sl_K8cPNvxU",
-    // }
-    public static isCN() {
-        return this.language == 'cn';
+    /** 是否简体中文（历史调用方按属性使用：i18nMgr.isCN，勿改成方法） */
+    public static get isCN(): boolean {
+        return this.language === 'cn';
     }
 
     public static initLanguage() {
-        // 强制简体中文，忽略本地缓存
-        this.language = 'cn';
-        this.LanguageObject = LanguageAllObject[this.language];
+        // 强制简体中文，忽略本地缓存（与历史行为一致）
+        this.setLanguage('cn');
     }
 
-    //当前的语言 0简中 1英文 2繁中 3葡语 4西班牙语 5 俄语 6 德语 7 印度语 8 越南语
-    // public static getLanguage() {
-    //     this.language = GC.localStore.getItem(StorageKey.Language) || GameConfig.Default_Language;
-    //     switch (this.language) {
-    //         case 'cn':
-    //             return 0;
-    //         case 'pt':
-    //             return 3;
-    //         case 'en':
-    //             return 1;
-    //         default:
-    //             break;
-    //     }
-    // }
-    // public static getLanguageText() {
-    //     //return i18nMgr.Get("UserLanguage").split("^")[i18nMgr.getLanguage()];
-    //     return i18nMgr.Get(this.LanMap[this.language]);
-    // }
     /**
-     * 设置语言
+     * 设置语言（cn/zh/en/pt）
      */
     public static setLanguage(language: string) {
         if (this.language === language) {
@@ -77,24 +44,16 @@ export class i18nMgr {
         }
         this.language = language;
         GC.localStore.setItem(StorageKey.LANGUAGE, this.language);
-        this.LanguageObject = LanguageAllObject[this.language];
+        const pkg = LEGACY_TO_PACKAGE[language];
+        if (pkg) {
+            try {
+                i18n.setLocale(pkg);
+            } catch (e) {
+                console.warn('[i18nMgr] setLocale failed:', e);
+            }
+        }
         this.refreshAllLabel();
         this.reloadSprite();
-        this.resetRemoteSprite();
-    }
-
-    // 观察所有与多语言有关的图片 重新调用服务器接口
-    public static resetRemoteSprite() {
-        // zh_CN:简体中文,zh_HK:繁体中文,en_US:英文，pt_BR：葡萄牙语
-        // let changeObj = {
-        //     cn: "zh_CN",
-        //     zh: "zh_HK",
-        //     en: "en_US",
-        //     pt: "pt_BR"
-        // }
-        // if (UIMatchBanner.instance) {
-        //     UIMatchBanner.instance.initBannerList(changeObj[this.language]);
-        // }
     }
 
     /**
@@ -115,9 +74,11 @@ export class i18nMgr {
         return this.Get(opt);
     }
 
-    //从表格获取内容
+    /**
+     * 取翻译文本，委托 h5-cc-i18n；缺失时回退到 key 本身。
+     */
     public static Get(opt: string): string {
-        return this.LanguageObject?.[opt] || opt;
+        return i18n.get(opt, opt) || opt;
     }
 
     /**
@@ -144,8 +105,7 @@ export class i18nMgr {
     }
 
     /**
-     * @description: 此方法读取Language里面的数据 再根据语言类型分配相应的字符串
-     * @return {*}
+     * @description: 刷新所有 i18nLabel，并广播语言切换事件
      */
     private static refreshAllLabel() {
         for (let one of this.labelArr) {
@@ -155,60 +115,10 @@ export class i18nMgr {
     }
 
     /**
-     * 解析配置表：先用 cc.resources 读取内置词典，
-     * 再在 Web 环境下 fetch 外部同名 txt 文件进行补充/覆盖。
+     * 初始化后刷新一次所有 i18nLabel（i18n 数据已由 h5-cc-i18n 提供，无需加载）。
      */
-    // public static praseConfig() {
-    //     this._praseConfig("en", cc.resources.get("config/USER_EN", cc.TextAsset));
-    //     this._praseConfig("pt", cc.resources.get("config/USER_PT", cc.TextAsset));
-    //     this._praseConfig("zh", cc.resources.get("config/USER_TW", cc.TextAsset));
-    //     this._praseConfig("cn", cc.resources.get("config/USER_ZH", cc.TextAsset));
-    // }
-    public static _praseConfig(language: string, config: cc.TextAsset) {
-        if (config && config.text) {
-            let list = config.text.split('\n');
-            for (let item of list) {
-                let eq_index = item.indexOf('=');
-                if (~eq_index) {
-                    let key = item.slice(0, eq_index);
-                    let value = item.slice(eq_index + 1);
-                    value = value.replace('\r', '');
-                    value = value.replace(/\\n/g, '\n');
-                    LanguageAllObject[language][key] = value;
-                }
-            }
-        }
-    }
-
-    /**
-     * 通过 cc.resources.load 加载词典资源并刷新 UI。
-     * 走 Cocos 资源管道，自动享受 md5Cache 缓存刷新。
-     */
-    public static async loadAndRefreshConfig(): Promise<void> {
-        const tasks = [
-            this._loadConfig('en', 'config/USER_EN'),
-            this._loadConfig('pt', 'config/USER_PT'),
-            this._loadConfig('zh', 'config/USER_TW'),
-            this._loadConfig('cn', 'config/USER_ZH')
-        ];
-        await Promise.all(tasks);
-        this.LanguageObject = LanguageAllObject[this.language];
+    public static refresh() {
         this.refreshAllLabel();
-    }
-
-    private static _loadConfig(language: string, path: string): Promise<void> {
-        return new Promise(resolve => {
-            cc.resources.load(path, cc.TextAsset, (err, asset: cc.TextAsset) => {
-                if (!err && asset) {
-                    i18nMgr._praseConfig(language, asset);
-                }
-                resolve();
-            });
-        });
-    }
-
-    public static get LanguageAllObject() {
-        return LanguageAllObject;
     }
 
     private static reloadSprite() {
@@ -220,30 +130,3 @@ export class i18nMgr {
 
 //@ts-ignore
 window.i18nMgr = i18nMgr;
-//@ts-ignore
-window.LanguageAllObject = LanguageAllObject;
-/**
- * 读取语言配置文件_csv格式
- */
-// public static loadLanguage_csv() {
-//     return new Promise((resolve, reject) => {
-//         cc.resources.load("i18n/Language", (err, data: cc.TextAsset) => {
-//             if (err) {
-//                 reject(err);
-//             } else {
-//                 var _csv = new CSV(data.text, { header: true });
-//                 var _con = _csv.parse();
-//                 for (let i = 0; i < _con.length; i++) {
-//                     let val = _con[i];
-//                     if (val.key) {
-//                         LanguageAllObject.cn[val.key] = val.cn;
-//                         LanguageAllObject.zh[val.key] = val.zh;
-//                         LanguageAllObject.en[val.key] = val.en;
-//                         LanguageAllObject.pt[val.key] = val.pt;
-//                     }
-//                 }
-//                 resolve(1);
-//             }
-//         });
-//     });
-// }

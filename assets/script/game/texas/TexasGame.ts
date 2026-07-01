@@ -2204,24 +2204,29 @@ export default class TexasGame {
         // 要坐下
         if (seatedData)
             return (amount, store, autoOnTable, clubID) => {
-                // 🆕 反桌场景（returnOrNew === 1）：金额、俱乐部、store 都是服务端决定的固定值，
-                //   已经在 TexasGame.ts 反桌分支里预设到 seatedData 了。
-                //   这里【不能】用用户在 UI 里输入的 amount/clubID/store 覆盖，
-                //   否则服务端校验失败会返回 90003 "无效的论点" 导致坐下失败。
-                //   非反桌场景（returnOrNew !== 1）：正常用 UI 输入值覆盖。
+                // 反桌（returnOrNew=1）：bringIn 已在 Sitdown 里根据 last_bring_out 预设为服务端返回金额。
+                //   保留该预设值（服务端反桌时校验金额必须匹配），除非预设为 0（无历史记录/金额已清空）
+                //   才 fallback 用 UI 输入值。非反桌正常用 UI 输入值覆盖。
                 const isReturnTable = seatedData.returnOrNew === 1;
                 if (!isReturnTable) {
                     seatedData.bringIn = amount;
-                    seatedData.clubId = clubID;
-                    // 如果用钱包自动充值
-                    if (autoOnTable > 0) {
-                        seatedData.autoOnTableNoStore = true;
-                        seatedData.autoUseWallet = true;
-                        seatedData.autoOnTable = autoOnTable;
-                    } else {
-                        // 手动藏钱
-                        seatedData.store = store;
-                        // 如果是自动藏钱，已经在初始化的时候用房间配置设定
+                } else if (seatedData.bringIn <= 0) {
+                    seatedData.bringIn = amount;
+                }
+                seatedData.clubId = clubID;
+                // 如果用钱包自动充值
+                if (autoOnTable > 0) {
+                    seatedData.autoOnTableNoStore = true;
+                    seatedData.autoUseWallet = true;
+                    seatedData.autoOnTable = autoOnTable;
+                } else {
+                    // 手动藏钱
+                    seatedData.store = store;
+                    // 反桌时如 UI 未设自动上桌，清除 Sitdown 里 RT_AUTO 预设的 autoOnTable 值
+                    if (isReturnTable) {
+                        seatedData.autoOnTable = 0;
+                        seatedData.autoOnTableFix = 0;
+                        seatedData.autoOnTableMax = 0;
                     }
                 }
                 if (clubID > 0) {

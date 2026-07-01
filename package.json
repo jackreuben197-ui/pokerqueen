@@ -13,6 +13,7 @@
     "sync:proto": "node scripts/sync-proto.js"
   },
   "dependencies": {
+    "@silenthill/h5-cc-i18n": "github:guysoup027/h5-cc-i18n#main",
     "@types/gapi": "^0.0.43",
     "google-protobuf": "^3.21.0",
     "http-server": "^14.1.1",
