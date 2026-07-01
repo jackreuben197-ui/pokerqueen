@@ -5,5 +5,5 @@ export default class DevConfig {
     // 是否是老的进入房间
     public static IS_OLD = true;
 
-    public static LOG_LEVEL: LogLevel = 'warn';
+    public static LOG_LEVEL: LogLevel = 'debug';
 }
