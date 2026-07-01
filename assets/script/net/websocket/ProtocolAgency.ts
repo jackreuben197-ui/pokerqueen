@@ -237,7 +237,8 @@ export default class ProtocolAgency extends cc.Component {
             code != ProtocolCode.Protocol_Holdem_Rooms &&
             code != ProtocolCode.Protocol_Holdem_MttDetail &&
             code != ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo &&
-            code != ProtocolCode.Protocol_Holdem_NotificationRoomReady
+            code != ProtocolCode.Protocol_Holdem_NotificationRoomReady &&
+            code != ProtocolCode.Protocol_Holdem_MttBreak
         ) {
             this.tracelog.debug('drop code:', code);
             return;
@@ -253,15 +254,11 @@ export default class ProtocolAgency extends cc.Component {
                 this.tracelog.info(
                     `roomid or matchid is no match cache:{RoomID:${GameCache.Instance.room_id},MatchID:${GameCache.Instance.match_id}},receive:{RoomID:${roomid},MatchID:${matchid}}`
                 );
-                // H5 桥接模式（CC 不直接连 WebSocket）：仅丢弃，不发 Leave。
-                // 原因：H5 的 WebSocket 可能收到多个房间的推送（观战、大厅等），
-                // 自动 Leave 会误退当前正在进行的牌桌。
-                // if (!WebSocketClient.CheckOpen(true)) {
-                //     this.tracelog.debug(                //         `[H5Bridge] 丢弃不匹配房间的消息，不发送 Leave`,
-                //     );
-                //     return;
-                // }
-                // 正常模式（CC 直连 WebSocket）：主动 Leave 清理旧房间
+                // MTT 换桌：服务端在合桌/分桌时会先推新桌业务消息，再发 NotificationRoomReady 更新 match_id。
+                // 此时缓存里还是旧 match_id，若发 Leave 会把新桌退掉，玩家被踢出比赛。
+                if (GameCache.Instance.CurGame?.isMTT) {
+                    return;
+                }
                 ProtocolAgency.Send<ClientMessageLeave.AsObject>({
                     Code: ProtocolCode.Protocol_Holdem_Leave,
                     RoomID: roomid,

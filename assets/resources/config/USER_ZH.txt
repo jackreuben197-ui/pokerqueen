@@ -7273,3 +7273,9 @@ UIFirstLoadingTips=第一次资源加载速度微慢，请耐心等待...
 UIBuyDiamondMore=增{0}钻石
 UIBuyDiamondExchangeRate=汇率：1USDT={0}钻石
 UIBuyDiamondExchangeRateReverse=1钻石={0}USDT
+timeAfterMatchResume={time}后比赛继续进行
+timeBeforeBreakNotice={time}分钟后将中场休息{duration}分钟
+enterBreakAfterHandEnd=本手游戏结束后进入休息时间
+addBuySuccessTip=增购成功,休息时间结束后到账
+adjustStateBeforeFinal=请在决赛前进行状态调整
+playerInBreakState=玩家正在休息

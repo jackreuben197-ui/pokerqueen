@@ -61,6 +61,7 @@ import { ServerMessageVideoMaskChange } from '../../protobuf/holdem/recv_th_vide
 import { ServerMessageShowViewCards } from '../../protobuf/holdem/recv_th_show_view_cards_pb';
 import { ServerMessageUserGameWatch } from '../../protobuf/holdem/recv_g_user_game_watch_pb';
 import { ClientMessageMttDetail, ServerMessageMttDetail } from '../../protobuf/holdem/req_rpc_mtt_detail_pb';
+import { ServerMessageMttBreak } from '../../protobuf/holdem/recv_g_mtt_break_pb';
 
 export class ProtocolCommon {
     private _request_map = new Map();
@@ -426,5 +427,8 @@ export const ProtocolMap = {
     },
     [ProtocolCode.Protocol_Holdem_UserGameWatch]: {
         Server: ServerMessageUserGameWatch
+    },
+    [ProtocolCode.Protocol_Holdem_MttBreak]: {
+        Server: ServerMessageMttBreak
     }
 };

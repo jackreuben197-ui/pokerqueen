@@ -3,6 +3,7 @@ import { CPErrorCode } from '../../i18n/CPErrorCode';
 import { UIMTTModel } from '../../new_mtt/UIMTTModel';
 import { Def } from '../../protobuf/holdem/define_pb';
 import { ServerMessageLeaveNotification } from '../../protobuf/holdem/recv_th_leave_notification_pb';
+import { ServerMessageMttBreak } from '../../protobuf/holdem/recv_g_mtt_break_pb';
 import UIComponent from '../../ui/UIComponent';
 import { GameCache } from '../GameCache';
 import H5MsgMgr from '../../H5MsgMgr';
@@ -10,8 +11,25 @@ import MTTGame from '../texas/MTTGame';
 import { TexasGameState } from '../TexasGameState';
 import MTTGameUtils from '../util/MTTGameUtils';
 import TexasGameMessageHandler from './TexasGameMessageHandler';
+import GC from '../../frame/GameControl';
+import { ProtocolCode } from '../../net/websocket/ProtocolCode';
 
 export default class MTTGameMessageHandler extends TexasGameMessageHandler {
+
+    public override RegisterMessageHandler() {
+        super.RegisterMessageHandler();
+        GC.notify.register(ProtocolCode.Protocol_Holdem_MttBreak, this.Protocol_Holdem_MttBreak_Handler, this);
+    }
+
+    public override RemoveMessageHandler() {
+        super.RemoveMessageHandler();
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_MttBreak, this.Protocol_Holdem_MttBreak_Handler, this);
+    }
+
+    public Protocol_Holdem_MttBreak_Handler(rec: ServerMessageMttBreak.AsObject) {
+        if (rec == null) return;
+        (this.game as MTTGame).OnMttBreak(rec);
+    }
 
     // 通知本人离开房间 消息回调
     public override Protocol_Holdem_LeaveNotification_Handler(rec: ServerMessageLeaveNotification.AsObject) {

@@ -28,6 +28,8 @@ import { GM } from '../../gm/GMAPI';
 import { WebOrgClubUserInfo, WebRoomCenterMttUserWallet, WebUserRoom, WWW } from '../../net/https/WebRequest';
 import UITexasMenu from '../ui/UITexasMenu';
 import H5MsgMgr from '../../H5MsgMgr';
+import { ServerMessageMttBreak } from '../../protobuf/holdem/recv_g_mtt_break_pb';
+import ToastManager from '../../manager/ToastManager';
 
 enum MTTMatchStatus {
     // mtt比赛状态
@@ -139,7 +141,7 @@ export default class MTTGame extends TexasGame {
 
     public upBlindTime: number = 0; // 当前升盲时间
     public upBlindLeftTime: number = 0; //升盲剩余时间，秒
-    private upBlindLeftTimeDeltaTime: number = 0;
+    public upBlindLeftTimeDeltaTime: number = 0;
     public BlindLevel: number = 0; // 盲注级别
     public curBld: number = 0; //当前盲注
     public curAnte: number = 0; //当前前注
@@ -171,6 +173,17 @@ export default class MTTGame extends TexasGame {
     private readonly minPullDownTipNum: number = 1; //最小的随机数
     private readonly maxPullDownTipsNum: number = 7; //最大的随机数
     private readonly intervelTime: number = 4; //随机间隔时间
+    // MTT 休息相关
+    public mttBreakActive: boolean = false; //是否处于休息中（含等待手牌结束）
+    public mttBreakType: number = 0; //1 普通升盲休息 2 决赛前休息
+    public mttBreakEndTime: number = 0; //休息结束时间戳（秒）
+    public mttBreakPending: boolean = false; //已下发但当前手牌未结束，等手牌结束后再启动倒计时
+    private mttBreakLastTick: number = 0; //上一次刷新倒计时秒
+    private mttBreakArmTime: number = 0; //收到 eventType=1 的时刻（秒），用于判断宽限期
+    private mttBreakSawHand: boolean = false; //挂起期间是否已观察到有手牌在进行
+    // eventType=1 下发时可能刚好处于两手之间（HandEnd），随后立刻发下一手 StartInfo，
+    // 因此不能仅凭"当前不在手牌中"就立刻启动休息倒计时，需等待一个宽限窗口确认没有新手牌下发
+    private static readonly BREAK_ARM_GRACE_SEC: number = 2;
 
     protected override RCInit() {
         this.TexasGameProtocol = new MTTGameProtocol(this);
@@ -211,6 +224,52 @@ export default class MTTGame extends TexasGame {
                 }
             }
         }
+        if (this.mttBreakPending) {
+            let nowSec = Math.floor(new Date().getTime() / 1000);
+            if (this.IsHandRunning()) {
+                // 有手牌在进行：记录已观察到手牌，等其结束后再启动
+                this.mttBreakSawHand = true;
+            } else if (this.mttBreakSawHand || nowSec - this.mttBreakArmTime >= MTTGame.BREAK_ARM_GRACE_SEC) {
+                // 仅在“已打过一手并结束”或“宽限期已过（确认没有新手牌下发）”时才正式启动休息倒计时，
+                // 避免 eventType=1 恰好落在两手之间时抢在下一手 StartInfo 之前误弹浮窗
+                this.mttBreakPending = false;
+                this.mttBreakActive = this.mttBreakEndTime > nowSec;
+                this.mttBreakLastTick = 0;
+                if (this.mttBreakActive) {
+                    this.RefreshBreakTip();
+                } else {
+                    this.HideBreakTip();
+                }
+            }
+        }
+        if (this.mttBreakActive) {
+            let nowSec = Math.floor(new Date().getTime() / 1000);
+            if (nowSec !== this.mttBreakLastTick) {
+                this.mttBreakLastTick = nowSec;
+                if (nowSec >= this.mttBreakEndTime) {
+                    this.mttBreakActive = false;
+                    this.HideBreakTip();
+                } else {
+                    this.RefreshBreakTip();
+                }
+            }
+        }
+    }
+
+    /**
+     * 当前是否正在打一手牌（用于判断 154 是否需要等手牌结束再启动倒计时）
+     * 注意：HandShowdown（收到 Winner）之后，本手已结束进入结算，
+     * 而休息期间服务端不会立刻下发 HandClear，因此不能把 HandShowdown 视为进行中。
+     */
+    public IsHandRunning(): boolean {
+        const s = this.GameState;
+        return (
+            s === TexasGameState.HandStarted ||
+            s === TexasGameState.HandPreflop ||
+            s === TexasGameState.HandFlop ||
+            s === TexasGameState.HandTurn ||
+            s === TexasGameState.HandRiver
+        );
     }
 
     /// <summary>
@@ -236,7 +295,110 @@ export default class MTTGame extends TexasGame {
         this.gameStarted = false;
         this.NotLookPlayer = false;
         this.addOnModeDate = null;
+        this.mttBreakActive = false;
+        this.mttBreakPending = false;
+        this.mttBreakSawHand = false;
+        this.mttBreakArmTime = 0;
+        this.mttBreakType = 0;
+        this.mttBreakEndTime = 0;
         super.Dispose();
+    }
+
+    /**
+     * MTT休息通知 (Code 154)
+     */
+    public OnMttBreak(data: ServerMessageMttBreak.AsObject) {
+        // 玩家可能报名多个 MTT，服务端可能推送非当前牌桌的休息消息，
+        // 只处理与当前 match_id 一致的消息，避免误弹 toast 和浮窗
+        if (data.matchId && GameCache.Instance.match_id && data.matchId !== GameCache.Instance.match_id) {
+            return;
+        }
+        let nowSec = Math.floor(new Date().getTime() / 1000);
+        console.log('[MTTGame.OnMttBreak] data=', data, 'nowSec=', nowSec, {
+            matchId: data?.matchId,
+            breakType: data?.breakType,
+            eventType: data?.eventType,
+            startTime: data?.startTime,
+            endTime: data?.endTime,
+            remindTime: data?.remindTime,
+            duration: data?.duration,
+            blindLevel: data?.blindLevel
+        });
+        switch (data.eventType) {
+            case 1: {
+                // 本手游戏结束后进入休息：先提示，挂起休息，等本手（或紧随下发的下一手）结束后再启动倒计时。
+                // 不能仅凭当前是否在手牌中就立刻启动——eventType=1 可能落在两手之间（HandEnd），
+                // 服务端随后会立刻下发下一手 StartInfo，故统一走挂起 + 宽限判定（见 Update）。
+                this.mttBreakType = data.breakType;
+                this.mttBreakEndTime = data.endTime;
+                ToastManager.Instance.showToast(i18nMgr.Get('enterBreakAfterHandEnd'));
+                this.mttBreakPending = true;
+                this.mttBreakActive = false;
+                this.mttBreakArmTime = nowSec;
+                this.mttBreakSawHand = this.IsHandRunning();
+                this.HideBreakTip();
+                break;
+            }
+            case 2: {
+                // 结束前提醒: 暂不处理任何逻辑
+                break;
+            }
+            case 3: {
+                // 休息结束：关闭浮窗
+                this.mttBreakActive = false;
+                this.mttBreakPending = false;
+                this.mttBreakSawHand = false;
+                this.mttBreakEndTime = 0;
+                this.HideBreakTip();
+                break;
+            }
+            case 4: {
+                // 休息前预告: {time}分钟后将中场休息{duration}分钟
+                let minsToStart = Math.max(1, Math.round((data.startTime - nowSec) / 60));
+                ToastManager.Instance.showToast(
+                    i18nMgr
+                        .Get('timeBeforeBreakNotice')
+                        .replace('{time}', String(minsToStart))
+                        .replace('{duration}', String(data.duration))
+                );
+                break;
+            }
+        }
+    }
+
+    private RefreshBreakTip() {
+        if (!this.mttBreakActive) return;
+        let nowSec = Math.floor(new Date().getTime() / 1000);
+        let remaining = Math.max(0, this.mttBreakEndTime - nowSec);
+        let mmss = TimeHelper.ShowRemainingSemicolonPure(remaining);
+        // 在桌玩家: 决赛前休息(breakType=2)显示"请在决赛前进行状态调整"，普通升盲休息显示"{time}后比赛继续进行";
+        // 观众: "玩家正在休息\n{mm:ss}"
+        let isSeated = this.mainPlayer != null && this.mainPlayer.seatID > -1;
+        let text: string;
+        if (isSeated) {
+            text =
+                this.mttBreakType === 2
+                    ? i18nMgr.Get('adjustStateBeforeFinal') + '\n' + mmss
+                    : i18nMgr.Get('timeAfterMatchResume').replace('{time}', mmss);
+        } else {
+            text = i18nMgr.Get('playerInBreakState') + '\n' + mmss;
+        }
+        let node = this.uirc?.Image_WaitForStartTips;
+        if (!node) return;
+        if (!node.activeInHierarchy) {
+            node.active = true;
+        }
+        let label = node.getChildByName('Text_Tips')?.getComponent(cc.Label);
+        if (label) {
+            label.string = text;
+        }
+    }
+
+    private HideBreakTip() {
+        let node = this.uirc?.Image_WaitForStartTips;
+        if (node && node.activeInHierarchy) {
+            node.active = false;
+        }
     }
 
     public override UpdateRoom(rec: ServerMessageEnterRoom.AsObject) {
@@ -282,6 +444,8 @@ export default class MTTGame extends TexasGame {
         this.addOnModeDate = new AddOnModeDate(rec.mttInfo);
         this.cachePartialBringInReturnBlindLevel = rec.mttInfo.partialBringInReturnBlindLevel;
         this.upBlindLeftTime = rec.mttProgress.upBlindLeftTime; //升盲倒计时
+        // 用服务端值刷新时同步对齐 tick 基准，避免下一帧因基准为 0 立刻扣 1 造成初始倒计时错位
+        this.upBlindLeftTimeDeltaTime = new Date().getTime() / 1000;
         this.upBldCounting = this.upBlindLeftTime > 0; //进入房间即可倒计时
         this.nextBld = rec.mttProgress.nextSmallBlind; //下一个盲注
         this.nextAnte = rec.mttProgress.nextAnte; //下一个前注
@@ -409,6 +573,9 @@ export default class MTTGame extends TexasGame {
             }
         });
         this.CurrentOpAddOnMode = this.addOnMode;
+        if (this.mttBreakActive) {
+            ToastManager.Instance.showToast(i18nMgr.Get('addBuySuccessTip'));
+        }
     }
 
     // 退出房间 -MTT直接退出房间断开socket
@@ -548,12 +715,12 @@ export default class MTTGame extends TexasGame {
                                                     menu.$node_coin.getChildByName('label').getComponent(cc.Label).string = `${res.data.apply_bring_in}`;
                                                 }
                                             },
-                                            () => {}
+                                            () => { }
                                         );
                                         /////////////////////////////////////////////////////
                                     }
                                 },
-                                () => {}
+                                () => { }
                             );
                         }
                         //buttonAddBean.transform.Find("chip_bg").gameObject.SetActive(GameCache.Instance.FriendsTableLimitBringIn);
@@ -565,7 +732,7 @@ export default class MTTGame extends TexasGame {
                         menu.$node_storage.active = chips > 0;
                     }
                 },
-                (res: any) => {}
+                (res: any) => { }
             );
         }
     }
