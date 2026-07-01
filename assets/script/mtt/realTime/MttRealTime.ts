@@ -26,6 +26,7 @@ const { ccclass, property, menu } = cc._decorator;
 @menu('脚本分组/mtt/realTime/MttRealTime')
 export default class MttRealTime extends UIBase {
     private shadows: cc.Node = null;
+    private closeBtn: cc.Node = null;
     // private tabToggles: ComTabToggles = null;
     private rankList: List = null;
     private tabNode: TabNode = null;
@@ -46,6 +47,7 @@ export default class MttRealTime extends UIBase {
     lateLoad() {
         super.lateLoad();
         this.shadows = this.getChildNodeOrComponent('shadows');
+        this.closeBtn = this.getChildNodeOrComponent('closeBtn');
         // this.tabToggles = this.getChildNodeOrComponent("tabToggles", ComTabToggles);
         this.tabNode = this.getChildNodeOrComponent('tabNode', TabNode);
         this.rankList = this.getChildNodeOrComponent('rankList', List);
@@ -71,6 +73,7 @@ export default class MttRealTime extends UIBase {
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
         this.bindClick(this.shadows, () => UIComponent.close(this.UIDefine));
+        this.bindClick(this.closeBtn, () => UIComponent.close(this.UIDefine));
         this.bindClick(this.firstBtn, this.clickFirst);
         this.bindClick(this.frontBtn, this.clickFront);
         this.bindClick(this.nextBtn, this.clickNext);
