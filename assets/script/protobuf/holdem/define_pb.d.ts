@@ -3790,6 +3790,27 @@ export class MTTRecord extends jspb.Message {
   getInsuranceAmount(): number;
   setInsuranceAmount(value: number): void;
 
+  getActivityDetail(): string;
+  setActivityDetail(value: string): void;
+
+  getBreakInterval(): number;
+  setBreakInterval(value: number): void;
+
+  getBreakDuration(): number;
+  setBreakDuration(value: number): void;
+
+  getBreakRemindTime(): number;
+  setBreakRemindTime(value: number): void;
+
+  getFinalBreakDuration(): number;
+  setFinalBreakDuration(value: number): void;
+
+  getFinalBreakRemind(): number;
+  setFinalBreakRemind(value: number): void;
+
+  getBreakRemind(): number;
+  setBreakRemind(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): MTTRecord.AsObject;
   static toObject(includeInstance: boolean, msg: MTTRecord): MTTRecord.AsObject;
@@ -3939,6 +3960,13 @@ export namespace MTTRecord {
     stageRemainRate: number,
     stageFinalScoreType: number,
     insuranceAmount: number,
+    activityDetail: string,
+    breakInterval: number,
+    breakDuration: number,
+    breakRemindTime: number,
+    finalBreakDuration: number,
+    finalBreakRemind: number,
+    breakRemind: number,
   }
 }
 
@@ -3964,6 +3992,12 @@ export class MTTMore extends jspb.Message {
   getPrizePool(): number;
   setPrizePool(value: number): void;
 
+  getBreakStartTime(): number;
+  setBreakStartTime(value: number): void;
+
+  getBreakEndTime(): number;
+  setBreakEndTime(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): MTTMore.AsObject;
   static toObject(includeInstance: boolean, msg: MTTMore): MTTMore.AsObject;
@@ -3983,6 +4017,8 @@ export namespace MTTMore {
     nante: number,
     nbl: number,
     prizePool: number,
+    breakStartTime: number,
+    breakEndTime: number,
   }
 }
 

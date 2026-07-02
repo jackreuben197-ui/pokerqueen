@@ -136,12 +136,10 @@ export default class Main extends cc.Component {
      * 并刷新预览模式下未跟随窗口的容器 DOM。
      */
     private _onWindowResize(): void {
-        console.log('[TG-Diag] window.resize 触发', 'innerW=' + window.innerWidth, 'innerH=' + window.innerHeight);
         clearTimeout(this._resizeTimer);
         this._resizeTimer = window.setTimeout(() => {
             const w = window.innerWidth;
             const h = window.innerHeight;
-            console.log('[TG-Diag] _onWindowResize 防抖后执行', 'w=' + w, 'h=' + h);
             this.tracelog.info('[Main] 窗口 resize，重新适配', w, h);
             // 更新容器 DOM（预览模式下容器不会自动跟随窗口）
             const content = document.getElementById('content');
@@ -161,7 +159,14 @@ export default class Main extends cc.Component {
             }
             // 等一帧让 DOM 重排完成，再更新引擎画布
             requestAnimationFrame(() => {
-                ProcedureInit.updateFitMode();
+                // TG 环境下，键盘适配完全由 H5 层 focusin/focusout 控制，CC 层不调 updateFitMode。
+                // 避免 race condition：H5 focusout 后 200ms 标志被清，但 window.resize 可能更晚触发，
+                // 导致 CC 误判键盘已收起 → 调 setDesignResolutionSize 污染 cocos 内部状态
+                // → 第二次键盘弹出时画面变形。
+                const isTelegram = !!(window as any).Telegram?.WebApp;
+                if (!isTelegram) {
+                    ProcedureInit.updateFitMode();
+                }
                 if (Main.Diss && Main.Diss.isValid) {
                     MainUtils.refreshDiss(Main.Diss);
                 }

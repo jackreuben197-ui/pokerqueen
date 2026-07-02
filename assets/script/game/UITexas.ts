@@ -147,6 +147,8 @@ export default class UITexas extends BaseScene {
      */
     textRoomInfo: cc.Label = null;
     RemainingSquidCount: cc.Node = null;
+    /** 数字容器(对齐 Unity 的惩罚池):图标常驻、数字按鱿鱼轮显隐 */
+    RemainingSquidLabel: cc.Node = null;
     RemainingSquidLabelCount: cc.Label = null;
     SquidSwitch: cc.Node = null;
     SquidJoinLabel: cc.Label = null;
@@ -317,14 +319,20 @@ export default class UITexas extends BaseScene {
         // 注意：RemainingSquidCount / SquidSwitch 实际挂在 UITexas 根节点下，不是 main 的直接子节点。
         // 历史上误用 this.main?.getChildByName 导致永远取不到，初始隐藏失效，
         // prefab 默认 _active=true，结果蘑菇/普通房左下角都显示了鱿鱼图标。
-        // 改用 getChildNodeOrComponent（基于 _view 全节点索引，按名字定位）。
+        // 改用 getChildNodeOrComponent（基于 _view 全节点索引，按名字定位，对层级变动免疫）。
         this.RemainingSquidCount = this.getChildNodeOrComponent('RemainingSquidCount');
-        this.RemainingSquidLabelCount = this.RemainingSquidCount?.getChildByName('RemainingSquidLabel')
-            ?.getChildByName('RemainingSquidLabelCount')
-            ?.getComponent(cc.Label);
+        // 对齐 Unity:图标(RemainingSquidCount)只要是鱿鱼桌就常驻显示,
+        // 数字容器(RemainingSquidLabel)才按鱿鱼轮显隐。两者分开控制。
+        // RemainingSquidLabel / RemainingSquidLabelCount 名字在整个 prefab 中唯一,走 _view 深度索引,
+        // 避免 getChildByName 只找直接子节点、prefab 层级调整后取不到导致数字不刷新。
+        this.RemainingSquidLabel = this.getChildNodeOrComponent('RemainingSquidLabel');
+        this.RemainingSquidLabelCount = this.getChildNodeOrComponent('RemainingSquidLabelCount', cc.Label);
         if (this.RemainingSquidCount) {
             this.RemainingSquidCount.active = false;
             this._remainingSquidCountOrigY = this.RemainingSquidCount.y;
+        }
+        if (this.RemainingSquidLabel) {
+            this.RemainingSquidLabel.active = false;
         }
         this.SquidSwitch = this.getChildNodeOrComponent('SquidSwitch');
         this.SquidJoinLabel = this.SquidSwitch?.getChildByName('content')?.getChildByName('$joinLabel')?.getComponent(cc.Label);
@@ -541,6 +549,11 @@ export default class UITexas extends BaseScene {
         this.game = GameCache.Instance.CurGame;
         // 设置UI对象
         this.game.uirc = this;
+        // 修复：EnterRoom 协议可能在 UITexas.Enter 之前到达，那时 game.uirc=null，
+        // squidFeature.RefreshGlobalRemain 会命中 if(!node)return 静默退出，
+        // 桌面剩余鱿鱼图标保持 lateLoad 设的 active=false 而不显示。
+        // uirc 绑定后兜底重刷一次，确保鱿鱼桌能正确激活图标。
+        this.game.RefreshSquidMarks();
         // 设置公共牌位置
         this.game.InitPublicLocalPos();
         // 是否是观看(MTT)
@@ -849,8 +862,8 @@ export default class UITexas extends BaseScene {
         this.setActive(this.StartGameButton, false);
         this.setActive(this.BombPotOpen, false);
         this.setActive(this.BombPotLogo, false);
-        //消息按钮显示
-        this.btn_msg.active = GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2;
+        //消息按钮：按要求在好友桌/俱乐部桌均隐藏，不再显示
+        this.btn_msg.active = false;
         // 视频控制按钮初始状态
         this._cameraOn = false;
         this._micOn = false;

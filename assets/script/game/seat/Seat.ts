@@ -335,7 +335,6 @@ export default class Seat {
                 })
             );
             let mLocalPos: cc.Vec3 = this.uirc.transSmallCardBacks.convertToNodeSpaceAR(targetPos);
-            console.log(LN, 'this.listImageSmallCardBack.length >> ', this.listImageSmallCardBack.length);
             for (let i = 0, n = this.listImageSmallCardBack.length; i < n; i++) {
                 let mTmpObj: cc.Node = this.listImageSmallCardBack[i].node;
                 let pos = this.GetBackSmallCardPos(i);
@@ -697,7 +696,6 @@ export default class Seat {
                 this.StopAllinArmature();
                 break;
         }
-        console.log(LN, '播放气泡');
         if (this.uirc.textBubble.string != '') {
             if (null == this.sequenceUpdateBubble || !this.sequenceUpdateBubble.IsPlaying) this.PlayUpdateBubbleAnimation();
         } else {
@@ -919,7 +917,6 @@ export default class Seat {
     /// 刷新手牌
     /// </summary>
     public UpdateCards(isAllin: boolean = false): void {
-        console.log(LN, '---UpdateCards---', 'seat:', this.id, 'isAllin', isAllin);
         if (GC.game.seatMoveStruct.moving) {
             GC.game.seatMoveStruct.cacheFuncs.push({ a: this, b: this.__UpdateCards, c: isAllin, d: '__UpdateCards' });
         } else {
@@ -1310,7 +1307,6 @@ export default class Seat {
         // this.uirc.Text_NickName.node.active = !this.IsMySeat;
         this.uirc.Frame_Head.active = istrue;
         this.uirc.Text_NickName.node.active = istrue;
-        console.log(LN, 'SetOperationHeadActive', istrue);
     }
 
     /// <summary>
@@ -1410,7 +1406,6 @@ export default class Seat {
     /// </summary>
     /// <param name="countDown"></param>
     public StartCountDown(countDown: number, isInsruance: boolean = false): void {
-        console.log(LN, 'StartCountDown :: ', countDown);
         this.optCurTime = countDown;
         let defaultOpTime: number = GameCache.Instance.CurGame.GetOpTime();
         if (isInsruance) defaultOpTime = 30;
@@ -1698,7 +1693,17 @@ export default class Seat {
     }
 
     public FoldHeadGray(active: boolean): void {
-        this.uirc.Gray_Head.active = active;
+        // 🆕 改用内置 2d-gray-sprite material 把头像本身转真灰度（黑白效果）
+        //   原方案是显示 Gray_Head 黑色遮罩节点，视觉上是"半透明黑色叠加"，不是真灰度
+        //   新方案用 shader 直接把头像纹理的 RGB 转灰阶（标准亮度公式 0.299R + 0.587G + 0.114B）
+        //   对齐 UIBase.ts:37 setSpriteShowGray 的实现（Seat 没继承 UIBase，所以直接内联）
+        //   备注：cocos 2.4.x 切 spriteFrame 不会重置 material，所以异步加载头像后灰度仍生效
+        if (this.uirc.Raw_Head) {
+            const mat = active
+                ? cc.Material.getBuiltinMaterial('2d-gray-sprite')
+                : cc.Material.getBuiltinMaterial('2d-sprite');
+            this.uirc.Raw_Head.setMaterial(0, mat);
+        }
         // 同步显示/隐藏弃牌文字标识，所有调用路径（FSM、协议同步等）自动生效
         if (this.uirc.foldText) {
             this.uirc.foldText.active = active;
@@ -1779,7 +1784,7 @@ export default class Seat {
         }
         // 挂到座位节点下，与 Spine_Winner 同级
         this.ui.addChild(spineNode);
-        // 播放 animation，不循环
+        // 播放 animation，不循环（cocos spine 默认行为：播完后停在最后一帧）
         skeleton.setAnimation(0, 'animation', false);
         // 下一帧恢复透明度，此时动画已从第0帧开始正常推进
         skeleton.scheduleOnce(() => {
@@ -1787,14 +1792,9 @@ export default class Seat {
                 spineNode.opacity = 255;
             }
         }, 0);
-        skeleton.setCompleteListener(() => {
-            if (spineNode.isValid) {
-                spineNode.destroy();
-            }
-            if (this._allinSpineNode === spineNode) {
-                this._allinSpineNode = null;
-            }
-        });
+        // 🆕 动画播放完成后节点保留，停在最后一帧，直到当前这手牌结束。
+        //   一手牌结束时 StopAllinArmature 会被调用清理（SeatFSM.ts:411 新一手 Enter / :216 StartToPlayingEnter）。
+        //   所以这里不再注册 setCompleteListener 销毁节点，保持 spine 停在最后一帧的视觉。
         this._allinSpineNode = spineNode;
     }
 
@@ -2629,7 +2629,6 @@ export default class Seat {
         // } else {
         //     this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[0]);
         // }
-        console.log(LN, '刷新下方筹码位置');
     }
 
     /** 在桌总额（含待生效的补充筹码 cacheAddChips），对齐 Unity BaseSeat.GetTableChips。

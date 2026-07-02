@@ -372,7 +372,7 @@ export default class TexasGameMessageHandler {
                         console.log(LN, '[game-end] queue h5 navigate after exit cleanup', h5NavigatePayload);
                         this.game.SMAgency.ChangeGameState(TexasGameState.Exit, {
                             response,
-                            h5NavigatePayload
+                            h5Navigate: { routeData: h5NavigatePayload }
                         });
                         break;
                     }

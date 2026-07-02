@@ -46,12 +46,20 @@ export default class UITexasSettingComponent extends UIBase {
     private static readonly COLOR_SELECTED = cc.Color.BLACK;
     private static readonly COLOR_NORMAL = cc.Color.WHITE;
     private _selectedButtonSet: cc.Node = null;
-    private _selectedPoolSet: cc.Node = null;
+    private _poolSetNode3: cc.Node = null;
+    private _poolSetNode5: cc.Node = null;
+    /** 各底池设置节点(poolSetNode3/poolSetNode5)当前选中的子按钮，按节点独立跟踪，避免 3/5 模式互相干扰 */
+    private _poolSelectedMap: Map<cc.Node, cc.Node> = new Map();
     private _selectedTab: cc.Node = null;
     private _sliderDragging: boolean = false;
     private static readonly SLIDER_BASE_WIDTH = 800;
     private static readonly SLIDER_MIN_X = 80;
     private static readonly SLIDER_STEP = 8;
+    /** 5 档底池比例可调范围（对齐 Unity _potMinRang/_potMaxRang，首尾相接覆盖 10%~400%） */
+    private static readonly POT_MIN_RANG = [0.1, 0.5, 0.67, 1, 1.2];
+    private static readonly POT_MAX_RANG = [0.49, 0.66, 0.99, 1.19, 4];
+    /** 当前选中、滑块正在调节的快捷加注档位 index（0..4） */
+    private _curQuickActionIndex: number = 0;
     curQuickActionIndex = 2;
 
     //soundIsOpen = true;
@@ -229,17 +237,20 @@ export default class UITexasSettingComponent extends UIBase {
     initButtonSet() {
         let threeBtn = this.getChildNodeOrComponent('threeButtonSet') as cc.Node;
         let fiveBtn = this.getChildNodeOrComponent('fiveButtonSet') as cc.Node;
+        this._poolSetNode3 = this.getChildNodeOrComponent('poolSetNode3') as cc.Node;
+        this._poolSetNode5 = this.getChildNodeOrComponent('poolSetNode5') as cc.Node;
         if (threeBtn) {
             threeBtn.on(cc.Node.EventType.TOUCH_END, () => this.onButtonSetClick(threeBtn, fiveBtn), this);
         }
         if (fiveBtn) {
             fiveBtn.on(cc.Node.EventType.TOUCH_END, () => this.onButtonSetClick(fiveBtn, threeBtn), this);
         }
-        if (threeBtn) {
-            this.applyButtonSetState(threeBtn, true);
-            this.applyButtonSetState(fiveBtn, false);
-            this._selectedButtonSet = threeBtn;
-        }
+        // 默认选中：读取本地存储的按钮数量，未配置时默认「三按钮」
+        let isThree = UITexasSettingComponent.GetCurButtonNumber() === UITexasSettingComponent.DEFAULT_BUTTON_NUMBER;
+        this._selectedButtonSet = isThree ? threeBtn : fiveBtn;
+        this.applyButtonSetState(threeBtn, isThree);
+        this.applyButtonSetState(fiveBtn, !isThree);
+        this.showPoolSetNode(isThree);
     }
 
     onButtonSetClick(selected: cc.Node, other: cc.Node) {
@@ -247,6 +258,21 @@ export default class UITexasSettingComponent extends UIBase {
         this._selectedButtonSet = selected;
         this.applyButtonSetState(selected, true);
         this.applyButtonSetState(other, false);
+        let isThree = selected.name === 'threeButtonSet';
+        // 三按钮 -> poolSetNode3，五按钮 -> poolSetNode5
+        this.showPoolSetNode(isThree);
+        // 持久化按钮数量，供桌面操作栏读取
+        GC.localStore.setItem(StorageKey.kQuickActionIndexKEY + 'num', isThree ? 3 : 5);
+        // 切换模式后把滑块定位到当前可见档位组里选中的那一档
+        this.selectQuickAction(this.getActiveActionIndex());
+    }
+
+    /**
+     * 切换底池设置节点显隐：三按钮模式显示 poolSetNode3，五按钮模式显示 poolSetNode5
+     */
+    private showPoolSetNode(isThree: boolean) {
+        if (this._poolSetNode3) this._poolSetNode3.active = isThree;
+        if (this._poolSetNode5) this._poolSetNode5.active = !isThree;
     }
 
     applyButtonSetState(btn: cc.Node, selected: boolean) {
@@ -265,30 +291,42 @@ export default class UITexasSettingComponent extends UIBase {
     }
 
     /**
-     * @method  底池设置切换（poolSetNode 下的三个按钮）
+     * @method  快捷加注档位按钮（poolSetNode3 = 3 档 / poolSetNode5 = 5 档）
      */
     initPoolSet() {
-        let poolSetNode = this.getChildNodeOrComponent('poolSetNode') as cc.Node;
-        if (!poolSetNode) return;
+        // poolSetNode3 的 3 个按钮对应底层档位 index 1/2/3，poolSetNode5 的 5 个对应 0/1/2/3/4
+        this.initPoolSetNode(this._poolSetNode3, [1, 2, 3]);
+        this.initPoolSetNode(this._poolSetNode5, [0, 1, 2, 3, 4]);
+    }
+
+    /**
+     * 初始化单个档位组：绑定点击、默认选中第 0 个、按 actionIndex 同步档位值文本
+     */
+    private initPoolSetNode(poolSetNode: cc.Node, indexMap: number[]) {
+        if (!poolSetNode || poolSetNode.childrenCount === 0) return;
+        let firstChild = poolSetNode.children[0] as cc.Node;
         for (let index = 0; index < poolSetNode.childrenCount; index++) {
             const element = poolSetNode.children[index] as cc.Node;
+            let actionIndex = indexMap[index];
+            element['actionIndex'] = actionIndex;
             element.on(cc.Node.EventType.TOUCH_END, () => this.onPoolSetClick(element), this);
-            let background = element.getChildByName('Background');
-            if (background) {
-                let sprite = background.getComponent(cc.Sprite);
-                if (sprite) {
-                    sprite.spriteFrame = index === 0 ? this.poolSelect : this.poolNormal;
-                }
-            }
+            this.applyPoolSetState(element, element === firstChild);
+            this.setPoolButtonLabel(element, UITexasSettingComponent.GetCurQuickActionNum(actionIndex));
         }
-        this._selectedPoolSet = poolSetNode.children[0] as cc.Node;
+        this._poolSelectedMap.set(poolSetNode, firstChild);
     }
 
     onPoolSetClick(selected: cc.Node) {
-        if (this._selectedPoolSet === selected) return;
-        this.applyPoolSetState(this._selectedPoolSet, false);
-        this.applyPoolSetState(selected, true);
-        this._selectedPoolSet = selected;
+        let parent = selected.parent;
+        if (!parent) return;
+        let prev = this._poolSelectedMap.get(parent);
+        if (prev !== selected) {
+            if (prev) this.applyPoolSetState(prev, false);
+            this.applyPoolSetState(selected, true);
+            this._poolSelectedMap.set(parent, selected);
+        }
+        // 选中该档位 → 滑块切到对应比例段
+        this.selectQuickAction(selected['actionIndex']);
     }
 
     applyPoolSetState(btn: cc.Node, selected: boolean) {
@@ -298,6 +336,96 @@ export default class UITexasSettingComponent extends UIBase {
             let sprite = background.getComponent(cc.Sprite);
             if (sprite) {
                 sprite.spriteFrame = selected ? this.poolSelect : this.poolNormal;
+            }
+        }
+    }
+
+    /** 设置档位按钮 Background/Label 的档位值文本 */
+    private setPoolButtonLabel(btn: cc.Node, text: string) {
+        let labelNode = cc.find('Background/Label', btn);
+        let label = labelNode && labelNode.getComponent(cc.Label);
+        if (label) label.string = text;
+    }
+
+    /** 当前可见档位组里选中的 actionIndex（3/5 切换后用于恢复滑块位置） */
+    private getActiveActionIndex(): number {
+        let activePool =
+            this._poolSetNode3 && this._poolSetNode3.active
+                ? this._poolSetNode3
+                : this._poolSetNode5 && this._poolSetNode5.active
+                ? this._poolSetNode5
+                : null;
+        if (activePool) {
+            let sel = this._poolSelectedMap.get(activePool);
+            if (sel && sel['actionIndex'] != null) return sel['actionIndex'];
+        }
+        return UITexasSettingComponent.GetCurButtonNumber() === 5 ? 0 : 1;
+    }
+
+    /** 选中某档位，把滑块定位到该档当前比例值 */
+    private selectQuickAction(actionIndex: number) {
+        this._curQuickActionIndex = actionIndex;
+        this.updateSliderForAction();
+    }
+
+    /** 按 _curQuickActionIndex 的 [minR, maxR] 和当前值，反算 slider.x 并刷新进度/百分比 */
+    private updateSliderForAction() {
+        let progressNode = this.getChildNodeOrComponent('progressNode') as cc.Node;
+        let slider = progressNode && (cc.find('base/slider', progressNode) as cc.Node);
+        if (!slider) return;
+        let minR = UITexasSettingComponent.POT_MIN_RANG[this._curQuickActionIndex];
+        let maxR = UITexasSettingComponent.POT_MAX_RANG[this._curQuickActionIndex];
+        let curValue = UITexasSettingComponent.GetCurQuickActionNumValue(this._curQuickActionIndex);
+        curValue = Math.max(minR, Math.min(maxR, curValue));
+        let span = UITexasSettingComponent.SLIDER_BASE_WIDTH - UITexasSettingComponent.SLIDER_MIN_X;
+        let ratio = maxR > minR ? (curValue - minR) / (maxR - minR) : 0;
+        slider.x = UITexasSettingComponent.SLIDER_MIN_X + ratio * span;
+        this._updateProgress(slider);
+        // 更新两端 label：显示当前档位可调节的比例范围
+        this.updateRangeLabels(progressNode, minR, maxR);
+    }
+
+    /** 在 progressNode 下的 startLabel/endLabel 标注当前档位的比例范围（百分比） */
+    private updateRangeLabels(progressNode: cc.Node, minR: number, maxR: number) {
+        if (!progressNode) return;
+        let startNode = progressNode.getChildByName('startLabel');
+        let startLabel = startNode && startNode.getComponent(cc.Label);
+        if (startLabel) startLabel.string = Math.round(minR * 100) + '%';
+        let endNode = progressNode.getChildByName('endLabel');
+        let endLabel = endNode && endNode.getComponent(cc.Label);
+        if (endLabel) endLabel.string = Math.round(maxR * 100) + '%';
+    }
+
+    /** 松手时把滑块当前比例写回该档位（数值 + 文本），并更新按钮显示 */
+    private commitSliderValue() {
+        let progressNode = this.getChildNodeOrComponent('progressNode') as cc.Node;
+        let slider = progressNode && (cc.find('base/slider', progressNode) as cc.Node);
+        if (!slider) return;
+        let minR = UITexasSettingComponent.POT_MIN_RANG[this._curQuickActionIndex];
+        let maxR = UITexasSettingComponent.POT_MAX_RANG[this._curQuickActionIndex];
+        let span = UITexasSettingComponent.SLIDER_BASE_WIDTH - UITexasSettingComponent.SLIDER_MIN_X;
+        let ratio = span > 0 ? (slider.x - UITexasSettingComponent.SLIDER_MIN_X) / span : 0;
+        let value = minR + ratio * (maxR - minR);
+        let percentStr = Math.round(value * 100) + '%';
+        GC.localStore.setItem(StorageKey.kQuickActionIndexValueKEY + this._curQuickActionIndex, value);
+        GC.localStore.setItem(StorageKey.kQuickActionIndexKEY + this._curQuickActionIndex, percentStr);
+        this.updatePoolButtonLabel(this._curQuickActionIndex, percentStr);
+    }
+
+    /** 更新当前可见档位组里对应 actionIndex 按钮的档位值文本 */
+    private updatePoolButtonLabel(actionIndex: number, text: string) {
+        let activePool =
+            this._poolSetNode3 && this._poolSetNode3.active
+                ? this._poolSetNode3
+                : this._poolSetNode5 && this._poolSetNode5.active
+                ? this._poolSetNode5
+                : null;
+        if (!activePool) return;
+        for (let i = 0; i < activePool.childrenCount; i++) {
+            let btn = activePool.children[i] as cc.Node;
+            if (btn['actionIndex'] === actionIndex) {
+                this.setPoolButtonLabel(btn, text);
+                break;
             }
         }
     }
@@ -394,25 +522,23 @@ export default class UITexasSettingComponent extends UIBase {
     }
 
     /**
-     * @method  自定义 Slider 滑块（progressNode）
+     * @method  自定义底池比例 Slider（progressNode）：选中档位 → 滑块在该档比例段内调节 → 松手写回
      */
     initSlider() {
         let progressNode = this.getChildNodeOrComponent('progressNode') as cc.Node;
-        console.log('[Slider] progressNode found:', !!progressNode, 'size:', progressNode?.width, progressNode?.height);
         if (!progressNode) return;
         let slider = cc.find('base/slider', progressNode) as cc.Node;
         if (!slider) return;
-        slider.x = Math.max(200, UITexasSettingComponent.SLIDER_MIN_X);
-        this._updateProgress(slider);
         // 事件注册在 progressNode 上，避免 slider 尺寸过小导致触摸不响应
         progressNode.on(cc.Node.EventType.TOUCH_START, this._onSliderTouchStart, this);
         progressNode.on(cc.Node.EventType.TOUCH_MOVE, this._onSliderTouchMove, this);
         progressNode.on(cc.Node.EventType.TOUCH_END, this._onSliderTouchEnd, this);
         progressNode.on(cc.Node.EventType.TOUCH_CANCEL, this._onSliderTouchEnd, this);
+        // 默认定位到当前可见档位组里选中的那一档
+        this.selectQuickAction(this.getActiveActionIndex());
     }
 
     _onSliderTouchStart(event: cc.Event.EventTouch) {
-        console.log('[Slider] TOUCH_START');
         this._sliderDragging = true;
         event.stopPropagation();
     }
@@ -432,22 +558,27 @@ export default class UITexasSettingComponent extends UIBase {
     }
 
     _onSliderTouchEnd(event: cc.Event.EventTouch) {
-        console.log('[Slider] TOUCH_END');
         this._sliderDragging = false;
         event.stopPropagation();
+        // 松手写回该档位比例
+        this.commitSliderValue();
     }
 
     _updateProgress(slider: cc.Node) {
         let base = slider.parent;
         let progress = base.getChildByName('progress') as cc.Node;
-        if (!progress) return;
-        // base 的 anchorX=0，slider.x 范围 [0, 800]
-        let percent = slider.x / UITexasSettingComponent.SLIDER_BASE_WIDTH;
-        progress.width = percent * UITexasSettingComponent.SLIDER_BASE_WIDTH;
-        // 更新 slider 上的 label 显示百分比
+        if (progress) {
+            progress.width = slider.x;
+        }
+        // slider.x 线性映射到当前档位的 [minR, maxR]，label 显示比例百分比
+        let span = UITexasSettingComponent.SLIDER_BASE_WIDTH - UITexasSettingComponent.SLIDER_MIN_X;
+        let ratio = span > 0 ? (slider.x - UITexasSettingComponent.SLIDER_MIN_X) / span : 0;
+        let minR = UITexasSettingComponent.POT_MIN_RANG[this._curQuickActionIndex];
+        let maxR = UITexasSettingComponent.POT_MAX_RANG[this._curQuickActionIndex];
+        let value = minR + ratio * (maxR - minR);
         let label = slider.getComponentInChildren(cc.Label);
         if (label) {
-            label.string = Math.round(percent * 100) + '%';
+            label.string = Math.round(value * 100) + '%';
         }
     }
 
@@ -520,7 +651,8 @@ export default class UITexasSettingComponent extends UIBase {
      * @returns
      */
     public static GetCurQuickActionNum(index) {
-        let defaultActionNums = ['0', '1/2', '2/3', '1x', '0'];
+        // 默认值对齐 Unity 主桌：1/3, 1/2, 2/3, 1x, 1.2（5 按钮模式全部显示）
+        let defaultActionNums = ['1/3', '1/2', '2/3', '1x', '1.2'];
         let numStr = GC.localStore.getItem(StorageKey.kQuickActionIndexKEY + index) || defaultActionNums[index];
         return numStr;
     }
@@ -572,8 +704,21 @@ export default class UITexasSettingComponent extends UIBase {
     }
 
     public static GetCurQuickActionNumValue(index) {
-        let defaultActionNums = [0, 1.0 / 2, 2.0 / 3, 1.0, 0];
+        // 默认底池倍数对齐 Unity：1/3, 1/2, 2/3, 1, 1.2
+        let defaultActionNums = [1.0 / 3, 1.0 / 2, 2.0 / 3, 1.0, 1.2];
         let numStr = GC.localStore.getItem(StorageKey.kQuickActionIndexValueKEY + index) || defaultActionNums[index];
         return +numStr;
+    }
+
+    /** 快捷加注按钮数量默认值（与个性设置「三按钮」默认一致） */
+    public static readonly DEFAULT_BUTTON_NUMBER = 3;
+
+    /**
+     * 当前快捷加注按钮数量（3 或 5），读取本地 kQuickActionIndexKEY + 'num'。
+     * 供桌面操作栏决定显示几个快捷投注按钮；未配置时默认 3。
+     */
+    public static GetCurButtonNumber(): number {
+        let n = GC.localStore.getItem(StorageKey.kQuickActionIndexKEY + 'num');
+        return n === 5 ? 5 : UITexasSettingComponent.DEFAULT_BUTTON_NUMBER;
     }
 }

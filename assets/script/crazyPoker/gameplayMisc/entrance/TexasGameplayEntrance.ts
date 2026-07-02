@@ -45,6 +45,7 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         // C#: int status = await RequestRoomInfoAsync();
         const roomStatus: number = await this.requestRoomInfoAsync();
         if (roomStatus != 0) {
+            this.lastErrorMessage = `房间信息请求失败(code=${roomStatus})`;
             console.warn(`${this.constructor.name}: messageLayerEnterAsync: requestRoomInfoAsync failed: ${roomStatus}`);
             return false;
         }
@@ -52,12 +53,14 @@ export default class TexasGameplayEntrance extends AGameplayEntrance {
         const isCanEnter: boolean = await this.checkCanEnterAsync(isEnterForeground);
         console.log(`${this.constructor.name}: messageLayerEnterAsync - CanEnter: ${isCanEnter}`);
         if (!isCanEnter) {
+            this.lastErrorMessage = '房间已关闭或不可进入';
             return false;
         }
         // 请求进入房间
         this._enterStatus = await this.requestEnterAsync(true);
         console.log(`${this.constructor.name}: messageLayerEnterAsync - EnterStatus: ${this._enterStatus}`);
         if (this._enterStatus != 0 && this._enterStatus != 1015) {
+            this.lastErrorMessage = `进入房间协议返回错误码=${this._enterStatus}`;
             if (!this._isHasToast) {
                 this._isHasToast = true;
                 // TODO: 显示错误提示

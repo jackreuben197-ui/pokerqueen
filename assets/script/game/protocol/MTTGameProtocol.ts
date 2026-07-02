@@ -164,8 +164,9 @@ export default class MTTGameProtocol extends TexasGameProtocol {
             game.groupBet = game.nextAnte;
             game.nextAnte = rec.mttProgress.nextAnte;
             game.nextBld = rec.mttProgress.nextSmallBlind;
-            //开始新一轮计时
+            //开始新一轮计时（服务端下发的 upBlindLeftTime 已包含休息时间，直接计时即可）
             game.upBlindLeftTime = rec.mttProgress.upBlindLeftTime;
+            game.upBlindLeftTimeDeltaTime = new Date().getTime() / 1000;
             game.upBldCounting = true;
             game.addOnMode = rec.mttProgress.addonMode;
             game.ShowAddOnBtn();

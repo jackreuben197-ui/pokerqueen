@@ -9,6 +9,7 @@ import ProcedureManager from '../../manager/ProcedureManager';
 import ProcedureEnterTexas from '../../procedure/ProcedureEnterTexas';
 import { ServerMessageNotificationRoomReady } from '../../protobuf/holdem/recv_g_notification_room_ready_pb';
 import { ClientMessageLeave } from '../../protobuf/holdem/req_th_leave_pb';
+import { ServerMessageRooms } from '../../protobuf/holdem/req_rpc_rooms_pb';
 import LoginSession from '../../session/LoginSession';
 import OpCodeHelper from './OpCodeHelper';
 import PacketHead from './PacketHead';
@@ -253,7 +254,8 @@ export default class ProtocolAgency extends cc.Component {
             code != ProtocolCode.Protocol_Holdem_Rooms &&
             code != ProtocolCode.Protocol_Holdem_MttDetail &&
             code != ProtocolCode.Protocol_Holdem_AntiCheatRoomVideo &&
-            code != ProtocolCode.Protocol_Holdem_NotificationRoomReady
+            code != ProtocolCode.Protocol_Holdem_NotificationRoomReady &&
+            code != ProtocolCode.Protocol_Holdem_MttBreak
         ) {
             this.tracelog.debug('drop code:', code);
             return;
@@ -269,15 +271,11 @@ export default class ProtocolAgency extends cc.Component {
                 this.tracelog.info(
                     `roomid or matchid is no match cache:{RoomID:${GameCache.Instance.room_id},MatchID:${GameCache.Instance.match_id}},receive:{RoomID:${roomid},MatchID:${matchid}}`
                 );
-                // H5 桥接模式（CC 不直接连 WebSocket）：仅丢弃，不发 Leave。
-                // 原因：H5 的 WebSocket 可能收到多个房间的推送（观战、大厅等），
-                // 自动 Leave 会误退当前正在进行的牌桌。
-                // if (!WebSocketClient.CheckOpen(true)) {
-                //     this.tracelog.debug(                //         `[H5Bridge] 丢弃不匹配房间的消息，不发送 Leave`,
-                //     );
-                //     return;
-                // }
-                // 正常模式（CC 直连 WebSocket）：主动 Leave 清理旧房间
+                // MTT 换桌：服务端在合桌/分桌时会先推新桌业务消息，再发 NotificationRoomReady 更新 match_id。
+                // 此时缓存里还是旧 match_id，若发 Leave 会把新桌退掉，玩家被踢出比赛。
+                if (GameCache.Instance.CurGame?.isMTT) {
+                    return;
+                }
                 ProtocolAgency.Send<ClientMessageLeave.AsObject>({
                     Code: ProtocolCode.Protocol_Holdem_Leave,
                     RoomID: roomid,
@@ -301,6 +299,16 @@ export default class ProtocolAgency extends cc.Component {
         let body = ProtocolCommon.Instance.Response(body_ua, server);
         if (OpCodeHelper.NeedLog(code)) {
             this.tracelog.debug(`>>>>> protocol receive : ${protocol_name}`, `RoomID:${roomid},MatchID:${matchid},body:`, body);
+        }
+        // 暴击桌配置兜底：服务器 EnterRoom 协议不填 rounds/subConfigs/criticalHit，
+        // 在 rpcId 检查（可能 return）之前拦截 Protocol_Holdem_Rooms 响应，
+        // 把 Unity 从 _roomInfo 读取的字段写进 GameCache。
+        // 对齐 Unity TexasGameplayEntrance.cacheGlobalDataBeforeLoad：
+        //   _criticalHitRound = _roomInfo.Rounds
+        //   _subGamePlayAnte  = _roomInfo.SubConfigs[0].Ante
+        //   _isCriticalHitEnable = _roomInfo.SubConfigs[0].CriticalHit == 1
+        if (code == ProtocolCode.Protocol_Holdem_Rooms) {
+            this._handleRoomsCriticalHit(body as ServerMessageRooms.AsObject);
         }
         const rpcId = this._getRpcId(body);
         // 检查是否有 SendAsync 在等这个 code
@@ -358,6 +366,44 @@ export default class ProtocolAgency extends cc.Component {
         GameCache.Instance.room_id = data.room.roomId;
         ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas);
         return true;
+    }
+
+    /**
+     * 拦截 Protocol_Holdem_Rooms 响应，把暴击桌需要的配置字段写进 GameCache。
+     * 对齐 Unity TexasGameplayEntrance.cacheGlobalDataBeforeLoad：
+     *   _criticalHitRound = _roomInfo.Rounds
+     *   _subGamePlayAnte  = _roomInfo.SubConfigs[0].Ante
+     *   _isCriticalHitEnable = _roomInfo.SubConfigs[0].CriticalHit == 1
+     * 服务器 EnterRoom 协议不填这些字段，EnterRoom 路径只能拿到 criticalHit=0，
+     * 必须靠 Rooms 协议兜底，否则暴击弹窗显示 0手牌/0BB。
+     */
+    static _handleRoomsCriticalHit(body: ServerMessageRooms.AsObject): void {
+        try {
+            if (!body || !body.roomsList || body.roomsList.length === 0) {
+                return;
+            }
+            const room = body.roomsList[0] as any;
+            const gc = GameCache.Instance as any;
+            // 暴击开关：优先取 SubConfigs[0].criticalHit，其次 room.criticalHit
+            const subConfigs = room.subConfigsList || room.sub_configs || room.subConfigs || [];
+            const subCfg = subConfigs.length > 0 ? subConfigs[0] : null;
+            const criticalHitFlag = subCfg?.criticalHit ?? subCfg?.critical_hit ?? room.criticalHit ?? room.critical_hit;
+            if (criticalHitFlag != null) {
+                gc.room_critical_hit = Number(criticalHitFlag) > 0 ? 1 : 0;
+            }
+            // 暴击间隔手数：_roomInfo.Rounds
+            const rounds = Number(room.rounds || 0);
+            if (rounds > 0) {
+                gc.room_critical_hit_round = rounds;
+            }
+            // 暴击押金：_roomInfo.SubConfigs[0].Ante
+            const subAnte = Number(subCfg?.ante ?? subCfg?.an ?? 0);
+            if (subAnte > 0) {
+                gc.room_critical_hit_ante = subAnte;
+            }
+        } catch (e) {
+            console.warn('[CriticalHit] Rooms 协议解析异常:', e);
+        }
     }
 
     static _readNumber(ua: Uint8Array, offset: number, size: number): number {

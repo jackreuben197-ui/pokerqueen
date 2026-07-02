@@ -859,6 +859,45 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
             let button = this.buttonSelectWallet.getComponent(cc.Button);
             button.interactable = true;
             this.walletScrollView.content.removeAllChildren();
+            // 🆕 默认俱乐部匹配：从 H5 的 localStorage 读 dzpk_h5_USER_DATA.currentClubId
+            //   （由 H5 pinia store useUserInfoStore 持久化写入，currentClubId 是 string），
+            //   拿它去匹配 wallet.club_id。匹配上后赋给 mySelectWallet，下面的 for 循环里
+            //   现有的"恢复选中状态"逻辑会自动生效，循环结束后再统一触发完整 UI 更新。
+            //   没匹配上则保持原行为（让用户手动从下拉框选）。
+            let defaultClubId = 0;
+            if (cc.sys.isBrowser) {
+                try {
+                    const raw = window.localStorage.getItem('dzpk_h5_USER_DATA');
+                    if (raw) {
+                        const data = JSON.parse(raw);
+                        if (data && data.currentClubId) {
+                            // H5 端 currentClubId 是 normalizeClubId 处理后的 string，转 number 比对
+                            defaultClubId = Number(data.currentClubId) || 0;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[UIGameplayAddChipsAndDiamond] read dzpk_h5_USER_DATA failed:', e);
+                }
+            }
+            if (defaultClubId > 0) {
+                for (const w of wallets) {
+                    if (w.club_id === defaultClubId) {
+                        this.mySelectWallet = w;
+                        break;
+                    }
+                }
+            }
+            // 🆕 兜底：currentClubId 为 0 或在 wallets 里找不到时，
+            //    选筹码最多的俱乐部作为默认（避免用户进 UI 还得手动选一次）
+            if (this.mySelectWallet == null) {
+                let maxGold = -Infinity;
+                for (const w of wallets) {
+                    if (w.gold > maxGold) {
+                        maxGold = w.gold;
+                        this.mySelectWallet = w;
+                    }
+                }
+            }
             // 创建钱包列表项
             for (let i = 0; i < wallets.length; i++) {
                 let walletItem = wallets[i];
@@ -869,7 +908,7 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
                 this._setClubItemData(walletItem, temp, i != wallets.length - 1);
                 let toggle = temp.getComponent(cc.Toggle);
                 let index = i;
-                // 处理选中状态
+                // 处理选中状态（mySelectWallet 已被上面默认匹配赋值，或保持 null）
                 if (this.mySelectWallet != null && this.mySelectWallet.club_id == walletItem.club_id) {
                     toggle.isChecked = true;
                     let bgNode = cc.find('bg', temp);
@@ -886,6 +925,14 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
                     this._updateTotalCoinAndWalletChoosen(true, wallets[index].club_name, wallets[index].gold, this.addChipsData._creditNum);
                 });
                 this.walletToggles.push(toggle);
+            }
+            // 🆕 默认匹配上了：触发一次完整 UI 更新（显示余额/滑块/提交按钮/隐藏占位等），
+            //    直接展开成"已选中俱乐部"的完整带入界面。
+            //    同步把 ClubRandomID 写回（与单钱包分支 line 849 行为对齐）。
+            //    没匹配上：保持 emptySelectWallet.active = true，让用户手动选。
+            if (this.mySelectWallet != null) {
+                GameCache.Instance.ClubRandomID = this.mySelectWallet.club_random_id;
+                this._updateTotalCoinAndWalletChoosen(true, this.mySelectWallet.club_name, this.mySelectWallet.gold, this.addChipsData._creditNum);
             }
         }
         // 设置滚动视图高度

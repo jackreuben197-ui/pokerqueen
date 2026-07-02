@@ -60,6 +60,7 @@ import { UserClubRoleChange } from './UserClubRoleChange';
 import { UserMttChangeNotify } from './UserMttChangeNotify';
 import { UserSngChangeNotify } from './UserSngChangeNotify';
 import { MttSeriesNotify } from './MttSeriesNotify';
+import { MttBreak } from './MttBreak';
 import { FaceRecognize } from './FaceRecognize';
 import { AntiCheatRoomVideo } from './AntiCheatRoomVideo';
 
@@ -250,6 +251,9 @@ export default class OtherMessageHandler {
             case Code.MSG_S_MTT_SERIES_NOTIFY:
                 MttSeriesNotify(data, roomID, matchID);
                 break; // MttSeriesNotify 153
+            case Code.MSG_S_MTT_BREAK:
+                MttBreak(data, roomID, matchID);
+                break; // MttBreak 154
             case Code.MSG_S_UTIL_FACE_RECOGNIZE:
                 FaceRecognize(data, roomID, matchID);
                 break; // FaceRecognize 901

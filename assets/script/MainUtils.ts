@@ -317,6 +317,13 @@ export async function registerH5Listeners(): Promise<void> {
         gc.enter_param = { game_enter_type: 0, isLookOn: false };
         const jackpotId = Number(roomData.jackpot_id || 0);
         gc.jackPot_id = jackpotId;
+        // 暴击配置兜底：服务器 EnterRoom 协议 criticalHit 字段疑似未填充（实测回0），
+        // 用 H5 大厅缓存 roomData 兜底，避免暴击桌进房不弹提示
+        const rdAny = roomData as any;
+        gc.room_critical_hit = rdAny.critical_hit || 0;
+        gc.room_critical_hit_round = rdAny.rounds || 0;
+        const sub0Cfg = (rdAny.sub_configs || rdAny.subConfigs || [])[0];
+        gc.room_critical_hit_ante = sub0Cfg?.ante || sub0Cfg?.an || rdAny.sub_game_play_ante || rdAny.ante || 0;
         // === 6. 启动进入牌桌流程 ===
         // → ProtocolAgency.Send(ClientMessageEnterRoom) → WebSocket 发送
         if (DevConfig.IS_OLD) {

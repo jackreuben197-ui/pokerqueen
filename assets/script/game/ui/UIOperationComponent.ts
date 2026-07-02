@@ -431,11 +431,13 @@ export default class UIOperationComponent extends UIBase {
     /// 展示加注按钮和自由加注按钮
     /// </summary>
     private showRaiseButton(): void {
+        // 仅 5 按钮模式才展示左右两档，且需配置非 '0'（对齐 Unity IsContainQuickSetting）
+        let isFive = UITexasSettingComponent.GetCurButtonNumber() === 5;
         this.buttonCall0.active = true;
         this.buttonCall1.active = true;
         this.buttonCall2.active = true;
-        this.buttonCallLeft.active = UITexasSettingComponent.GetCurQuickActionNum(0) != '0';
-        this.buttonCallRight.active = UITexasSettingComponent.GetCurQuickActionNum(4) != '0';
+        this.buttonCallLeft.active = isFive && UITexasSettingComponent.GetCurQuickActionNum(0) != '0';
+        this.buttonCallRight.active = isFive && UITexasSettingComponent.GetCurQuickActionNum(4) != '0';
         this.buttonFreeCall.active = true;
     }
 

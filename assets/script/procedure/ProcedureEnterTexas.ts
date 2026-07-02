@@ -1,6 +1,7 @@
 import { ProcedureEnum } from '../define/EIDefine';
 import { GameCache } from '../game/GameCache';
 import BridgeReconnectComponent from '../funcomponent/BridgeReconnectComponent';
+import { i18nMgr } from '../i18n/i18nMgr';
 import H5MsgMgr from '../H5MsgMgr';
 import ProcedureManager from '../manager/ProcedureManager';
 import { PreloadDefinitionTexas, PreloadParams } from '../manager/ResManager';
@@ -124,11 +125,12 @@ export default class ProcedureEnterTexas extends ProcedureBase {
                 this._isEntering = false;
                 H5MsgMgr.Instance.off('wsError');
                 if (!result) {
-                    console.warn('[ProcedureEnterTexas]', 'enterForegroundAsync false');
+                    const errMsg = this._entrance?.lastErrorMessage || '未知原因';
+                    console.warn('[ProcedureEnterTexas]', 'enterForegroundAsync false:', errMsg);
                     this._entrance = null;
                     H5MsgMgr.sendToH5('showDialog', 1, {
-                        message: '进入房间通信失败，即将返回大厅，请截图发给程序员',
-                        confirmButtonText: '我已截图',
+                        message: i18nMgr.Get('EnterForegroundFail') + '：' + errMsg + '\n即将返回大厅',
+                        confirmButtonText: 'OK',
                         ensureVisible: true,
                     });
                     ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {
@@ -142,8 +144,8 @@ export default class ProcedureEnterTexas extends ProcedureBase {
                 console.error('[ProcedureEnterTexas]', 'err', e);
                 this._entrance = null;
                 H5MsgMgr.sendToH5('showDialog', 1, {
-                    message: '进入房间流程异常，即将返回大厅，请截图发给程序员',
-                    confirmButtonText: '我已截图',
+                    message: i18nMgr.Get('EnterForegroundFail') + '：' + (e?.message || e) + '\n即将返回大厅',
+                    confirmButtonText: 'OK',
                     ensureVisible: true,
                 });
                 ProcedureManager.StartProcedure<ProcedureReturnNavigateParam>(ProcedureEnum.Return, {

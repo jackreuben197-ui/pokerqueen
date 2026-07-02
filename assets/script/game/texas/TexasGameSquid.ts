@@ -113,12 +113,13 @@ export default class TexasGameSquid {
     }
 
     public RefreshMarks(): void {
+        // 图标显隐只依赖 squidEnabled / uirc,不依赖座位列表,先刷新避免被 listSeat 时序竞态吞掉。
+        this.RefreshGlobalRemain();
         if (!this.host.listSeat) return;
         this.host.listSeat.forEach(seat => {
             seat?.UpdateSquidTag(this.host.squidEnabled, this.host.isGameInSquidRound);
         });
         this.RefreshJoinSwitch();
-        this.RefreshGlobalRemain();
     }
 
     public OnClickJoinSwitch(): void {
@@ -318,9 +319,11 @@ export default class TexasGameSquid {
             p.squidRoundSeated = false;
             seat.ClearSquidTag();
         });
-        if (this.host.uirc?.RemainingSquidCount) {
-            this.host.uirc.RemainingSquidCount.active = false;
+        // 对齐 Unity:每手结束只隐藏数字(惩罚池),鱿鱼图标在鱿鱼桌内常驻保留。
+        if (this.host.uirc?.RemainingSquidLabel) {
+            this.host.uirc.RemainingSquidLabel.active = false;
         }
+        this.RefreshGlobalRemain();
         this.RefreshJoinSwitch();
         this.host.UpdateRoomDes();
     }
@@ -344,6 +347,10 @@ export default class TexasGameSquid {
         this.roundEndPopupToken++;
         UIComponent.close(UIDefine.UIDialogSquid);
         UIComponent.close(UIDefine.UISquidEnd);
+        // 退房:squidEnabled 已置 false,图标与数字一并隐藏。
+        if (this.host.uirc?.RemainingSquidLabel) {
+            this.host.uirc.RemainingSquidLabel.active = false;
+        }
         if (this.host.uirc?.RemainingSquidCount) {
             this.host.uirc.RemainingSquidCount.active = false;
         }
@@ -386,12 +393,19 @@ export default class TexasGameSquid {
 
     private RefreshGlobalRemain(): void {
         const node = this.host.uirc?.RemainingSquidCount;
+        const labelNode = this.host.uirc?.RemainingSquidLabel;
         const label = this.host.uirc?.RemainingSquidLabelCount;
         if (!node) return;
-        const show = this.host.squidEnabled && this.host.isGameInSquidRound;
-        node.active = show;
-        if (!show) return;
-        if (label) {
+        // 对齐 Unity:鱿鱼图标(squidIcon)只要是鱿鱼桌就常驻显示,不随 isGameInSquidRound 隐藏。
+        node.active = this.host.squidEnabled;
+        if (!this.host.squidEnabled) {
+            if (labelNode) labelNode.active = false;
+            return;
+        }
+        // 数字容器(惩罚池)才按鱿鱼轮显隐。
+        const showNum = this.host.isGameInSquidRound;
+        if (labelNode) labelNode.active = showNum;
+        if (showNum && label) {
             label.string = `${this.GetRemainCount()}`;
         }
     }
