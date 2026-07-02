@@ -395,7 +395,8 @@ export default class UIGameplayAddChipsAndDiamondComponent extends UIBase {
         this._setupSlider(false);
         // 设置自动充值部分(非AOF藏钱才会有)
         if (this.addChipsData._retainInfo.RetainType == RoomInfo.RetainType.RT_DISABLE) {
-            this.autoBringinArea.active = true;
+            // 隐藏自动充值区域（自动充值文案+开关），默认关闭以保留安全验证
+            this.autoBringinArea.active = false;
             this._setUpAutoOnTableSlider();
             this.switchAutoBringin.onoff(false, true);
         }

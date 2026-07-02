@@ -2617,7 +2617,7 @@
     "_spriteFrame": {
       "__uuid__": "1032a3ac-1c69-48d1-b535-0741b983a56b"
     },
-    "_type": 0,
+    "_type": 1,
     "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
@@ -5666,7 +5666,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -260.634,
+        -190.634,
         0,
         0,
         0,
@@ -5790,7 +5790,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        20,
+        -90,
         0,
         0,
         0,
@@ -8266,7 +8266,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1100,
-      "height": 550
+      "height": 605
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -8278,7 +8278,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -240,
+        -185,
         0,
         0,
         0,
