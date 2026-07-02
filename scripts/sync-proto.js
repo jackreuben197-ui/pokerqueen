@@ -23,7 +23,7 @@ function copyFiles(src, dst) {
 try {
     // 1. 更新协议仓库
     console.log(`\n>>> 更新协议仓库: agreement-web`);
-    execSync('git fetch origin && git reset --hard origin/master', { cwd: repoDir, stdio: 'inherit' });
+    execSync('git fetch origin && git reset --hard origin/dev_merge_0702', { cwd: repoDir, stdio: 'inherit' });
 
     // 2. 拷贝
     copyFiles(holdemSrc, holdemDst);
