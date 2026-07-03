@@ -961,6 +961,81 @@ export default class UITexasReportComponent extends UIBase {
             this.applyMushSquidInfo(ele, subType, pDto);
         }
         ele.getChildByName('own').active = pDto.userId == GameCache.Instance.nUserId;
+        // 战绩表（标准布局）：四列等间距 + 竖向分割线；离场玩家（isOnline===false）整行加删除线
+        if (!useInfo3) {
+            this.applyReportColumns(ele, 'Text_All_Col', 90);
+            this.applyRowStrikethrough(ele, pDto.isOnline === false);
+        }
+    }
+
+    // ===== 战绩表四列等间距布局 + 竖向分割线 + 离场删除线（玩家/手数/带入/积分）=====
+    // 四列基准 X（表头 ListBar1 与数据行 item_info1 共用，保证等间距且上下对齐；如需整体左右移动改这里）
+    private static readonly RPT_COL_X = { name: -490, num: -190, buyin: 110, score: 400 };
+    // 三条竖向分割线的 X（位于相邻两列中间）
+    private static readonly RPT_DIVIDER_X = [-340, -40, 255];
+    // 表头 ListBar1 的原点比数据行右 60px（实测：641 vs 581），列/分割线整体左移以对齐数据
+    private static readonly RPT_HEADER_DX = -60;
+
+    /** 统一四列（玩家/手数/带入/积分）等间距布局并绘制竖向分割线。
+     *  container=表头 ListBar1 或数据行 item_info1；buyinChild=带入列子节点名（表头 'Text_All' / 行 'Text_All_Col'）；
+     *  dx=水平偏移修正（表头传 RPT_HEADER_DX，数据行传 0），保证表头与数据上下对齐。 */
+    private applyReportColumns(container: cc.Node, buyinChild: string, height: number, dx: number = 0): void {
+        if (!container) return;
+        const C = UITexasReportComponent.RPT_COL_X;
+        this.setReportChildX(container, 'Text_Name', C.name + dx);
+        this.setReportChildX(container, 'Text_Num', C.num + dx);
+        this.setReportChildX(container, buyinChild, C.buyin + dx);
+        this.setReportChildX(container, 'Text_Count', C.score + dx);
+        this.drawReportDividers(container, height, dx);
+    }
+
+    private setReportChildX(parent: cc.Node, name: string, x: number): void {
+        const n = parent.getChildByName(name);
+        if (n) n.setPosition(x, n.y);
+    }
+
+    private drawReportDividers(container: cc.Node, height: number, dx: number = 0): void {
+        let node = container.getChildByName('_col_dividers');
+        if (!node) {
+            node = new cc.Node('_col_dividers');
+            container.addChild(node); // 追加到末尾=最上层，避免被行/表头背景遮住
+        }
+        node.setSiblingIndex(container.childrenCount - 1);
+        const g = node.getComponent(cc.Graphics) || node.addComponent(cc.Graphics);
+        g.clear();
+        g.lineWidth = 2;
+        g.strokeColor = cc.color(255, 255, 255, 220);
+        const half = height * 0.5;
+        for (const x of UITexasReportComponent.RPT_DIVIDER_X) {
+            g.moveTo(x + dx, -half);
+            g.lineTo(x + dx, half);
+        }
+        g.stroke();
+    }
+
+    /** 离场（isOnline===false）玩家整行加删除线，在座玩家隐藏该线 */
+    private applyRowStrikethrough(ele: cc.Node, struck: boolean): void {
+        let node = ele.getChildByName('_strikethrough');
+        if (!struck) {
+            if (node) node.active = false;
+            return;
+        }
+        if (!node) {
+            node = new cc.Node('_strikethrough');
+            ele.addChild(node);
+        }
+        node.active = true;
+        const g = node.getComponent(cc.Graphics) || node.addComponent(cc.Graphics);
+        g.clear();
+        g.lineWidth = 4;
+        g.strokeColor = cc.color(255, 255, 255, 255);
+        // 只在“玩家”名字上划删除线：名字左对齐(anchor 0)，从名字列基准 X 起，长度取名字实际宽度
+        const C = UITexasReportComponent.RPT_COL_X;
+        const nameNode = ele.getChildByName('Text_Name');
+        const w = nameNode && nameNode.width > 0 ? nameNode.width : 140;
+        g.moveTo(C.name - 5, 0);
+        g.lineTo(C.name + w + 5, 0);
+        g.stroke();
     }
 
     imageMaskCloseClick() {
@@ -1014,6 +1089,8 @@ export default class UITexasReportComponent extends UIBase {
             const useBar3 = subType !== 'none';
             if (this.listBar1) this.listBar1.active = !useBar3;
             if (this.listBar3) this.listBar3.active = useBar3;
+            // 表头（标准布局）与数据行共用同一套四列基准 X + 分割线（表头带 -60 偏移修正）保证上下对齐
+            if (this.listBar1 && !useBar3) this.applyReportColumns(this.listBar1, 'Text_All', 46, UITexasReportComponent.RPT_HEADER_DX);
         } else if (this.curBottomTab === 'insurance') {
             if (this.listBar4) this.listBar4.active = true;
         } else if (this.curBottomTab === 'mode') {
