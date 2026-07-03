@@ -109,8 +109,9 @@ export default class Seat {
     private _otherWinSpineNode: cc.Node = null;
     // 表情动画节点（头像正上方）
     private _emojiAnimNode: cc.Node = null;
-    /** 座位整体缩放（缩小座位圈/头像/筹码等，1=原始大小，按需微调）*/
-    public static readonly SEAT_SCALE = 0.82;
+    /** 座位整体缩放（缩小座位圈/头像/筹码等，1=原始大小，按需微调）
+     *  对齐 App 设计稿：头像应为原始大小（Figma AVATAR 59单位≈199px），此前 0.82 使座位偏小。*/
+    public static readonly SEAT_SCALE = 1.0;
     /** 表情统一目标尺寸（像素，包围盒较大边缩放到此值，使所有表情高宽一致；按需微调）*/
     private static readonly EMOJI_ANIM_TARGET_SIZE = 260;
     /** 兜底缩放（无法取包围盒时使用）*/
