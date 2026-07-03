@@ -319,6 +319,10 @@ export default class UIPlayerInfo extends UIBasePlus {
         if (this.$DiamondShow) {
             this.$DiamondShow.active = !this._isSelf;
         }
+        // 道具区/钻石区（均为主布局的直接子节点）隐藏后，强制主布局重算，
+        // 避免弹窗底部留下空白（cc.Layout RESIZE_CONTAINER 不会因子节点 active 变化自动收缩）
+        const dlgLayout = this.$PropOpNode && this.$PropOpNode.parent && this.$PropOpNode.parent.getComponent(cc.Layout);
+        if (dlgLayout) dlgLayout.updateLayout();
         // Gift tab（第 3 个 tab，index=2）：仅对其他玩家且双方都在桌上时显示
         let giftTabIndex = 2;
         if (this._tabNodes.length > giftTabIndex && this._tabNodes[giftTabIndex]) {
@@ -902,6 +906,11 @@ export default class UIPlayerInfo extends UIBasePlus {
         // 需求：移除「屏蔽名字」「举报」两个按钮，恒定隐藏
         this.setButtonActive('shieldToggle', false);
         this.setButtonActive('ReportBtn', false);
+        // 所有操作按钮都隐藏时（如查看自己），隐藏整个操作区并重算主布局，避免中间留下空白
+        const anyOpActive = (this.$OpButtonNode.children || []).some((c) => c.active);
+        this.$OpButtonNode.active = anyOpActive;
+        const dlgLayout = this.$OpButtonNode.parent && this.$OpButtonNode.parent.getComponent(cc.Layout);
+        if (dlgLayout) dlgLayout.updateLayout();
     }
 
     private setButtonActive(name: string, active: boolean): void {

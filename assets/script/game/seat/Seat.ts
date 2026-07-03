@@ -237,8 +237,8 @@ export default class Seat {
         }
         this.ClearSquidTag();
         if (this.IsMySeat) {
-            this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20090)}`;
-            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -455);
+            // 自己座位不显示“等待下一手”提示（原 -455 会压到底部菜单栏）
+            this.uirc.WaitforthenextmoveTips.node.active = false;
         } else {
             this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20091)}`;
             this.uirc.WaitforthenextmoveTips.node.setPosition(0, -240);
@@ -1675,12 +1675,12 @@ export default class Seat {
     //刷新座位下的等待文本
     public UpdateWaiteNextTips(ishow: boolean): void {
         if (this.IsMySeat) {
-            this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20090)}`;
-            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -455);
-        } else {
-            this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20091)}`;
-            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -240);
+            // 自己座位在底部中央，原“等待下一手”提示(0,-455)会压到底部菜单栏(表情)，故不显示
+            this.uirc.WaitforthenextmoveTips.node.active = false;
+            return;
         }
+        this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20091)}`;
+        this.uirc.WaitforthenextmoveTips.node.setPosition(0, -240);
         if (GameCache.Instance.GameStatus == 1) {
             this.uirc.WaitforthenextmoveTips.node.active = ishow;
         }
