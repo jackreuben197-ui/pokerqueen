@@ -899,8 +899,9 @@ export default class UIPlayerInfo extends UIBasePlus {
         this.setButtonActive('chatCloseToggle', !isSelf && isManager);
         this.setButtonActive('audioCloseToggle', !isSelf && (isAudioRtc || isVideoRtc));
         this.setButtonActive('videoCloseToggle', !isSelf && isVideoRtc);
-        this.setButtonActive('shieldToggle', !isSelf && gc._antiCheatType < AntiCheatType.FACE_VERIFY && gc._chatType !== 0);
-        this.setButtonActive('ReportBtn', !isSelf);
+        // 需求：移除「屏蔽名字」「举报」两个按钮，恒定隐藏
+        this.setButtonActive('shieldToggle', false);
+        this.setButtonActive('ReportBtn', false);
     }
 
     private setButtonActive(name: string, active: boolean): void {

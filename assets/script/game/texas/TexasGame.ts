@@ -678,13 +678,27 @@ export default class TexasGame {
     /** 竞态保护：记录最新请求的 deskType，旧加载完成时丢弃 */
     private _pendingDeskType: number = -1;
 
+    /** 默认桌布（deskType 0 绿纹）嵌入 UITexas.prefab 的原始 SpriteFrame，
+     *  首次 SetDeskType 时（尚未被任何非默认选择覆盖）捕获，供切回 0 时还原 */
+    private _defaultDeskSpriteFrame: cc.SpriteFrame = null;
+
     SetDeskType(type: number) {
         this.setting.deskType = type;
         this._pendingDeskType = type;
+
+        // 首次进入时捕获嵌入的默认桌布 SpriteFrame（此刻它仍是 prefab 里的绿纹，未被覆盖）。
+        // 否则选过其它桌布后，sp_table_bg 已被就地替换，切回绿纹(0) 将无从还原。
+        if (!this._defaultDeskSpriteFrame && this.uirc?.sp_table_bg?.spriteFrame) {
+            this._defaultDeskSpriteFrame = this.uirc.sp_table_bg.spriteFrame;
+        }
+
         this._playDeskSpine(type);
 
-        // type 0（默认桌布）：已嵌入 UITexas.prefab，无需加载
+        // type 0（默认桌布 绿纹）：还原捕获的默认 SpriteFrame（不能只 refit，否则会停留在上一张桌布）
         if (type === 0) {
+            if (this.uirc?.sp_table_bg && this._defaultDeskSpriteFrame) {
+                this.uirc.sp_table_bg.spriteFrame = this._defaultDeskSpriteFrame;
+            }
             this._fitDeskCover();
             if (this.isBombPot) this.bombPotFeature?.PlayOpenScreen();
             return;
