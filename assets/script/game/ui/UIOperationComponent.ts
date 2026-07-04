@@ -439,6 +439,20 @@ export default class UIOperationComponent extends UIBase {
         this.buttonCallLeft.active = isFive && UITexasSettingComponent.GetCurQuickActionNum(0) != '0';
         this.buttonCallRight.active = isFive && UITexasSettingComponent.GetCurQuickActionNum(4) != '0';
         this.buttonFreeCall.active = true;
+
+        // 三档模式（未展示左右两档）时把三个按钮展开到整段弧线，对齐 App 版；
+        // 五档（或有展示左右两档）时回到内侧三档，避免与左右档重叠。
+        const spreadWide = !this.buttonCallLeft.active && !this.buttonCallRight.active;
+        if (spreadWide) {
+            this.buttonCall0.setPosition(-348, 266);
+            // 顶部中间档抬高一些，让其下方数值文字不压到蓝色滑条/加注按钮
+            this.buttonCall1.setPosition(0, 415);
+            this.buttonCall2.setPosition(348, 266);
+        } else {
+            this.buttonCall0.setPosition(-185, 358);
+            this.buttonCall1.setPosition(0, 390);
+            this.buttonCall2.setPosition(185, 358);
+        }
     }
 
     /// <summary>
