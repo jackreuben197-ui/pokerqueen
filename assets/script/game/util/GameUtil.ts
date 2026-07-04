@@ -556,7 +556,7 @@ export default class GameUtil {
     /// 牌局分池位置
     /// </summary>
     public static readonly TexasPots: cc.Vec3[] = [
-        cc.v3(0, -650),
+        cc.v3(0, -812),
         cc.v3(-283, -960),
         cc.v3(0, -960),
         cc.v3(283, -960),
