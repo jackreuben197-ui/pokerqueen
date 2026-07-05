@@ -64,7 +64,10 @@ ADocu
 # CC编辑器的预览模板
 #////////////////////////////////////////////////
 preview-templates
-build-templates
+build-templates/*
+!build-templates/web-mobile/
+build-templates/web-mobile/*
+!build-templates/web-mobile/main.js
 
 #////////////////////////////////////////////////
 # Unity业务逻辑脚本
