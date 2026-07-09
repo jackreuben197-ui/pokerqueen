@@ -25,7 +25,7 @@ export default class AgoraManager {
 
     // ==================== 配置项 ====================
     /** 声网 App ID */
-    public appId: string = 'da91afd18fa84618bee90c5468b06a5f';
+    public appId: string = 'e69ee18461df4de5a1880b2f20390047';
     // =========================================================
     private _client: any = null;
     private _localAudioTrack: any = null;
