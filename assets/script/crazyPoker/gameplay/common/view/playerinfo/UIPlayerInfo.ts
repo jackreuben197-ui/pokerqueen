@@ -175,6 +175,44 @@ export default class UIPlayerInfo extends UIBasePlus {
         if (balLab) balLab.string = '钻石余额：';
     }
 
+    /**
+     * 排布并水平居中「💎 钻石余额：195,378」整行。
+     * 1) 数字节点原来用固定 x（按英文 "Diamond balance:" 宽度调过），中文文字更短会留下大间距，
+     *    先让数字紧贴前缀文字右侧（前缀与数字都是左对齐 anchorX=0），语言无关。
+     * 2) 再把「图标 + 前缀文字 + 数字」整体居中到 $DiamondShow(宽1000, anchor 0.5)本地 x=0，即面板水平中心。
+     * ⚠️ 必须在 $DiamondShow 已 active 后调用，否则 Label 渲染数据不更新，width 仍是预制体旧值。
+     */
+    private _layoutDiamondBalanceRow(): void {
+        const dlg = this._dlgNode || (this.node ? this.node.getChildByName('PlayerInfoDlg') : null);
+        const diamondShow = dlg ? dlg.getChildByName('$DiamondShow') : null;
+        if (!diamondShow || !diamondShow.activeInHierarchy) return;
+        const balNode = diamondShow.getChildByName('New Label');
+        const balLab = balNode ? balNode.getComponent(cc.Label) : null;
+        const numNode = this.$diamondNum;
+        if (!balNode || !balLab || !numNode) return;
+        const iconNode = diamondShow.getChildByName('diamondIcon');
+        // 强制刷新前缀与数字 Label 渲染数据，确保 width 反映当前文字
+        this._forceLabelWidth(balLab);
+        this._forceLabelWidth(numNode.getComponent(cc.Label));
+        // 1) 数字紧贴前缀文字
+        const gap = 8;
+        numNode.x = balNode.x + balNode.width + gap;
+        // 2) 整体居中：以「图标左缘 ~ 数字右缘」为组宽，平移三者使组中心落在本地 x=0
+        const leftEdge = iconNode ? iconNode.x - iconNode.width * iconNode.anchorX : balNode.x;
+        const rightEdge = numNode.x + numNode.width * (1 - numNode.anchorX);
+        const delta = -(leftEdge + rightEdge) / 2;
+        if (iconNode) iconNode.x += delta;
+        balNode.x += delta;
+        numNode.x += delta;
+    }
+
+    /** 强制刷新 Label 渲染数据，使 node.width 立即反映当前文字宽度（overflow NONE 下节点自适应） */
+    private _forceLabelWidth(label: cc.Label): void {
+        if (!label) return;
+        const forceUpdate = (label as any)._forceUpdateRenderData;
+        if (typeof forceUpdate === 'function') forceUpdate.call(label, true);
+    }
+
     private initTabs(): void {
         if (!this.$dataTabNode) return;
         let tabNode = this.$dataTabNode.getChildByName('tabNode');
@@ -278,6 +316,10 @@ export default class UIPlayerInfo extends UIBasePlus {
         // 加载钻石余额（仅非自身且双方都在桌上时）
         if (!this._isSelf) {
             this.loadDiamondBalance();
+            // 数字紧贴「钻石余额：」文字（此时 $DiamondShow 已由 refreshSelfState 激活）。
+            // 立即排一次，再下一帧兜底一次，确保 Label 宽度已按当前语言重算。
+            this._layoutDiamondBalanceRow();
+            this.scheduleOnce(() => this._layoutDiamondBalanceRow(), 0);
         }
         // 再请求服务端完整数据
         this.reqUserInfo(this._player.userID);
@@ -732,6 +774,8 @@ export default class UIPlayerInfo extends UIBasePlus {
             if (!cc.isValid(this.node)) return;
             if (res && res.data && res.data.diamonds_wallet) {
                 label.string = res.data.diamonds_wallet.diamonds.toLocaleString('en-US');
+                // 数字变化后重新排布并居中整行
+                this._layoutDiamondBalanceRow();
             }
         });
     }

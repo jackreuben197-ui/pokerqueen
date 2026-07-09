@@ -60,6 +60,7 @@ import Seat, { SeatUIInfo } from '../seat/Seat';
 import UIAutoOperationComponent from '../ui/UIAutoOperationComponent';
 import UITexasMenu from '../ui/UITexasMenu';
 import GameUtil, { GameType, RoomType, some_pos } from '../util/GameUtil';
+import { sampleLiveBounds, getAnimDuration } from '../util/SpineBoundsUtil';
 import TexasGameUtils from '../util/TexasGameUtils';
 import TexasGameMushroom from './TexasGameMushroom';
 import TexasGameSquid from './TexasGameSquid';
@@ -736,6 +737,14 @@ export default class TexasGame {
     private static _deskSpineDataMap: { [type: number]: sp.SkeletonData } = {};
     /** 当前桌布 Spine 动画节点 */
     private _deskSpineNode: cc.Node = null;
+    /** 暴击开局 Spine 动画：静态缓存 SkeletonData + 当前播放节点 */
+    private static _criticalHitSkeletonData: sp.SkeletonData = null;
+    private _criticalHitSpineNode: cc.Node = null;
+    /** 暴击开局动画目标尺寸（像素，包围盒较大边缩放到此值；按需微调） */
+    private static readonly CRITICAL_HIT_TARGET_SIZE = 900;
+    /** 暴击开局动画落点（main 本地坐标：anchor(0.5,1) 顶部为原点，y 向下为负；桌面正中，与鱿鱼一致） */
+    private static readonly CRITICAL_HIT_CENTER_X = 0;
+    private static readonly CRITICAL_HIT_CENTER_Y = -1200;
 
     /**
      * 需要播放 Spine 桌布动画的 deskType 映射
@@ -1731,20 +1740,80 @@ export default class TexasGame {
     }
 
     public PlayCriticalHitStartAnim(): void {
-        const node = this.uirc?.CriticalHitStart;
-        const anim = this.uirc?.CriticalHitStartAnim;
-        if (!node || !anim) {
+        const node = this.uirc?.CriticalHitStart as cc.Node;
+        if (!node) {
             return;
         }
-        const clips = anim.getClips?.() || [];
-        if (!anim.defaultClip && clips.length > 0) {
-            anim.defaultClip = clips[0];
-        }
+        // 改用新的 Spine 动画（quanji）：停掉旧帧动画、隐藏旧静态精灵
+        const anim = this.uirc?.CriticalHitStartAnim as cc.Animation;
+        anim?.stop();
+        anim?.off('finished', this.OnCriticalHitStartAnimFinished, this);
+        const sprite = node.getComponent(cc.Sprite);
+        if (sprite) sprite.enabled = false;
+        // 旧帧动画把节点放在桌面左下（-347,-1822），Spine 改到桌面正中（与鱿鱼开局一致）
+        node.setPosition(TexasGame.CRITICAL_HIT_CENTER_X, TexasGame.CRITICAL_HIT_CENTER_Y);
+        node.opacity = 255;
+        node.scale = 1;
         node.active = true;
-        anim.stop();
-        anim.off('finished', this.OnCriticalHitStartAnimFinished, this);
-        anim.on('finished', this.OnCriticalHitStartAnimFinished, this);
-        anim.play(anim.defaultClip?.name || 'critical_hit_start');
+        this._playCriticalHitSpine(node);
+    }
+
+    /** 在 critical_hit_start 节点上动态加载并播放新的暴击开局 Spine 动画 */
+    private _playCriticalHitSpine(parent: cc.Node): void {
+        this._stopCriticalHitSpine();
+
+        const create = (skeletonData: sp.SkeletonData) => {
+            if (this.IsDispose || !cc.isValid(parent)) return;
+            const spineNode = new cc.Node('CriticalHitSpine');
+            const skeleton = spineNode.addComponent(sp.Skeleton);
+            // 首帧透明，跳过 setup pose
+            spineNode.opacity = 0;
+            skeleton.skeletonData = skeletonData;
+            parent.addChild(spineNode);
+            skeleton.setAnimation(0, 'animation', false);
+            // 下一帧：按实际包围盒归一化到目标尺寸并居中
+            const dur = getAnimDuration(skeleton, 'animation');
+            skeleton.scheduleOnce(() => {
+                if (!spineNode.isValid) return;
+                // 采样包围盒会把动画推进到末尾，必须在注册 complete 回调之前采样，
+                // 采样后再从头重播并绑定结束回调，否则一上来就触发 complete 隐藏节点。
+                const b = sampleLiveBounds(skeleton, dur);
+                if (b.max > 0) {
+                    const scale = TexasGame.CRITICAL_HIT_TARGET_SIZE / b.max;
+                    spineNode.scale = scale;
+                    spineNode.x = -(b.offX + b.szX / 2) * scale;
+                    spineNode.y = -(b.offY + b.szY / 2) * scale;
+                }
+                skeleton.setAnimation(0, 'animation', false);
+                skeleton.setCompleteListener(() => {
+                    this._stopCriticalHitSpine();
+                    if (cc.isValid(parent)) parent.active = false;
+                });
+                spineNode.opacity = 255;
+            }, 0);
+            this._criticalHitSpineNode = spineNode;
+        };
+
+        if (TexasGame._criticalHitSkeletonData) {
+            create(TexasGame._criticalHitSkeletonData);
+        } else {
+            cc.resources.load('spine/CriticalHit/quanji', sp.SkeletonData, (err, data: sp.SkeletonData) => {
+                if (err) {
+                    console.error('[TexasGame] 加载暴击 Spine 失败:', err.message);
+                    if (cc.isValid(parent)) parent.active = false;
+                    return;
+                }
+                TexasGame._criticalHitSkeletonData = data;
+                create(data);
+            });
+        }
+    }
+
+    private _stopCriticalHitSpine(): void {
+        if (this._criticalHitSpineNode) {
+            if (this._criticalHitSpineNode.isValid) this._criticalHitSpineNode.destroy();
+            this._criticalHitSpineNode = null;
+        }
     }
 
     private OnCriticalHitStartAnimFinished(): void {
