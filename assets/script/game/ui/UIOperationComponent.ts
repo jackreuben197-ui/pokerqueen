@@ -394,9 +394,9 @@ export default class UIOperationComponent extends UIBase {
                 : numRightStr == '0'
                   ? 0
                   : this.getPotMutiplierByQuickAction(UITexasSettingComponent.GetCurQuickActionNumValue(4));
-        this.textCallTitle0.string = 'POT';
-        this.textCallTitle1.string = 'POT';
-        this.textCallTitle2.string = 'POT';
+        this.textCallTitle0.string = '底池';
+        this.textCallTitle1.string = '底池';
+        this.textCallTitle2.string = '底池';
         this.textCallPotLeft.string = UITexasSettingComponent.GetCurQuickActionNum(0);
         this.textCallPot0.string = UITexasSettingComponent.GetCurQuickActionNum(1);
         this.textCallPot1.string = UITexasSettingComponent.GetCurQuickActionNum(2);
@@ -445,12 +445,13 @@ export default class UIOperationComponent extends UIBase {
         const spreadWide = !this.buttonCallLeft.active && !this.buttonCallRight.active;
         if (spreadWide) {
             this.buttonCall0.setPosition(-348, 266);
-            // 顶部中间档抬高一些，让其下方数值文字不压到蓝色滑条/加注按钮
-            this.buttonCall1.setPosition(0, 415);
+            // 顶部中间档抬高一些，让其下方数值文字不压到蓝色滑条/加注按钮（再抬高 16px，避免贴到"加注"）
+            this.buttonCall1.setPosition(0, 431);
             this.buttonCall2.setPosition(348, 266);
         } else {
             this.buttonCall0.setPosition(-185, 358);
-            this.buttonCall1.setPosition(0, 390);
+            // 中间档再抬高 16px，避免文字贴到"加注"
+            this.buttonCall1.setPosition(0, 406);
             this.buttonCall2.setPosition(185, 358);
         }
     }
