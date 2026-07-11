@@ -2605,8 +2605,18 @@ export default class TexasGameProtocol {
                 this.game?.uirc?.syncVideoButtonsFromAgora();
             };
             this.game.uirc?.syncVideoButtonsFromAgora();
-            // 设置窗花贴纸
-            videoRender.setVideoMaskId(this.game.mainPlayer.videoMaskId);
+            // 隐私保护：节能(窗花)房间开启视频时，默认套用面罩（玩家尚未选择面罩时）
+            if (GameCache.Instance._videoPowerSaving === 1 && !this.game.mainPlayer.videoMaskId) {
+                const DEFAULT_VIDEO_MASK_ID = 1;
+                this.game.mainPlayer.videoMaskId = DEFAULT_VIDEO_MASK_ID;
+                // 本地立即显示面罩，保护隐私
+                videoRender.setVideoMaskId(DEFAULT_VIDEO_MASK_ID);
+                // 广播给房间内其他玩家（异步，不阻塞渲染；失败不影响本地隐私显示）
+                this.requestSetVideoMask(DEFAULT_VIDEO_MASK_ID);
+            } else {
+                // 设置窗花贴纸
+                videoRender.setVideoMaskId(this.game.mainPlayer.videoMaskId);
+            }
         }
         return rendered;
     }

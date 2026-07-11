@@ -130,6 +130,8 @@ export default class UITexas extends BaseScene {
     btn_audio: cc.Node = null;
     // 视频
     btn_camera: cc.Node = null;
+    // 认证 logo（GLI/bmm），从菜单背景中拆出为独立节点，便于按桌型定位
+    cert_banner: cc.Node = null;
     // 聊天
     chatBtn: cc.Node = null;
     // 远端音频/视频控制按钮
@@ -287,6 +289,7 @@ export default class UITexas extends BaseScene {
         this.btn_effect = this.getChildNodeOrComponent('btn_effect');
         this.btn_audio = this.getChildNodeOrComponent('btn_audio');
         this.btn_camera = this.getChildNodeOrComponent('btn_camera');
+        this.cert_banner = this.getChildNodeOrComponent('cert_banner');
         this.chatBtn = this.getChildNodeOrComponent('chatBtn');
         // 远端音频/视频控制按钮（muteMicNode / hideVideoNode）
         const muteMicNode = this.getChildNodeOrComponent('muteMicNode') as cc.Node;
@@ -1283,6 +1286,13 @@ export default class UITexas extends BaseScene {
      */
     private _initRemoteMediaButtons(): void {
         const isVideoRoom = GameCache.Instance._videoModel !== VideoModel.NONE;
+        // 视频桌菜单专属按钮：特效/语音/视频，仅视频房间显示
+        if (this.btn_effect) this.btn_effect.active = isVideoRoom;
+        if (this.btn_audio) this.btn_audio.active = isVideoRoom;
+        if (this.btn_camera) this.btn_camera.active = isVideoRoom;
+        // 视频桌菜单需要容纳 6 个按钮：重新排布（中间留出认证 logo 位置）；
+        // 非视频桌保持原始 3 按钮布局不变
+        this._layoutMainMenuButtons(isVideoRoom);
         // 非视频房间：隐藏整个按钮节点
         const muteMicNode = this.muteMicOpenBtn?.parent?.parent;
         const hideVideoNode = this.hideVideoOpenBtn?.parent?.parent;
@@ -1297,6 +1307,38 @@ export default class UITexas extends BaseScene {
         const videoOn = !agora.isRemoteVideoMuted;
         if (this.hideVideoOpenBtn) this.hideVideoOpenBtn.active = videoOn;
         if (this.hideVideoCloseBtn) this.hideVideoCloseBtn.active = !videoOn;
+    }
+
+    /**
+     * 主菜单按钮横向排布
+     * - 非视频桌：保持 prefab 原始布局（战绩/牌谱/表情，认证 logo 居右），不改动
+     * - 视频桌：需容纳 6 个按钮（战绩/牌谱/表情 | 特效/语音/视频），
+     *   左右各 3 个并在中间留出认证 logo 的位置
+     */
+    private _layoutMainMenuButtons(isVideoRoom: boolean): void {
+        // 非视频桌：还原到 prefab 原始 x 坐标，认证 logo 保持在右侧
+        const OFF_X = { report: -401, poker: -129, emoji: 143 };
+        // 视频桌：6 按钮沿菜单栏均匀铺开，中间空出认证 logo 的位置
+        // 菜单栏宽约 1242（x: -621 ~ +621），按钮宽约 120
+        const ON_X = {
+            report: -510, poker: -370, emoji: -230, // 左侧 3 个
+            effect: 230, audio: 370, camera: 510,    // 右侧 3 个
+        };
+        const setX = (node: cc.Node, x: number) => { if (node) node.x = x; };
+        if (isVideoRoom) {
+            setX(this.btn_report, ON_X.report);
+            setX(this.btn_poker, ON_X.poker);
+            setX(this.btn_emoji, ON_X.emoji);
+            setX(this.btn_effect, ON_X.effect);
+            setX(this.btn_audio, ON_X.audio);
+            setX(this.btn_camera, ON_X.camera);
+        } else {
+            setX(this.btn_report, OFF_X.report);
+            setX(this.btn_poker, OFF_X.poker);
+            setX(this.btn_emoji, OFF_X.emoji);
+        }
+        // 认证 logo：非视频桌保持在右侧；视频桌移到中间空档（左右各 3 个按钮之间）
+        setX(this.cert_banner, isVideoRoom ? 0 : 410);
     }
 
     /**

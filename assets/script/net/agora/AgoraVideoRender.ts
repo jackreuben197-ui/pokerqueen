@@ -84,7 +84,17 @@ export default class AgoraVideoRender extends cc.Component {
         this._overlayNode.parent = this.node;
         this._overlayNode.setContentSize(this.node.getContentSize());
         this._overlayNode.active = false; // 默认隐藏
-        this._videoSprite = this._overlayNode.addComponent(cc.Sprite);
+        // 圆形裁剪：给覆盖层加 ELLIPSE 遮罩，视频精灵作为其直接子节点被裁成圆形。
+        // （外层 Frame_Head 遮罩对运行时动态添加的深层子节点裁剪不可靠——远端视频此前显示为方形，
+        //   这里就近给视频精灵套一层遮罩，本地/远端统一裁圆。）
+        const clip = this._overlayNode.addComponent(cc.Mask);
+        clip.type = cc.Mask.Type.ELLIPSE;
+        const videoSpriteNode = new cc.Node('VideoSprite');
+        videoSpriteNode.parent = this._overlayNode;
+        videoSpriteNode.setContentSize(this._overlayNode.getContentSize());
+        this._videoSprite = videoSpriteNode.addComponent(cc.Sprite);
+        // CUSTOM 尺寸：由代码显式设定节点大小铺满圆形遮罩，不被 spriteFrame 自身尺寸覆盖
+        this._videoSprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
         // 窗花覆盖层：叠在 VideoOverlay 之上
         this._maskNode = new cc.Node('VideoMask');
         this._maskNode.parent = this.node;
@@ -213,6 +223,7 @@ export default class AgoraVideoRender extends cc.Component {
         (this._spriteFrame as any).initWithTexture(this._texture, cc.rect(cropX, cropY, cropSize, cropSize), false, cc.v2(0, 0), cc.size(cw, ch));
         // 5. 显示视频覆盖层
         this._overlayNode.setContentSize(cw, ch);
+        this._videoSprite.node.setContentSize(cw, ch); // 圆形遮罩子节点同步尺寸，视频铺满圆形
         this._overlayNode.active = true;
         this._videoSprite.spriteFrame = this._spriteFrame;
         if (this.mirror) {
